@@ -654,8 +654,11 @@ void GuiMenu::addVersionInfo()
 
 	mVersion.setLineSpacing(0);
 	if (!ApiSystem::getInstance()->getVersion().empty())
+#ifdef _ENABLEEMUELEC	
+		mVersion.setText("EMUELEC ES V" + ApiSystem::getInstance()->getVersion() + buildDate + " IP:" + getShOutput(R"(/storage/.emulationstation/scripts/ip.sh)"));
+#else
 		mVersion.setText("BATOCERA.LINUX ES V" + ApiSystem::getInstance()->getVersion() + buildDate);
-
+#endif
 	mVersion.setHorizontalAlignment(ALIGN_CENTER);
 	mVersion.setVerticalAlignment(ALIGN_CENTER);
 	addChild(&mVersion);
