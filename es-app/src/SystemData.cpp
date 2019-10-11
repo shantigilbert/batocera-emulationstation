@@ -571,8 +571,11 @@ std::string SystemData::getGamelistPath(bool forWrite) const
 		Utils::FileSystem::createDirectory(Utils::FileSystem::getParent(filePath));
 	if(forWrite || Utils::FileSystem::exists(filePath))
 		return filePath;
-
+#ifdef _ENABLEEMUELEC	
+	return "/storage/.emulationstation/gamelists/" + mName + "/gamelist.xml";
+#else
 	return "/etc/emulationstation/gamelists/" + mName + "/gamelist.xml";
+#endif
 }
 
 std::string SystemData::getThemePath() const

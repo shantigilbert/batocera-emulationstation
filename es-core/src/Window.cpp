@@ -17,6 +17,9 @@
 #include "ThemeData.h"
 #include <mutex>
 #include "components/AsyncNotificationComponent.h"
+#ifdef _ENABLEEMUELEC
+#include "utils/FileSystemUtil.h"
+#endif
 
 #define PLAYER_PAD_TIME_MS 200
 
@@ -172,7 +175,16 @@ bool Window::init()
 	// update our help because font sizes probably changed
 	if(peekGui())
 		peekGui()->updateHelpPrompts();
-
+#ifdef _ENABLEEMUELEC	
+		// emuelec
+      if(Utils::FileSystem::exists("/emuelec/bin/fbfix")) {
+      system("/emuelec/bin/fbfix");      
+  } else { 
+	  if(Utils::FileSystem::exists("/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/bin/fbfix")) {
+	   system("/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/bin/fbfix");
+	  }
+  }
+#endif
 	return true;
 }
 
@@ -269,8 +281,11 @@ void Window::input(InputConfig* config, Input input)
 			int idx = config->getDeviceIndex(); 
 			if (idx >= 0 && idx < MAX_PLAYERS)
 				mplayerPads[idx] = PLAYER_PAD_TIME_MS;
-
+#ifdef _ENABLEEMUELEC
+			mplayerPadsIsHotkey = config->isMappedTo("HotKeyEnable", input);
+#else
 			mplayerPadsIsHotkey = config->isMappedTo("hotkey", input);
+#endif
 		}
 
 		if (peekGui())

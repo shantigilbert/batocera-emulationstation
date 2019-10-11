@@ -222,6 +222,21 @@ bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
 		return true;
 	}
 
+#ifdef _ENABLEEMUELEC
+	// For deleting a chara (Left Top Button)
+	if (config->isMappedTo("leftshoulder", input) && input.value) {
+		mText->startEditing();
+		mText->textInput("\b");
+		mText->stopEditing();
+	}
+
+	// For Adding a space (Right Top Button)
+	if (config->isMappedTo("rightshoulder", input) && input.value) {
+		mText->startEditing();
+		mText->textInput(" ");
+	}
+#else
+
 	// For deleting a chara (Left Top Button)
 	if (config->isMappedTo("PageUp", input) && input.value) {
 		mText->startEditing();
@@ -234,7 +249,7 @@ bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
 		mText->startEditing();
 		mText->textInput(" ");
 	}
-
+#endif 
 	// For Shifting (Y)
 	if (config->isMappedTo("y", input) && input.value) 
 		shiftKeys();

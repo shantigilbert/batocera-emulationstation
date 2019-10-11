@@ -30,7 +30,7 @@ namespace Utils
 	{
 		std::string getEsConfigPath()
 		{
-#ifdef WIN32
+#if defined WIN32 || defined _ENABLEEMUELEC
 			return Utils::FileSystem::getHomePath() + "/.emulationstation";
 #else
 			return "/userdata/system/configs/emulationstation"; // batocera
@@ -39,7 +39,7 @@ namespace Utils
 
 		std::string getSharedConfigPath()
 		{
-#ifdef WIN32
+#if defined WIN32 || defined _ENABLEEMUELEC
 			return Utils::FileSystem::getExePath();
 #else
 			return "/usr/share/emulationstation"; // batocera

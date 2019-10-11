@@ -407,9 +407,13 @@ void InputManager::loadDefaultKBConfig()
 	cfg->mapInput(BUTTON_BACK, Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_ESCAPE, 1, true));
 	cfg->mapInput("start", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_F1, 1, true));
 	cfg->mapInput("select", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_F2, 1, true));
-
+#ifdef _ENABLEEMUELEC
+	cfg->mapInput("leftshoulder", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_RIGHTBRACKET, 1, true));
+	cfg->mapInput("rightshoulder", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_LEFTBRACKET, 1, true));
+#else
 	cfg->mapInput("pageup", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_RIGHTBRACKET, 1, true));
 	cfg->mapInput("pagedown", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_LEFTBRACKET, 1, true));
+#endif
 }
 
 void InputManager::writeDeviceConfig(InputConfig* config)
@@ -521,7 +525,11 @@ std::string InputManager::getConfigPath()
 
 std::string InputManager::getTemporaryConfigPath()
 {
+#ifdef _ENABLEEMUELEC
+	return Utils::FileSystem::getEsConfigPath() + "/es_temporaryinput.cfg";
+#else
 	return Utils::FileSystem::getEsConfigPath() + "/es_last_input.cfg";
+#endif
 }
 
 bool InputManager::initialized() const
