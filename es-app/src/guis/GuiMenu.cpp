@@ -894,7 +894,7 @@ void GuiMenu::openDeveloperSettings()
 			Log::init();			
 		}
 	});
-
+#ifndef _ENABLEEMUELEC
 	// support
 	s->addEntry(_("CREATE A SUPPORT FILE"), true, [window] {
 		window->pushGui(new GuiMsgBox(window, _("CREATE A SUPPORT FILE ?"), _("YES"),
@@ -907,7 +907,7 @@ void GuiMenu::openDeveloperSettings()
 			}
 		}, _("NO"), nullptr));
 	});
-
+#endif
 
 #ifdef _RPI_
 	// Video Player - VideoOmxPlayer
@@ -944,7 +944,7 @@ void GuiMenu::openUpdatesSettings()
 	// Batocera integration with theBezelProject
 	updateGui->addEntry(_("THE BEZEL PROJECT"), true, [this] { mWindow->pushGui(new GuiBezelInstallMenu(mWindow)); });
 
-#if !defined(WIN32) || defined(_DEBUG)
+#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
 
 	// Enable updates
 	auto updates_enabled = std::make_shared<SwitchComponent>(mWindow);
@@ -1019,6 +1019,25 @@ void GuiMenu::openSystemSettings_batocera()
 	language_choice->add("HUNGARIAN", "hu_HU", language == "hu_HU");
 
 	s->addWithLabel(_("LANGUAGE"), language_choice);
+#ifdef _ENABLEEMUELEC
+	s->addSaveFunc([language_choice, window] {
+			if (language_choice->changed()) {
+			std::string selectedLanguage = language_choice->getSelected();
+			std::string msg = "You are about to set EmuELEC Language to:\n" + selectedLanguage + "\n";
+			msg += "Emulationstation will restart.\n";
+			msg += "Do you want to proceed?";
+			window->pushGui(new GuiMsgBox(window, msg,
+				"YES", [selectedLanguage] {
+			SystemConf::getInstance()->set("system.language",
+				selectedLanguage);
+			SystemConf::getInstance()->saveSystemConf();
+					runSystemCommand("systemctl restart emustation"); 
+			}, "NO",nullptr));
+ 		}
+
+		});
+#endif
+
 
 	// Overclock choice
 	auto overclock_choice = std::make_shared<OptionListComponent<std::string> >(window, _("OVERCLOCK"), false);
@@ -1054,7 +1073,7 @@ void GuiMenu::openSystemSettings_batocera()
 	if (isOneSet == false)
 		overclock_choice->add(currentOverclock, currentOverclock, true);
 	
-#ifndef WIN32
+#if !defined WIN32 && !defined _ENABLEEMUELEC
 	s->addWithLabel(_("OVERCLOCK"), overclock_choice);
 #endif
 	
@@ -1106,11 +1125,11 @@ void GuiMenu::openSystemSettings_batocera()
 			}
 		}
 	}
-#if !defined(WIN32) || defined(_DEBUG)
+#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
 	s->addWithLabel(_("STORAGE DEVICE"), optionsStorage);
 #endif
 
-#if !defined(WIN32) || defined(_DEBUG)
+#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
 	// backup
 	s->addEntry(_("BACKUP USER DATA"), true, [this] { mWindow->pushGui(new GuiBackupStart(mWindow)); });
 #endif
@@ -1141,7 +1160,7 @@ void GuiMenu::openSystemSettings_batocera()
 	});
 #endif
 
-#if !defined(WIN32) || defined(_DEBUG)
+#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
 	// Install
 	s->addEntry(_("INSTALL BATOCERA ON A NEW DISK"), true, [this] { mWindow->pushGui(new GuiInstallStart(mWindow)); });
 
@@ -1187,12 +1206,14 @@ void GuiMenu::openSystemSettings_batocera()
 			ApiSystem::getInstance()->setOverclock(overclock_choice->getSelected());
 			reboot = true;
 		}
+#ifndef _ENABLEEMUELEC
 		if (language_choice->changed()) {
 			SystemConf::getInstance()->set("system.language",
 				language_choice->getSelected());
 			SystemConf::getInstance()->saveSystemConf();
 			reboot = true;
 		}
+#endif
 		if (reboot)
 			window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 
