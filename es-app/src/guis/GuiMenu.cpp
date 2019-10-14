@@ -1274,10 +1274,17 @@ void GuiMenu::openGamesSettings_batocera()
 
 	shaders_choices->add(_("AUTO"), "auto", currentShader == "auto");
 	shaders_choices->add(_("NONE"), "none", currentShader == "none");
+
+#ifdef _ENABLEEMUELEC	
+	std::string a;
+	for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getshaders.sh)")); getline(ss, a, ','); )
+        shaders_choices->add(a, a, currentShader == a); // emuelec
+#else
 	shaders_choices->add(_("SCANLINES"), "scanlines", currentShader == "scanlines");
 	shaders_choices->add(_("RETRO"), "retro", currentShader == "retro");
 	shaders_choices->add(_("ENHANCED"), "enhanced", currentShader == "enhanced"); // batocera 5.23
 	shaders_choices->add(_("CURVATURE"), "curvature", currentShader == "curvature"); // batocera 5.24
+#endif
 	s->addWithLabel(_("SHADERS SET"), shaders_choices);
 
 	// Integer scale
@@ -2741,10 +2748,17 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
   shaders_choices->add(_("AUTO"), "auto", currentShader == "auto");
   shaders_choices->add(_("NONE"), "none", currentShader == "none");
+
+#ifdef _ENABLEEMUELEC	
+	std::string a;
+	for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getshaders.sh)")); getline(ss, a, ','); )
+        shaders_choices->add(a, a, currentShader == a); // emuelec
+#else
   shaders_choices->add(_("SCANLINES"), "scanlines", currentShader == "scanlines");
   shaders_choices->add(_("RETRO"), "retro", currentShader == "retro");
   shaders_choices->add(_("ENHANCED"), "enhanced", currentShader == "enhanced"); // batocera 5.23
   shaders_choices->add(_("CURVATURE"), "curvature", currentShader == "curvature"); // batocera 5.24
+#endif
   systemConfiguration->addWithLabel(_("SHADERS SET"), shaders_choices);
 
   // Integer scale
