@@ -1292,7 +1292,7 @@ void GuiMenu::openGamesSettings_batocera()
 			SystemConf::getInstance()->saveSystemConf();
 		}
 	});
-	
+#ifndef _ENABLEEMUELEC	
 	// decorations
 	{		
 		auto sets = GuiMenu::getDecorationsSets(ViewController::get()->getState().getSystem());
@@ -1327,7 +1327,8 @@ void GuiMenu::openGamesSettings_batocera()
 			}
 		});
 	}
-	
+#endif
+
 	if (SystemConf::getInstance()->get("system.es.menu") != "bartop") 
 	{
 		// Retroachievements
@@ -2758,7 +2759,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	SystemConf::getInstance()->saveSystemConf();
       }
     });
-
+#ifndef _ENABLEEMUELEC	
   // decorations
   {
 	Window* window = mWindow;
@@ -2794,7 +2795,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	}
       });
   }
-  
+#endif
+ 
   // gameboy colorize
   auto colorizations_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("COLORIZATION"), false);
   std::string currentColorization = SystemConf::getInstance()->get(configName + "-renderer.colorization");
