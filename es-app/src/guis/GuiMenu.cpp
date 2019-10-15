@@ -62,6 +62,7 @@ GuiMenu::GuiMenu(Window *window) : GuiComponent(window), mMenu(window, _("MAIN M
 #endif
 
 #ifdef _ENABLEEMUELEC
+	if (isFullUI)
 		addEntry(_("EmuELEC").c_str(), true, [this] { openEmuELECSettings(); }); /* < emuelec */
 #endif
 
@@ -1206,14 +1207,14 @@ void GuiMenu::openSystemSettings_batocera()
 			ApiSystem::getInstance()->setOverclock(overclock_choice->getSelected());
 			reboot = true;
 		}
-#ifndef _ENABLEEMUELEC
+
 		if (language_choice->changed()) {
 			SystemConf::getInstance()->set("system.language",
 				language_choice->getSelected());
 			SystemConf::getInstance()->saveSystemConf();
 			reboot = true;
 		}
-#endif
+
 		if (reboot)
 			window->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 
@@ -2525,6 +2526,40 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool forceWin32Menu)
 	if (forceWin32Menu)
 		s->setCloseButton("select");
 
+#ifdef _ENABLEEMUELEC
+	s->addEntry("RESTART EMULATIONSTATION", false, [window] {
+		window->pushGui(new GuiMsgBox(window, "REALLY RESTART EMULATIONSTATION?", _("YES"),
+			[] {
+    		   /*runSystemCommand("systemctl restart emustation.service");*/
+    		   Scripting::fireEvent("quit", "restart");
+			   quitES("");
+		}, _("NO"), nullptr));
+	}, "iconRestart");
+
+	s->addEntry("START RETROARCH", false, [window] {
+		window->pushGui(new GuiMsgBox(window, "REALLY START RETROARCH?", _("YES"),
+			[] {
+			remove("/var/lock/start.games");
+            runSystemCommand("touch /var/lock/start.retro");
+			runSystemCommand("systemctl start retroarch.service");
+			Scripting::fireEvent("quit", "retroarch");
+			quitES("");
+		}, _("NO"), nullptr));
+	}, "iconControllers");
+	
+	s->addEntry("REBOOT FROM NAND", false, [window] {
+		window->pushGui(new GuiMsgBox(window, "REALLY REBOOT FROM NAND?", _("YES"),
+			[] {
+			Scripting::fireEvent("quit", "nand");
+			runSystemCommand("rebootfromnand");
+			runSystemCommand("sync");
+			runSystemCommand("systemctl reboot");
+			quitES("");
+		}, _("NO"), nullptr));
+	}, "iconAdvanced");
+
+#endif
+
 	s->addEntry(_("RESTART SYSTEM"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART?"), _("YES"),
 			[] {
@@ -2545,6 +2580,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool forceWin32Menu)
 		}, _("NO"), nullptr));
 	}, "iconShutdown");
 
+#ifndef _ENABLEEMUELEC
 	s->addEntry(_("FAST SHUTDOWN SYSTEM"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("REALLY SHUTDOWN WITHOUT SAVING METADATAS?"), _("YES"),
 			[] {
@@ -2554,6 +2590,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool forceWin32Menu)
 			}
 		}, _("NO"), nullptr));
 	}, "iconFastShutdown");
+#endif
 
 #ifdef WIN32
 	if (Settings::getInstance()->getBool("ShowExit"))
