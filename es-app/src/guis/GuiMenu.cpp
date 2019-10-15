@@ -1307,10 +1307,10 @@ void GuiMenu::openGamesSettings_batocera()
 	runahead_enabled->add(_("NO"), "0", SystemConf::getInstance()->get("global.runahead") != "0" && SystemConf::getInstance()->get("global.runahead") != "1");
 	runahead_enabled->add("1", "1", SystemConf::getInstance()->get("global.runahead") == "1");
 	runahead_enabled->add("2", "2", SystemConf::getInstance()->get("global.runahead") == "2");
-	runahead_enabled->add("3", "3", SystemConf::getInstance()->get("global.runahead") == "2");
-	runahead_enabled->add("4", "4", SystemConf::getInstance()->get("global.runahead") == "2");
-	runahead_enabled->add("5", "5", SystemConf::getInstance()->get("global.runahead") == "2");
-	runahead_enabled->add("6", "6", SystemConf::getInstance()->get("global.runahead") == "2");
+	runahead_enabled->add("3", "3", SystemConf::getInstance()->get("global.runahead") == "3");
+	runahead_enabled->add("4", "4", SystemConf::getInstance()->get("global.runahead") == "4");
+	runahead_enabled->add("5", "5", SystemConf::getInstance()->get("global.runahead") == "5");
+	runahead_enabled->add("6", "6", SystemConf::getInstance()->get("global.runahead") == "6");
 	s->addWithLabel("RUN-AHEAD FRAMES", runahead_enabled);
 
 	// second instance
