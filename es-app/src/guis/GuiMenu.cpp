@@ -1595,7 +1595,7 @@ void GuiMenu::openControllersSettings_batocera()
 	});
 
 	ComponentListRow row;
-
+#ifndef _ENABLEEMUELEC
 	// Here we go; for each player
 	std::list<int> alreadyTaken = std::list<int>();
 
@@ -1706,6 +1706,7 @@ void GuiMenu::openControllersSettings_batocera()
 		// this is dependant of this configuration, thus update it
 		InputManager::getInstance()->computeLastKnownPlayersDeviceIndexes();
 	});
+#endif
 
 	// CONTROLLER ACTIVITY
 	auto activity = std::make_shared<SwitchComponent>(mWindow);
@@ -2190,7 +2191,7 @@ void GuiMenu::openUISettings()
 			s->setVariable("reloadAll", true);		
 	});
 	
-#if !defined(WIN32) || defined(_DEBUG)
+#if !defined(WIN32) && !defined(_ENABLEEMUELEC) || defined(_DEBUG) 
 	// overscan
 	auto overscan_enabled = std::make_shared<SwitchComponent>(mWindow);
 	overscan_enabled->setState(Settings::getInstance()->getBool("Overscan"));
@@ -2256,7 +2257,9 @@ void GuiMenu::openSoundSettings()
 	auto volume = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "%");
 	volume->setValue((float)VolumeControl::getInstance()->getVolume());
 	volume->setOnValueChanged([](const float &newVal) { VolumeControl::getInstance()->setVolume((int)Math::round(newVal)); });
+#ifndef _ENABLEEMUELEC
 	s->addWithLabel(_("SYSTEM VOLUME"), volume);
+#endif
 
 	// disable sounds
 	auto music_enabled = std::make_shared<SwitchComponent>(mWindow);
@@ -2327,7 +2330,7 @@ void GuiMenu::openSoundSettings()
 	s->addWithLabel(_("ENABLE VIDEO AUDIO"), video_audio);
 	s->addSaveFunc([video_audio] { Settings::getInstance()->setBool("VideoAudio", video_audio->getState()); });
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_ENABLEEMUELEC)
 	// audio device
 	auto optionsAudio = std::make_shared<OptionListComponent<std::string> >(mWindow, _("OUTPUT DEVICE"), false);
 
@@ -2715,6 +2718,8 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, std::string romFilename, 
 void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, std::string configName, SystemData *systemData, std::string previouslySelectedEmulator) {
   // The system configuration
   GuiSettings *systemConfiguration = new GuiSettings(mWindow, title.c_str());
+
+#ifndef _ENABLEEMUELEC
   //Emulator choice
   auto emu_choice = std::make_shared<OptionListComponent<std::string>>(mWindow, "emulator", false);
   bool selected = false;
@@ -2776,14 +2781,16 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
     }
   }
   systemConfiguration->addWithLabel(_("Core"), core_choice);
-
+#endif
 
   // Screen ratio choice
   auto ratio_choice = createRatioOptionList(mWindow, configName);
   systemConfiguration->addWithLabel(_("GAME RATIO"), ratio_choice);
+#ifndef _ENABLEEMUELEC
   // video resolution mode
   auto videoResolutionMode_choice = createVideoResolutionModeOptionList(mWindow, configName);
   systemConfiguration->addWithLabel(_("VIDEO MODE"), videoResolutionMode_choice);
+#endif
   // smoothing
   auto smoothing_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SMOOTH GAMES"));
   smoothing_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get(configName + ".smooth") != "0" && SystemConf::getInstance()->get(configName + ".smooth") != "1");
@@ -2996,16 +3003,18 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
   systemConfiguration->addSaveFunc(
 #ifdef _ENABLEEMUELEC
-				   [configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, videoResolutionMode_choice, emu_choice, core_choice, autosave_enabled, shaders_choices, colorizations_choices, fullboot_enabled, emulatedwiimotes_enabled, internalresolution, runahead_enabled, secondinstance_enabled] {
+				   [configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, autosave_enabled, shaders_choices, colorizations_choices, fullboot_enabled, emulatedwiimotes_enabled, internalresolution, runahead_enabled, secondinstance_enabled] {
 #else
 				   [configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, videoResolutionMode_choice, emu_choice, core_choice, autosave_enabled, shaders_choices, colorizations_choices, fullboot_enabled, emulatedwiimotes_enabled, internalresolution] {
 #endif
 				     if(ratio_choice->changed()){
 				       SystemConf::getInstance()->set(configName + ".ratio", ratio_choice->getSelected());
 				     }
+#ifndef _ENABLEEMUELEC
 				     if(videoResolutionMode_choice->changed()){
 				       SystemConf::getInstance()->set(configName + ".videomode", videoResolutionMode_choice->getSelected());
 				     }
+#endif
 				     if(rewind_enabled->changed()) {
 				       SystemConf::getInstance()->set(configName + ".rewind", rewind_enabled->getSelected());
 				     }
@@ -3045,9 +3054,10 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				     // this is especially bad for core while the changed() value is lost too.
 				     // to avoid this issue, instead of reprogramming this part, i will force a save of the emulator and core
 				     // at each GuiMenu::popSystemConfigurationGui call, including the ending saving one (when changed() values are bad)
+#ifndef _ENABLEEMUELEC
 				     SystemConf::getInstance()->set(configName + ".emulator", emu_choice->getSelected());
 				     SystemConf::getInstance()->set(configName + ".core", core_choice->getSelected());
-
+#endif
 				     SystemConf::getInstance()->saveSystemConf();
 				   });
   mWindow->pushGui(systemConfiguration);
