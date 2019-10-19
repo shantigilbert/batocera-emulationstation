@@ -552,7 +552,11 @@ void Window::endRenderLoadingScreen()
 void Window::renderLoadingScreen(std::string text, float percent, unsigned char opacity)
 {
 	if (mSplash == NULL)
+#ifdef _ENABLEEMUELEC
+		mSplash = TextureResource::get(":/splash_emuelec.svg", false, true, false, false);
+#else
 		mSplash = TextureResource::get(":/splash_batocera.svg", false, true, false, false);
+#endif
 
 	Transform4x4f trans = Transform4x4f::Identity();
 	Renderer::setMatrix(trans);
@@ -578,7 +582,11 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 	if (mSplash != NULL)
 		splash.setImage(mSplash);
 	else
+#ifdef _ENABLEEMUELEC	
+		splash.setImage(":/splash_emuelec.svg"); // batocera
+#else
 		splash.setImage(":/splash_batocera.svg"); // batocera
+#endif
 
 	splash.setPosition((Renderer::getScreenWidth() - splash.getSize().x()) / 2, (Renderer::getScreenHeight() - splash.getSize().y()) / 2 * 0.6f);
 	splash.render(trans);
