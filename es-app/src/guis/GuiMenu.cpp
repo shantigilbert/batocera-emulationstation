@@ -235,6 +235,19 @@ void GuiMenu::openEmuELECSettings()
                 Settings::getInstance()->setBool("EmuELEC_SPLASH", splash_enabled->getState());
 			});
 
+	// Wifi enable
+	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
+	bool baseEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
+	enable_bootvideo->setState(baseEnabled);
+	s->addWithLabel("ALWAYS SHOW BOOT VIDEO", enable_bootvideo);
+	
+	s->addSaveFunc([enable_bootvideo, window] {
+		bool bootvideoenabled = enable_bootvideo->getState();
+		SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
+		SystemConf::getInstance()->saveSystemConf();
+	});
+	
+	
 	ComponentListRow row;
 	
 	row.addElement(std::make_shared<TextComponent>(mWindow, "                                   EMULATOR CHOICES", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);

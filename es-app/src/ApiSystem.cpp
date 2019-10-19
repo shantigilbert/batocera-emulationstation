@@ -260,6 +260,9 @@ bool ApiSystem::updateLastVersionFile()
 
 bool ApiSystem::setOverscan(bool enable) 
 {
+#ifdef _ENABLEEMUELEC
+return true;
+#endif
 	LOG(LogDebug) << "ApiSystem::setOverscan";
 
 	std::ostringstream oss;
@@ -284,6 +287,9 @@ bool ApiSystem::setOverscan(bool enable)
 
 bool ApiSystem::setOverclock(std::string mode) 
 {
+#ifdef _ENABLEEMUELEC
+return true;
+#endif
 	LOG(LogDebug) << "ApiSystem::setOverclock";
 
 	if (mode != "") {
