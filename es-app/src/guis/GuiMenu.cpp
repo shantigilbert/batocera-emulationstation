@@ -1317,7 +1317,7 @@ void GuiMenu::openGamesSettings_batocera()
 // TODO: Translate
 	// run-ahead
 	auto runahead_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, "RUN-AHEAD FRAMES");
-	runahead_enabled->add(_("NO"), "0", SystemConf::getInstance()->get("global.runahead") != "0" && SystemConf::getInstance()->get("global.runahead") != "1");
+	runahead_enabled->add(_("NO"), "0", SystemConf::getInstance()->get("global.runahead") == "0");
 	runahead_enabled->add("1", "1", SystemConf::getInstance()->get("global.runahead") == "1");
 	runahead_enabled->add("2", "2", SystemConf::getInstance()->get("global.runahead") == "2");
 	runahead_enabled->add("3", "3", SystemConf::getInstance()->get("global.runahead") == "3");
@@ -1328,7 +1328,7 @@ void GuiMenu::openGamesSettings_batocera()
 
 	// second instance
 	auto secondinstance_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, "SECOND INSTANCE");
-	secondinstance_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.secondinstance") != "0" && SystemConf::getInstance()->get("global.secondinstance") != "1");
+	secondinstance_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.secondinstance") == "0");
 	secondinstance_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.secondinstance") == "1");
 	s->addWithLabel("SECOND INSTANCE", secondinstance_enabled);
 #endif	
