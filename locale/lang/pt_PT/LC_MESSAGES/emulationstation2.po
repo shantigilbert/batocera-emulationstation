@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-10 19:02+0200\n"
+"POT-Creation-Date: 2019-10-20 08:33+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -543,7 +543,7 @@ msgid "ONLY PLAY SYSTEM-SPECIFIC MUSIC FOLDER"
 msgstr "MÚSICA ESPECIFICA EM CADA SISTEMA"
 
 msgid "PLAY THEME MUSICS"
-msgstr "REPRODUZIR MUSICAS DO TEMA"
+msgstr "REPRODUZIR MÚSICAS DO TEMA"
 
 msgid "ENABLE NAVIGATION SOUNDS"
 msgstr "ATIVAR SOM DE NAVEGAÇÃO"
@@ -678,7 +678,7 @@ msgid "VALIDATION"
 msgstr "VALIDAÇÃO"
 
 msgid "YES, I'M SURE"
-msgstr "SIM, TENHO A CERTEZA"
+msgstr "SIM, TENHO A CERTEZA !"
 
 msgid "INSTALL"
 msgstr "INSTALAR"
@@ -767,8 +767,8 @@ msgstr "MOSTRAR INFORMAÇÃO DO JOGO"
 msgid "USE MARQUEE AS GAME INFO"
 msgstr "USAR MARQUEE COM INFORMAÇÃO DO JOGO"
 
-msgid "USE RANDOM DECORATION"
-msgstr "USAR DECORAÇÃO ALEATÓRIA"
+msgid "DECORATIONS"
+msgstr "DECORAÇÕES"
 
 msgid "STRETCH IMAGES"
 msgstr "ESTICAR IMAGEM"
@@ -813,7 +813,7 @@ msgid "FILTER"
 msgstr "FILTRO:"
 
 msgid "SCRAPE THESE SYSTEMS"
-msgstr "OBTER INFO DOS SISTEMAS"
+msgstr "OBTER INFORMAÇÕES DOS SISTEMAS"
 
 msgid "SYSTEMS"
 msgstr "SISTEMAS"
@@ -1307,6 +1307,9 @@ msgstr "EM PROGRESSO..."
 
 msgid "up/down"
 msgstr "cima/baixo"
+
+#~ msgid "USE RANDOM DECORATION"
+#~ msgstr "USAR DECORAÇÃO ALEATÓRIA"
 
 #~ msgid "THEME COLORSET"
 #~ msgstr "CORES DO TEMA"
