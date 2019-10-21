@@ -461,6 +461,15 @@ bool ViewController::input(InputConfig* config, Input input)
 	if(mLockInput)
 		return true;
 
+
+#ifdef _ENABLEEMUELEC
+        if(config->isConfigured() == false) {
+	  if(input.type == TYPE_BUTTON || input.type == TYPE_KEY) {
+	    mWindow->pushGui(new GuiDetectDevice(mWindow, false, NULL));
+	    return true;
+	  }
+        }
+#else
         // batocera
 	/* if we receive a button pressure for a non configured joystick, suggest the joystick configuration */
         if(config->isConfigured() == false) {
@@ -469,6 +478,7 @@ bool ViewController::input(InputConfig* config, Input input)
 	    return true;
 	  }
         }
+#endif
 
 		if (config->getDeviceId() == DEVICE_KEYBOARD && input.value && input.id == SDLK_F5)
 		{
