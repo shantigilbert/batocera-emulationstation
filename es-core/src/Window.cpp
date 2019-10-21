@@ -181,7 +181,6 @@ bool Window::init()
 
 	// update our help because font sizes probably changed
 	if (peekGui())
-		peekGui()->updateHelpPrompts();
 #ifdef _ENABLEEMUELEC	
 		// emuelec
       if(Utils::FileSystem::exists("/emuelec/bin/fbfix")) {
@@ -192,6 +191,7 @@ bool Window::init()
 	  }
   }
 #endif
+	peekGui()->updateHelpPrompts();
 	return true;
 }
 
@@ -560,7 +560,11 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 
 	Transform4x4f trans = Transform4x4f::Identity();
 	Renderer::setMatrix(trans);
+#ifdef _ENABLEEMUELEC
+	Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x2C3E50FF | opacity, 0x3498DB00 | opacity, true); //emuelec gradient
+#else
 	Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0xFFFFFF00 | opacity, 0xEFEFEF00 | opacity, true); // batocera
+#endif
 
 	if (percent >= 0)
 	{
@@ -573,7 +577,11 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 		float y = Renderer::getScreenHeight() - (Renderer::getScreenHeight() * 3 * baseHeight);
 
 		Renderer::drawRect(x, y, w, h, 0xA0A0A000 | opacity);
+#ifdef _ENABLEEMUELEC
+		Renderer::drawRect(x, y, (w*percent), h, 0x0000FF00 | opacity, 0x19197000 | opacity, true);
+#else
 		Renderer::drawRect(x, y, (w*percent), h, 0xDF101000 | opacity, 0xAF000000 | opacity, true);
+#endif
 	}
 
 	ImageComponent splash(this, true);
@@ -583,7 +591,7 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 		splash.setImage(mSplash);
 	else
 #ifdef _ENABLEEMUELEC	
-		splash.setImage(":/splash_emuelec.svg"); // batocera
+		splash.setImage(":/splash_emuelec.svg"); // emuelec
 #else
 		splash.setImage(":/splash_batocera.svg"); // batocera
 #endif
@@ -592,7 +600,11 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 	splash.render(trans);
 
 	auto& font = mDefaultFonts.at(1);
+#ifdef _ENABLEEMUELEC		
+	TextCache* cache = font->buildTextCache(text, 0, 0, 0xCACAF600 | opacity);
+#else
 	TextCache* cache = font->buildTextCache(text, 0, 0, 0x65656500 | opacity);
+#endif
 
 	float x = Math::round((Renderer::getScreenWidth() - cache->metrics.size.x()) / 2.0f);
 	float y = Math::round(Renderer::getScreenHeight() * 0.78f);// * 0.835f
