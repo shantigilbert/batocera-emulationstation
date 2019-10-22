@@ -298,9 +298,9 @@ bool SystemView::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("rightshoulder", input))
+			if (config->isMappedTo("rightshoulder", input) && mEntries.size() > 10)
 #else
-			if (config->isMappedTo("pagedown", input))
+			if (config->isMappedTo("pagedown", input) && mEntries.size() > 10)
 #endif
 			{
 				int cursor = mCursor + 10;
@@ -316,9 +316,9 @@ bool SystemView::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("leftshoulder", input))
+			if (config->isMappedTo("leftshoulder", input) && mEntries.size() > 10)
 #else
-			if (config->isMappedTo("pageup", input))
+			if (config->isMappedTo("pageup", input) && mEntries.size() > 10)
 #endif
 			{
 				int cursor = mCursor - 10;
