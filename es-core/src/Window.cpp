@@ -561,7 +561,7 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 	Transform4x4f trans = Transform4x4f::Identity();
 	Renderer::setMatrix(trans);
 #ifdef _ENABLEEMUELEC
-	Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0x2C3E50FF | opacity, 0x3498DB00 | opacity, true); //emuelec gradient
+	Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0xFFFFFF00 | opacity, 0x84848500 | opacity, true); //emuelec gradient
 #else
 	Renderer::drawRect(0, 0, Renderer::getScreenWidth(), Renderer::getScreenHeight(), 0xFFFFFF00 | opacity, 0xEFEFEF00 | opacity, true); // batocera
 #endif
@@ -578,7 +578,7 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 
 		Renderer::drawRect(x, y, w, h, 0xA0A0A000 | opacity);
 #ifdef _ENABLEEMUELEC
-		Renderer::drawRect(x, y, (w*percent), h, 0x0000FF00 | opacity, 0x19197000 | opacity, true);
+		Renderer::drawRect(x, y, (w*percent), h, 0xA8A2D000 | opacity, 0x51468700 | opacity, true); // loading bar
 #else
 		Renderer::drawRect(x, y, (w*percent), h, 0xDF101000 | opacity, 0xAF000000 | opacity, true);
 #endif
@@ -601,7 +601,7 @@ void Window::renderLoadingScreen(std::string text, float percent, unsigned char 
 
 	auto& font = mDefaultFonts.at(1);
 #ifdef _ENABLEEMUELEC		
-	TextCache* cache = font->buildTextCache(text, 0, 0, 0xCACAF600 | opacity);
+	TextCache* cache = font->buildTextCache(text, 0, 0, 0x51468700 | opacity); // text color
 #else
 	TextCache* cache = font->buildTextCache(text, 0, 0, 0x65656500 | opacity);
 #endif
