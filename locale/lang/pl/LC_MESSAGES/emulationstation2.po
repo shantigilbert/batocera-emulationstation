@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-20 08:33+0200\n"
+"POT-Creation-Date: 2019-10-21 19:11+0200\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -70,6 +70,9 @@ msgstr "INNE FILTRY"
 
 msgid "GAMELIST VIEW STYLE"
 msgstr "RODZAJ WIDOKU LISTY GIER"
+
+msgid "automatic"
+msgstr "automatyczny"
 
 msgid "GRID SIZE"
 msgstr "ROZMIAR SIATKI"
@@ -213,10 +216,10 @@ msgid "RANDOM VIDEO SETTINGS"
 msgstr "USTAWIENIA LOSOWEGO WIDEO"
 
 msgid "CHOOSE"
-msgstr "WYBIERZ"
+msgstr "ZMIEŃ"
 
 msgid "SELECT"
-msgstr "ZAZNACZ"
+msgstr "WYBIERZ"
 
 msgid "INFORMATION"
 msgstr "INFORMACJA"
@@ -457,6 +460,12 @@ msgstr "MUSISZ ZASTOSOWAĆ MOTYW PRZED EDYCJĄ KONFIGURACJI"
 msgid "THEME CONFIGURATION"
 msgstr "KONFIGURACJA MOTYWU"
 
+msgid "basic"
+msgstr "podstawowy"
+
+msgid "detailed"
+msgstr "szczegółowy"
+
 msgid "DEFAULT GRID SIZE"
 msgstr "DOMYŚLNY ROZMIAR SIATKI"
 
@@ -465,6 +474,12 @@ msgstr "ZRESETUJ DOSTOSOWYWANIA LISTY GIER"
 
 msgid "THEME SET"
 msgstr "USTAWIENIA MOTYWU"
+
+msgid "video"
+msgstr "wideo"
+
+msgid "grid"
+msgstr "siatka"
 
 msgid "UI MODE"
 msgstr "TRYB INTERFEJSU"
@@ -1013,9 +1028,6 @@ msgstr "obraz"
 msgid "thumbnail"
 msgstr "miniaturka"
 
-msgid "video"
-msgstr "wideo"
-
 msgid "enter path to video"
 msgstr "wprowadź ścieżkę do wideo"
 
@@ -1291,13 +1303,13 @@ msgid "SELECT ALL"
 msgstr "ZAZNACZ WSZYSTKO"
 
 msgid "select all"
-msgstr "wybierz wszystko"
+msgstr "zaznacz wszystko"
 
 msgid "SELECT NONE"
 msgstr "ODZNACZ WSZYSTKO"
 
 msgid "select none"
-msgstr "nic nie wybierz"
+msgstr "odznacz wszystko"
 
 #, c-format
 msgid "%i SELECTED"
