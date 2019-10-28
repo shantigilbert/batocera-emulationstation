@@ -154,7 +154,7 @@ void SystemData::populateFolder(FolderData* folder, std::unordered_map<std::stri
 				filePath.rfind("flyer") != std::string::npos ||
 				filePath.rfind("marquee") != std::string::npos ||
 				filePath.rfind("bios") != std::string::npos ||
-				filePath.rfind("wheel") != std::string::npos)
+				filePath.rfind("wheel") != std::string::npos ||
 #endif
 				filePath.rfind("videos") != std::string::npos)
 
