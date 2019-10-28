@@ -111,8 +111,9 @@ void Settings::setDefaults()
         mStringMap["INPUT P5"] = "DEFAULT";
         mStringMap["Overclock"] = "none";
 
-		mBoolMap["VSync"] = true;
-		mBoolMap["FlatFolders"] = false;		
+		mBoolMap["VSync"] = true;	
+		mStringMap["FolderViewMode"] = "never";
+		
 #ifdef _ENABLEEMUELEC
     mBoolMap["EnableSounds"] = true;
 #else
