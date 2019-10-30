@@ -149,12 +149,12 @@ void GuiMenu::openEmuELECSettings()
 		videomode.push_back("576cvbs");
 		videomode.push_back("Custom");
 		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-		emuelec_video_mode->add(*it, *it, Settings::getInstance()->getString("EmuELEC_VIDEO_MODE") == *it); }
+		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
 		s->addWithLabel("Video Mode", emuelec_video_mode);
 	   	s->addSaveFunc([emuelec_video_mode, window] {
-			if (Settings::getInstance()->getString("EmuELEC_VIDEO_MODE") != emuelec_video_mode->getSelected()) {
-			if (emuelec_video_mode->getSelected() != "Custom") {
+			if (emuelec_video_mode->changed()) {
 			std::string selectedVideoMode = emuelec_video_mode->getSelected();
+			if (emuelec_video_mode->getSelected() != "Custom") {
 			std::string msg = "You are about to set EmuELEC resolution to:\n" + selectedVideoMode + "\n";
 			if(Utils::FileSystem::exists("/ee_s905")) {
 			msg += "Emulationstation will restart.\n";
@@ -163,10 +163,10 @@ void GuiMenu::openEmuELECSettings()
 			window->pushGui(new GuiMsgBox(window, msg,
 				"YES", [selectedVideoMode] {
 					runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode");
-					Settings::getInstance()->setString("EmuELEC_VIDEO_MODE", selectedVideoMode);
-					Settings::getInstance()->saveFile();
+					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
 					runSystemCommand("/storage/.config/emuelec/scripts/setres.sh");
+					SystemConf::getInstance()->saveSystemConf();
 				if(Utils::FileSystem::exists("/ee_s905")) {
 					runSystemCommand("systemctl restart emustation"); 
 				}
@@ -175,13 +175,21 @@ void GuiMenu::openEmuELECSettings()
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
 				runSystemCommand("echo $(cat /storage/.config/EE_VIDEO_MODE) > /sys/class/display/mode");
 				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << runSystemCommand("cat /storage/.config/EE_VIDEO_MODE");
+				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+				SystemConf::getInstance()->saveSystemConf();
 			} else { 
 				if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
 				runSystemCommand("echo $(cat /flash/EE_VIDEO_MODE) > /sys/class/display/mode");
 				LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << runSystemCommand("cat /flash/EE_VIDEO_MODE");
+				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+				SystemConf::getInstance()->saveSystemConf();
 					} else {
-					runSystemCommand("echo 1080p60hz > /sys/class/display/mode");
-					LOG(LogInfo) << "EE_VIDEO_MODE was not found! Setting video mode to 1080p60hz";
+					runSystemCommand("echo " + SystemConf::getInstance()->get("ee_videomode")+ " > /sys/class/display/mode");
+					std::string msg = "/storage/.config/EE_VIDEO_MODE or /flash/EE_VIDEO_MODE not found";
+					window->pushGui(new GuiMsgBox(window, msg,
+				"OK", [selectedVideoMode] {
+					LOG(LogInfo) << "EE_VIDEO_MODE was not found! Setting video mode to " + SystemConf::getInstance()->get("ee_videomode");
+			}));
 					}
 				}
 			}
@@ -189,57 +197,60 @@ void GuiMenu::openEmuELECSettings()
 		});
 		
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
-		sshd_enabled->setState(Settings::getInstance()->getBool("SSH"));
+		bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
+		sshd_enabled->setState(baseEnabled);
 		s->addWithLabel("ENABLE SSH", sshd_enabled);
 		s->addSaveFunc([sshd_enabled] {
+			if (sshd_enabled->changed()) {
 			if (sshd_enabled->getState() == false) {
 				runSystemCommand("systemctl stop sshd"); 
 				} else { 
 				runSystemCommand("systemctl start sshd");
 			}
-                Settings::getInstance()->setBool("SSH", sshd_enabled->getState());
-			});
+                bool sshenabled = sshd_enabled->getState();
+                SystemConf::getInstance()->set("ee_ssh.enabled", sshenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
+			}
+		});
 			
 		auto emuelec_boot_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "START AT BOOT", false);
 		std::vector<std::string> devices;
 		devices.push_back("Emulationstation");
 		devices.push_back("Retroarch");
 		for (auto it = devices.cbegin(); it != devices.cend(); it++)
-		emuelec_boot_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_BOOT") == *it);
+		emuelec_boot_def->add(*it, *it, SystemConf::getInstance()->get("ee_boot") == *it);
 		s->addWithLabel("START AT BOOT", emuelec_boot_def);
 		s->addSaveFunc([emuelec_boot_def] {
-			if (Settings::getInstance()->getString("EmuELEC_BOOT") != emuelec_boot_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_BOOT", emuelec_boot_def->getSelected());
+			if (emuelec_boot_def->changed()) {
+				std::string selectedBootMode = emuelec_boot_def->getSelected();
+				SystemConf::getInstance()->set("ee_boot", selectedBootMode);
+				SystemConf::getInstance()->saveSystemConf();
+			}
 		});
        
        auto bezels_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bezels_enabled->setState(Settings::getInstance()->getBool("EmuELEC_BEZELS"));
+		bool bezelsEnabled = SystemConf::getInstance()->get("ee_bezels.enabled") == "1";
+		bezels_enabled->setState(bezelsEnabled);
 		s->addWithLabel("ENABLE RA BEZELS", bezels_enabled);
 		s->addSaveFunc([bezels_enabled] {
-			/* if (bezels_enabled->getState() == false) {
-				runSystemCommand("/emuelec/scripts/enable.sh bezels disable"); 
-				} else { 
-				runSystemCommand("/emuelec/scripts/enable.sh bezels enable"); 
-			} */
-                Settings::getInstance()->setBool("EmuELEC_BEZELS", bezels_enabled->getState());
+			bool bezelsenabled = bezels_enabled->getState();
+                SystemConf::getInstance()->set("ee_bezels.enabled", bezelsenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
 			});	
        
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
-		splash_enabled->setState(Settings::getInstance()->getBool("EmuELEC_SPLASH"));
+		bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
+		splash_enabled->setState(splashEnabled);
 		s->addWithLabel("ENABLE RA SPLASH", splash_enabled);
 		s->addSaveFunc([splash_enabled] {
-		/*	if (splash_enabled->getState() == false) {
-				runSystemCommand("/emuelec/scripts/enable.sh splash disable"); 
-				} else { 
-				runSystemCommand("/emuelec/scripts/enable.sh splash enable"); 
-			} */
-                Settings::getInstance()->setBool("EmuELEC_SPLASH", splash_enabled->getState());
+                bool splashenabled = splash_enabled->getState();
+                SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
+				SystemConf::getInstance()->saveSystemConf();
 			});
 
-	// Wifi enable
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
-	bool baseEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
-	enable_bootvideo->setState(baseEnabled);
+	bool bootEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
+	enable_bootvideo->setState(bootEnabled);
 	s->addWithLabel("ALWAYS SHOW BOOT VIDEO", enable_bootvideo);
 	
 	s->addSaveFunc([enable_bootvideo, window] {
