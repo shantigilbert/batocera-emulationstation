@@ -231,6 +231,8 @@ void Settings::setDefaults()
 	mBoolMap["PreloadUI"] = false;
 	mBoolMap["OptimizeVRAM"] = true;
 	mBoolMap["OptimizeVideo"] = true;
+
+	mBoolMap["ShowFilenames"] = false;
 	
 	mIntMap["WindowWidth"]   = 0;
 	mIntMap["WindowHeight"]  = 0;
