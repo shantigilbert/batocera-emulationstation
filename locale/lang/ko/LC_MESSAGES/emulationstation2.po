@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-27 12:32-0600\n"
+"POT-Creation-Date: 2019-11-01 08:09+0100\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -449,8 +449,8 @@ msgstr "파일 생성 완료"
 msgid "FILE GENERATION FAILED"
 msgstr "파일 생성 실패"
 
-msgid "UPDATES"
-msgstr "업데이트"
+msgid "UPDATES & DOWNLOADS"
+msgstr ""
 
 msgid "THEMES"
 msgstr "테마"
@@ -565,6 +565,18 @@ msgstr "상세 모드"
 
 msgid "AUTOMATIC SCREENSHOT"
 msgstr "자동 스크린샷"
+
+msgid "AI GAME TRANSLATION"
+msgstr ""
+
+msgid "ENABLE AI SERVICE"
+msgstr ""
+
+msgid "TARGET LANGUAGE"
+msgstr ""
+
+msgid "SERVICE URL"
+msgstr ""
 
 msgid "MISSING BIOS"
 msgstr "없는 바이오스"
@@ -722,6 +734,9 @@ msgstr "로컬 아트 서치"
 
 msgid "SHOW HIDDEN FILES"
 msgstr "숨겨진 파일 보여주기"
+
+msgid "SHOW FILENAMES IN LISTS"
+msgstr ""
 
 msgid "SYSTEM VOLUME"
 msgstr "시스템 음량"
@@ -1369,6 +1384,9 @@ msgstr "편집 중단"
 
 msgid "EDIT"
 msgstr "편집"
+
+#~ msgid "UPDATES"
+#~ msgstr "업데이트"
 
 #~ msgid "THEME COLORSET"
 #~ msgstr "테마 컬러셋"
