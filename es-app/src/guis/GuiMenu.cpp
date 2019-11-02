@@ -155,11 +155,11 @@ void GuiMenu::openEmuELECSettings()
 			if (emuelec_video_mode->changed()) {
 			std::string selectedVideoMode = emuelec_video_mode->getSelected();
 			if (emuelec_video_mode->getSelected() != "Custom") {
-			std::string msg = "You are about to set EmuELEC resolution to:\n" + selectedVideoMode + "\n";
+			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			if(Utils::FileSystem::exists("/ee_s905")) {
-			msg += "Emulationstation will restart.\n";
+			msg += _("Emulationstation will restart") + ".\n";
 		}
-			msg += "Do you want to proceed?";
+			msg += _("Do you want to proceed?");
 			window->pushGui(new GuiMsgBox(window, msg,
 				"YES", [selectedVideoMode] {
 					runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode");
@@ -199,12 +199,15 @@ void GuiMenu::openEmuELECSettings()
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
-		s->addWithLabel("ENABLE SSH", sshd_enabled);
+		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
 		s->addSaveFunc([sshd_enabled] {
 			if (sshd_enabled->changed()) {
 			if (sshd_enabled->getState() == false) {
 				runSystemCommand("systemctl stop sshd"); 
-				} else { 
+				runSystemCommand("rm /storage/.cache/services/sshd.conf"); 
+			} else { 
+				runSystemCommand("mkdir -p /storage/.cache/services/");
+				runSystemCommand("touch /storage/.cache/services/sshd.conf");
 				runSystemCommand("systemctl start sshd");
 			}
                 bool sshenabled = sshd_enabled->getState();
@@ -219,7 +222,7 @@ void GuiMenu::openEmuELECSettings()
 		devices.push_back("Retroarch");
 		for (auto it = devices.cbegin(); it != devices.cend(); it++)
 		emuelec_boot_def->add(*it, *it, SystemConf::getInstance()->get("ee_boot") == *it);
-		s->addWithLabel("START AT BOOT", emuelec_boot_def);
+		s->addWithLabel(_("START AT BOOT"), emuelec_boot_def);
 		s->addSaveFunc([emuelec_boot_def] {
 			if (emuelec_boot_def->changed()) {
 				std::string selectedBootMode = emuelec_boot_def->getSelected();
@@ -231,7 +234,7 @@ void GuiMenu::openEmuELECSettings()
        auto bezels_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool bezelsEnabled = SystemConf::getInstance()->get("ee_bezels.enabled") == "1";
 		bezels_enabled->setState(bezelsEnabled);
-		s->addWithLabel("ENABLE RA BEZELS", bezels_enabled);
+		s->addWithLabel(_("ENABLE RA BEZELS"), bezels_enabled);
 		s->addSaveFunc([bezels_enabled] {
 			bool bezelsenabled = bezels_enabled->getState();
                 SystemConf::getInstance()->set("ee_bezels.enabled", bezelsenabled ? "1" : "0");
@@ -241,7 +244,7 @@ void GuiMenu::openEmuELECSettings()
        auto splash_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool splashEnabled = SystemConf::getInstance()->get("ee_splash.enabled") == "1";
 		splash_enabled->setState(splashEnabled);
-		s->addWithLabel("ENABLE RA SPLASH", splash_enabled);
+		s->addWithLabel(_("ENABLE RA SPLASH"), splash_enabled);
 		s->addSaveFunc([splash_enabled] {
                 bool splashenabled = splash_enabled->getState();
                 SystemConf::getInstance()->set("ee_splash.enabled", splashenabled ? "1" : "0");
@@ -251,7 +254,7 @@ void GuiMenu::openEmuELECSettings()
 	auto enable_bootvideo = std::make_shared<SwitchComponent>(mWindow);
 	bool bootEnabled = SystemConf::getInstance()->get("ee_bootvideo.enabled") == "1";
 	enable_bootvideo->setState(bootEnabled);
-	s->addWithLabel("ALWAYS SHOW BOOT VIDEO", enable_bootvideo);
+	s->addWithLabel(_("ALWAYS SHOW BOOT VIDEO"), enable_bootvideo);
 	
 	s->addSaveFunc([enable_bootvideo, window] {
 		bool bootvideoenabled = enable_bootvideo->getState();
@@ -262,7 +265,7 @@ void GuiMenu::openEmuELECSettings()
 	
 	ComponentListRow row;
 	
-	row.addElement(std::make_shared<TextComponent>(mWindow, "                                   EMULATOR CHOICES", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(mWindow, _("EMULATOR CHOICES"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	s->addRow(row);
 	row.elements.clear();
 	
@@ -511,26 +514,26 @@ void GuiMenu::openEmuELECSettings()
 	
 	if (UIModeController::getInstance()->isUIModeFull())
 	{
-	row.addElement(std::make_shared<TextComponent>(window, "                                   !!!!!!!DANGER ZONE!!!!!!!", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("!!!!!!!DANGER ZONE!!!!!!!"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	s->addRow(row);
 	row.elements.clear();
 
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, "!!!!!!WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!!!!!!!!!!\n\n RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?", "YES",
+		window->pushGui(new GuiMsgBox(window, _("!!!!!!WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!!!!!!!!!!\n\n RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh EMUS");
-				}, "NO", nullptr));
+				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, "RESET EmuELEC EMULATORS TO DEFAULT CONFIG", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("RESET EmuELEC EMULATORS TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	s->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, "!!!!!!WARNING THIS WILL DELETE ALL CONFIGS/ADDONS!!!!!!!!!! \n Update, downloads and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?", "YES",
+		window->pushGui(new GuiMsgBox(window, _("!!!!!!WARNING THIS WILL DELETE ALL CONFIGURATIONS!!!!!!!!!! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), "YES",
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh ALL");
 				}, "NO", nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, "RESET SYSTEM TO DEFAULT CONFIG", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("RESET SYSTEM TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	s->addRow(row);
 	row.elements.clear();
 	
