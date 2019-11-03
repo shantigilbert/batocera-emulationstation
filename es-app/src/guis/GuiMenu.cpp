@@ -263,14 +263,13 @@ void GuiMenu::openEmuELECSettings()
 	});
 	
 	
-	ComponentListRow row;
-	
-	row.addElement(std::make_shared<TextComponent>(mWindow, _("EMULATOR CHOICES"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	s->addRow(row);
-	row.elements.clear();
-	
+		//EMULATOR CHOICES
+		s->addEntry(_("EMULATOR CHOICES"), true, [this]
+		{
+			GuiSettings *emu_choices = new GuiSettings(mWindow, _("EMULATOR CHOICES").c_str());
+			
 	std::vector<std::string> emuchoices;
-	
+	std::string a;
 	/* CHOICE */
 	auto emuelec_amiga_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "AMIGA", false);
          emuchoices.clear();  
@@ -279,8 +278,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_amiga_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_AMIGA_CORE") == *it); }
-		s->addWithLabel("AMIGA", emuelec_amiga_def);
-		s->addSaveFunc([emuelec_amiga_def] {
+		emu_choices->addWithLabel("AMIGA", emuelec_amiga_def);
+		emu_choices->addSaveFunc([emuelec_amiga_def] {
 			if (Settings::getInstance()->getString("EmuELEC_AMIGA_CORE") != emuelec_amiga_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_AMIGA_CORE", emuelec_amiga_def->getSelected());
 		});
@@ -293,8 +292,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_arcade_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_ARCADE_CORE") == *it); }
-		s->addWithLabel("ARCADE", emuelec_arcade_def);
-		s->addSaveFunc([emuelec_arcade_def] {
+		emu_choices->addWithLabel("ARCADE", emuelec_arcade_def);
+		emu_choices->addSaveFunc([emuelec_arcade_def] {
 			if (Settings::getInstance()->getString("EmuELEC_ARCADE_CORE") != emuelec_arcade_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_ARCADE_CORE", emuelec_arcade_def->getSelected());
 		});
@@ -307,8 +306,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_dosbox_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_DOSBOX_CORE") == *it); }
-		s->addWithLabel("DOSBOX", emuelec_dosbox_def);
-		s->addSaveFunc([emuelec_dosbox_def] {
+		emu_choices->addWithLabel("DOSBOX", emuelec_dosbox_def);
+		emu_choices->addSaveFunc([emuelec_dosbox_def] {
 			if (Settings::getInstance()->getString("EmuELEC_DOSBOX_CORE") != emuelec_dosbox_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_DOSBOX_CORE", emuelec_dosbox_def->getSelected());
 		});
@@ -321,8 +320,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_hatari_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_HATARI_CORE") == *it); }
-		s->addWithLabel("HATARI", emuelec_hatari_def);
-		s->addSaveFunc([emuelec_hatari_def] {
+		emu_choices->addWithLabel("HATARI", emuelec_hatari_def);
+		emu_choices->addSaveFunc([emuelec_hatari_def] {
 			if (Settings::getInstance()->getString("EmuELEC_HATARI_CORE") != emuelec_hatari_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_HATARI_CORE", emuelec_hatari_def->getSelected());
 		});
@@ -335,8 +334,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_mame_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_MAME_CORE") == *it); }
-		s->addWithLabel("MAME", emuelec_mame_def);
-		s->addSaveFunc([emuelec_mame_def] {
+		emu_choices->addWithLabel("MAME", emuelec_mame_def);
+		emu_choices->addSaveFunc([emuelec_mame_def] {
 			if (Settings::getInstance()->getString("EmuELEC_MAME_CORE") != emuelec_mame_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_MAME_CORE", emuelec_mame_def->getSelected());
 		});
@@ -349,8 +348,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_fbn_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_FBN_CORE") == *it); }
-		s->addWithLabel("NEO-GEO", emuelec_fbn_def);
-		s->addSaveFunc([emuelec_fbn_def] {
+		emu_choices->addWithLabel("NEO-GEO", emuelec_fbn_def);
+		emu_choices->addSaveFunc([emuelec_fbn_def] {
 			if (Settings::getInstance()->getString("EmuELEC_FBN_CORE") != emuelec_fbn_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_FBN_CORE", emuelec_fbn_def->getSelected());
 		});
@@ -363,8 +362,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_neocd_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_NEOCD_CORE") == *it); }
-		s->addWithLabel("NEO-GEO CD", emuelec_neocd_def);
-		s->addSaveFunc([emuelec_neocd_def] {
+		emu_choices->addWithLabel("NEO-GEO CD", emuelec_neocd_def);
+		emu_choices->addSaveFunc([emuelec_neocd_def] {
 			if (Settings::getInstance()->getString("EmuELEC_NEOCD_CORE") != emuelec_neocd_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_NEOCD_CORE", emuelec_neocd_def->getSelected());
 		});
@@ -377,8 +376,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_gba_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GBA_CORE") == *it); }
-		s->addWithLabel("NINTENDO GBA", emuelec_gba_def);
-		s->addSaveFunc([emuelec_gba_def] {
+		emu_choices->addWithLabel("NINTENDO GBA", emuelec_gba_def);
+		emu_choices->addSaveFunc([emuelec_gba_def] {
 			if (Settings::getInstance()->getString("EmuELEC_GBA_CORE") != emuelec_gba_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_GBA_CORE", emuelec_gba_def->getSelected());
 		});
@@ -391,8 +390,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_gbc_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GBC_CORE") == *it); }
-		s->addWithLabel("NINTENDO GB/GBC", emuelec_gbc_def);
-		s->addSaveFunc([emuelec_gbc_def] {
+		emu_choices->addWithLabel("NINTENDO GB/GBC", emuelec_gbc_def);
+		emu_choices->addSaveFunc([emuelec_gbc_def] {
 			if (Settings::getInstance()->getString("EmuELEC_GBC_CORE") != emuelec_gbc_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_GBC_CORE", emuelec_gbc_def->getSelected());
 		});
@@ -405,8 +404,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_n64_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_N64_CORE") == *it); }
-		s->addWithLabel("NINTENDO N64", emuelec_n64_def);
-		s->addSaveFunc([emuelec_n64_def] {
+		emu_choices->addWithLabel("NINTENDO N64", emuelec_n64_def);
+		emu_choices->addSaveFunc([emuelec_n64_def] {
 			if (Settings::getInstance()->getString("EmuELEC_N64_CORE") != emuelec_n64_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_N64_CORE", emuelec_n64_def->getSelected());
 		});
@@ -419,8 +418,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_nes_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_NES_CORE") == *it); }
-		s->addWithLabel("NINTENDO NES/FC/FDS", emuelec_nes_def);
-		s->addSaveFunc([emuelec_nes_def] {
+		emu_choices->addWithLabel("NINTENDO NES/FC/FDS", emuelec_nes_def);
+		emu_choices->addSaveFunc([emuelec_nes_def] {
 			if (Settings::getInstance()->getString("EmuELEC_NES_CORE") != emuelec_nes_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_NES_CORE", emuelec_nes_def->getSelected());
 		});
@@ -433,8 +432,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_snes_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SNES_CORE") == *it); }
-		s->addWithLabel("NINTENDO SNES", emuelec_snes_def);
-		s->addSaveFunc([emuelec_snes_def] {
+		emu_choices->addWithLabel("NINTENDO SNES", emuelec_snes_def);
+		emu_choices->addSaveFunc([emuelec_snes_def] {
 			if (Settings::getInstance()->getString("EmuELEC_SNES_CORE") != emuelec_snes_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_SNES_CORE", emuelec_snes_def->getSelected());
 		});
@@ -447,8 +446,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_scummvm_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SCUMMVM_CORE") == *it); }
-		s->addWithLabel("Scummvm", emuelec_scummvm_def);
-		s->addSaveFunc([emuelec_scummvm_def] {
+		emu_choices->addWithLabel("Scummvm", emuelec_scummvm_def);
+		emu_choices->addSaveFunc([emuelec_scummvm_def] {
 			if (Settings::getInstance()->getString("EmuELEC_SCUMMVM_CORE") != emuelec_scummvm_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_SCUMMVM_CORE", emuelec_scummvm_def->getSelected());
 		});
@@ -461,8 +460,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_dreamcast_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_REICAST_CORE") == *it); }
-		s->addWithLabel("SEGA DREAMCAST", emuelec_dreamcast_def);
-		s->addSaveFunc([emuelec_dreamcast_def] {
+		emu_choices->addWithLabel("SEGA DREAMCAST", emuelec_dreamcast_def);
+		emu_choices->addSaveFunc([emuelec_dreamcast_def] {
 			if (Settings::getInstance()->getString("EmuELEC_REICAST_CORE") != emuelec_dreamcast_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_REICAST_CORE", emuelec_dreamcast_def->getSelected());
 		});
@@ -475,8 +474,8 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_gen_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GEN_CORE") == *it); }
-		s->addWithLabel("SEGA GEN/MD/CD", emuelec_gen_def);
-		s->addSaveFunc([emuelec_gen_def] {
+		emu_choices->addWithLabel("SEGA GEN/MD/CD", emuelec_gen_def);
+		emu_choices->addSaveFunc([emuelec_gen_def] {
 			if (Settings::getInstance()->getString("EmuELEC_GEN_CORE") != emuelec_gen_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_GEN_CORE", emuelec_gen_def->getSelected());
 		});
@@ -489,8 +488,8 @@ void GuiMenu::openEmuELECSettings()
     
 		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_sms_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SMS_CORE") == *it); }
-		s->addWithLabel("SEGA MS", emuelec_sms_def);
-		s->addSaveFunc([emuelec_sms_def] {
+		emu_choices->addWithLabel("SEGA MS", emuelec_sms_def);
+		emu_choices->addSaveFunc([emuelec_sms_def] {
 			if (Settings::getInstance()->getString("EmuELEC_SMS_CORE") != emuelec_sms_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_SMS_CORE", emuelec_sms_def->getSelected());
 		});
@@ -503,21 +502,27 @@ void GuiMenu::openEmuELECSettings()
     
 	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
 		emuelec_psp_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_PSP_CORE") == *it); }
-		s->addWithLabel("SONY PSP", emuelec_psp_def);
-		s->addSaveFunc([emuelec_psp_def] {
+		emu_choices->addWithLabel("SONY PSP", emuelec_psp_def);
+		emu_choices->addSaveFunc([emuelec_psp_def] {
 			if (Settings::getInstance()->getString("EmuELEC_PSP_CORE") != emuelec_psp_def->getSelected())
 				Settings::getInstance()->setString("EmuELEC_PSP_CORE", emuelec_psp_def->getSelected());
 		});
 	/* END CHOICE */
-   
+
+			mWindow->pushGui(emu_choices);
+		});
 
 	
 	if (UIModeController::getInstance()->isUIModeFull())
 	{
-	row.addElement(std::make_shared<TextComponent>(window, _("!!!!!!!DANGER ZONE!!!!!!!"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	s->addRow(row);
-	row.elements.clear();
-
+	
+	
+	//Danger zone options
+		s->addEntry(_("DANGER ZONE!"), true, [this]
+		{
+	Window* window = mWindow;
+	ComponentListRow row;
+	GuiSettings *danger_zone = new GuiSettings(mWindow, _("DANGER ZONE!").c_str());
 	row.makeAcceptInputHandler([window] {
 		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\n RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
 				[] { 
@@ -525,7 +530,7 @@ void GuiMenu::openEmuELECSettings()
 				}, _("NO"), nullptr));
 	});
 	row.addElement(std::make_shared<TextComponent>(window, _("RESET EmuELEC EMULATORS TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	s->addRow(row);
+	danger_zone->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
 		window->pushGui(new GuiMsgBox(window, _("WARNING ALL CONFIGURATIONS WILL BE RESET! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), "YES",
@@ -534,8 +539,11 @@ void GuiMenu::openEmuELECSettings()
 				}, "NO", nullptr));
 	});
 	row.addElement(std::make_shared<TextComponent>(window, _("RESET SYSTEM TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
-	s->addRow(row);
+	danger_zone->addRow(row);
 	row.elements.clear();
+			
+			mWindow->pushGui(danger_zone);
+		});
 	
 	mWindow->pushGui(s);
  }
