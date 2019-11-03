@@ -479,12 +479,8 @@ bool ApiSystem::ping()
 
 	return connected;
 #endif
-	
-#ifdef _ENABLEEMUELEC	
-	std::string updateserver = "google.com";
-#else
-	std::string updateserver = "batocera-linux.xorhub.com";
-#endif
+
+	std::string updateserver = "github.com"; // a pingable web url
 	std::string s("timeout 1 fping -c 1 -t 1000 " + updateserver);
 	int exitcode = system(s.c_str());
 	return exitcode == 0;
@@ -1249,7 +1245,7 @@ std::vector<std::string> ApiSystem::getBatoceraThemesList()
 	std::vector<std::string> res;
 
 #if WIN32
-	std::shared_ptr<HttpReq> httpreq = std::make_shared<HttpReq>("https://batocera-linux.xorhub.com/upgrades/themes.txt");
+	std::shared_ptr<HttpReq> httpreq = std::make_shared<HttpReq>("https://batocera.org/upgrades/themes.txt");
 
 	while (httpreq->status() == HttpReq::REQ_IN_PROGRESS)
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
@@ -1536,7 +1532,7 @@ std::vector<std::string> ApiSystem::getBatoceraBezelsList()
 	std::vector<std::string> res;
 
 #if WIN32
-	std::shared_ptr<HttpReq> httpreq = std::make_shared<HttpReq>("https://batocera-linux.xorhub.com/upgrades/bezels.txt");
+	std::shared_ptr<HttpReq> httpreq = std::make_shared<HttpReq>("https://batocera.org/upgrades/bezels.txt");
 	
 	while (httpreq->status() == HttpReq::REQ_IN_PROGRESS)
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
