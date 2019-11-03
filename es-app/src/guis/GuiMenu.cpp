@@ -519,7 +519,7 @@ void GuiMenu::openEmuELECSettings()
 	row.elements.clear();
 
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("!!!!!!WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!!!!!!!!!!\n\n RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
+		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\n RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh EMUS");
 				}, _("NO"), nullptr));
@@ -528,7 +528,7 @@ void GuiMenu::openEmuELECSettings()
 	s->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("!!!!!!WARNING THIS WILL DELETE ALL CONFIGURATIONS!!!!!!!!!! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), "YES",
+		window->pushGui(new GuiMsgBox(window, _("WARNING ALL CONFIGURATIONS WILL BE RESET! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), "YES",
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh ALL");
 				}, "NO", nullptr));
