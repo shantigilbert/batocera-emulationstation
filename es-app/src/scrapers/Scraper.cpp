@@ -147,6 +147,12 @@ void ScraperHttpRequest::update()
 		return;
 	}
 
+	if (status == HttpReq::REQ_426_BLACKLISTED)
+	{
+		setError("THE SOFTWARE HAS BEEN BLACKLISTED (426)");
+		return;
+	}
+
 	// not ready yet
 	if(status == HttpReq::REQ_IN_PROGRESS)
 		return;
@@ -247,7 +253,7 @@ MDResolveHandle::MDResolveHandle(const ScraperSearchResult& result, const Scrape
 		}, "thumbnail", result.mdl.getName()));
 	}
 
-	if (!search.overWriteMedias && Settings::getInstance()->getBool("ScrapeMarquee") && Utils::FileSystem::exists(search.game->metadata.get("marquee")))
+	if (!search.overWriteMedias && ss && !Settings::getInstance()->getString("ScrapperLogoSrc").empty() && Utils::FileSystem::exists(search.game->metadata.get("marquee")))
 		mResult.mdl.set("marquee", search.game->metadata.get("marquee"));
 	else if (!result.marqueeUrl.empty())
 	{
