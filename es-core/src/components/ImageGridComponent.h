@@ -199,7 +199,7 @@ bool ImageGridComponent<T>::input(InputConfig* config, Input input)
 		else if(config->isMappedLike("right", input))
 			dir[0 ^ idx] = 1;
 #ifdef _ENABLEEMUELEC
-		else  if (config->isMappedTo("leftshoulder", input))
+		else  if (config->isMappedTo("lefttrigger", input))
 #else
 		else  if (config->isMappedTo("pageup", input))
 #endif
@@ -210,7 +210,7 @@ bool ImageGridComponent<T>::input(InputConfig* config, Input input)
 				dir[0 ^ idx] = -10;
 		}
 #ifdef _ENABLEEMUELEC
-		else if (config->isMappedTo("rightshoulder", input))
+		else if (config->isMappedTo("righttrigger", input))
 #else
 		else if (config->isMappedTo("pagedown", input))
 #endif
@@ -234,7 +234,7 @@ bool ImageGridComponent<T>::input(InputConfig* config, Input input)
 #ifdef _ENABLEEMUELEC
 		if(config->isMappedLike("up", input) || config->isMappedLike("down", input) || 
 			config->isMappedLike("left", input) || config->isMappedLike("right", input) ||
-			config->isMappedTo("rightshoulder", input) || config->isMappedTo("leftshoulder", input))
+			config->isMappedTo("righttrigger", input) || config->isMappedTo("lefttrigger", input))
 #else
 		if(config->isMappedLike("up", input) || config->isMappedLike("down", input) || 
 			config->isMappedLike("left", input) || config->isMappedLike("right", input) ||

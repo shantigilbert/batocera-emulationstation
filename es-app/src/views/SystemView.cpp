@@ -252,7 +252,7 @@ bool SystemView::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("rightshoulder", input))
+			if (config->isMappedTo("righttrigger", input))
 #else
 			if (config->isMappedTo("pagedown", input))
 #endif
@@ -270,7 +270,7 @@ bool SystemView::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("leftshoulder", input))
+			if (config->isMappedTo("lefttrigger", input))
 #else
 			if (config->isMappedTo("pageup", input))
 #endif
@@ -302,7 +302,7 @@ bool SystemView::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("rightshoulder", input) && mEntries.size() > 10)
+			if (config->isMappedTo("righttrigger", input) && mEntries.size() > 10)
 #else
 			if (config->isMappedTo("pagedown", input) && mEntries.size() > 10)
 #endif
@@ -320,7 +320,7 @@ bool SystemView::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if (config->isMappedTo("leftshoulder", input) && mEntries.size() > 10)
+			if (config->isMappedTo("lefttrigger", input) && mEntries.size() > 10)
 #else
 			if (config->isMappedTo("pageup", input) && mEntries.size() > 10)
 #endif
@@ -368,8 +368,8 @@ bool SystemView::input(InputConfig* config, Input input)
 			config->isMappedLike("up", input) ||
 			config->isMappedLike("down", input) ||
 #ifdef _ENABLEEMUELEC
-			config->isMappedLike("rightshoulder", input) ||
-			config->isMappedLike("leftshoulder", input))
+			config->isMappedLike("righttrigger", input) ||
+			config->isMappedLike("lefttrigger", input))
 #else
 			config->isMappedLike("pagedown", input) ||
 			config->isMappedLike("pageup", input))

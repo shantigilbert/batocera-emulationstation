@@ -226,14 +226,14 @@ bool GuiTextEditPopupKeyboard::input(InputConfig* config, Input input)
 
 #ifdef _ENABLEEMUELEC
 	// For deleting a chara (Left Top Button)
-	if (config->isMappedTo("leftshoulder", input) && input.value) {
+	if (config->isMappedTo("lefttrigger", input) && input.value) {
 		mText->startEditing();
 		mText->textInput("\b");
 		mText->stopEditing();
 	}
 
 	// For Adding a space (Right Top Button)
-	if (config->isMappedTo("rightshoulder", input) && input.value) {
+	if (config->isMappedTo("righttrigger", input) && input.value) {
 		mText->startEditing();
 		mText->textInput(" ");
 	}

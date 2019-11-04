@@ -273,7 +273,7 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if(config->isMappedTo("rightshoulder", input))
+			if(config->isMappedTo("righttrigger", input))
 #else			
 			if(config->isMappedTo("pagedown", input))
 #endif
@@ -282,7 +282,7 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 				return true;
 			}
 #ifdef _ENABLEEMUELEC
-			if(config->isMappedTo("leftshoulder", input))
+			if(config->isMappedTo("lefttrigger", input))
 #else	
 			if(config->isMappedTo("pageup", input))
 #endif
@@ -293,7 +293,7 @@ bool TextListComponent<T>::input(InputConfig* config, Input input)
 		}else{
 #ifdef _ENABLEEMUELEC
 			if(config->isMappedLike("down", input) || config->isMappedLike("up", input) || 
-				config->isMappedTo("rightshoulder", input) || config->isMappedTo("leftshoulder", input))
+				config->isMappedTo("righttrigger", input) || config->isMappedTo("lefttrigger", input))
 #else
 			if(config->isMappedLike("down", input) || config->isMappedLike("up", input) || 
 				config->isMappedTo("pagedown", input) || config->isMappedTo("pageup", input))

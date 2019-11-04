@@ -81,10 +81,10 @@ bool ComponentList::input(InputConfig* config, Input input)
 		return listInput(input.value != 0 ? 1 : 0);
 
 #ifdef _ENABLEEMUELEC
-	}else if(config->isMappedTo("leftshoulder", input))
+	}else if(config->isMappedTo("lefttrigger", input))
 	{
 		return listInput(input.value != 0 ? -6 : 0);
-	}else if(config->isMappedTo("rightshoulder", input)){
+	}else if(config->isMappedTo("righttrigger", input)){
 		return listInput(input.value != 0 ? 6 : 0);
 	}
 #else
