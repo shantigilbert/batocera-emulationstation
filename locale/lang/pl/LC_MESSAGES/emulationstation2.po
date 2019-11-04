@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-01 08:09+0100\n"
+"POT-Creation-Date: 2019-11-04 21:27+0100\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -158,8 +158,8 @@ msgstr "WYJDŹ"
 msgid "SCRAPE FROM"
 msgstr "SCRAPE'UJ Z"
 
-msgid "PREFERED IMAGE SOURCE"
-msgstr "PREFEROWANE ŹRÓDŁO OBRAZU"
+msgid "IMAGE SOURCE"
+msgstr "ŹRÓDŁO OBRAZU"
 
 msgid "NONE"
 msgstr "BRAK"
@@ -170,26 +170,29 @@ msgstr "ZRZUT EKRANU"
 msgid "TITLE SCREENSHOT"
 msgstr "ZRZUT EKRANU TYTUŁU"
 
+msgid "MIX"
+msgstr "MIX"
+
+msgid "BOX SOURCE"
+msgstr "ŹRÓDŁO RAMKI"
+
 msgid "BOX 2D"
 msgstr "RAMKA 2D"
 
 msgid "BOX 3D"
 msgstr "RAMKA 3D"
 
-msgid "MIX"
-msgstr "MIX"
+msgid "LOGO SOURCE"
+msgstr "ŹRÓDŁO LOGO"
 
 msgid "WHEEL"
 msgstr "KOŁO"
 
-msgid "PREFERED THUMBNAIL SOURCE"
-msgstr "PREFEROWANE ŹRÓDŁO MINIATUR"
+msgid "MARQUEE"
+msgstr "MARQUEE"
 
 msgid "SCRAPE RATINGS"
 msgstr "OCENY SCRAPE'A"
-
-msgid "SCRAPE MARQUEE"
-msgstr "SCRAPE'UJ MARQUEE"
 
 msgid "SCRAPE VIDEOS"
 msgstr "SCRAPE'UJ WIDEO"
@@ -273,7 +276,7 @@ msgid "FILE GENERATION FAILED"
 msgstr "TWORZENIE PLIKU SIĘ NIE POWIODŁO"
 
 msgid "UPDATES & DOWNLOADS"
-msgstr ""
+msgstr "AKTUALIZACJE I DO ŚCIĄGNIĘCIA"
 
 msgid "THEMES"
 msgstr "MOTYWY"
@@ -393,16 +396,16 @@ msgid "AUTOMATIC SCREENSHOT"
 msgstr "AUTOMATYCZNY ZRZUT EKRANU"
 
 msgid "AI GAME TRANSLATION"
-msgstr ""
+msgstr "TŁUMACZENIE GRY AI"
 
 msgid "ENABLE AI SERVICE"
-msgstr ""
+msgstr "WŁĄCZ USŁUGĘ AI"
 
 msgid "TARGET LANGUAGE"
-msgstr ""
+msgstr "JĘZYK DOCELOWY"
 
 msgid "SERVICE URL"
-msgstr ""
+msgstr "URL USŁUGI"
 
 msgid "MISSING BIOS"
 msgstr "BRAKUJĄCY BIOS"
@@ -555,7 +558,7 @@ msgid "SEARCH FOR LOCAL ART"
 msgstr "SZUKAJ LOKALNEJ ART"
 
 msgid "SHOW FILENAMES IN LISTS"
-msgstr ""
+msgstr "POKAŻ NAZWY PLIKÓW NA LISTACH"
 
 msgid "SYSTEM VOLUME"
 msgstr "GŁOŚNOŚĆ SYSTEMOWA"
@@ -1058,6 +1061,9 @@ msgstr "SCRAPE'OWANIE"
 msgid "Searching"
 msgstr "Wyszukiwanie"
 
+msgid "SCRAPE FAILED : THE APPLICATION HAS BEEN BLACKLISTED"
+msgstr "SCRAPE'OWANIE NIE POWIODŁO SIĘ: APLIKACJA ZOSTAŁA WPISANA NA CZARNĄ LISTĘ"
+
 msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
 msgstr "SCRAPE'OWANIE ZAKOŃCZONE. ODŚWIEŻ LISTĘ GIER ABY ZASTOSOWAĆ ZMIANY."
 
@@ -1102,64 +1108,64 @@ msgid "MENU"
 msgstr "MENU"
 
 msgid "FILENAME, ASCENDING"
-msgstr ""
+msgstr "NAZWA PLIKU, ROSNĄCO"
 
 msgid "FILENAME, DESCENDING"
-msgstr ""
+msgstr "NAZWA PLIKU, MALEJĄCO"
 
 msgid "RATING, ASCENDING"
-msgstr ""
+msgstr "OCENA, ROSNĄCO"
 
 msgid "RATING, DESCENDING"
-msgstr ""
+msgstr "OCENA, MALEJĄCO"
 
 msgid "TIMES PLAYED, ASCENDING"
-msgstr ""
+msgstr "ROZEGRANO RAZY, ROSNĄCO"
 
 msgid "TIMES PLAYED, DESCENDING"
-msgstr ""
+msgstr "ROZEGRANO RAZY, MALEJĄCO"
 
 msgid "LAST PLAYED, ASCENDING"
-msgstr ""
+msgstr "OSTATNIO GRANE, ROSNĄCO"
 
 msgid "LAST PLAYED, DESCENDING"
-msgstr ""
+msgstr "OSTATNIO GRANE, MALEJĄCO"
 
 msgid "NUMBER PLAYERS, ASCENDING"
-msgstr ""
+msgstr "LICZBA GRACZY, ROSNĄCO"
 
 msgid "NUMBER PLAYERS, DESCENDING"
-msgstr ""
+msgstr "LICZBA GRACZY, MALEJĄCO"
 
 msgid "RELEASE DATE, ASCENDING"
-msgstr ""
+msgstr "DATA PREMIERY, ROSNĄCO"
 
 msgid "RELEASE DATE, DESCENDING"
-msgstr ""
+msgstr "DATA PREMIERY, MALEJĄCO"
 
 msgid "GENRE, ASCENDING"
-msgstr ""
+msgstr "RODZAJ, ROSNĄCO"
 
 msgid "GENRE, DESCENDING"
-msgstr ""
+msgstr "RODZAJ, MALEJĄCO"
 
 msgid "DEVELOPER, ASCENDING"
-msgstr ""
+msgstr "PRODUCENT, ROSNĄCO"
 
 msgid "DEVELOPER, DESCENDING"
-msgstr ""
+msgstr "PRODUCENT, MALEJĄCO"
 
 msgid "PUBLISHER, ASCENDING"
-msgstr ""
+msgstr "WYDAWCA, ROSNĄCO"
 
 msgid "PUBLISHER, DESCENDING"
-msgstr ""
+msgstr "WYDAWCA, MALEJĄCO"
 
 msgid "SYSTEM, ASCENDING"
-msgstr ""
+msgstr "SYSTEM, ROSNĄCO"
 
 msgid "SYSTEM, DESCENDING"
-msgstr ""
+msgstr "SYSTEM, MALEJĄCO"
 
 msgid "DOWNLOADING"
 msgstr "Pobieranie"
@@ -1297,7 +1303,7 @@ msgid "GAMEPAD %i"
 msgstr "KONTROLER %i"
 
 msgid "HOLD ANY BUTTON TO SKIP"
-msgstr "PRZYTRZYMAJ DOWOLNY PRZYCISK ABY POMINĄĆ"
+msgstr "PRZYTRZYMAJ PRZYCISK ABY POMINĄĆ"
 
 msgid "-NOT DEFINED-"
 msgstr "-NIEZDEFINIOWANY-"
@@ -1401,6 +1407,15 @@ msgstr "PRACUJE.."
 
 msgid "up/down"
 msgstr "góra/dół"
+
+#~ msgid "PREFERED IMAGE SOURCE"
+#~ msgstr "PREFEROWANE ŹRÓDŁO OBRAZU"
+
+#~ msgid "PREFERED THUMBNAIL SOURCE"
+#~ msgstr "PREFEROWANE ŹRÓDŁO MINIATUR"
+
+#~ msgid "SCRAPE MARQUEE"
+#~ msgstr "SCRAPE'UJ MARQUEE"
 
 #~ msgid "UPDATES"
 #~ msgstr "AKTUALIZACJE"
