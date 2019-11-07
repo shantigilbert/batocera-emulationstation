@@ -196,6 +196,24 @@ void GuiMenu::openEmuELECSettings()
 		 }
 		});
 		
+		auto emuelec_audiodev_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "AUDIO DEVICE", false);
+		std::vector<std::string> Audiodevices;
+		Audiodevices.push_back("auto");
+		Audiodevices.push_back("0,0");
+		Audiodevices.push_back("0,1");
+		Audiodevices.push_back("1,0");
+		Audiodevices.push_back("1,1");
+		for (auto it = Audiodevices.cbegin(); it != Audiodevices.cend(); it++)
+		emuelec_audiodev_def->add(*it, *it, SystemConf::getInstance()->get("ee_audio_device") == *it);
+		s->addWithLabel(_("AUDIO DEVICE"), emuelec_audiodev_def);
+		s->addSaveFunc([emuelec_audiodev_def] {
+			if (emuelec_audiodev_def->changed()) {
+				std::string selectedaudiodev = emuelec_audiodev_def->getSelected();
+				SystemConf::getInstance()->set("ee_audio_device", selectedaudiodev);
+				SystemConf::getInstance()->saveSystemConf();
+			}
+		});
+		
        auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
