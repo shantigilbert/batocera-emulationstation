@@ -64,7 +64,7 @@ GuiMenu::GuiMenu(Window *window) : GuiComponent(window), mMenu(window, _("MAIN M
 
 #ifdef _ENABLEEMUELEC
 	if (isFullUI)
-		addEntry(_("EmuELEC").c_str(), true, [this] { openEmuELECSettings(); }); /* < emuelec */
+		addEntry(_("EMUELEC SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }); /* < emuelec */
 #endif
 
 	if (isFullUI &&
@@ -279,257 +279,6 @@ void GuiMenu::openEmuELECSettings()
 		SystemConf::getInstance()->set("ee_bootvideo.enabled", bootvideoenabled ? "1" : "0");
 		SystemConf::getInstance()->saveSystemConf();
 	});
-	
-	
-		//EMULATOR CHOICES
-		s->addEntry(_("EMULATOR CHOICES"), true, [this]
-		{
-			GuiSettings *emu_choices = new GuiSettings(mWindow, _("EMULATOR CHOICES").c_str());
-			
-	std::vector<std::string> emuchoices;
-	std::string a;
-	/* CHOICE */
-	auto emuelec_amiga_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "AMIGA", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh amiga)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_amiga_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_AMIGA_CORE") == *it); }
-		emu_choices->addWithLabel("AMIGA", emuelec_amiga_def);
-		emu_choices->addSaveFunc([emuelec_amiga_def] {
-			if (Settings::getInstance()->getString("EmuELEC_AMIGA_CORE") != emuelec_amiga_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_AMIGA_CORE", emuelec_amiga_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_arcade_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "ARCADE", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh arcade)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_arcade_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_ARCADE_CORE") == *it); }
-		emu_choices->addWithLabel("ARCADE", emuelec_arcade_def);
-		emu_choices->addSaveFunc([emuelec_arcade_def] {
-			if (Settings::getInstance()->getString("EmuELEC_ARCADE_CORE") != emuelec_arcade_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_ARCADE_CORE", emuelec_arcade_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_dosbox_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "DOSBOX", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh dosbox)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_dosbox_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_DOSBOX_CORE") == *it); }
-		emu_choices->addWithLabel("DOSBOX", emuelec_dosbox_def);
-		emu_choices->addSaveFunc([emuelec_dosbox_def] {
-			if (Settings::getInstance()->getString("EmuELEC_DOSBOX_CORE") != emuelec_dosbox_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_DOSBOX_CORE", emuelec_dosbox_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_hatari_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "HATARI", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh hatari)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_hatari_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_HATARI_CORE") == *it); }
-		emu_choices->addWithLabel("HATARI", emuelec_hatari_def);
-		emu_choices->addSaveFunc([emuelec_hatari_def] {
-			if (Settings::getInstance()->getString("EmuELEC_HATARI_CORE") != emuelec_hatari_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_HATARI_CORE", emuelec_hatari_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_mame_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "MAME", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh mame)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_mame_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_MAME_CORE") == *it); }
-		emu_choices->addWithLabel("MAME", emuelec_mame_def);
-		emu_choices->addSaveFunc([emuelec_mame_def] {
-			if (Settings::getInstance()->getString("EmuELEC_MAME_CORE") != emuelec_mame_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_MAME_CORE", emuelec_mame_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_fbn_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NEO-GEO", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh fbn)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_fbn_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_FBN_CORE") == *it); }
-		emu_choices->addWithLabel("NEO-GEO", emuelec_fbn_def);
-		emu_choices->addSaveFunc([emuelec_fbn_def] {
-			if (Settings::getInstance()->getString("EmuELEC_FBN_CORE") != emuelec_fbn_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_FBN_CORE", emuelec_fbn_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_neocd_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NEO-GEO CD", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh neocd)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_neocd_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_NEOCD_CORE") == *it); }
-		emu_choices->addWithLabel("NEO-GEO CD", emuelec_neocd_def);
-		emu_choices->addSaveFunc([emuelec_neocd_def] {
-			if (Settings::getInstance()->getString("EmuELEC_NEOCD_CORE") != emuelec_neocd_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_NEOCD_CORE", emuelec_neocd_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_gba_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO GBA", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh gba)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_gba_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GBA_CORE") == *it); }
-		emu_choices->addWithLabel("NINTENDO GBA", emuelec_gba_def);
-		emu_choices->addSaveFunc([emuelec_gba_def] {
-			if (Settings::getInstance()->getString("EmuELEC_GBA_CORE") != emuelec_gba_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_GBA_CORE", emuelec_gba_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_gbc_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO GB/GBC", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh gbc)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_gbc_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GBC_CORE") == *it); }
-		emu_choices->addWithLabel("NINTENDO GB/GBC", emuelec_gbc_def);
-		emu_choices->addSaveFunc([emuelec_gbc_def] {
-			if (Settings::getInstance()->getString("EmuELEC_GBC_CORE") != emuelec_gbc_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_GBC_CORE", emuelec_gbc_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_n64_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO N64", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh n64)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_n64_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_N64_CORE") == *it); }
-		emu_choices->addWithLabel("NINTENDO N64", emuelec_n64_def);
-		emu_choices->addSaveFunc([emuelec_n64_def] {
-			if (Settings::getInstance()->getString("EmuELEC_N64_CORE") != emuelec_n64_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_N64_CORE", emuelec_n64_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_nes_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO NES/FC/FDS", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh nes)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_nes_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_NES_CORE") == *it); }
-		emu_choices->addWithLabel("NINTENDO NES/FC/FDS", emuelec_nes_def);
-		emu_choices->addSaveFunc([emuelec_nes_def] {
-			if (Settings::getInstance()->getString("EmuELEC_NES_CORE") != emuelec_nes_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_NES_CORE", emuelec_nes_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_snes_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO SNES", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh snes)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_snes_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SNES_CORE") == *it); }
-		emu_choices->addWithLabel("NINTENDO SNES", emuelec_snes_def);
-		emu_choices->addSaveFunc([emuelec_snes_def] {
-			if (Settings::getInstance()->getString("EmuELEC_SNES_CORE") != emuelec_snes_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_SNES_CORE", emuelec_snes_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_scummvm_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "Scummvm", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh scummvm)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_scummvm_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SCUMMVM_CORE") == *it); }
-		emu_choices->addWithLabel("Scummvm", emuelec_scummvm_def);
-		emu_choices->addSaveFunc([emuelec_scummvm_def] {
-			if (Settings::getInstance()->getString("EmuELEC_SCUMMVM_CORE") != emuelec_scummvm_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_SCUMMVM_CORE", emuelec_scummvm_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_dreamcast_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SEGA DREAMCAST", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh dreamcast)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_dreamcast_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_REICAST_CORE") == *it); }
-		emu_choices->addWithLabel("SEGA DREAMCAST", emuelec_dreamcast_def);
-		emu_choices->addSaveFunc([emuelec_dreamcast_def] {
-			if (Settings::getInstance()->getString("EmuELEC_REICAST_CORE") != emuelec_dreamcast_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_REICAST_CORE", emuelec_dreamcast_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_gen_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SEGA GEN/MD/CD", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh genesis)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_gen_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GEN_CORE") == *it); }
-		emu_choices->addWithLabel("SEGA GEN/MD/CD", emuelec_gen_def);
-		emu_choices->addSaveFunc([emuelec_gen_def] {
-			if (Settings::getInstance()->getString("EmuELEC_GEN_CORE") != emuelec_gen_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_GEN_CORE", emuelec_gen_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_sms_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SEGA MS", false);
-         emuchoices.clear();  
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh sms)")); getline(ss, a, ','); )
-        emuchoices.push_back(a);
-    
-		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_sms_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SMS_CORE") == *it); }
-		emu_choices->addWithLabel("SEGA MS", emuelec_sms_def);
-		emu_choices->addSaveFunc([emuelec_sms_def] {
-			if (Settings::getInstance()->getString("EmuELEC_SMS_CORE") != emuelec_sms_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_SMS_CORE", emuelec_sms_def->getSelected());
-		});
-	/* END CHOICE */
-	/* CHOICE */
-	auto emuelec_psp_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SONY PSP", false);
-         emuchoices.clear(); 
-    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh psp)")); getline(ss, a, ','); ) 
-        emuchoices.push_back(a);
-    
-	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
-		emuelec_psp_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_PSP_CORE") == *it); }
-		emu_choices->addWithLabel("SONY PSP", emuelec_psp_def);
-		emu_choices->addSaveFunc([emuelec_psp_def] {
-			if (Settings::getInstance()->getString("EmuELEC_PSP_CORE") != emuelec_psp_def->getSelected())
-				Settings::getInstance()->setString("EmuELEC_PSP_CORE", emuelec_psp_def->getSelected());
-		});
-	/* END CHOICE */
-
-			mWindow->pushGui(emu_choices);
-		});
-
 	
 	if (UIModeController::getInstance()->isUIModeFull())
 	{
@@ -1289,6 +1038,257 @@ void GuiMenu::openGamesSettings_batocera()
 
 	auto s = new GuiSettings(mWindow, _("GAMES SETTINGS").c_str());
 	if (SystemConf::getInstance()->get("system.es.menu") != "bartop") {
+
+#ifdef _ENABLEEMUELEC
+		//EMULATOR CHOICES
+		s->addEntry(_("EMULATOR CHOICES"), true, [this]
+		{
+			GuiSettings *emu_choices = new GuiSettings(mWindow, _("EMULATOR CHOICES").c_str());
+			
+	std::vector<std::string> emuchoices;
+	std::string a;
+	/* CHOICE */
+	auto emuelec_amiga_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "AMIGA", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh amiga)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_amiga_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_AMIGA_CORE") == *it); }
+		emu_choices->addWithLabel("AMIGA", emuelec_amiga_def);
+		emu_choices->addSaveFunc([emuelec_amiga_def] {
+			if (Settings::getInstance()->getString("EmuELEC_AMIGA_CORE") != emuelec_amiga_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_AMIGA_CORE", emuelec_amiga_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_arcade_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "ARCADE", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh arcade)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_arcade_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_ARCADE_CORE") == *it); }
+		emu_choices->addWithLabel("ARCADE", emuelec_arcade_def);
+		emu_choices->addSaveFunc([emuelec_arcade_def] {
+			if (Settings::getInstance()->getString("EmuELEC_ARCADE_CORE") != emuelec_arcade_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_ARCADE_CORE", emuelec_arcade_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_dosbox_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "DOSBOX", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh dosbox)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_dosbox_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_DOSBOX_CORE") == *it); }
+		emu_choices->addWithLabel("DOSBOX", emuelec_dosbox_def);
+		emu_choices->addSaveFunc([emuelec_dosbox_def] {
+			if (Settings::getInstance()->getString("EmuELEC_DOSBOX_CORE") != emuelec_dosbox_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_DOSBOX_CORE", emuelec_dosbox_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_hatari_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "HATARI", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh hatari)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_hatari_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_HATARI_CORE") == *it); }
+		emu_choices->addWithLabel("HATARI", emuelec_hatari_def);
+		emu_choices->addSaveFunc([emuelec_hatari_def] {
+			if (Settings::getInstance()->getString("EmuELEC_HATARI_CORE") != emuelec_hatari_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_HATARI_CORE", emuelec_hatari_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_mame_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "MAME", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh mame)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_mame_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_MAME_CORE") == *it); }
+		emu_choices->addWithLabel("MAME", emuelec_mame_def);
+		emu_choices->addSaveFunc([emuelec_mame_def] {
+			if (Settings::getInstance()->getString("EmuELEC_MAME_CORE") != emuelec_mame_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_MAME_CORE", emuelec_mame_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_fbn_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NEO-GEO", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh fbn)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_fbn_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_FBN_CORE") == *it); }
+		emu_choices->addWithLabel("NEO-GEO", emuelec_fbn_def);
+		emu_choices->addSaveFunc([emuelec_fbn_def] {
+			if (Settings::getInstance()->getString("EmuELEC_FBN_CORE") != emuelec_fbn_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_FBN_CORE", emuelec_fbn_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_neocd_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NEO-GEO CD", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh neocd)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_neocd_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_NEOCD_CORE") == *it); }
+		emu_choices->addWithLabel("NEO-GEO CD", emuelec_neocd_def);
+		emu_choices->addSaveFunc([emuelec_neocd_def] {
+			if (Settings::getInstance()->getString("EmuELEC_NEOCD_CORE") != emuelec_neocd_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_NEOCD_CORE", emuelec_neocd_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_gba_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO GBA", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh gba)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_gba_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GBA_CORE") == *it); }
+		emu_choices->addWithLabel("NINTENDO GBA", emuelec_gba_def);
+		emu_choices->addSaveFunc([emuelec_gba_def] {
+			if (Settings::getInstance()->getString("EmuELEC_GBA_CORE") != emuelec_gba_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_GBA_CORE", emuelec_gba_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_gbc_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO GB/GBC", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh gbc)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_gbc_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GBC_CORE") == *it); }
+		emu_choices->addWithLabel("NINTENDO GB/GBC", emuelec_gbc_def);
+		emu_choices->addSaveFunc([emuelec_gbc_def] {
+			if (Settings::getInstance()->getString("EmuELEC_GBC_CORE") != emuelec_gbc_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_GBC_CORE", emuelec_gbc_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_n64_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO N64", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh n64)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_n64_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_N64_CORE") == *it); }
+		emu_choices->addWithLabel("NINTENDO N64", emuelec_n64_def);
+		emu_choices->addSaveFunc([emuelec_n64_def] {
+			if (Settings::getInstance()->getString("EmuELEC_N64_CORE") != emuelec_n64_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_N64_CORE", emuelec_n64_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_nes_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO NES/FC/FDS", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh nes)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_nes_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_NES_CORE") == *it); }
+		emu_choices->addWithLabel("NINTENDO NES/FC/FDS", emuelec_nes_def);
+		emu_choices->addSaveFunc([emuelec_nes_def] {
+			if (Settings::getInstance()->getString("EmuELEC_NES_CORE") != emuelec_nes_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_NES_CORE", emuelec_nes_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_snes_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "NINTENDO SNES", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh snes)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_snes_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SNES_CORE") == *it); }
+		emu_choices->addWithLabel("NINTENDO SNES", emuelec_snes_def);
+		emu_choices->addSaveFunc([emuelec_snes_def] {
+			if (Settings::getInstance()->getString("EmuELEC_SNES_CORE") != emuelec_snes_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_SNES_CORE", emuelec_snes_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_scummvm_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "Scummvm", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh scummvm)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_scummvm_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SCUMMVM_CORE") == *it); }
+		emu_choices->addWithLabel("Scummvm", emuelec_scummvm_def);
+		emu_choices->addSaveFunc([emuelec_scummvm_def] {
+			if (Settings::getInstance()->getString("EmuELEC_SCUMMVM_CORE") != emuelec_scummvm_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_SCUMMVM_CORE", emuelec_scummvm_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_dreamcast_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SEGA DREAMCAST", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh dreamcast)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_dreamcast_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_REICAST_CORE") == *it); }
+		emu_choices->addWithLabel("SEGA DREAMCAST", emuelec_dreamcast_def);
+		emu_choices->addSaveFunc([emuelec_dreamcast_def] {
+			if (Settings::getInstance()->getString("EmuELEC_REICAST_CORE") != emuelec_dreamcast_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_REICAST_CORE", emuelec_dreamcast_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_gen_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SEGA GEN/MD/CD", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh genesis)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_gen_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_GEN_CORE") == *it); }
+		emu_choices->addWithLabel("SEGA GEN/MD/CD", emuelec_gen_def);
+		emu_choices->addSaveFunc([emuelec_gen_def] {
+			if (Settings::getInstance()->getString("EmuELEC_GEN_CORE") != emuelec_gen_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_GEN_CORE", emuelec_gen_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_sms_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SEGA MS", false);
+         emuchoices.clear();  
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh sms)")); getline(ss, a, ','); )
+        emuchoices.push_back(a);
+    
+		for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_sms_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_SMS_CORE") == *it); }
+		emu_choices->addWithLabel("SEGA MS", emuelec_sms_def);
+		emu_choices->addSaveFunc([emuelec_sms_def] {
+			if (Settings::getInstance()->getString("EmuELEC_SMS_CORE") != emuelec_sms_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_SMS_CORE", emuelec_sms_def->getSelected());
+		});
+	/* END CHOICE */
+	/* CHOICE */
+	auto emuelec_psp_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "SONY PSP", false);
+         emuchoices.clear(); 
+    for(std::stringstream ss(getShOutput(R"(~/.emulationstation/scripts/getcores.sh psp)")); getline(ss, a, ','); ) 
+        emuchoices.push_back(a);
+    
+	    for (auto it = emuchoices.cbegin(); it != emuchoices.cend(); it++) {
+		emuelec_psp_def->add(*it, *it, Settings::getInstance()->getString("EmuELEC_PSP_CORE") == *it); }
+		emu_choices->addWithLabel("SONY PSP", emuelec_psp_def);
+		emu_choices->addSaveFunc([emuelec_psp_def] {
+			if (Settings::getInstance()->getString("EmuELEC_PSP_CORE") != emuelec_psp_def->getSelected())
+				Settings::getInstance()->setString("EmuELEC_PSP_CORE", emuelec_psp_def->getSelected());
+		});
+	/* END CHOICE */
+
+			mWindow->pushGui(emu_choices);
+		});
+#endif
 
 		// Screen ratio choice
 		auto ratio_choice = createRatioOptionList(mWindow, "global");
