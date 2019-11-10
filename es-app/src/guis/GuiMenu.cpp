@@ -203,8 +203,14 @@ void GuiMenu::openEmuELECSettings()
 		Audiodevices.push_back("0,1");
 		Audiodevices.push_back("1,0");
 		Audiodevices.push_back("1,1");
+		
+		auto AudiodevicesS = SystemConf::getInstance()->get("ee_audio_device");
+		if (AudiodevicesS.empty())
+		AudiodevicesS = "auto";
+		
 		for (auto it = Audiodevices.cbegin(); it != Audiodevices.cend(); it++)
-		emuelec_audiodev_def->add(*it, *it, SystemConf::getInstance()->get("ee_audio_device") == *it);
+		emuelec_audiodev_def->add(*it, *it, AudiodevicesS == *it);
+		
 		s->addWithLabel(_("AUDIO DEVICE"), emuelec_audiodev_def);
 		s->addSaveFunc([emuelec_audiodev_def] {
 			if (emuelec_audiodev_def->changed()) {
