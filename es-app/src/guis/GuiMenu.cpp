@@ -1347,6 +1347,8 @@ void GuiMenu::openGamesSettings_batocera()
 	shaders_choices->add(_("RETRO"), "retro", currentShader == "retro");
 	shaders_choices->add(_("ENHANCED"), "enhanced", currentShader == "enhanced"); // batocera 5.23
 	shaders_choices->add(_("CURVATURE"), "curvature", currentShader == "curvature"); // batocera 5.24
+	shaders_choices->add(_("ZFAST"), "zfast", currentShader == "zfast"); // batocera 5.25
+	shaders_choices->add(_("FLATTEN-GLOW"), "flatten-glow", currentShader == "flatten-glow"); // batocera 5.25
 #endif
 	s->addWithLabel(_("SHADERS SET"), shaders_choices);
 
@@ -1362,10 +1364,8 @@ void GuiMenu::openGamesSettings_batocera()
 			SystemConf::getInstance()->saveSystemConf();
 		}
 	});
-#ifdef _ENABLEEMUELEC
-// TODO: Translate
 	// run-ahead
-	auto runahead_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, "RUN-AHEAD FRAMES");
+	auto runahead_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RUN-AHEAD FRAMES"));
 	runahead_enabled->add(_("NO"), "0", SystemConf::getInstance()->get("global.runahead") < "1");
 	runahead_enabled->add("1", "1", SystemConf::getInstance()->get("global.runahead") == "1");
 	runahead_enabled->add("2", "2", SystemConf::getInstance()->get("global.runahead") == "2");
@@ -1373,16 +1373,15 @@ void GuiMenu::openGamesSettings_batocera()
 	runahead_enabled->add("4", "4", SystemConf::getInstance()->get("global.runahead") == "4");
 	runahead_enabled->add("5", "5", SystemConf::getInstance()->get("global.runahead") == "5");
 	runahead_enabled->add("6", "6", SystemConf::getInstance()->get("global.runahead") == "6");
-	s->addWithLabel("RUN-AHEAD FRAMES", runahead_enabled);
+	s->addWithLabel(_("RUN-AHEAD FRAMES"), runahead_enabled);
 
 	// second instance
-	auto secondinstance_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, "SECOND INSTANCE");
+	auto secondinstance_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SECOND INSTANCE"));
 	secondinstance_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.secondinstance") != "1");
 	secondinstance_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.secondinstance") == "1");
-	s->addWithLabel("SECOND INSTANCE", secondinstance_enabled);
-#endif	
+	s->addWithLabel(_("SECOND INSTANCE"), secondinstance_enabled);
 
-#ifndef _ENABLEEMUELEC	
+#ifndef _ENABLEEMUELEC
 	// decorations
 	{		
 		auto sets = GuiMenu::getDecorationsSets(ViewController::get()->getState().getSystem());
@@ -1635,11 +1634,7 @@ void GuiMenu::openGamesSettings_batocera()
 			}, _("NO"), nullptr));
 		});
 	}
-#ifdef _ENABLEEMUELEC
 	s->addSaveFunc([smoothing_enabled, rewind_enabled, shaders_choices, autosave_enabled, runahead_enabled, secondinstance_enabled] 
-#else
-	s->addSaveFunc([smoothing_enabled, rewind_enabled, shaders_choices, autosave_enabled] 
-#endif
 	{
 		if (smoothing_enabled->changed())
 			SystemConf::getInstance()->set("global.smooth", smoothing_enabled->getSelected());
@@ -1649,12 +1644,10 @@ void GuiMenu::openGamesSettings_batocera()
 			SystemConf::getInstance()->set("global.shaderset", shaders_choices->getSelected());
 		if (autosave_enabled->changed())
 			SystemConf::getInstance()->set("global.autosave", autosave_enabled->getSelected());
-#ifdef _ENABLEEMUELEC
 		if (runahead_enabled->changed())
 			SystemConf::getInstance()->set("global.runahead", runahead_enabled->getSelected());
 		if (secondinstance_enabled->changed())
 			SystemConf::getInstance()->set("global.secondinstance", secondinstance_enabled->getSelected());
-#endif 
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
@@ -2974,6 +2967,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
   shaders_choices->add(_("RETRO"), "retro", currentShader == "retro");
   shaders_choices->add(_("ENHANCED"), "enhanced", currentShader == "enhanced"); // batocera 5.23
   shaders_choices->add(_("CURVATURE"), "curvature", currentShader == "curvature"); // batocera 5.24
+  shaders_choices->add(_("ZFAST"), "zfast", currentShader == "zfast"); // batocera 5.25
+  shaders_choices->add(_("FLATTEN-GLOW"), "flatten-glow", currentShader == "flatten-glow"); // batocera 5.25
 #endif
   systemConfiguration->addWithLabel(_("SHADERS SET"), shaders_choices);
 
@@ -2989,10 +2984,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	SystemConf::getInstance()->saveSystemConf();
       }
     });
-#ifdef _ENABLEEMUELEC
-// TODO: Translate
 	// run-ahead
-	auto runahead_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, "RUN-AHEAD FRAMES");
+	auto runahead_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RUN-AHEAD FRAMES"));
 	runahead_enabled->add(_("NO"), "0", SystemConf::getInstance()->get(configName + ".runahead") < "0");
 	runahead_enabled->add("1", "1", SystemConf::getInstance()->get(configName + ".runahead") == "1");
 	runahead_enabled->add("2", "2", SystemConf::getInstance()->get(configName + ".runahead") == "2");
@@ -3000,14 +2993,13 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	runahead_enabled->add("4", "4", SystemConf::getInstance()->get(configName + ".runahead") == "4");
 	runahead_enabled->add("5", "5", SystemConf::getInstance()->get(configName + ".runahead") == "5");
 	runahead_enabled->add("6", "6", SystemConf::getInstance()->get(configName + ".runahead") == "6");
-	systemConfiguration->addWithLabel("RUN-AHEAD FRAMES", runahead_enabled);
+	systemConfiguration->addWithLabel(_("RUN-AHEAD FRAMES"), runahead_enabled);
 
 	// second instance
-	auto secondinstance_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, "SECOND INSTANCE");
+	auto secondinstance_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SECOND INSTANCE"));
 	secondinstance_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get(configName + ".secondinstance") != "1");
 	secondinstance_enabled->add(_("ON"), "1", SystemConf::getInstance()->get(configName + ".secondinstance") == "1");
-	systemConfiguration->addWithLabel("SECOND INSTANCE", secondinstance_enabled);
-#endif	
+	systemConfiguration->addWithLabel(_("SECOND INSTANCE"), secondinstance_enabled);
 
 #ifndef _ENABLEEMUELEC	
   // decorations
@@ -3149,7 +3141,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 #ifdef _ENABLEEMUELEC
 				   [configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, autosave_enabled, shaders_choices, colorizations_choices, fullboot_enabled, emulatedwiimotes_enabled, internalresolution, runahead_enabled, secondinstance_enabled] {
 #else
-				   [configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, videoResolutionMode_choice, emu_choice, core_choice, autosave_enabled, shaders_choices, colorizations_choices, fullboot_enabled, emulatedwiimotes_enabled, internalresolution] {
+				   [configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, videoResolutionMode_choice, emu_choice, core_choice, autosave_enabled, shaders_choices, colorizations_choices, fullboot_enabled, emulatedwiimotes_enabled, internalresolution, runahead_enabled, secondinstance_enabled] {
 #endif
 				     if(ratio_choice->changed()){
 				       SystemConf::getInstance()->set(configName + ".ratio", ratio_choice->getSelected());
@@ -3184,14 +3176,12 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				     if(internalresolution->changed()){
 				       SystemConf::getInstance()->set(configName + ".internalresolution", internalresolution->getSelected());
 				     }
-#ifdef _ENABLEEMUELEC
 					 if(runahead_enabled->changed()){
 				       SystemConf::getInstance()->set(configName + ".runahead", runahead_enabled->getSelected());
 				     }
 					 if(secondinstance_enabled->changed()){
 				       SystemConf::getInstance()->set(configName + ".secondinstance", secondinstance_enabled->getSelected());
 				     }				     
-#endif
 
 				     // the menu GuiMenu::popSystemConfigurationGui is a hack
 				     // if you change any option except emulator and change the emulator, the value is lost
