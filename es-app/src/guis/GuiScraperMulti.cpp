@@ -122,8 +122,9 @@ void GuiScraperMulti::acceptResult(const ScraperSearchResult& result)
 {
 	ScraperSearchParams& search = mSearchQueue.front();
 
-	search.game->metadata.importScrappedMetadata(result.mdl);
-	updateGamelist(search.system);
+	search.game->getMetadata().importScrappedMetadata(result.mdl);
+	saveToGamelistRecovery(search.game);
+	// updateGamelist(search.system);
 
 	mSearchQueue.pop();
 	mCurrentGame++;

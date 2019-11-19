@@ -25,6 +25,7 @@ std::vector<SystemData*> SystemData::sSystemVector;
 SystemData::SystemData(const std::string& name, const std::string& fullName, SystemEnvironmentData* envData, const std::string& themeFolder, std::map<std::string, std::vector<std::string>*>* emulators, bool CollectionSystem) : // batocera
 	mName(name), mFullName(fullName), mEnvData(envData), mThemeFolder(themeFolder), mIsCollectionSystem(CollectionSystem), mIsGameSystem(true)
 {
+	mGameListHash = 0;
 	mGameCount = -1;
 	mSortId = Settings::getInstance()->getInt(getName() + ".sort");
 	mGridSizeOverride = Vector2f(0, 0);
@@ -36,7 +37,7 @@ SystemData::SystemData(const std::string& name, const std::string& fullName, Sys
 	if(!CollectionSystem)
 	{
 		mRootFolder = new FolderData(mEnvData->mStartPath, this);
-		mRootFolder->metadata.set("name", mFullName);
+		mRootFolder->getMetadata().set("name", mFullName);
 
 		std::unordered_map<std::string, FileData*> fileMap;
 
@@ -49,11 +50,6 @@ SystemData::SystemData(const std::string& name, const std::string& fullName, Sys
 
 		if(!Settings::getInstance()->getBool("IgnoreGamelist") && mName != "imageviewer")
 			parseGamelist(this, fileMap);
-		/*
-		if (mSortId >= 0 && mSortId < FileSorts::getSortTypes().size())
-			mRootFolder->sort(FileSorts::getSortTypes().at(mSortId));
-		else
-			mRootFolder->sort(FileSorts::getSortTypes().at(0));*/
 	}
 	else
 	{
@@ -509,6 +505,26 @@ void SystemData::writeExampleConfig(const std::string& path)
 	file.close();
 
 	LOG(LogError) << "Example config written!  Go read it at \"" << path << "\"!";
+}
+
+bool SystemData::hasDirtySystems()
+{
+	bool saveOnExit = !Settings::getInstance()->getBool("IgnoreGamelist") && Settings::getInstance()->getBool("SaveGamelistsOnExit");
+	if (!saveOnExit)
+		return false;
+
+	for (unsigned int i = 0; i < sSystemVector.size(); i++)
+	{
+		SystemData* pData = sSystemVector.at(i);
+		if (pData->mIsCollectionSystem)
+			continue;
+
+		
+		if (hasDirtyFile(pData))
+			return true;
+	}
+
+	return false;
 }
 
 void SystemData::deleteSystems()

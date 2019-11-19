@@ -26,7 +26,7 @@
 #include "ApiSystem.h"
 #include "AudioManager.h"
 #include "NetworkThread.h"
-
+#include "scrapers/ThreadedScraper.h"
 #include <FreeImage.h>
 
 #ifdef WIN32
@@ -602,9 +602,13 @@ int main(int argc, char* argv[])
 		Log::flush();
 	}
 
+	ThreadedScraper::stop();
+
 	while(window.peekGui() != ViewController::get())
 		delete window.peekGui();
-	window.deinit();
+
+	if (SystemData::hasDirtySystems())
+		window.renderLoadingScreen(_("SAVING METADATAS. PLEASE WAIT..."));
 
 	MameNames::deinit();
 	CollectionSystemManager::deinit();
@@ -614,6 +618,8 @@ int main(int argc, char* argv[])
 #ifdef FREEIMAGE_LIB
 	FreeImage_DeInitialise();
 #endif
+
+	window.deinit();
 
 	LOG(LogInfo) << "EmulationStation cleanly shutting down.";
 
