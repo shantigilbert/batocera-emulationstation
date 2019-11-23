@@ -1461,7 +1461,7 @@ void GuiMenu::openControllersSettings_batocera()
 	});
 
 	ComponentListRow row;
-#ifndef _ENABLEEMUELEC
+
 	// Here we go; for each player
 	std::list<int> alreadyTaken = std::list<int>();
 
@@ -1574,7 +1574,7 @@ void GuiMenu::openControllersSettings_batocera()
 		// this is dependant of this configuration, thus update it
 		InputManager::getInstance()->computeLastKnownPlayersDeviceIndexes();
 	});
-#endif
+
 
 	// CONTROLLER ACTIVITY
 	auto activity = std::make_shared<SwitchComponent>(mWindow);
