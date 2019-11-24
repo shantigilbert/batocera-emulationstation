@@ -243,7 +243,7 @@ std::string DateTimeEditComponent::getDisplayString(DisplayMode mode) const
 	}
 	
 	if(mTime.getTime() == 0)
-		return "unknown";
+		return "";
 
 	return Utils::Time::timeToString(mTime, fmt);
 }
