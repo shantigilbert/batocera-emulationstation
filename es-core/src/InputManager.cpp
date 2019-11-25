@@ -688,7 +688,11 @@ std::string InputManager::configureEmulators() {
   for (int player = 0; player < MAX_PLAYERS; player++) {
     InputConfig * playerInputConfig = playerJoysticks[player];
     if(playerInputConfig != NULL){
+#ifdef _ENABLEEMUELEC
+      command << "-p" << player+1 << "index " <<  playerInputConfig->getDeviceIndex() << " -p" << player+1 << "guid " << playerInputConfig->getDeviceGUIDString() << " ";
+#else
       command << "-p" << player+1 << "index " <<  playerInputConfig->getDeviceIndex() << " -p" << player+1 << "guid " << playerInputConfig->getDeviceGUIDString() << " -p" << player+1 << "name \"" <<  playerInputConfig->getDeviceName() << "\" -p" << player+1 << "nbaxes " << playerInputConfig->getDeviceNbAxes() << " ";
+#endif
     }
   }
   LOG(LogInfo) << "Configure emulators command : " << command.str().c_str();
