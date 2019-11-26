@@ -21,6 +21,10 @@
 #include "AudioManager.h"
 #include "FileSorts.h"
 
+#ifdef _ENABLEEMUELEC
+#include "ApiSystem.h"
+#endif
+
 ViewController* ViewController::sInstance = NULL;
 
 ViewController* ViewController::get()
@@ -464,7 +468,16 @@ bool ViewController::input(InputConfig* config, Input input)
 
 
 #ifdef _ENABLEEMUELEC
+/* use the POWER KEY to turn off EmuELEC, specially useful for GTKING-PRO */
         if(config->isConfigured() == false) {
+		if(input.type == TYPE_KEY && input.value && input.id == SDLK_POWER) {
+		if (ApiSystem::getInstance()->shutdown() != 0) {
+				LOG(LogWarning) <<
+					"Shutdown terminated with non-zero result!";
+			}
+	    return true;
+	  }	
+	
 	  if(input.type == TYPE_BUTTON || input.type == TYPE_KEY) {
 	    mWindow->pushGui(new GuiDetectDevice(mWindow, false, NULL));
 	    return true;
