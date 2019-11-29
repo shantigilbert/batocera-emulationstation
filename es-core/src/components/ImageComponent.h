@@ -23,7 +23,7 @@ public:
 	ImageComponent(Window* window, bool forceLoad = false, bool dynamic = true);
 	virtual ~ImageComponent();
 
-	std::string getValue() const override { return "ImageComponent"; }
+	std::string getValue() const override { return mPath; }
 
 	void setDefaultImage(std::string path);
 
@@ -114,6 +114,9 @@ public:
 	virtual void update(int deltaTime);
 
 	void setPlaylist(std::shared_ptr<IPlaylist> playList);
+
+	std::string getImagePath() { return mPath; }
+	bool isTiled();
 
 private:
 	Vector2f mTargetSize;

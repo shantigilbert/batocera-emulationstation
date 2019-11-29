@@ -28,10 +28,11 @@ SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(wind
 	mExtrasFadeOpacity = 0.0f;
 	launchKodi = false; // batocera
 	mScreensaverActive = false;
-	mDisable = false;
+	mDisable = false;	
 	mShowing = false;
 	mLastCursor = 0;
 	mStaticBackground = nullptr;
+	mExtrasFadeOldCursor = -1;
 	
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
 	populate();
@@ -230,17 +231,17 @@ void SystemView::populate()
 			// make background extras
 			e.data.backgroundExtras = ThemeData::makeExtras((*it)->getTheme(), "system", mWindow);
 
-			for (auto bx : e.data.backgroundExtras)
+			for (auto extra : e.data.backgroundExtras)
 			{
-				if (bx->getValue() == "VideoComponent")
+				if (extra->isKindOf<VideoComponent>())
 				{
-					auto elem = (*it)->getTheme()->getElement("system", bx->getTag(), "video");
+					auto elem = (*it)->getTheme()->getElement("system", extra->getTag(), "video");
 					if (elem != nullptr && elem->has("path") && Utils::String::startsWith(elem->get<std::string>("path"), "{random"))
-						((VideoComponent*)bx)->setPlaylist(std::make_shared<SystemRandomPlaylist>(*it, SystemRandomPlaylist::VIDEO));
+						((VideoComponent*)extra)->setPlaylist(std::make_shared<SystemRandomPlaylist>(*it, SystemRandomPlaylist::VIDEO));
 				}
-				else if (bx->getValue() == "ImageComponent")
+				else if (extra->isKindOf<ImageComponent>())
 				{
-					auto elem = (*it)->getTheme()->getElement("system", bx->getTag(), "image");
+					auto elem = (*it)->getTheme()->getElement("system", extra->getTag(), "image");
 					if (elem != nullptr && elem->has("path") && Utils::String::startsWith(elem->get<std::string>("path"), "{random"))
 					{
 						std::string src = elem->get<std::string>("path");
@@ -252,7 +253,7 @@ void SystemView::populate()
 						else if (src == "{random:marquee}")
 							type = SystemRandomPlaylist::MARQUEE;
 
-						((ImageComponent*)bx)->setPlaylist(std::make_shared<SystemRandomPlaylist>(*it, type));
+						((ImageComponent*)extra)->setPlaylist(std::make_shared<SystemRandomPlaylist>(*it, type));
 					}
 				}
 			}
@@ -526,6 +527,13 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 	cancelAnimation(2);
 
 	std::string transition_style = Settings::getInstance()->getString("TransitionStyle");
+	if (transition_style == "auto")
+	{
+		if (mCarousel.defaultTransition == "instant" || mCarousel.defaultTransition == "fade" || mCarousel.defaultTransition == "slide")
+			transition_style = mCarousel.defaultTransition;
+		else
+			transition_style = "slide";
+	}
 
 	int systemInfoDelay = mCarousel.systemInfoDelay;
 
@@ -571,6 +579,9 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 	if (mLastCursor == mCursor)
 		return;
 
+	if (!mCarousel.scrollSound.empty())
+		Sound::get(mCarousel.scrollSound)->play();
+
 	int oldCursor = mLastCursor;
 	mLastCursor = mCursor;
 
@@ -580,8 +591,10 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 	{
 		float startExtrasFade = mExtrasFadeOpacity;
 		anim = new LambdaAnimation(
-			[this, startExtrasFade, startPos, endPos, posMax, move_carousel](float t)
+			[this, startExtrasFade, startPos, endPos, posMax, move_carousel, oldCursor](float t)
 		{
+			mExtrasFadeOldCursor = oldCursor;
+
 			t -= 1;
 			float f = Math::lerp(startPos, endPos, t*t*t + 1);
 			if(f < 0)
@@ -592,15 +605,23 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 			this->mCamOffset = move_carousel ? f : endPos;
 
 			t += 1;
+			/*
 			if(t < 0.3f)
 				this->mExtrasFadeOpacity = Math::lerp(0.0f, 1.0f, t / 0.3f + startExtrasFade);
 			else if(t < 0.7f)
 				this->mExtrasFadeOpacity = 1.0f;
 			else
 				this->mExtrasFadeOpacity = Math::lerp(1.0f, 0.0f, (t - 0.7f) / 0.3f);
+				*/
 
-			if(t > 0.5f)
-				this->mExtrasCamOffset = endPos;
+			if (t < 0.3f)
+				this->mExtrasFadeOpacity = 1.0f;
+			else if (t >= 0.7f)
+				this->mExtrasFadeOpacity = 0.0f;
+			else
+				this->mExtrasFadeOpacity = Math::lerp(1.0f, 0.0f, (t - 0.3f) / 0.4f);
+
+			this->mExtrasCamOffset = endPos;
 
 		}, 500);
 	} else if (transition_style == "slide") {
@@ -643,6 +664,8 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 
 	setAnimation(anim, 0, [this]
 	{
+		mExtrasFadeOldCursor = -1;
+
 		for (int i = 0; i < mEntries.size(); i++)
 			if (i != mCursor)
 				activateExtras(i, false);
@@ -652,7 +675,7 @@ void SystemView::onCursorChanged(const CursorState& /*state*/)
 
 void SystemView::render(const Transform4x4f& parentTrans)
 {
-	if(size() == 0)
+	if (size() == 0 || !mVisible)
 		return;  // nothing to render
 
 	Transform4x4f trans = getTransform() * parentTrans;
@@ -889,6 +912,8 @@ void SystemView::renderInfoBar(const Transform4x4f& trans)
 	mSystemInfo.render(trans);
 }
 
+#include <unordered_set>
+
 // Draw background extras
 void SystemView::renderExtras(const Transform4x4f& trans, float lower, float upper)
 {
@@ -898,6 +923,68 @@ void SystemView::renderExtras(const Transform4x4f& trans, float lower, float upp
 	int bufferIndex = getScrollingVelocity() + 1;
 
 	Renderer::pushClipRect(Vector2i::Zero(), Vector2i((int)mSize.x(), (int)mSize.y()));
+	
+	std::unordered_set<std::string> allPaths;
+	std::unordered_set<std::string> paths;
+	std::unordered_set<std::string> allValues;
+	std::unordered_set<std::string> values;
+
+	if (mExtrasFadeOpacity && mExtrasFadeOldCursor >= 0 && mExtrasFadeOldCursor < mEntries.size() && mExtrasFadeOldCursor != mCursor)
+	{
+		// ExtrasFadeOpacity : Collect images paths & text values		
+		// paths & values must have only the elements that are not common 
+		if (mCursor >= 0 && mCursor < mEntries.size())
+		{
+			for (GuiComponent* extra : mEntries.at(mCursor).data.backgroundExtras)
+			{
+				if (extra->getZIndex() < lower || extra->getZIndex() >= upper)
+					continue;
+
+				std::string value = extra->getValue();
+				if (extra->isKindOf<ImageComponent>())
+					paths.insert(value);
+				else if (extra->isKindOf<TextComponent>())
+					values.insert(value);
+			}
+
+			allValues = values;
+			allPaths = paths;
+
+			for (GuiComponent* extra : mEntries.at(mExtrasFadeOldCursor).data.backgroundExtras)
+			{
+				if (extra->getZIndex() < lower || extra->getZIndex() >= upper)
+					continue;
+
+				std::string value = extra->getValue();
+				if (extra->isKindOf<ImageComponent>())
+					paths.erase(value);
+				else if (extra->isKindOf<TextComponent>())
+					values.erase(value);
+			}
+		}
+
+		Renderer::pushClipRect(Vector2i((int)trans.translation()[0], (int)trans.translation()[1]), Vector2i((int)mSize.x(), (int)mSize.y()));
+
+		// ExtrasFadeOpacity : Render only items with different paths or values
+		for (GuiComponent* extra : mEntries.at(mExtrasFadeOldCursor).data.backgroundExtras)
+		{
+			if (extra->getZIndex() < lower || extra->getZIndex() >= upper)
+				continue;
+			
+			std::string value = extra->getValue();
+			if (extra->isKindOf<ImageComponent>())
+			{
+				if (allPaths.find(value) == allPaths.cend())
+					extra->render(trans);
+				else if (((ImageComponent*)extra)->isTiled() && extra->getPosition() == Vector3f::Zero() && extra->getSize() == Vector2f(Renderer::getScreenWidth(), Renderer::getScreenHeight()))
+					extra->render(trans);
+			}
+			else if (extra->isKindOf<TextComponent>() && allValues.find(value) == allValues.cend())
+				extra->render(trans);
+		}
+
+		Renderer::popClipRect();
+	}
 
 	for (int i = extrasCenter + logoBuffersLeft[bufferIndex]; i <= extrasCenter + logoBuffersRight[bufferIndex]; i++)
 	{
@@ -906,6 +993,9 @@ void SystemView::renderExtras(const Transform4x4f& trans, float lower, float upp
 			index += (int)mEntries.size();
 		while (index >= (int)mEntries.size())
 			index -= (int)mEntries.size();
+
+		if (mExtrasFadeOpacity && (index == mExtrasFadeOldCursor || index != mCursor))
+			continue;
 
 		//Only render selected system when not showing
 		if (mShowing || index == mCursor)
@@ -916,15 +1006,52 @@ void SystemView::renderExtras(const Transform4x4f& trans, float lower, float upp
 			else
 				extrasTrans.translate(Vector3f(0, (i - mExtrasCamOffset) * mSize.y(), 0));
 
-			Renderer::pushClipRect(Vector2i((int)extrasTrans.translation()[0], (int)extrasTrans.translation()[1]),
-								   Vector2i((int)mSize.x(), (int)mSize.y()));
-			SystemViewData data = mEntries.at(index).data;
-			for (unsigned int j = 0; j < data.backgroundExtras.size(); j++) {
-				GuiComponent *extra = data.backgroundExtras[j];
-				if (extra->getZIndex() >= lower && extra->getZIndex() < upper) {
-					extra->render(extrasTrans);
+			if (mExtrasFadeOpacity && mExtrasFadeOldCursor == index)
+				extrasTrans = trans;
+
+			Renderer::pushClipRect(Vector2i((int)extrasTrans.translation()[0], (int)extrasTrans.translation()[1]),Vector2i((int)mSize.x(), (int)mSize.y()));
+
+			for (GuiComponent* extra : mEntries.at(index).data.backgroundExtras)
+			{
+				if (extra->getZIndex() < lower || extra->getZIndex() >= upper)
+					continue;
+								
+				// ExtrasFadeOpacity : Apply opacity only on elements that are not common with the original view
+				if (mExtrasFadeOpacity)
+				{
+					std::string value = extra->getValue();
+					if (extra->isKindOf<ImageComponent>())
+					{
+						if (paths.find(value) != paths.cend())
+						{
+							auto opa = extra->getOpacity();
+							extra->setOpacity((1.0f - mExtrasFadeOpacity) * opa);
+							extra->render(extrasTrans);
+							extra->setOpacity(opa);
+							continue;
+						}								
+						else if (((ImageComponent*)extra)->isTiled() && extra->getPosition() == Vector3f::Zero() && extra->getSize() == Vector2f(Renderer::getScreenWidth(), Renderer::getScreenHeight()))
+						{
+							auto opa = extra->getOpacity();
+							extra->setOpacity((1.0f - mExtrasFadeOpacity) * opa);
+							extra->render(extrasTrans);
+							extra->setOpacity(opa);
+							continue;
+						}
+					}
+					else if (extra->isKindOf<TextComponent>() && values.find(value) != values.cend())
+					{
+						auto opa = extra->getOpacity();
+						extra->setOpacity((1.0f - mExtrasFadeOpacity) * opa);
+						extra->render(extrasTrans);
+						extra->setOpacity(opa);
+						continue;
+					}
 				}
+				
+				extra->render(extrasTrans);				
 			}
+
 			Renderer::popClipRect();
 		}
 	}
@@ -938,7 +1065,7 @@ void SystemView::renderFade(const Transform4x4f& trans)
 	{
 		unsigned int fadeColor = 0x00000000 | (unsigned char)(mExtrasFadeOpacity * 255);
 		Renderer::setMatrix(trans);
-		Renderer::drawRect(0.0f, 0.0f, mSize.x(), mSize.y(), fadeColor, fadeColor);
+		//Renderer::drawRect(0.0f, 0.0f, mSize.x(), mSize.y(), fadeColor, fadeColor);
 	}
 }
 
@@ -967,6 +1094,8 @@ void  SystemView::getDefaultElements(void)
 	mCarousel.maxLogoCount = 3;
 	mCarousel.zIndex = 40;
 	mCarousel.systemInfoDelay = 2000;
+	mCarousel.scrollSound = "";
+	mCarousel.defaultTransition = "";
 
 	// System Info Bar
 	mSystemInfo.setSize(mSize.x(), mSystemInfo.getFont()->getLetterHeight()*2.2f);
@@ -1043,17 +1172,24 @@ void SystemView::getCarouselFromTheme(const ThemeData::ThemeElement* elem)
 
 	if (elem->has("systemInfoDelay"))
 		mCarousel.systemInfoDelay = elem->get<float>("systemInfoDelay");
-	
+
+	if (elem->has("scrollSound"))
+		mCarousel.scrollSound = elem->get<std::string>("scrollSound");
+
+	if (elem->has("defaultTransition"))
+		mCarousel.defaultTransition = elem->get<std::string>("defaultTransition");
 }
 
 void SystemView::onShow()
 {
+	GuiComponent::onShow();	
 	mShowing = true;
 	activateExtras(mCursor);
 }
 
 void SystemView::onHide()
 {
+	GuiComponent::onHide();
 	mShowing = false;
 	updateExtras([this](GuiComponent* p) { p->onHide(); });
 }

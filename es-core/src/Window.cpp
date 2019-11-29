@@ -19,6 +19,7 @@
 #include <mutex>
 #include "components/AsyncNotificationComponent.h"
 #include "components/ControllerActivityComponent.h"
+#include "guis/GuiMsgBox.h"
 #ifdef _ENABLEEMUELEC
 #include "utils/FileSystemUtil.h"
 #endif
@@ -453,7 +454,7 @@ void Window::render()
 		bottom->render(transform);
 		if(bottom != top)
 		{
-			if (mTransiting == nullptr && top->getValue() == "GuiMsgBox" && mGuiStack.size() > 2)
+			if (mTransiting == nullptr && top->isKindOf<GuiMsgBox>() && mGuiStack.size() > 2)
 			{
 				auto& middle = mGuiStack.at(mGuiStack.size()-2);
 				if (middle != bottom)
