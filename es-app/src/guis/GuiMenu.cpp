@@ -153,7 +153,7 @@ void GuiMenu::openEmuELECSettings()
 		videomode.push_back("Custom");
 		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
-		s->addWithLabel("Video Mode", emuelec_video_mode);
+		s->addWithLabel(_("Video Mode"), emuelec_video_mode);
 	   	s->addSaveFunc([emuelec_video_mode, window] {
 			if (emuelec_video_mode->changed()) {
 			std::string selectedVideoMode = emuelec_video_mode->getSelected();
@@ -164,7 +164,7 @@ void GuiMenu::openEmuELECSettings()
 		}
 			msg += _("Do you want to proceed?");
 			window->pushGui(new GuiMsgBox(window, msg,
-				"YES", [selectedVideoMode] {
+				_("YES"), [selectedVideoMode] {
 					runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode");
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
@@ -173,7 +173,7 @@ void GuiMenu::openEmuELECSettings()
 				if(Utils::FileSystem::exists("/ee_s905")) {
 					runSystemCommand("systemctl restart emustation"); 
 				}
-			}, "NO",nullptr));
+			}, _("NO"),nullptr));
 		} else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
 				runSystemCommand("echo $(cat /storage/.config/EE_VIDEO_MODE) > /sys/class/display/mode");
@@ -309,10 +309,10 @@ void GuiMenu::openEmuELECSettings()
 	danger_zone->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING ALL CONFIGURATIONS WILL BE RESET! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), "YES",
+		window->pushGui(new GuiMsgBox(window, _("WARNING ALL CONFIGURATIONS WILL BE RESET! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh ALL");
-				}, "NO", nullptr));
+				}, _("NO"), nullptr));
 	});
 	row.addElement(std::make_shared<TextComponent>(window, _("RESET SYSTEM TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	danger_zone->addRow(row);
@@ -886,9 +886,9 @@ void GuiMenu::openSystemSettings_batocera()
 	s->addSaveFunc([language_choice, window] {
 			if (language_choice->changed()) {
 			std::string selectedLanguage = language_choice->getSelected();
-			std::string msg = "You are about to set EmuELEC Language to:\n" + selectedLanguage + "\n";
-			msg += "Emulationstation will restart.\n";
-			msg += "Do you want to proceed?";
+			std::string msg = _("You are about to set EmuELEC Language to:") +"\n" +  selectedLanguage + "\n";
+			msg += _("Emulationstation will restart.")+"\n";
+			msg += _("Do you want to proceed?");
 			window->pushGui(new GuiMsgBox(window, msg,
 				"YES", [selectedLanguage] {
 			SystemConf::getInstance()->set("system.language",
@@ -2446,8 +2446,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool forceWin32Menu)
 	}
 	
 #ifdef _ENABLEEMUELEC
-	s->addEntry("RESTART EMULATIONSTATION", false, [window] {
-		window->pushGui(new GuiMsgBox(window, "REALLY RESTART EMULATIONSTATION?", _("YES"),
+	s->addEntry(_("RESTART EMULATIONSTATION"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
 			[] {
     		   /*runSystemCommand("systemctl restart emustation.service");*/
     		   Scripting::fireEvent("quit", "restart");
@@ -2455,8 +2455,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool forceWin32Menu)
 		}, _("NO"), nullptr));
 	}, "iconRestart");
 
-	s->addEntry("START RETROARCH", false, [window] {
-		window->pushGui(new GuiMsgBox(window, "REALLY START RETROARCH?", _("YES"),
+	s->addEntry(_("START RETROARCH"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY START RETROARCH?"), _("YES"),
 			[] {
 			remove("/var/lock/start.games");
             runSystemCommand("touch /var/lock/start.retro");
@@ -2466,8 +2466,8 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool forceWin32Menu)
 		}, _("NO"), nullptr));
 	}, "iconControllers");
 	
-	s->addEntry("REBOOT FROM NAND", false, [window] {
-		window->pushGui(new GuiMsgBox(window, "REALLY REBOOT FROM NAND?", _("YES"),
+	s->addEntry(_("REBOOT FROM NAND"), false, [window] {
+		window->pushGui(new GuiMsgBox(window, _("REALLY REBOOT FROM NAND?"), _("YES"),
 			[] {
 			Scripting::fireEvent("quit", "nand");
 			runSystemCommand("rebootfromnand");
