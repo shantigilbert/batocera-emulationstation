@@ -135,7 +135,7 @@ void GuiMenu::openEmuELECSettings()
 
 	Window* window = mWindow;
 	std::string a;
-	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "Video Mode", false);
+	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
         std::vector<std::string> videomode;
   /* for(std::stringstream ss(getShOutput(R"(~/.config/emuelec/scripts/get_supported_resolutions.sh)")); getline(ss, a, ','); ) {
         videomode.push_back(a);
@@ -153,7 +153,7 @@ void GuiMenu::openEmuELECSettings()
 		videomode.push_back("Custom");
 		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
-		s->addWithLabel(_("Video Mode"), emuelec_video_mode);
+		s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
 	   	s->addSaveFunc([emuelec_video_mode, window] {
 			if (emuelec_video_mode->changed()) {
 			std::string selectedVideoMode = emuelec_video_mode->getSelected();
@@ -162,7 +162,7 @@ void GuiMenu::openEmuELECSettings()
 			if(Utils::FileSystem::exists("/ee_s905")) {
 			msg += _("Emulationstation will restart") + ".\n";
 		}
-			msg += _("Do you want to proceed?");
+			msg += _("Do you want to proceed ?");
 			window->pushGui(new GuiMsgBox(window, msg,
 				_("YES"), [selectedVideoMode] {
 					runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode");
@@ -300,7 +300,7 @@ void GuiMenu::openEmuELECSettings()
 	ComponentListRow row;
 	GuiSettings *danger_zone = new GuiSettings(mWindow, _("DANGER ZONE!").c_str());
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\n RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
+		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\nRESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh EMUS");
 				}, _("NO"), nullptr));
@@ -309,7 +309,7 @@ void GuiMenu::openEmuELECSettings()
 	danger_zone->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING ALL CONFIGURATIONS WILL BE RESET! \n Update, downloads, themes, and roms folder will not be affected.\n\n RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
+		window->pushGui(new GuiMsgBox(window, _("WARNING: ALL CONFIGURATIONS WILL BE RESET!\nUpdate, downloads, themes, and roms folder will not be affected.\n\nRESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh ALL");
 				}, _("NO"), nullptr));
@@ -887,8 +887,8 @@ void GuiMenu::openSystemSettings_batocera()
 			if (language_choice->changed()) {
 			std::string selectedLanguage = language_choice->getSelected();
 			std::string msg = _("You are about to set EmuELEC Language to:") +"\n" +  selectedLanguage + "\n";
-			msg += _("Emulationstation will restart.")+"\n";
-			msg += _("Do you want to proceed?");
+			msg += _("Emulationstation will restart")+"\n";
+			msg += _("Do you want to proceed ?");
 			window->pushGui(new GuiMsgBox(window, msg,
 				"YES", [selectedLanguage] {
 			SystemConf::getInstance()->set("system.language",

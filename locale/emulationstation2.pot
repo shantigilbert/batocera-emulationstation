@@ -1296,10 +1296,22 @@ msgstr ""
 msgid "LEFT ANALOG UP"
 msgstr ""
 
+msgid "LEFT ANALOG RIGHT"
+msgstr ""
+
+msgid "LEFT ANALOG DOWN"
+msgstr ""
+
 msgid "LEFT ANALOG LEFT"
 msgstr ""
 
 msgid "RIGHT ANALOG UP"
+msgstr ""
+
+msgid "RIGHT ANALOG DOWN"
+msgstr ""
+
+msgid "RIGHT ANALOG RIGHT"
 msgstr ""
 
 msgid "RIGHT ANALOG LEFT"
@@ -1418,4 +1430,69 @@ msgid "WORKING..."
 msgstr ""
 
 msgid "up/down"
+msgstr ""
+
+msgid "DANGER ZONE!"
+msgstr ""
+
+msgid "You are about to set EmuELEC resolution to"
+msgstr ""
+
+msgid "Emulationstation will restart"
+msgstr ""
+
+msgid "AUDIO DEVICE"
+msgstr ""
+
+msgid "ENABLE SSH"
+msgstr ""
+
+msgid "START AT BOOT"
+msgstr ""
+
+msgid "ENABLE RA BEZELS"
+msgstr ""
+
+msgid "ENABLE RA SPLASH"
+msgstr ""
+
+msgid "ALWAYS SHOW BOOT VIDEO"
+msgstr ""
+
+msgid ""
+"WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\n"
+"RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"
+msgstr ""
+
+msgid "RESET EmuELEC EMULATORS TO DEFAULT CONFIG"
+msgstr ""
+
+msgid ""
+"WARNING: ALL CONFIGURATIONS WILL BE RESET!\n"
+"Update, downloads, themes, and roms folder will not be affected.\n\n"
+"RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"
+msgstr ""
+
+msgid "RESET SYSTEM TO DEFAULT CONFIG"
+msgstr ""
+
+msgid "You are about to set EmuELEC Language to:"
+msgstr ""
+
+msgid "RESTART EMULATIONSTATION"
+msgstr ""
+
+msgid "REALLY RESTART EMULATIONSTATION?"
+msgstr ""
+
+msgid "REALLY START RETROARCH?"
+msgstr ""
+
+msgid "START RETROARCH"
+msgstr ""
+
+msgid "REALLY REBOOT FROM NAND?"
+msgstr ""
+
+msgid "REBOOT FROM NAND"
 msgstr ""
