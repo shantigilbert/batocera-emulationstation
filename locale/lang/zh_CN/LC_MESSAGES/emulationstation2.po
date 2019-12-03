@@ -170,7 +170,7 @@ msgid "TITLE SCREENSHOT"
 msgstr "标题截图"
 
 msgid "MIX"
-msgstr "混合"
+msgstr "混合预览图"
 
 msgid "BOX SOURCE"
 msgstr "封面数据"
@@ -179,10 +179,10 @@ msgid "NONE"
 msgstr "无"
 
 msgid "BOX 2D"
-msgstr "2D 盒子"
+msgstr "2D 盒子封面"
 
 msgid "BOX 3D"
-msgstr "3D 盒子"
+msgstr "3D 盒子封面"
 
 msgid "LOGO SOURCE"
 msgstr "LOGO数据"
@@ -275,10 +275,10 @@ msgid "PARSE GAMESLISTS ONLY"
 msgstr "仅分析游戏列表"
 
 msgid "SEARCH FOR LOCAL ART"
-msgstr "在磁盘上查找图形"
+msgstr "本地查找游戏图片和视频"
 
 msgid "USE RETROARCH RGUI MENU"
-msgstr ""
+msgstr "使用RETROARCH RGUI菜单"
 
 msgid "LOG LEVEL"
 msgstr "日志级别"
@@ -326,7 +326,7 @@ msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
 msgstr "需要重新启动系统才能应用新配置"
 
 msgid "AUDIO OUTPUT"
-msgstr ""
+msgstr "音频输出"
 
 msgid "POWER SAVER MODES"
 msgstr "省电模式"
@@ -362,19 +362,19 @@ msgid "ROOT PASSWORD"
 msgstr "管理员密码"
 
 msgid "LATENCY REDUCTION"
-msgstr ""
+msgstr "降低延迟"
 
 msgid "RUN-AHEAD FRAMES"
-msgstr ""
+msgstr "提前帧数"
 
 msgid "AUTO"
 msgstr "自动"
 
 msgid "USE RUN-AHEAD FRAMES"
-msgstr ""
+msgstr "使用提前帧"
 
 msgid "RUN-AHEAD USE SECOND INSTANCE"
-msgstr ""
+msgstr "双重提前帧"
 
 msgid "ON"
 msgstr "开"
@@ -449,7 +449,7 @@ msgid "AUTOMATIC SCREENSHOT"
 msgstr "自动截图"
 
 msgid "PER SYSTEM ADVANCED CONFIGURATION"
-msgstr ""
+msgstr "每种系统的高级设置"
 
 msgid "MISSING BIOS"
 msgstr "缺失的BIOS"
@@ -644,7 +644,7 @@ msgid "MANUAL SCRAPER"
 msgstr "手动抓取元数据"
 
 msgid "LAUNCH SCREENSAVER"
-msgstr ""
+msgstr "启动屏保"
 
 msgid "RESTART SYSTEM"
 msgstr "重启"
@@ -786,13 +786,13 @@ msgid_plural "%i GAMES SKIPPED."
 msgstr[0] "跳过了 %i 个游戏。"
 
 msgid "INSTALL BEZELS"
-msgstr "安装框架"
+msgstr "安装边框"
 
 msgid "UNINSTALL BEZELS"
-msgstr "卸载框架"
+msgstr "卸载边框"
 
 msgid "INSTALL THE BEZEL PROJECT"
-msgstr "安装框架项目"
+msgstr "安装边框项目"
 
 msgid "SELECT SYSTEM WHERE BEZELS WILL BE (RE)INSTALLED"
 msgstr "选择安装或重新安装边框的系统"
@@ -802,13 +802,13 @@ msgid "'%s' ADDED TO DOWNLOAD QUEUE"
 msgstr "将 '%s' 添加到下载队列"
 
 msgid "UNINSTALL THE BEZEL PROJECT"
-msgstr "卸载框架项目"
+msgstr "卸载边框项目"
 
 msgid "SELECT SYSTEM WHERE BEZELS WILL BE REMOVED"
-msgstr "选择移除框架的游戏平台"
+msgstr "选择移除边框的游戏平台"
 
 msgid "BEZELS DELETED SUCCESSFULLY"
-msgstr "框架删除程控"
+msgstr "边框删除成功"
 
 msgid "SWAP IMAGE AFTER (SECS)"
 msgstr "图像替换 (SECS)"
@@ -1081,7 +1081,7 @@ msgid "SCRAPE FAILED : THE APPLICATION HAS BEEN BLACKLISTED"
 msgstr "抓取失败 : 抓取请求被列入黑名单"
 
 msgid "SCRAPE FAILED : SCRAP LIMIT REACHED TODAY"
-msgstr ""
+msgstr "抓取失败 : 今日配额已用完"
 
 msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
 msgstr "抓取完成。更新游戏列表以应用更改。"
@@ -1110,7 +1110,7 @@ msgid "Times played"
 msgstr "游玩次数"
 
 msgid "No Entries Found"
-msgstr ""
+msgstr "未找到任何可用项"
 
 msgid "LAUNCH"
 msgstr "启动"
@@ -1185,10 +1185,10 @@ msgid "SYSTEM, DESCENDING"
 msgstr "系统 (降序)"
 
 msgid "FILE CREATION DATE, ASCENDING"
-msgstr ""
+msgstr "文件创建日期 (升序)"
 
 msgid "FILE CREATION DATE, DESCENDING"
-msgstr ""
+msgstr "文件创建日期 (降序)"
 
 msgid "DOWNLOADING"
 msgstr "下载中"
@@ -1224,7 +1224,7 @@ msgid "Done."
 msgstr "完成。"
 
 msgid "SAVING METADATAS. PLEASE WAIT..."
-msgstr ""
+msgstr "正在保存数据，请稍候……"
 
 msgid "UPDATE AVAILABLE"
 msgstr "发现可用更新"
@@ -1245,7 +1245,7 @@ msgid "4 players"
 msgstr "四人游戏"
 
 msgid "never played"
-msgstr ""
+msgstr "未曾玩过的"
 
 msgid "collections"
 msgstr "合辑"
@@ -1299,11 +1299,23 @@ msgstr "左"
 msgid "RIGHT"
 msgstr "右"
 
+msgid "LEFT ANALOG RIGHT"
+msgstr "左侧类比摇杆 右"
+
+msgid "LEFT ANALOG DOWN"
+msgstr "左侧类比摇杆 下"
+
 msgid "LEFT ANALOG UP"
 msgstr "左侧类比摇杆 上"
 
 msgid "LEFT ANALOG LEFT"
 msgstr "左侧类比摇杆 左"
+
+msgid "RIGHT ANALOG DOWN"
+msgstr "右侧类比摇杆 下"
+
+msgid "RIGHT ANALOG RIGHT"
+msgstr "右侧类比摇杆 右"
 
 msgid "RIGHT ANALOG UP"
 msgstr "右侧类比摇杆 上"
@@ -1426,6 +1438,76 @@ msgstr "进行中..."
 
 msgid "up/down"
 msgstr "上/下"
+
+msgid "DANGER ZONE!"
+msgstr "危险区域！（新手慎选）"
+
+msgid "You are about to set EmuELEC resolution to"
+msgstr "分辨率即将设为"
+
+msgid "Emulationstation will restart"
+msgstr "Emulationstation将重启"
+
+msgid "AUDIO DEVICE"
+msgstr "音频设备"
+
+msgid "ENABLE SSH"
+msgstr "开启SSH"
+
+msgid "START AT BOOT"
+msgstr "启动首选项"
+
+msgid "ENABLE RA BEZELS"
+msgstr "开启RA边框"
+
+msgid "ENABLE RA SPLASH"
+msgstr "开启RA闪图"
+
+msgid "ALWAYS SHOW BOOT VIDEO"
+msgstr "总是显示开机视频"
+
+msgid ""
+"WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\n"
+"RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"
+msgstr ""
+"警告：这将删除所有模拟器设置!\n\n"
+"复位EmuELEC模拟器设置并重启?"
+
+msgid "RESET EmuELEC EMULATORS TO DEFAULT CONFIG"
+msgstr "复位模拟器设置"
+
+msgid ""
+"WARNING: ALL CONFIGURATIONS WILL BE RESET!\n"
+"Update, downloads, themes, and roms folder will not be affected.\n\n"
+"RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"
+msgstr ""
+"警告: 所有设置都将复位!\n"
+"升级包、下载内容、主题和ROM文件夹不受影响。\n\n"
+"复位系统设置并重启?"
+
+msgid "RESET SYSTEM TO DEFAULT CONFIG"
+msgstr "复位系统设置"
+
+msgid "You are about to set EmuELEC Language to:"
+msgstr "系统语言即将切换成"
+
+msgid "RESTART EMULATIONSTATION"
+msgstr "重启EMULATIONSTATION"
+
+msgid "REALLY RESTART EMULATIONSTATION?"
+msgstr "确定重启EMULATIONSTATION?"
+
+msgid "REALLY START RETROARCH?"
+msgstr "确定重启RETROARCH?"
+
+msgid "START RETROARCH"
+msgstr "启动RETROARCH"
+
+msgid "REALLY REBOOT FROM NAND?"
+msgstr "确定重启至内置闪存系统？"
+
+msgid "REBOOT FROM NAND"
+msgstr "重启至内置闪存系统"
 
 #~ msgid "ADVANCED"
 #~ msgstr "高级设置"
