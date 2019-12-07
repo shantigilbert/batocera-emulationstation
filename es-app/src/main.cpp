@@ -27,6 +27,7 @@
 #include "AudioManager.h"
 #include "NetworkThread.h"
 #include "scrapers/ThreadedScraper.h"
+#include "ThreadedHasher.h"
 #include <FreeImage.h>
 
 #ifdef WIN32
@@ -602,6 +603,7 @@ int main(int argc, char* argv[])
 		Log::flush();
 	}
 
+	ThreadedHasher::stop();
 	ThreadedScraper::stop();
 
 	while(window.peekGui() != ViewController::get())
