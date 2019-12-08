@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-07 22:11+0100\n"
+"POT-Creation-Date: 2019-12-08 08:37+0100\n"
 "Last-Translator: Seis\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -418,12 +418,6 @@ msgstr ""
 msgid "MITM"
 msgstr ""
 
-msgid "NEW YORK"
-msgstr ""
-
-msgid "MADRID"
-msgstr ""
-
 msgid "REINDEX ALL GAMES"
 msgstr ""
 
@@ -505,16 +499,13 @@ msgstr "BIOS FALTANTES"
 msgid "NO MISSING BIOS"
 msgstr "NO FALTAN BIOS"
 
-msgid "MD5"
-msgstr "MD5"
-
 msgid "STATUS"
 msgstr "ESTADO"
 
 msgid "UPDATE GAMES LISTS"
 msgstr "ACTUALIZAR LISTAS DE JUEGOS"
 
-msgid "HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
+msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
 msgstr ""
 
 msgid "REALLY UPDATE GAMES LISTS ?"
@@ -538,6 +529,12 @@ msgstr ""
 
 msgid "PAIR A BLUETOOTH CONTROLLER"
 msgstr "EMPAREJAR UN MANDO BLUETOOTH"
+
+msgid "FORGET BLUETOOTH CONTROLLERS"
+msgstr "DESEMPAREJAR MANDOS BLUETOOTH"
+
+msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
+msgstr "LOS EMPAREJAMIENTOS HAN SIDO BORRADOS"
 
 #, c-format
 msgid "INPUT P%i"
@@ -1097,13 +1094,7 @@ msgstr "ÚLTIMA PARTIDA"
 msgid "enter last played date"
 msgstr "INTRODUCIR FECHA DE LA ÚLTIMA PARTIDA"
 
-msgid "Crc32"
-msgstr ""
-
 msgid "Crc32 checksum"
-msgstr ""
-
-msgid "Md5"
 msgstr ""
 
 msgid "Md5 checksum"
@@ -1264,9 +1255,6 @@ msgid "BEZELS INSTALLED SUCCESSFULLY"
 msgstr "BISELES INSTALADOS CORRECTAMENTE"
 
 msgid "HASHING GAMES"
-msgstr ""
-
-msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
 msgstr ""
 
 msgid "Favorites"
@@ -1518,11 +1506,8 @@ msgstr "EN CURSO..."
 msgid "up/down"
 msgstr "ARRIBA/ABAJO"
 
-#~ msgid "FORGET BLUETOOTH CONTROLLERS"
-#~ msgstr "DESEMPAREJAR MANDOS BLUETOOTH"
-
-#~ msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
-#~ msgstr "LOS EMPAREJAMIENTOS HAN SIDO BORRADOS"
+#~ msgid "MD5"
+#~ msgstr "MD5"
 
 #~ msgid "SECOND INSTANCE"
 #~ msgstr "SEGUNDA INSTANCIA"

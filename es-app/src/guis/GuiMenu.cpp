@@ -1235,8 +1235,8 @@ void GuiMenu::openNetplaySettings()
 
 	auto mitms = std::make_shared<OptionListComponent<std::string> >(mWindow, _("MITM"), false);
 	mitms->add(_("NONE"), "none", mitm.empty() || mitm == "none");
-	mitms->add(_("NEW YORK"), "nyc", mitm == "nyc");
-	mitms->add(_("MADRID"), "madrid", mitm == "madrid");
+	mitms->add("NEW YORK", "nyc", mitm == "nyc");
+	mitms->add("MADRID", "madrid", mitm == "madrid");
 
 	if (!mitms->hasSelection())
 		mitms->selectFirstItem();
@@ -1557,7 +1557,7 @@ void GuiMenu::openGamesSettings_batocera()
 							biosFileRow.addElement(biosPath, true);
 							configurationInfo->addRow(biosFileRow);
 
-							configurationInfo->addWithLabel("   " + _("MD5"), biosMd5);
+							configurationInfo->addWithLabel("   MD5", biosMd5);
 							configurationInfo->addWithLabel("   " + _("STATUS"), biosStatus);
 						}
 						mWindow->pushGui(configurationInfo);
@@ -1582,7 +1582,7 @@ void GuiMenu::openGamesSettings_batocera()
 
 			if (ThreadedHasher::isRunning())
 			{
-				window->pushGui(new GuiMsgBox(mWindow, _("HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"), _("YES"), [this, window]
+				window->pushGui(new GuiMsgBox(mWindow, _("GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"), _("YES"), [this, window]
 				{
 					ThreadedScraper::stop();
 				}, _("NO"), nullptr));
@@ -1654,6 +1654,12 @@ void GuiMenu::openControllersSettings_batocera()
 	// PAIR A BLUETOOTH CONTROLLER
 	s->addEntry(_("PAIR A BLUETOOTH CONTROLLER"), false, [window] { ThreadedBluetooth::start(window); });
 
+	// FORGET BLUETOOTH CONTROLLERS
+	s->addEntry(_("FORGET BLUETOOTH CONTROLLERS"), false, [window, this, s] {
+		ApiSystem::getInstance()->forgetBluetoothControllers();
+		window->pushGui(new GuiMsgBox(window,
+			_("CONTROLLERS LINKS HAVE BEEN DELETED."), _("OK")));
+	});
 	ComponentListRow row;
 
 	// Here we go; for each player
