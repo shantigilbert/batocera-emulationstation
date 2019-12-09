@@ -505,8 +505,8 @@ msgstr "상태"
 msgid "UPDATE GAMES LISTS"
 msgstr "게임 목록 업데이트"
 
-msgid "HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
-msgstr "해시 검사가 실행 중입니다. 중지하시겠습니까?"
+msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
+msgstr "게임 해시 검사가 실행 중입니다. 중지하시겠습니까?"
 
 msgid "REALLY UPDATE GAMES LISTS ?"
 msgstr "정말로 게임 목록을 업데이트 하시겠습니까?"
@@ -1249,9 +1249,6 @@ msgstr "베젤이 성공적으로 설치됨"
 
 msgid "HASHING GAMES"
 msgstr "게임 해시 검사"
-
-msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
-msgstr "게임 해시 검사가 실행 중입니다. 중지하시겠습니까?"
 
 msgid "Favorites"
 msgstr "즐겨 찾기"
