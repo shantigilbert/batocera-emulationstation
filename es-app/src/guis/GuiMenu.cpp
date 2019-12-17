@@ -302,6 +302,15 @@ void GuiMenu::openEmuELECSettings()
 	ComponentListRow row;
 	GuiSettings *danger_zone = new GuiSettings(mWindow, _("DANGER ZONE!").c_str());
 	row.makeAcceptInputHandler([window] {
+		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nAFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/downloads/ee_backup_config.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\nBACKUP CURRENT CONFIG AND RESTART?"), _("YES"),
+				[] { 
+				runSystemCommand("systemd-run /emuelec/scripts/ee_backup.sh b");
+				}, _("NO"), nullptr));
+	});
+	row.addElement(std::make_shared<TextComponent>(window, _("BACKUP EMUELEC CONFIGS"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	danger_zone->addRow(row);
+	row.elements.clear();
+	row.makeAcceptInputHandler([window] {
 		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\nRESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh EMUS");
