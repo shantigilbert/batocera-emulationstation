@@ -2,13 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-08 19:21+0100\n"
+"POT-Creation-Date: 2019-12-19 12:21+0100\n"
+"PO-Revision-Date: \n"
 "Last-Translator: Seis\n"
+"Language-Team: \n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.4\n"
 
 msgid "UPDATING BATOCERA"
 msgstr "ACTUALIZANDO BATOCERA"
@@ -77,7 +80,7 @@ msgid "NO GAME FOUND"
 msgstr "NINGUN JUEGO ENCONTRADO"
 
 msgid "go back"
-msgstr "IR ATRAS"
+msgstr "ir atras"
 
 msgid "JUMP TO..."
 msgstr "IR A..."
@@ -92,7 +95,7 @@ msgid "GAMELIST VIEW STYLE"
 msgstr "VER ESTILO DE LA LISTA DE JUEGOS"
 
 msgid "automatic"
-msgstr "AUTOMATICO"
+msgstr "automatico"
 
 msgid "GRID SIZE"
 msgstr "TAMAÑO DE CUADRICULA"
@@ -534,14 +537,14 @@ msgid "FORGET BLUETOOTH CONTROLLERS"
 msgstr "DESEMPAREJAR MANDOS BLUETOOTH"
 
 msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
-msgstr "LOS EMPAREJAMIENTOS HAN SIDO BORRADOS"
+msgstr "LOS EMPAREJAMIENTOS HAN SIDO BORRADOS."
 
 #, c-format
 msgid "INPUT P%i"
 msgstr "ENTRADA P%i"
 
 msgid "default"
-msgstr "PREDETERMINADO"
+msgstr "predeterminado"
 
 msgid "SHOW CONTROLLER ACTIVITY"
 msgstr "MOSTRAR ACTIVIDAD DEL MANDO"
@@ -553,10 +556,10 @@ msgid "THEME CONFIGURATION"
 msgstr "CONFIGURACIÓN DE TEMA"
 
 msgid "basic"
-msgstr "BASICO"
+msgstr "basico"
 
 msgid "detailed"
-msgstr "DETALLADO"
+msgstr "detallado"
 
 msgid "DEFAULT GRID SIZE"
 msgstr "TAMAÑO PREDETERMINADO DE CUADRICULA"
@@ -568,10 +571,10 @@ msgid "THEME SET"
 msgstr "JUEGO DE TEMAS"
 
 msgid "video"
-msgstr "VIDEO"
+msgstr "video"
 
 msgid "grid"
-msgstr "CUADRICULA"
+msgstr "cuadricula"
 
 msgid "UI MODE"
 msgstr "MODO GUI"
@@ -696,7 +699,7 @@ msgid "REALLY SHUTDOWN?"
 msgstr "¿APAGAR?"
 
 msgid "FAST SHUTDOWN SYSTEM"
-msgstr "¿APAGAR RÁPIDAMENTE?"
+msgstr "APAGAR RÁPIDAMENTE"
 
 msgid "REALLY SHUTDOWN WITHOUT SAVING METADATAS?"
 msgstr "¿SEGURO DE APAGAR SIN GUARDAR DATOS?"
@@ -786,10 +789,10 @@ msgid "SYSTEM"
 msgstr "SISTEMA"
 
 msgid "subtitle text"
-msgstr "SUBTÍTULOS"
+msgstr "subtítulos"
 
 msgid "search"
-msgstr "BUSCAR"
+msgstr "buscar"
 
 msgid "SKIP"
 msgstr "SALTAR"
@@ -798,7 +801,7 @@ msgid "STOP"
 msgstr "PARAR"
 
 msgid "stop (progress saved)"
-msgstr "PARAR (PROGRESO GUARDADO)"
+msgstr "detener (progreso salvado)"
 
 #, c-format
 msgid "GAME %i OF %i"
@@ -812,7 +815,7 @@ msgstr ""
 "NO SE HA PODIDO ENCONTRAR NINGUN SISTEMA!\n"
 "CONFIRMA DE QUE LA CONFIGURACIÓN DE LAS RUTAS SEAN CORRECTA EN EL FICHERO DE "
 "CONFIGURACIÓN, YQUE LA CARPETA DE TUS JUEGOS CONTENGA POR LO MENOS 1 JUEGO "
-"CON LA EXTENSIÓN CORRECTA"
+"CON LA EXTENSIÓN CORRECTA."
 
 #, c-format
 msgid "%i GAME SUCCESSFULLY SCRAPED!"
@@ -823,8 +826,8 @@ msgstr[1] "¡%i CARÁTULAS OBTENIDAS CORRECTAMENTE!"
 #, c-format
 msgid "%i GAME SKIPPED."
 msgid_plural "%i GAMES SKIPPED."
-msgstr[0] "%i JUEGO IGNORADO"
-msgstr[1] "%i JUEGOS IGNORADOS"
+msgstr[0] "%i JUEGO IGNORADO."
+msgstr[1] "%i JUEGOS IGNORADOS."
 
 msgid "INSTALL BEZELS"
 msgstr "INSTALAR BISELES"
@@ -840,7 +843,7 @@ msgstr "SELECCIONA EL SISTEMA DONDE LOS BISELES SERAN REINSTALADOS"
 
 #, c-format
 msgid "'%s' ADDED TO DOWNLOAD QUEUE"
-msgstr "AGREGADO A LA COLA DE DESCARGA"
+msgstr "'%s'  AGREGADO A LA COLA DE DESCARGA"
 
 msgid "UNINSTALL THE BEZEL PROJECT"
 msgstr "DESINSTALAR EL PROYECTO BISEL"
@@ -927,7 +930,7 @@ msgstr ""
 "¿EJECUTAR DE CUALQUIER MANERA?"
 
 msgid "NO GAMES FIT THAT CRITERIA."
-msgstr "NINGÚN JUEGO SE AJUSTA AL CRITERIO"
+msgstr "NINGÚN JUEGO SE AJUSTA AL CRITERIO."
 
 msgid "SELECT SYSTEMS TO DISPLAY"
 msgstr "SELECCIONA LOS EMULADORES A MOSTRAR"
@@ -1002,19 +1005,19 @@ msgid "Name"
 msgstr "NOMBRE"
 
 msgid "enter game name"
-msgstr "NOMBRE DEL JUEGO"
+msgstr "nombre del juego"
 
 msgid "Description"
 msgstr "DESCRIPCIÓN"
 
 msgid "enter description"
-msgstr "INTRODUCIR DESCRIPCIÓN"
+msgstr "introducir descripción"
 
 msgid "Image"
 msgstr "IMAGEN"
 
 msgid "enter path to image"
-msgstr "INTRODUCIR RUTA DE LA IMAGEN"
+msgstr "introducir ruta a la imagen"
 
 msgid "Path to video"
 msgstr "RUTA PARA VIDEO"
@@ -1373,11 +1376,23 @@ msgstr "DERECHA"
 msgid "LEFT ANALOG UP"
 msgstr "ANALOGO IZQUIERDO; ARRIBA"
 
+msgid "LEFT ANALOG RIGHT"
+msgstr "ANALOGO IZQUIERDO; DERECHA"
+
+msgid "LEFT ANALOG DOWN"
+msgstr "ANALOGO IZQUIERDO; ABAJO"
+
 msgid "LEFT ANALOG LEFT"
 msgstr "ANALOGO IZQUIERDO; IZQUIERDA"
 
 msgid "RIGHT ANALOG UP"
 msgstr "ANALOGO DERECHO; ARRIBA"
+
+msgid "RIGHT ANALOG DOWN"
+msgstr "ANALOGO DERECHO; ABAJO"
+
+msgid "RIGHT ANALOG RIGHT"
+msgstr "ANALOGO DERECHO; DERECHA"
 
 msgid "RIGHT ANALOG LEFT"
 msgstr "ANALOGO DERECHO; IZQUIERDA"
@@ -1499,6 +1514,108 @@ msgstr "EN CURSO..."
 
 msgid "up/down"
 msgstr "ARRIBA/ABAJO"
+
+msgid "DANGER ZONE!"
+msgstr "ZONA DE PELIGRO!"
+
+msgid "You are about to set EmuELEC resolution to"
+msgstr "Estas a punto de cambiar la resolusion de EmuELEC a"
+
+msgid "Emulationstation will restart"
+msgstr "Emulationstation se reiniciara"
+
+msgid "AUDIO DEVICE"
+msgstr "DISPOSITIVO DE AUDIO"
+
+msgid "ENABLE SSH"
+msgstr "HABILITAR SSH"
+
+msgid "START AT BOOT"
+msgstr "EJECUTAR AL INICIO"
+
+msgid "ENABLE RA BEZELS"
+msgstr "HABILITAR MARCOS EN RA"
+
+msgid "ENABLE RA SPLASH"
+msgstr "HABILITAR SPLASH"
+
+msgid "ALWAYS SHOW BOOT VIDEO"
+msgstr "SIEMPRE MOSTRAR EL VIDEO DE INICIO"
+
+msgid ""
+"WARNING THIS WILL RESTART EMULATIONSTATION!\n"
+"\n"
+"AFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/downloads/"
+"ee_backup_config.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT "
+"REBOOT!\n"
+"\n"
+"BACKUP CURRENT CONFIG AND RESTART?"
+msgstr ""
+"ADVERTENCIA ESTO REINICIARA EMULATIONSTATION!\n"
+"\n"
+"CUANDO EL SCRIPT TERMINE RECUERDA COPIAR EL ARCHIVO /storage/downloads/"
+"ee_backup_config.zip A UN LUGAR SEGURO O SERA ELIMINADO EN EL SIGUIENTE "
+"REINICIO\n"
+"\n"
+"¿RESPALDAR TUS CONFIGURACIONES Y REINICIAR?"
+
+msgid "BACKUP EMUELEC CONFIGS"
+msgstr "RESPALDAR CONFIGURACIONES DE EMUELEC"
+
+msgid ""
+"WARNING: SYSTEM WILL RESET SCRIPTS AND BINARIES !\n"
+"UPDATE, DOWNLOADS, THEMES, BLUETOOTH PAIRINGS AND ROMS FOLDER WILL NOT BE "
+"AFFECTED.\n"
+"\n"
+"RESET SCRIPTS AND BINARIES TO DEFAULT AND RESTART?"
+msgstr ""
+"ADVERTENCIA EL SISTEMA RESTABLECERA LOS SCRIPTS Y BINARIOS\n"
+"UPDATE, DOWNLOADS,TEMAS, BLUETOOTH Y EL FOLDE DE ROMS NO SERAN AFECTADOS\n"
+"\n"
+"¿RESTABLECER LOS SCRIPTS Y BINARIOS Y REINICIAR?"
+
+msgid "RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"
+msgstr "RESTABLECER LOS SCRIPTS Y BINARIOS POR DEFECTO"
+
+msgid ""
+"WARNING: ALL CONFIGURATIONS WILL BE RESET AND NO BACKUP WILL BE CREATED!\n"
+"\n"
+"IF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL "
+"DRIVE BEFORE RUNING THIS OPTION!\n"
+"\n"
+"RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"
+msgstr ""
+"ADVERTENCIA TODAS LAS CONFIGURACIONES SE RESTABLECERAN Y NO SE HARA NINGUN "
+"RESPALDO\n"
+"\n"
+"SI QUIERES RESPALDAR TUS CONFIGURACIONES CREAR UN BACKUP Y GUARDALO EN UN "
+"DRIVE EXTERNO ANTES DE SELECCIONAR ESTA OPCION\n"
+"\n"
+"¿RESTABLECER EL SISTEMA A CONFIGURACIONES POR DEFECTO Y REINICIAR?"
+
+msgid "RESET SYSTEM TO DEFAULT CONFIG"
+msgstr "RESTABLECER EL SISTEMA POR DEFECTO"
+
+msgid "You are about to set EmuELEC Language to:"
+msgstr "Estas a punto de cambiar el lenguaje de EmuELEC a:"
+
+msgid "RESTART EMULATIONSTATION"
+msgstr "REINICIAR EMULATIONSTATION"
+
+msgid "REALLY RESTART EMULATIONSTATION?"
+msgstr "¿ESTAS SEGURO QUE QUIERES REINICIAR EMULATIONSTATION?"
+
+msgid "REALLY START RETROARCH?"
+msgstr "¿INICIAR RETROARCH?"
+
+msgid "START RETROARCH"
+msgstr "INICIAR RETROARCH"
+
+msgid "REALLY REBOOT FROM NAND?"
+msgstr "¿REINICIAR DESDE LA MEMORIA INTERNA?"
+
+msgid "REBOOT FROM NAND"
+msgstr "REINICIAR DESDE NAND"
 
 #~ msgid "CONTROLLER PAIRED"
 #~ msgstr "MANDO EMPAREJADO"

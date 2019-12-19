@@ -311,16 +311,16 @@ void GuiMenu::openEmuELECSettings()
 	danger_zone->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\nRESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"), _("YES"),
+		window->pushGui(new GuiMsgBox(window, _("WARNING: SYSTEM WILL RESET SCRIPTS AND BINARIES !\nUPDATE, DOWNLOADS, THEMES, BLUETOOTH PAIRINGS AND ROMS FOLDER WILL NOT BE AFFECTED.\n\nRESET SCRIPTS AND BINARIES TO DEFAULT AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh EMUS");
 				}, _("NO"), nullptr));
 	});
-	row.addElement(std::make_shared<TextComponent>(window, _("RESET EmuELEC EMULATORS TO DEFAULT CONFIG"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+	row.addElement(std::make_shared<TextComponent>(window, _("RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"), Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 	danger_zone->addRow(row);
 	row.elements.clear();
 	row.makeAcceptInputHandler([window] {
-		window->pushGui(new GuiMsgBox(window, _("WARNING: ALL CONFIGURATIONS WILL BE RESET!\nUpdate, downloads, themes, and roms folder will not be affected.\n\nRESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
+		window->pushGui(new GuiMsgBox(window, _("WARNING: ALL CONFIGURATIONS WILL BE RESET AND NO BACKUP WILL BE CREATED!\n\nIF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL DRIVE BEFORE RUNING THIS OPTION!\n\nRESET SYSTEM TO DEFAULT CONFIG AND RESTART?"), _("YES"),
 				[] { 
 				runSystemCommand("systemd-run /emuelec/scripts/clearconfig.sh ALL");
 				}, _("NO"), nullptr));
