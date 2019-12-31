@@ -60,6 +60,9 @@ GuiScraperStart::GuiScraperStart(Window* window) : GuiComponent(window),
 	mSystems = std::make_shared< OptionListComponent<SystemData*> >(mWindow, _("SCRAPE THESE SYSTEMS"), true); // batocera
 	for(auto it = SystemData::sSystemVector.cbegin(); it != SystemData::sSystemVector.cend(); it++)
 	{
+		if ((*it)->isGroupSystem())
+			continue;
+
 		if(!(*it)->hasPlatformId(PlatformIds::PLATFORM_IGNORE))
 			mSystems->add((*it)->getFullName(), *it, 
 				currentSystem.empty() ? 
@@ -76,7 +79,10 @@ GuiScraperStart::GuiScraperStart(Window* window) : GuiComponent(window),
 	mMenu.addButton(_("START"), _("START"), std::bind(&GuiScraperStart::pressedStart, this));
 	mMenu.addButton(_("BACK"), _("BACK"), [&] { delete this; });
 
-	mMenu.setPosition((Renderer::getScreenWidth() - mMenu.getSize().x()) / 2, Renderer::getScreenHeight() * 0.15f);
+	if (Renderer::isSmallScreen())
+		mMenu.setPosition((Renderer::getScreenWidth() - mMenu.getSize().x()) / 2, (Renderer::getScreenHeight() - mMenu.getSize().y()) / 2);
+	else
+		mMenu.setPosition((Renderer::getScreenWidth() - mMenu.getSize().x()) / 2, Renderer::getScreenHeight() * 0.15f);
 }
 
 void GuiScraperStart::pressedStart()

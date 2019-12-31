@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-08 19:21+0100\n"
+"POT-Creation-Date: 2019-12-30 18:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -96,6 +96,9 @@ msgstr "TIPO DE VISUALIZAÇÃO DOS JOGOS"
 
 msgid "automatic"
 msgstr "automático"
+
+msgid "VIEW CUSTOMISATION"
+msgstr "VER PERSONALIZAÇÕES"
 
 msgid "GRID SIZE"
 msgstr "TAMANHO DA GRID"
@@ -563,6 +566,9 @@ msgstr "detalhado"
 msgid "DEFAULT GRID SIZE"
 msgstr "TAMANHO DA GRID PADRÃO"
 
+msgid "DEFAULT"
+msgstr "PADRÃO"
+
 msgid "RESET GAMELIST CUSTOMISATIONS"
 msgstr "REINICIAR A LISTA DE JOGOS PERSONALIZADA"
 
@@ -591,10 +597,10 @@ msgid "Do you want to proceed ?"
 msgstr "DESEJA CONTINUAR?"
 
 msgid "START ON SYSTEM"
-msgstr "INICIAR UM SISTEMA"
+msgstr "INICIAR NO SISTEMA"
 
 msgid "START ON GAMELIST"
-msgstr "COMECE NA LISTA DE JOGOS"
+msgstr "INICIAR NA LISTA DE JOGOS"
 
 msgid "SYSTEMS DISPLAYED"
 msgstr "SISTEMAS EXIBIDOS"
