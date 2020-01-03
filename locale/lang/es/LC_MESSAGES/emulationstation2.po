@@ -97,7 +97,7 @@ msgid "automatic"
 msgstr "automatico"
 
 msgid "VIEW CUSTOMISATION"
-msgstr ""
+msgstr "VER PERSONALIZACIÓN"
 
 msgid "GRID SIZE"
 msgstr "TAMAÑO DE CUADRICULA"
@@ -567,7 +567,7 @@ msgid "DEFAULT GRID SIZE"
 msgstr "TAMAÑO PREDETERMINADO DE CUADRICULA"
 
 msgid "DEFAULT"
-msgstr ""
+msgstr "PREDETERMINADO"
 
 msgid "RESET GAMELIST CUSTOMISATIONS"
 msgstr "REESTABLECER PERSONALIZACIONES DE LISTAS"
