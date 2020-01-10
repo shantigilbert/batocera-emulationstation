@@ -3207,7 +3207,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	for (int i = 0; i < n_all_gambate_gc_colors_modes; i++) {
 		colorizations_choices->add(all_gambate_gc_colors_modes[i], all_gambate_gc_colors_modes[i], currentColorization == std::string(all_gambate_gc_colors_modes[i]));
 	}
-	if (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players") // only for gb, gbc and gb2players
+	if (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players" || systemData->getName() == "gbh" || systemData->getName() == "gbch") // only for gb, gbc and gb2players
 		systemConfiguration->addWithLabel(_("COLORIZATION"), colorizations_choices);
 #endif
 
