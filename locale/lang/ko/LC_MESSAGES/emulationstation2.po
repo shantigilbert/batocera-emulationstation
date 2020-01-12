@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "UPDATING BATOCERA"
-msgstr "바투세라 업데이트"
+msgstr "바토세라 업데이트"
 
 msgid "UPDATE IS READY"
 msgstr "업데이트가 준비되었습니다"
@@ -95,10 +95,10 @@ msgid "automatic"
 msgstr "자동"
 
 msgid "VIEW CUSTOMISATION"
-msgstr ""
+msgstr "커스터마이징 보기"
 
 msgid "GRID SIZE"
-msgstr "그리드 사이즈"
+msgstr "그리드 크기"
 
 msgid "SHOW FAVORITES ON TOP"
 msgstr "최상단에 즐겨찾기 보여주기"
@@ -374,7 +374,7 @@ msgid "START KODI WITH X"
 msgstr "X 버튼으로 KODI 실행"
 
 msgid "INSTALL BATOCERA ON A NEW DISK"
-msgstr "새로운 디스크에 바투세라 설치"
+msgstr "새로운 디스크에 바토세라 설치"
 
 msgid "SECURITY"
 msgstr "보안"
@@ -763,7 +763,7 @@ msgid "CUSTOM GAME COLLECTIONS"
 msgstr "커스텀 게임 콜렉션"
 
 msgid "INSTALL BATOCERA"
-msgstr "바투세라 설치"
+msgstr "바토세라 설치"
 
 msgid "TARGET DEVICE"
 msgstr "대상 장치"
@@ -790,7 +790,7 @@ msgid "SYSTEM"
 msgstr "시스템"
 
 msgid "subtitle text"
-msgstr "자막 텍스트"
+msgstr "자막 문자"
 
 msgid "search"
 msgstr "검색"
@@ -1176,7 +1176,7 @@ msgid "OPTIONS"
 msgstr "옵션"
 
 msgid "FAVORITES"
-msgstr ""
+msgstr "즐겨찾기"
 
 msgid "LAUNCH THE GAME AS NETPLAY HOST ?"
 msgstr "넷플레이 호스트로 게임을 실행합니까?"
