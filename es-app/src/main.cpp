@@ -29,6 +29,7 @@
 #include "scrapers/ThreadedScraper.h"
 #include "ThreadedHasher.h"
 #include <FreeImage.h>
+#include "ImageIO.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -236,6 +237,8 @@ bool verifyHomeFolderExists()
 bool loadSystemConfigFile(Window* window, const char** errorString)
 {
 	*errorString = NULL;
+
+	ImageIO::loadImageCache();
 
 	if(!SystemData::loadConfig(window))
 	{
@@ -612,6 +615,7 @@ int main(int argc, char* argv[])
 	if (SystemData::hasDirtySystems())
 		window.renderLoadingScreen(_("SAVING METADATAS. PLEASE WAIT..."));
 
+	ImageIO::saveImageCache();
 	MameNames::deinit();
 	CollectionSystemManager::deinit();
 	SystemData::deleteSystems();
