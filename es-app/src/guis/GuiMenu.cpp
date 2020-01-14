@@ -262,12 +262,12 @@ void GuiMenu::openEmuELECSettings()
 		});
        
        auto bezels_enabled = std::make_shared<SwitchComponent>(mWindow);
-		bool bezelsEnabled = SystemConf::getInstance()->get("ee_bezels.enabled") == "1";
+		bool bezelsEnabled = SystemConf::getInstance()->get("global.bezel") == "1";
 		bezels_enabled->setState(bezelsEnabled);
 		s->addWithLabel(_("ENABLE RA BEZELS"), bezels_enabled);
 		s->addSaveFunc([bezels_enabled] {
 			bool bezelsenabled = bezels_enabled->getState();
-                SystemConf::getInstance()->set("ee_bezels.enabled", bezelsenabled ? "1" : "0");
+                SystemConf::getInstance()->set("global.bezel", bezelsenabled ? "1" : "0");
 				SystemConf::getInstance()->saveSystemConf();
 			});	
        
@@ -1308,6 +1308,15 @@ void GuiMenu::openGamesSettings_batocera()
 	smoothing_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.smooth") == "1");
 	smoothing_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.smooth") == "0");
 	s->addWithLabel(_("SMOOTH GAMES"), smoothing_enabled);
+	
+#ifdef _ENABLEEMUELEC
+	// bezel
+	auto bezel_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("ENABLE RA BEZELS"));
+	bezel_enabled->add(_("AUTO"), "auto", SystemConf::getInstance()->get("global.bezel") != "0" && SystemConf::getInstance()->get("global.bezel") != "1");
+	bezel_enabled->add(_("ON"), "1", SystemConf::getInstance()->get("global.bezel") == "1");
+	bezel_enabled->add(_("OFF"), "0", SystemConf::getInstance()->get("global.bezel") == "0");
+	s->addWithLabel(_("ENABLE RA BEZELS"), bezel_enabled);
+#endif
 
 	// rewind
 	auto rewind_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("REWIND"));
@@ -1635,9 +1644,16 @@ void GuiMenu::openGamesSettings_batocera()
 			}, _("NO"), nullptr));
 		});
 	}
+#ifdef _ENABLEEMUELEC
+	s->addSaveFunc([smoothing_enabled, bezel_enabled, rewind_enabled, shaders_choices, autosave_enabled] 
+#else
 	s->addSaveFunc([smoothing_enabled, rewind_enabled, shaders_choices, autosave_enabled] 
+#endif
 	{
 		SystemConf::getInstance()->set("global.smooth", smoothing_enabled->getSelected());
+#ifdef _ENABLEEMUELEC
+		SystemConf::getInstance()->set("global.bezel", bezel_enabled->getSelected());
+#endif
 		SystemConf::getInstance()->set("global.rewind", rewind_enabled->getSelected());
 		SystemConf::getInstance()->set("global.shaderset", shaders_choices->getSelected());
 		SystemConf::getInstance()->set("global.autosave", autosave_enabled->getSelected());
@@ -3105,6 +3121,14 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	auto ratio_choice = createRatioOptionList(mWindow, configName);
 	systemConfiguration->addWithLabel(_("GAME RATIO"), ratio_choice);
 
+	
+	// bezel
+	auto bezel_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("BEZEL"));
+	bezel_enabled->add(_("AUTO"), "auto", getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configName + ".bezel'") != "0" && getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configName + ".bezel'") != "1");
+	bezel_enabled->add(_("YES"), "1", getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configName + ".bezel'") == "1");
+	bezel_enabled->add(_("NO"), "0", getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configName + ".bezel'") == "0");
+	systemConfiguration->addWithLabel(_("BEZEL"), bezel_enabled);
+	
 	// smoothing
 	auto smoothing_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("SMOOTH GAMES"));
 	smoothing_enabled->add(_("AUTO"), "auto", getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configName + ".smooth'") != "0" && getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configName + ".smooth'") != "1");
@@ -3150,7 +3174,6 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			SystemConf::getInstance()->saveSystemConf();
 		}
 	});
-	systemConfiguration->addEntry(_("LATENCY REDUCTION"), true, [mWindow, configName] { openLatencyReductionConfiguration(mWindow, configName); });
 
 	// gameboy colorize
 	auto colorizations_choices = std::make_shared<OptionListComponent<std::string> >(mWindow, _("COLORIZATION"), false);
@@ -3217,14 +3240,17 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	}
 	if (systemData->getName() == "gb" || systemData->getName() == "gbc" || systemData->getName() == "gb2players" || systemData->getName() == "gbc2players" || systemData->getName() == "gbh" || systemData->getName() == "gbch") // only for gb, gbc and gb2players
 		systemConfiguration->addWithLabel(_("COLORIZATION"), colorizations_choices);
+		
+	systemConfiguration->addEntry(_("LATENCY REDUCTION"), true, [mWindow, configName] { openLatencyReductionConfiguration(mWindow, configName); });
 #endif
 
 #ifdef _ENABLEEMUELEC
-	systemConfiguration->addSaveFunc([configName, systemData, smoothing_enabled, rewind_enabled, ratio_choice, autosave_enabled, shaders_choices, colorizations_choices, emulator_choice]
+	systemConfiguration->addSaveFunc([configName, systemData, smoothing_enabled, bezel_enabled, rewind_enabled, ratio_choice, autosave_enabled, shaders_choices, colorizations_choices, emulator_choice]
 	{
 		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + ".ratio' " + ratio_choice->getSelected());		
 		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + ".rewind' " + rewind_enabled->getSelected());		
 		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + ".smooth' " + smoothing_enabled->getSelected());
+		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + ".bezel' " + bezel_enabled->getSelected());
 		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + ".autosave' " + autosave_enabled->getSelected());
 		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + ".shaderset' " + shaders_choices->getSelected());
 		getShOutput(R"(/emuelec/scripts/setemu.sh set ')" + configName + "-renderer.colorization' " + colorizations_choices->getSelected());
