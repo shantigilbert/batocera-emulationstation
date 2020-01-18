@@ -3,11 +3,13 @@ msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-17 22:15+0100\n"
+"PO-Revision-Date: 2020-01-18 16:28+0900\n"
+"Last-Translator: DsNo <dsnoz001@gmail.com>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
+"X-Generator: POEditor.com\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: POEditor.com\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "UPDATING BATOCERA"
@@ -110,13 +112,13 @@ msgid "SHOW FOLDERS"
 msgstr "폴더 보여주기"
 
 msgid "always"
-msgstr ""
+msgstr "항상"
 
 msgid "never"
-msgstr ""
+msgstr "보여주지 않음"
 
 msgid "having multiple games"
-msgstr ""
+msgstr "보유한 다인용 게임"
 
 msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
 msgstr "이 게임 콜렉션에 게임 추가/제거"
@@ -131,7 +133,7 @@ msgid "ADVANCED GAME OPTIONS"
 msgstr "고급 게임 옵션"
 
 msgid "FILTER GAMES BY TEXT"
-msgstr "텍스트로 게임 필터"
+msgstr "문자별 게임 필터"
 
 msgid "Loading..."
 msgstr "불러오는중..."
@@ -140,7 +142,7 @@ msgid "THIS FUNCTION IS DISABLED WHEN SCRAPING IS RUNNING"
 msgstr "수집이 실행되면 이 기능은 비활성화됩니다"
 
 msgid "FILTER GAMELIST BY"
-msgstr ""
+msgstr "게임목록별 필터"
 
 msgid "RESET ALL FILTERS"
 msgstr "모든 필터 재설정"
@@ -206,10 +208,10 @@ msgid "TITLE SCREENSHOT"
 msgstr "타이틀 스크린샷"
 
 msgid "MIX V1"
-msgstr ""
+msgstr "혼합 V1"
 
 msgid "MIX V2"
-msgstr ""
+msgstr "혼합 V2"
 
 msgid "BOX 2D"
 msgstr "박스 2D"
@@ -571,7 +573,7 @@ msgid "THEME CONFIGURATION"
 msgstr "테마 구성"
 
 msgid "basic"
-msgstr "기본"
+msgstr "기초"
 
 msgid "detailed"
 msgstr "상세"
@@ -580,7 +582,7 @@ msgid "DEFAULT GRID SIZE"
 msgstr "그리드 사이즈 초기화"
 
 msgid "DEFAULT"
-msgstr ""
+msgstr "기본"
 
 msgid "RESET GAMELIST CUSTOMISATIONS"
 msgstr "사용자 게임리스트 초기화"
@@ -745,13 +747,13 @@ msgid "EMULATED WIIMOTES"
 msgstr "위모트 에뮬레이트"
 
 msgid "CHANGE SCREEN LAYOUT"
-msgstr ""
+msgstr "화면 배치 변경"
 
 msgid "LARGE SCREEN"
-msgstr ""
+msgstr "대형 스크린"
 
 msgid "SIDE BY SIDE"
-msgstr ""
+msgstr "나란히 배치"
 
 msgid "INTERNAL RESOLUTION"
 msgstr "내부 해상도"
@@ -845,11 +847,13 @@ msgstr ""
 msgid "%i GAME SUCCESSFULLY SCRAPED!"
 msgid_plural "%i GAMES SUCCESSFULLY SCRAPED!"
 msgstr[0] "%i 개의 게임을 수집했습니다."
+msgstr[1] "%i 개의 게임을 수집했습니다."
 
 #, c-format
 msgid "%i GAME SKIPPED."
 msgid_plural "%i GAMES SKIPPED."
 msgstr[0] "%i 개의 게임을 건너뛰었습니다."
+msgstr[1] "%i 개의 게임을 건너뛰었습니다."
 
 msgid "INSTALL BEZELS"
 msgstr "베젤 설치"
@@ -1125,10 +1129,10 @@ msgid "Md5 checksum"
 msgstr "MD5 체크섬"
 
 msgid "Game time"
-msgstr ""
+msgstr "플레이 시간"
 
 msgid "how long the game has been played in total (seconds)"
-msgstr ""
+msgstr "게임을 플레이한 시간 (초)"
 
 msgid "name"
 msgstr "이름"
@@ -1164,8 +1168,7 @@ msgid "SCRAPE FAILED : SCRAP LIMIT REACHED TODAY"
 msgstr "수집 실패 : 하루 수집 제한에 도달했습니다"
 
 msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
-msgstr ""
-"수집이 완료됨. 변경사항을 적용하려면 게임리스트 업데이트를 새로고침 하세요."
+msgstr "수집이 완료됨. 변경사항을 적용하려면 게임리스트 업데이트를 새로고침 하세요."
 
 msgid "DO YOU WANT TO START KODI MEDIA CENTER ?"
 msgstr "KODI 미디어 센터를 실행하시겠습니까?"
@@ -1174,6 +1177,7 @@ msgstr "KODI 미디어 센터를 실행하시겠습니까?"
 msgid "%i GAME AVAILABLE"
 msgid_plural "%i GAMES AVAILABLE"
 msgstr[0] "%i 개의 게임 사용 가능"
+msgstr[1] "%i 개의 게임 사용 가능"
 
 msgid "KODI"
 msgstr "KODI"
@@ -1198,6 +1202,9 @@ msgstr "발견된 항목이 없음"
 
 msgid "OPTIONS"
 msgstr "옵션"
+
+msgid "Favorites"
+msgstr "즐겨찾기"
 
 msgid "LAUNCH THE GAME AS NETPLAY HOST ?"
 msgstr "넷플레이 호스트로 게임을 실행합니까?"
@@ -1284,31 +1291,25 @@ msgid "BEZELS INSTALLED SUCCESSFULLY"
 msgstr "베젤이 성공적으로 설치됨"
 
 msgid "FAVORITES"
-msgstr ""
+msgstr "즐겨찾기"
 
 msgid "GENRE"
-msgstr ""
+msgstr "장르"
 
 msgid "PLAYERS"
-msgstr ""
+msgstr "플레이어"
 
 msgid "PUBLISHER / DEVELOPER"
-msgstr ""
+msgstr "발매 / 개발"
 
 msgid "RATING"
-msgstr ""
+msgstr "평점"
 
 msgid "KIDGAME"
-msgstr ""
+msgstr "청소년 게임"
 
 msgid "HASHING GAMES"
 msgstr "게임 해시 검사"
-
-msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
-msgstr "게임 해시 검사가 실행 중입니다. 중지하시겠습니까?"
-
-msgid "Favorites"
-msgstr "즐겨 찾기"
 
 msgid "SEARCHING"
 msgstr "검색 중"
@@ -1421,11 +1422,11 @@ msgstr "오른쪽"
 msgid "LEFT ANALOG UP"
 msgstr "왼쪽 아날로그 위"
 
-msgid "LEFT ANALOG DOWN"
-msgstr "왼쪽 아날로그 아래"
-
 msgid "LEFT ANALOG RIGHT"
 msgstr "왼쪽 아날로그 오른쪽"
+
+msgid "LEFT ANALOG DOWN"
+msgstr "왼쪽 아날로그 아래"
 
 msgid "LEFT ANALOG LEFT"
 msgstr "왼쪽 아날로그 왼쪽"
@@ -1588,23 +1589,37 @@ msgid "ALWAYS SHOW BOOT VIDEO"
 msgstr "항상 부팅시 비디오 보기"
 
 msgid ""
-"WARNING THIS WILL DELETE ALL EMULATOR CONFIGS!\n\n"
-"RESET EmuELEC EMULATORS TO DEFAULT AND RESTART?"
+"WARNING THIS WILL RESTART EMULATIONSTATION!\n\n"
+"AFTER THE SCRIPT IS DONE REMEMBER TO COPY THE FILE /storage/downloads/ee_backup_config.zip TO SOME PLACE SAFE OR IT WILL BE DELETED ON NEXT REBOOT!\n\n"
+"BACKUP CURRENT CONFIG AND RESTART?"
 msgstr ""
-"경고 이것은 에뮬레이터의 모든 설정을 삭제합니다!\n\n"
-"EmuELEC 에뮬레이터를 기본으로 설정하고 재시작합니까?"
+"경고 에뮬레이션스테이션은 재시작 될 것입니다!\n\n"
+"스크립트를 기록하고 /storage/downloads/ee_backup_config.zip 로 파일을 복사하여 안전하게 보관하거나 다음 재부팅시 삭제됩니다!\n\n"
+"현재 설정을 백업하고 재시작합니까?"
 
-msgid "RESET EmuELEC EMULATORS TO DEFAULT CONFIG"
-msgstr "EmuELEC 에뮬레이터의 기본 설정으로 재시작"
+msgid "BACKUP EMUELEC CONFIGS"
+msgstr "EmuELEC 설정 백업"
 
 msgid ""
-"WARNING: ALL CONFIGURATIONS WILL BE RESET!\n"
-"Update, downloads, themes, and roms folder will not be affected.\n\n"
+"WARNING: SYSTEM WILL RESET SCRIPTS AND BINARIES !\n"
+"UPDATE, DOWNLOADS, THEMES, BLUETOOTH PAIRINGS AND ROMS FOLDER WILL NOT BE AFFECTED.\n\n"
+"RESET SCRIPTS AND BINARIES TO DEFAULT AND RESTART?"
+msgstr ""
+"경고: 시스템이 스크립트 및 바이너리를 초기화합니다!\n"
+"업데이트, 다운로드, 테마 그리고 롬 폴더는 영향을 받지 않습니다.\n\n"
+"스크립트 및 바이너리를 기본으로 설정 및 초기화하고 재시작합니까?"
+
+msgid "RESET EMUELEC SCRIPTS AND BINARIES TO DEFAULT"
+msgstr "EmuELEC 스크립트와 바이너리를 기본으로 설정하고 초기화"
+
+msgid ""
+"WARNING: ALL CONFIGURATIONS WILL BE RESET AND NO BACKUP WILL BE CREATED!\n\n"
+"IF YOU WANT TO KEEP YOUR SETTINGS MAKE A BACKUP AND SAVE IT ON AN EXTERNAL DRIVE BEFORE RUNING THIS OPTION!\n\n"
 "RESET SYSTEM TO DEFAULT CONFIG AND RESTART?"
 msgstr ""
-"경고: 모든 설정이 재설정됩니다!\n"
-"업데이트, 다운로드, 테마 그리고 롬 폴더는 영향을 받지 않습니다.\n\n"
-"시스템을 기본으로 설정하고 재시작합니까?"
+"경고: 모든 설정이 초기화되고 백업을 생성하지 않습니다!\n\n"
+"만일 설정을 유지하려면 옵션을 실행하기 전에 백업하고 외장 장치에 저장하세요!\n\n"
+"시스템을 기본으로 설정 및 초기화하고 재시작합니까?"
 
 msgid "RESET SYSTEM TO DEFAULT CONFIG"
 msgstr "기본 설정으로 시스템 재설정"
