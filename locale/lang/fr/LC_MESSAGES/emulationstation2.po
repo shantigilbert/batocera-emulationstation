@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-08 18:56+0100\n"
+"POT-Creation-Date: 2020-01-17 22:15+0100\n"
 "Last-Translator: evoflash <evoflash@me.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -109,6 +109,15 @@ msgstr "AFFICHER LES JEUX CACHÉS"
 msgid "SHOW FOLDERS"
 msgstr "AFFICHER LES DOSSIERS"
 
+msgid "always"
+msgstr "toujours"
+
+msgid "never"
+msgstr "jamais"
+
+msgid "having multiple games"
+msgstr "avec multiple jeux"
+
 msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
 msgstr "AJOUTER/SUPPRIMER DES JEUX À CETTE COLLECTION"
 
@@ -129,6 +138,9 @@ msgstr "Chargement..."
 
 msgid "THIS FUNCTION IS DISABLED WHEN SCRAPING IS RUNNING"
 msgstr "CETTE FONCTION EST DÉSACTIVÉE LORSQU'UN SCRAPE EST EN COURS"
+
+msgid "FILTER GAMELIST BY"
+msgstr "FILTRER LES LISTES DE JEUX PAR"
 
 msgid "RESET ALL FILTERS"
 msgstr "RAZ DE TOUS LES FILTRES"
@@ -193,20 +205,23 @@ msgstr "CAPTURE D'ÉCRAN"
 msgid "TITLE SCREENSHOT"
 msgstr "CAPTURE D'ÉCRAN AVEC TITRE"
 
-msgid "MIX"
-msgstr "MÉLANGE D'IMAGES"
+msgid "MIX V1"
+msgstr "MÉLANGE D'IMAGES V1"
 
-msgid "BOX SOURCE"
-msgstr "BOITE SOURCE"
-
-msgid "NONE"
-msgstr "AUCUN"
+msgid "MIX V2"
+msgstr "MÉLANGE D'IMAGES V2"
 
 msgid "BOX 2D"
 msgstr "BOITE 2D"
 
 msgid "BOX 3D"
 msgstr "BOITE 3D"
+
+msgid "BOX SOURCE"
+msgstr "BOITE SOURCE"
+
+msgid "NONE"
+msgstr "AUCUN"
 
 msgid "LOGO SOURCE"
 msgstr "LOGO SOURCE"
@@ -726,10 +741,19 @@ msgid "COLORIZATION"
 msgstr "COLORISATION"
 
 msgid "FULL BOOT"
-msgstr "FULL BOOT"
+msgstr "DÉMARRAGE COMPLET"
 
 msgid "EMULATED WIIMOTES"
 msgstr "WIIMOTES ÉMULÉES"
+
+msgid "CHANGE SCREEN LAYOUT"
+msgstr "MODIFIER LA DISPOSITION DE L'ÉCRAN"
+
+msgid "LARGE SCREEN"
+msgstr "GRAND ÉCRAN"
+
+msgid "SIDE BY SIDE"
+msgstr "COTE À COTE"
 
 msgid "INTERNAL RESOLUTION"
 msgstr "RÉSOLUTION INTERNE"
@@ -1031,10 +1055,10 @@ msgid "Thumbnail"
 msgstr "Chemin vers la boite"
 
 msgid "Rating"
-msgstr "Note"
+msgstr "Notation"
 
 msgid "enter rating"
-msgstr "entrer les notes"
+msgstr "entrer la notation"
 
 msgid "Release date"
 msgstr "Date de sortie"
@@ -1133,7 +1157,7 @@ msgid "SCRAPING"
 msgstr "SCRAPE"
 
 msgid "Searching"
-msgstr "Recherche en cours"
+msgstr "Recherche"
 
 msgid "SCRAPE FAILED : THE APPLICATION HAS BEEN BLACKLISTED"
 msgstr "SCRAPE ÉCHOUÉ : L'APPLICATION A ÉTÉ BLACKLISTÉE"
@@ -1177,8 +1201,8 @@ msgstr "Aucune Entrée Trouvée"
 msgid "OPTIONS"
 msgstr "OPTIONS"
 
-msgid "FAVORITES"
-msgstr "FAVORIS"
+msgid "Favorites"
+msgstr "Favoris"
 
 msgid "LAUNCH THE GAME AS NETPLAY HOST ?"
 msgstr "DÉMARRER LA PARTIE EN TANT QUE SERVEUR ?"
@@ -1264,11 +1288,26 @@ msgstr "THÈME INSTALLÉ AVEC SUCCES"
 msgid "BEZELS INSTALLED SUCCESSFULLY"
 msgstr "DÉCORATIONS INSTALLÉES AVEC SUCCES"
 
+msgid "FAVORITES"
+msgstr "FAVORIS"
+
+msgid "GENRE"
+msgstr "GENRE"
+
+msgid "PLAYERS"
+msgstr "JOUEURS"
+
+msgid "PUBLISHER / DEVELOPER"
+msgstr "ÉDITEUR / DÉVELOPPEUR"
+
+msgid "RATING"
+msgstr "NOTATION"
+
+msgid "KIDGAME"
+msgstr "JEU ENFANT"
+
 msgid "HASHING GAMES"
 msgstr "HACHER LES JEUX"
-
-msgid "Favorites"
-msgstr "Favoris"
 
 msgid "SEARCHING"
 msgstr "RECHERCHE"
@@ -1298,7 +1337,7 @@ msgid "SCANNING BLUETOOTH"
 msgstr "ANALYSE BLUETOOTH"
 
 msgid "Searching controllers..."
-msgstr "Recherche de manettes"
+msgstr "Recherche de manettes..."
 
 msgid "BLUETOOTH SCANNING IS ALREADY RUNNING."
 msgstr "ANALYSE BLUETOOTH DÉJÀ EN COURS"
@@ -1507,6 +1546,9 @@ msgstr "EN COURS..."
 
 msgid "up/down"
 msgstr "haut/bas"
+
+#~ msgid "MIX"
+#~ msgstr "MÉLANGE D'IMAGES"
 
 #~ msgid "CONTROLLER PAIRED"
 #~ msgstr "MANETTE ASSOCIÉE"
