@@ -75,6 +75,12 @@ msgstr "뒤로"
 msgid "LAUNCH"
 msgstr "실행"
 
+msgid "AVAILABLE GAMES"
+msgstr ""
+
+msgid "UNAVAILABLE GAMES"
+msgstr ""
+
 msgid "NO GAME FOUND"
 msgstr "발견된 게임 없음"
 

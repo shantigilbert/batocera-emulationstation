@@ -328,19 +328,21 @@ namespace Utils
 
 			size_t i = 0;
 			while (i < text.length())
-			{
-				int pos = i;
-
-				wchar_t character = (wchar_t)chars2Unicode(text, i);
-				wchar_t unicode = toUpper ? toupperUnicode(character) : tolowerUnicode(character);
-				if (unicode != character)
+			{				
+				if ((text[i] & 0x80) == 0)
 				{
+					text[i] = toUpper ? toupper(text[i]) : tolower(text[i]);
+					i++;
+					continue;
+				}
+
+				int pos = i;
+				wchar_t character = (wchar_t)chars2Unicode(text, i);
+				wchar_t unicode = toUpper ? toupperUnicode(character) : tolowerUnicode(character);				
+				if (unicode != character)
+				{					
 					int charSize = i - pos;
-					if (charSize == 1)
-					{
-						text[pos] = (char)(unicode & 0xFF);
-					}
-					else if (charSize == 2)
+					if (charSize == 2)
 					{
 						text[pos] = (char)(((unicode >> 6) & 0xFF) | 0xC0);
 						text[pos + 1] = (char)((unicode & 0x3F) | 0x80);
@@ -351,11 +353,9 @@ namespace Utils
 						text[pos + 1] += (char)(((unicode >> 6) & 0x3F) | 0x80);
 						text[pos + 2] += (char)((unicode & 0x3F) | 0x80);
 
-				}
+					}
+				}			
 			}
-				else
-					text[i] = toUpper ? toupper(text[i]) : tolower(text[i]);
-		}
 
 			return text;
 		}

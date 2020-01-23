@@ -20,6 +20,7 @@
 #include "components/AsyncNotificationComponent.h"
 #include "components/ControllerActivityComponent.h"
 #include "guis/GuiMsgBox.h"
+#include "components/VolumeInfoComponent.h"
 #ifdef _ENABLEEMUELEC
 #include "utils/FileSystemUtil.h"
 #endif
@@ -179,6 +180,9 @@ bool Window::init()
 
 	if (mControllerActivity == nullptr)
 		mControllerActivity = std::make_shared<ControllerActivityComponent>(this);
+
+	if (mVolumeInfo == nullptr)
+		mVolumeInfo = std::make_shared<VolumeInfoComponent>(this);
 
 	// update our help because font sizes probably changed
 	if (peekGui())
@@ -371,6 +375,9 @@ void Window::update(int deltaTime)
 			deltaTime = mAverageDeltaTime;
 	}
 
+	if (mVolumeInfo)
+		mVolumeInfo->update(deltaTime);
+
 	mFrameTimeElapsed += deltaTime;
 	mFrameCountElapsed++;
 	if (mFrameTimeElapsed > 500)
@@ -516,6 +523,9 @@ void Window::render()
 
 	for (auto extra : mScreenExtras)
 		extra->render(transform);
+
+	if (mVolumeInfo)
+		mVolumeInfo->render(transform);
 
 	if(mTimeSinceLastInput >= screensaverTime && screensaverTime != 0)
 	{
@@ -860,4 +870,7 @@ void Window::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 	{
 		mControllerActivity->applyTheme(theme, "screen", "controllerActivity", ThemeFlags::ALL ^ (ThemeFlags::TEXT));
 	}
+
+
+	mVolumeInfo = std::make_shared<VolumeInfoComponent>(this);
 }

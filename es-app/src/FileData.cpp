@@ -300,6 +300,38 @@ void FileData::launchGame(Window* window, LaunchGameOptions options)
 	command = Utils::String::replace(command, "%ROM_RAW%", rom_raw);
 	command = Utils::String::replace(command, "%CONTROLLERSCONFIG%", controllersConfig); // batocera
 
+	std::string emulator = SystemConf::getInstance()->get(getConfigurationName() + ".emulator");
+	if (emulator.empty())
+		emulator = SystemConf::getInstance()->get(mSystem->getName() + ".emulator");
+
+	if (emulator.empty())
+	{
+		auto emulators = mSystem->getEmulators();
+		if (emulators.size() > 0)
+			emulator = emulators.begin()->first;
+	}
+
+	std::string core = SystemConf::getInstance()->get(getConfigurationName() + ".core");
+	if (core.empty())
+		core = SystemConf::getInstance()->get(mSystem->getName() + ".core");
+
+	if (core.empty() && !emulator.empty())
+	{
+		auto emulators = mSystem->getEmulators();
+
+		auto it = emulators.find(emulator);
+		if (it != emulators.cend())
+			if (it->second.cores.size() > 0)
+				core = it->second.cores.begin()->name;
+	}
+
+	command = Utils::String::replace(command, "%EMULATOR%", emulator);
+	command = Utils::String::replace(command, "%CORE%", core);
+	command = Utils::String::replace(command, "%HOME%", Utils::FileSystem::getHomePath());
+
+	if (options.netPlayMode != DISABLED && mSystem->isNetplaySupported() && command.find("%NETPLAY%") == std::string::npos)
+		command = command + " %NETPLAY%"; // Add command line parameter if the netplay option is defined at <core netplay="true"> level
+
 	if (options.netPlayMode == CLIENT)
 	{
 #if WIN32
@@ -327,33 +359,7 @@ void FileData::launchGame(Window* window, LaunchGameOptions options)
 	else
 		command = Utils::String::replace(command, "%NETPLAY%", "");
 
-	std::string emulator = SystemConf::getInstance()->get(getConfigurationName() + ".emulator");
-	if (emulator.length() == 0)		
-		emulator = SystemConf::getInstance()->get(mSystem->getName() + ".emulator");
 
-	if (emulator.length() == 0)
-	{
-		auto emul = mSystem->getEmulators();
-		if (emul != nullptr && emul->size() > 0)
-			emulator = emul->begin()->first;
-	}
-
-	std::string core = SystemConf::getInstance()->get(getConfigurationName() + ".core");
-	if (core.length() == 0)
-		core = SystemConf::getInstance()->get(mSystem->getName() + ".core");
-
-	if (core.length() == 0)
-	{
-		auto emul = mSystem->getEmulators();
-		if (emul != nullptr && emul->find(emulator) != emul->cend())
-			core = emul->find(emulator)->first;
-		if (emul != nullptr && emul->size() > 0 && emul->begin()->second->begin() != emul->begin()->second->cend())
-			core = *emul->begin()->second->begin();
-	}
-
-	command = Utils::String::replace(command, "%EMULATOR%", emulator);
-	command = Utils::String::replace(command, "%CORE%", core);
-	command = Utils::String::replace(command, "%HOME%", Utils::FileSystem::getHomePath());
 
 	Scripting::fireEvent("game-start", rom, basename);
 
