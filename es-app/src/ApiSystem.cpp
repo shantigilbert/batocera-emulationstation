@@ -18,15 +18,17 @@
 #include <SystemConf.h>
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
+
 #if !defined(WIN32)
 #include <ifaddrs.h>
 #include <netinet/in.h>
-#endif
-#include <string.h>
-#if !defined(WIN32)
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <arpa/inet.h>
 #endif
+
 #include "utils/FileSystemUtil.h"
 #include "utils/StringUtil.h"
 #include <fstream>
@@ -1272,37 +1274,43 @@ RetroAchievementInfo ApiSystem::getRetroAchievements()
 		"<userpic>https://retroachievements.org/UserPic/lbrpdx.png</userpic>"
 		"<registered>29 Aug 2018, 03:00</registered>"
 		"<lastactivity>16 Nov 2019, 02:35</lastactivity>"
-		"  <game>"
-		"	<name>Adventure Island II: Aliens In Paradise (Game Boy)</name>"
-		"	<achievements>7 of 24</achievements>"
-		"	<points>35/260</points>"
-		"	<lastplayed>2019-11-16 02:10:05</lastplayed>"
-		"  </game>"
-		"  <game>"
-		"	<name>Metal Gear (NES)</name>"
-		"	<achievements>0 of 97</achievements>"
-		"	<points>0/650</points>"
-		"	<lastplayed>2019-11-01 04:12:26</lastplayed>"
-		"  </game>"
-		"  <game>"
-		"	<name>Mega Man 2 (NES)</name>"
-		"	<achievements>0 of 84</achievements>"
-		"	<points>0/800</points>"
-		"	<lastplayed>2019-11-01 04:09:19</lastplayed>"
-		"  </game>"
-		"  <game>"
-		"	<name>Fortified Zone (Game Boy)</name>"
-		"	<achievements>0 of 0</achievements>"
-		"	<points>0/0</points>"
-		"	<lastplayed>2019-10-31 03:00:43</lastplayed>"
-		"  </game>"
-		"  <game>"
-		"	<name>Jack Bros. (Virtual Boy)</name>"
-		"	<achievements>0 of 57</achievements>"
-		"	<points>0/725</points>"
-		"	<lastplayed>2019-10-30 03:24:53</lastplayed>"
-		"  </game>"
+		"<game>"
+		"  <name>Captain Commando (Arcade)</name>"
+		"  <achievements>4 of 54</achievements>"
+		"  <points>25/830</points>"
+		"  <lastplayed>2020-01-23 04:51:33</lastplayed>"
+		"  <badge>https://s3-eu-west-1.amazonaws.com/i.retroachievements.org/Badge/97969.png</badge>"
+		"</game>"
+		"<game>"
+		"  <name>Pac-in-Time (Game Boy)</name>"
+		"  <achievements>0 of 14</achievements>"
+		"  <points>0/140</points>"
+		"  <lastplayed>2020-01-23 04:41:26</lastplayed>"
+		"  <badge>https://s3-eu-west-1.amazonaws.com/i.retroachievements.org/Badge/00136_lock.png</badge>"
+		"</game>"
+		"<game>"
+		"  <name>1942 (NES)</name>"
+		"  <achievements>6 of 19</achievements>"
+		"  <points>90/400</points>"
+		"  <lastplayed>2020-01-19 23:15:40</lastplayed>"
+		"  <badge>https://s3-eu-west-1.amazonaws.com/i.retroachievements.org/Badge/04200.png</badge>"
+		"</game>"
+		"<game>"
+		"  <name>Tecmo Bowl (NES)</name>"
+		"  <achievements>3 of 6</achievements>"
+		"  <points>15/35</points>"
+		"  <lastplayed>2020-01-19 15:46:33</lastplayed>"
+		"  <badge>https://s3-eu-west-1.amazonaws.com/i.retroachievements.org/Badge/09025.png</badge>"
+		"</game>"
+		"<game>"
+		"  <name>Bank Heist (Atari 2600)</name>"
+		"  <achievements>5 of 17</achievements>"
+		"  <points>23/100</points>"
+		"  <lastplayed>2020-01-19 15:38:57</lastplayed>"
+		"  <badge>https://s3-eu-west-1.amazonaws.com/i.retroachievements.org/Badge/00083.png</badge>"
+		"</game>"
 		"</retroachievements>";
+
 	/*
 	// Retrocompatibility Test 
 	data = "Player TOTO (51 points) is 42287 / 61014 ranked users (Top 70%)\n"
@@ -1433,6 +1441,31 @@ RetroAchievementInfo ApiSystem::getRetroAchievements()
 					rg.points = game.text().get();
 				else if (tag == "lastplayed")
 					rg.lastplayed = game.text().get();
+				else if (tag == "badge")
+				{
+					std::string badge = game.text().get();
+
+					if (!badge.empty())
+					{
+						std::string localPath = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/tmp");
+						if (!Utils::FileSystem::exists(localPath))
+							Utils::FileSystem::createDirectory(localPath);
+
+						std::string localFile = localPath + "/" + Utils::FileSystem::getFileName(badge);
+						if (!Utils::FileSystem::exists(localFile))
+						{
+							std::shared_ptr<HttpReq> httpreq = std::make_shared<HttpReq>(badge);
+
+							while (httpreq->status() == HttpReq::REQ_IN_PROGRESS)
+								std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+							if (httpreq->status() == HttpReq::REQ_SUCCESS)
+								httpreq->saveContent(localFile);
+						}
+						if (Utils::FileSystem::exists(localFile))
+							rg.badge = localFile;
+					}
+				}
 			}
 
 			if (!rg.name.empty())
@@ -1996,4 +2029,97 @@ std::string ApiSystem::getCRC32(std::string fileName, bool fromZipContents)
 	pclose(pipe);
 
 	return crc;
+}
+
+const char* BACKLIGHT_BRIGHTNESS_NAME = "/sys/class/backlight/backlight/brightness";
+const char* BACKLIGHT_BRIGHTNESS_MAX_NAME = "/sys/class/backlight/backlight/max_brightness";
+#define BACKLIGHT_BUFFER_SIZE 127
+
+bool ApiSystem::getBrighness(int& value)
+{
+#if WIN32
+	value = 100;
+	return true;
+#else
+	value = 0;
+
+	int fd;
+	int max = 255;	
+	char buffer[BACKLIGHT_BUFFER_SIZE + 1];
+	ssize_t count;
+
+	fd = open(BACKLIGHT_BRIGHTNESS_MAX_NAME, O_RDONLY);
+	if (fd < 0)
+		return false;
+
+	memset(buffer, 0, BACKLIGHT_BUFFER_SIZE + 1);
+
+	count = read(fd, buffer, BACKLIGHT_BUFFER_SIZE);
+	if (count > 0)
+		max = atoi(buffer);
+
+	close(fd);
+
+	if (max == 0) 
+		return 0;
+
+	fd = open(BACKLIGHT_BRIGHTNESS_NAME, O_RDONLY);
+	if (fd < 0)
+		return false;
+
+	memset(buffer, 0, BACKLIGHT_BUFFER_SIZE + 1);
+
+	count = read(fd, buffer, BACKLIGHT_BUFFER_SIZE);
+	if (count > 0)
+		value = atoi(buffer);
+
+	close(fd);
+
+	value = (uint32_t) (value / (float)max * 100.0f);
+	return true;
+#endif
+}
+
+void ApiSystem::setBrighness(int value)
+{
+#if !WIN32	
+	if (value < 5)
+		value = 5;
+
+	if (value > 100)
+		value = 100;
+
+	int fd;
+	int max = 255;
+	char buffer[BACKLIGHT_BUFFER_SIZE + 1];
+	ssize_t count;
+
+	fd = open(BACKLIGHT_BRIGHTNESS_MAX_NAME, O_RDONLY);
+	if (fd < 0)
+		return;
+
+	memset(buffer, 0, BACKLIGHT_BUFFER_SIZE + 1);
+
+	count = read(fd, buffer, BACKLIGHT_BUFFER_SIZE);
+	if (count > 0)
+		max = atoi(buffer);
+
+	close(fd);
+
+	if (max == 0) 
+		return;
+
+	fd = open(BACKLIGHT_BRIGHTNESS_NAME, O_WRONLY);
+	if (fd < 0)
+		return;
+	
+	float percent = value / 100.0f * (float)max;
+	sprintf(buffer, "%d\n", (uint32_t)percent);
+
+	count = write(fd, buffer, strlen(buffer));
+	if (count < 0)
+		LOG(LogError) << "ApiSystem::setBrighness failed";
+
+	close(fd);
+#endif
 }

@@ -363,17 +363,20 @@ msgstr "업데이트가 이미 실행 중입니다"
 msgid "LANGUAGE"
 msgstr "언어"
 
-msgid "OVERCLOCK"
-msgstr "오버클럭"
-
 msgid "VIDEO OUTPUT"
 msgstr "비디오 출력"
 
 msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
 msgstr "새로운 설정을 적용하기 위해서는 시스템 재부팅이 필요합니다."
 
+msgid "BRIGHTNESS"
+msgstr ""
+
 msgid "AUDIO OUTPUT"
 msgstr "오디오 출력"
+
+msgid "OVERCLOCK"
+msgstr "오버클럭"
 
 msgid "POWER SAVER MODES"
 msgstr "절전 모드"
@@ -649,6 +652,9 @@ msgstr "리스트에서 파일명 보여주기"
 
 msgid "SYSTEM VOLUME"
 msgstr "시스템 음량"
+
+msgid "SHOW OVERLAY WHEN VOLUME CHANGES"
+msgstr ""
 
 msgid "FRONTEND MUSIC"
 msgstr "배경 음악"

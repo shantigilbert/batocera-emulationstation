@@ -22,6 +22,7 @@ struct RetroAchievementGame
 	std::string achievements;
 	std::string points;
 	std::string lastplayed;
+	std::string badge;
 };
 
 struct RetroAchievementInfo
@@ -127,6 +128,9 @@ public:
     std::pair<std::string,int> uninstallBatoceraBezel(BusyComponent* ui, std::string bezelsystem);
 
 	std::string getCRC32(const std::string fileName, bool fromZipContents = true);
+
+	bool	getBrighness(int& value);
+	void	setBrighness(int value);
 
 private:
     static ApiSystem *instance;

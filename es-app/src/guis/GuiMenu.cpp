@@ -14,6 +14,7 @@
 #include "guis/GuiBezelInstallStart.h" //batocera
 #include "guis/GuiSettings.h"
 #include "guis/GuiSystemsHide.h" //batocera
+#include "guis/GuiRetroAchievements.h" //batocera
 #include "guis/GuiGamelistOptions.h"
 #include "views/UIModeController.h"
 #include "views/ViewController.h"
@@ -73,7 +74,7 @@ GuiMenu::GuiMenu(Window *window) : GuiComponent(window), mMenu(window, _("MAIN M
 	if (isFullUI &&
 		SystemConf::getInstance()->get("global.retroachievements") == "1" &&
 		SystemConf::getInstance()->get("global.retroachievements.username") != "")
-		addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { openRetroAchievements_batocera(); }, "iconRetroachievements");
+	        addEntry(_("RETROACHIEVEMENTS").c_str(), true, [this] { mWindow->pushGui(new GuiRetroAchievements(mWindow)); }, "iconRetroachievements");
 
 	// GAMES SETTINGS
 	if (isFullUI)
@@ -930,45 +931,9 @@ void GuiMenu::openSystemSettings_batocera()
 #endif
 
 
-	// Overclock choice
-	auto overclock_choice = std::make_shared<OptionListComponent<std::string> >(window, _("OVERCLOCK"), false);
 
-	std::string currentOverclock = Settings::getInstance()->getString("Overclock");
-	if (currentOverclock == "") 
-		currentOverclock = "none";
 
-	std::vector<std::string> availableOverclocking = ApiSystem::getInstance()->getAvailableOverclocking();
-
-	// Overclocking device
-	bool isOneSet = false;
-	for (auto it = availableOverclocking.begin(); it != availableOverclocking.end(); it++) 
-	{
-		std::vector<std::string> tokens = Utils::String::split(*it, ' ');		
-		if (tokens.size() >= 2) 
-		{
-			// concatenat the ending words
-			std::string vname;
-			for (unsigned int i = 1; i < tokens.size(); i++) 
-			{
-				if (i > 1) vname += " ";
-				vname += tokens.at(i);
-			}
-			bool isSet = currentOverclock == std::string(tokens.at(0));
-			if (isSet) 
-				isOneSet = true;
-			
-			overclock_choice->add(vname, tokens.at(0), isSet);
-		}
-	}
-
-	if (isOneSet == false)
-		overclock_choice->add(currentOverclock, currentOverclock, true);
-	
-#if !defined WIN32 && !defined _ENABLEEMUELEC
-	s->addWithLabel(_("OVERCLOCK"), overclock_choice);
-#endif
-	
-#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
+#if !defined(WIN32) || defined(_DEBUG)
 	// video device
 	auto optionsVideo = std::make_shared<OptionListComponent<std::string> >(mWindow, _("VIDEO OUTPUT"), false);
 	std::string currentDevice = SystemConf::getInstance()->get("global.videooutput");
@@ -995,6 +960,20 @@ void GuiMenu::openSystemSettings_batocera()
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 		}
 	});
+
+	// brighness
+	int brighness;
+	if (ApiSystem::getInstance()->getBrighness(brighness))
+	{
+		auto brightnessComponent = std::make_shared<SliderComponent>(mWindow, 5.f, 100.f, 5.f, "%");
+		brightnessComponent->setValue(brighness);
+		brightnessComponent->setOnValueChanged([](const float &newVal) 
+		{ 
+			ApiSystem::getInstance()->setBrighness((int)Math::round(newVal)); 
+		});
+
+		s->addWithLabel(_("BRIGHTNESS"), brightnessComponent);
+	}
 
 	// audio device
 	auto optionsAudio = std::make_shared<OptionListComponent<std::string> >(mWindow, _("AUDIO OUTPUT"), false);
@@ -1050,6 +1029,44 @@ void GuiMenu::openSystemSettings_batocera()
 	});
 #endif
 
+	// Overclock choice
+	auto overclock_choice = std::make_shared<OptionListComponent<std::string> >(window, _("OVERCLOCK"), false);
+
+	std::string currentOverclock = Settings::getInstance()->getString("Overclock");
+	if (currentOverclock == "")
+		currentOverclock = "none";
+
+	std::vector<std::string> availableOverclocking = ApiSystem::getInstance()->getAvailableOverclocking();
+
+	// Overclocking device
+	bool isOneSet = false;
+	for (auto it = availableOverclocking.begin(); it != availableOverclocking.end(); it++)
+	{
+		std::vector<std::string> tokens = Utils::String::split(*it, ' ');
+		if (tokens.size() >= 2)
+		{
+			// concatenat the ending words
+			std::string vname;
+			for (unsigned int i = 1; i < tokens.size(); i++)
+			{
+				if (i > 1) vname += " ";
+				vname += tokens.at(i);
+			}
+			bool isSet = currentOverclock == std::string(tokens.at(0));
+			if (isSet)
+				isOneSet = true;
+
+			overclock_choice->add(vname, tokens.at(0), isSet);
+		}
+	}
+
+	if (isOneSet == false)
+		overclock_choice->add(currentOverclock, currentOverclock, true);
+
+#ifndef WIN32
+	// overclocking
+	s->addWithLabel(_("OVERCLOCK"), overclock_choice);
+#endif
 
 	// power saver
 	auto power_saver = std::make_shared< OptionListComponent<std::string> >(mWindow, _("POWER SAVER MODES"), false);
@@ -2573,50 +2590,6 @@ void GuiMenu::openNetworkSettings_batocera()
 			ApiSystem::getInstance()->disableWifi();
 		}
 	});
-
-	mWindow->pushGui(s);
-}
-
-void GuiMenu::openRetroAchievements_batocera()
-{
-	Window *window = mWindow;
-
-	auto s = new GuiSettings(mWindow, _("RETROACHIEVEMENTS").c_str());
-
-	auto ra = ApiSystem::getInstance()->getRetroAchievements();
-	if (!ra.error.empty())
-		s->setSubTitle(ra.error);
-	else
-	{
-		if (!ra.userpic.empty() && Utils::FileSystem::exists(ra.userpic))
-		{
-			auto image = std::make_shared<ImageComponent>(mWindow);
-			image->setImage(ra.userpic);
-			s->setTitleImage(image);
-		}
-
-		s->setSubTitle("Player " + ra.username + " (" + ra.totalpoints + " points) is " + ra.rank);
-
-		for (auto game : ra.games)
-		{		
-			ComponentListRow row;
-
-			auto itstring = std::make_shared<MultiLineMenuEntry>(window, game.name, game.achievements + " achievements");
-
-			if (!game.points.empty())
-			{
-				std::string longmsg = game.name + "\n" + game.achievements + " achievements\n" + game.points + " points\nLast played : " + game.lastplayed;
-
-				row.makeAcceptInputHandler([this, longmsg] {
-					mWindow->pushGui(new GuiMsgBox(mWindow, longmsg, _("OK")));
-				});
-			}
-
-			row.addElement(itstring, true);
-			s->addRow(row);
-			row.elements.clear();
-		}
-	}
 
 	mWindow->pushGui(s);
 }
