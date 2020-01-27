@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-01-17 22:15+0100\n"
-"PO-Revision-Date: 2020-01-18 16:28+0900\n"
+"PO-Revision-Date: 2020-01-27 14:59+0900\n"
 "Last-Translator: DsNo <dsnoz001@gmail.com>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
@@ -76,10 +76,10 @@ msgid "LAUNCH"
 msgstr "실행"
 
 msgid "AVAILABLE GAMES"
-msgstr ""
+msgstr "실행 가능한 게임"
 
 msgid "UNAVAILABLE GAMES"
-msgstr ""
+msgstr "실행 불가능한 게임"
 
 msgid "NO GAME FOUND"
 msgstr "발견된 게임 없음"
@@ -124,7 +124,7 @@ msgid "never"
 msgstr "보여주지 않음"
 
 msgid "having multiple games"
-msgstr "보유한 다인용 게임"
+msgstr "보유한 멀티 게임"
 
 msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
 msgstr "이 게임 콜렉션에 게임 추가/제거"
@@ -157,13 +157,13 @@ msgid "FIND GAMES"
 msgstr "게임 찾기"
 
 msgid "MANUAL INPUT"
-msgstr ""
+msgstr "메뉴얼 입력"
 
 msgid "NO WIFI NETWORKS FOUND"
-msgstr ""
+msgstr "발견된 WIFI 네트워크가 없음"
 
 msgid "SEACHING WIFI NETWORKS"
-msgstr ""
+msgstr "WIFI 네트워크 찾는 중"
 
 msgid "FINISHED"
 msgstr "완료됨"
@@ -238,7 +238,7 @@ msgid "BOX SOURCE"
 msgstr "박스 소스"
 
 msgid "NONE"
-msgstr "없음 "
+msgstr "없음"
 
 msgid "LOGO SOURCE"
 msgstr "로고 소스"
@@ -277,7 +277,7 @@ msgid "RANDOM VIDEO SETTINGS"
 msgstr "랜덤 비디오 세팅"
 
 msgid "CHOOSE"
-msgstr "선택"
+msgstr "결정"
 
 msgid "SELECT"
 msgstr "선택"
@@ -379,7 +379,7 @@ msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
 msgstr "새로운 설정을 적용하기 위해서는 시스템 재부팅이 필요합니다."
 
 msgid "BRIGHTNESS"
-msgstr ""
+msgstr "밝기"
 
 msgid "AUDIO OUTPUT"
 msgstr "오디오 출력"
@@ -475,7 +475,7 @@ msgid "AUTO SAVE/LOAD"
 msgstr "자동 저장/불러오기"
 
 msgid "SHADERS SET"
-msgstr "셰이더 선택"
+msgstr "셰이더 설정"
 
 msgid "SCANLINES"
 msgstr "스캔 라인"
@@ -606,7 +606,7 @@ msgid "RESET GAMELIST CUSTOMISATIONS"
 msgstr "사용자 게임리스트 초기화"
 
 msgid "THEME SET"
-msgstr "테마 선택"
+msgstr "테마 설정"
 
 msgid "video"
 msgstr "비디오"
@@ -663,7 +663,7 @@ msgid "SYSTEM VOLUME"
 msgstr "시스템 음량"
 
 msgid "SHOW OVERLAY WHEN VOLUME CHANGES"
-msgstr ""
+msgstr "볼륨 변경 시 오버레이 표시"
 
 msgid "FRONTEND MUSIC"
 msgstr "배경 음악"
@@ -962,7 +962,7 @@ msgid "SYSTEMS"
 msgstr "시스템"
 
 msgid "USER DECIDES ON CONFLICTS"
-msgstr "직접 선택"
+msgstr "사용자가 충돌에 대해 결정"
 
 msgid "START"
 msgstr "시작"
