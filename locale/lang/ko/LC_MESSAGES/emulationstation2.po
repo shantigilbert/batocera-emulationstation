@@ -156,6 +156,15 @@ msgstr "모든 필터 재설정"
 msgid "FIND GAMES"
 msgstr "게임 찾기"
 
+msgid "MANUAL INPUT"
+msgstr ""
+
+msgid "NO WIFI NETWORKS FOUND"
+msgstr ""
+
+msgid "SEACHING WIFI NETWORKS"
+msgstr ""
+
 msgid "FINISHED"
 msgstr "완료됨"
 
