@@ -3300,7 +3300,12 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
                                                                                  std::string configname) {
   auto ratio_choice = std::make_shared<OptionListComponent<std::string> >(window, _("GAME RATIO"), false);
 #ifdef _ENABLEEMUELEC 
-  std::string currentRatio = getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configname + ".ratio'");
+    std::string currentRatio;
+	if (configname == "global") {
+	currentRatio = SystemConf::getInstance()->get(configname + ".ratio");
+	} else {
+   currentRatio = getShOutput(R"(/emuelec/scripts/setemu.sh get ')" + configname + ".ratio'");
+	}	
 #else
   std::string currentRatio = SystemConf::getInstance()->get(configname + ".ratio");
 #endif
