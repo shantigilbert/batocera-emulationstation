@@ -682,7 +682,7 @@ void GuiMenu::openDeveloperSettings()
 			Renderer::setSwapInterval();
 	});
 
-#if !defined(WIN32) || defined(_DEBUG) && !defined(_ENABLEEMUELEC)
+#if !defined(WIN32) && !defined _ENABLEEMUELEC || defined(_DEBUG)
 	// overscan
 	auto overscan_enabled = std::make_shared<SwitchComponent>(mWindow);
 	overscan_enabled->setState(Settings::getInstance()->getBool("Overscan"));
