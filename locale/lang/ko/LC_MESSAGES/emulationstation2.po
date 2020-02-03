@@ -490,10 +490,10 @@ msgid "CURVATURE"
 msgstr "곡률"
 
 msgid "ZFAST"
-msgstr ""
+msgstr "ZFAST"
 
 msgid "FLATTEN-GLOW"
-msgstr ""
+msgstr "평면빛"
 
 msgid "INTEGER SCALE (PIXEL PERFECT)"
 msgstr "원본 게임 해상도 (픽셀 일치)"
