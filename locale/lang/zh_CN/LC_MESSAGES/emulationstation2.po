@@ -50,22 +50,22 @@ msgid "CANCEL"
 msgstr "取消"
 
 msgid "CONNECT TO NETPLAY"
-msgstr ""
+msgstr "连接并开始网络游戏"
 
 msgid "Select the game you want to join"
-msgstr ""
+msgstr "选择希望加入的游戏"
 
 msgid "REFRESH"
-msgstr ""
+msgstr "刷新"
 
 msgid "CLOSE"
 msgstr "关闭"
 
 msgid "PLEASE WAIT"
-msgstr ""
+msgstr "请稍候"
 
 msgid "FAILED"
-msgstr ""
+msgstr "失败"
 
 msgid "BACK"
 msgstr "返回"
@@ -74,13 +74,13 @@ msgid "LAUNCH"
 msgstr "启动"
 
 msgid "AVAILABLE GAMES"
-msgstr ""
+msgstr "可选游戏"
 
 msgid "UNAVAILABLE GAMES"
-msgstr ""
+msgstr "不可选游戏"
 
 msgid "NO GAME FOUND"
-msgstr ""
+msgstr "未找到游戏"
 
 msgid "go back"
 msgstr "返回"
@@ -101,7 +101,7 @@ msgid "automatic"
 msgstr "自动"
 
 msgid "VIEW CUSTOMISATION"
-msgstr ""
+msgstr "查看定制项"
 
 msgid "GRID SIZE"
 msgstr "网格大小"
@@ -116,13 +116,13 @@ msgid "SHOW FOLDERS"
 msgstr "显示文件夹"
 
 msgid "always"
-msgstr ""
+msgstr "一直"
 
 msgid "never"
 msgstr "从未"
 
 msgid "having multiple games"
-msgstr ""
+msgstr "有多个游戏"
 
 msgid "ADD/REMOVE GAMES TO THIS GAME COLLECTION"
 msgstr "向游戏合辑中 添加/删除 游戏"
@@ -146,7 +146,7 @@ msgid "THIS FUNCTION IS DISABLED WHEN SCRAPING IS RUNNING"
 msgstr "这项功能在抓取进行时禁用"
 
 msgid "FILTER GAMELIST BY"
-msgstr ""
+msgstr "筛选游戏的依据是"
 
 msgid "RESET ALL FILTERS"
 msgstr "重置所有筛选器"
@@ -155,13 +155,13 @@ msgid "FIND GAMES"
 msgstr "搜索游戏"
 
 msgid "MANUAL INPUT"
-msgstr ""
+msgstr "手动输入"
 
 msgid "NO WIFI NETWORKS FOUND"
-msgstr ""
+msgstr "未找到WiFi网络"
 
 msgid "SEACHING WIFI NETWORKS"
-msgstr ""
+msgstr "查找WiFi网络"
 
 msgid "FINISHED"
 msgstr "完成"
@@ -224,7 +224,7 @@ msgid "MIX"
 msgstr "混合预览图"
 
 msgid "MIX V2"
-msgstr ""
+msgstr "混合预览图 V2"
 
 msgid "BOX 2D"
 msgstr "2D 盒子封面"
@@ -377,7 +377,7 @@ msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
 msgstr "需要重新启动系统才能应用新配置"
 
 msgid "BRIGHTNESS"
-msgstr ""
+msgstr "亮度"
 
 msgid "AUDIO OUTPUT"
 msgstr "音频输出"
@@ -440,25 +440,25 @@ msgid "OFF"
 msgstr "关"
 
 msgid "NETPLAY SETTINGS"
-msgstr ""
+msgstr "网络游戏设定"
 
 msgid "ENABLE NETPLAY"
-msgstr ""
+msgstr "开启网游"
 
 msgid "NICKNAME"
-msgstr ""
+msgstr "昵称"
 
 msgid "PORT"
-msgstr ""
+msgstr "端口"
 
 msgid "MITM"
 msgstr ""
 
 msgid "REINDEX ALL GAMES"
-msgstr ""
+msgstr "重排序全部游戏"
 
 msgid "INDEX MISSING GAMES"
-msgstr ""
+msgstr "列出缺失游戏"
 
 msgid "GAME RATIO"
 msgstr "游戏显示比例"
@@ -542,7 +542,7 @@ msgid "UPDATE GAMES LISTS"
 msgstr "更新游戏列表"
 
 msgid "GAME HASHING IS RUNNING. DO YOU WANT TO STOP IT ?"
-msgstr ""
+msgstr "游戏正在校验，要停止吗？"
 
 msgid "REALLY UPDATE GAMES LISTS ?"
 msgstr "是否更新游戏列表?"
@@ -599,7 +599,7 @@ msgid "DEFAULT GRID SIZE"
 msgstr "默认网格大小"
 
 msgid "DEFAULT"
-msgstr ""
+msgstr "默认"
 
 msgid "RESET GAMELIST CUSTOMISATIONS"
 msgstr "重置自定游戏列表"
@@ -662,7 +662,7 @@ msgid "SYSTEM VOLUME"
 msgstr "系统音量"
 
 msgid "SHOW OVERLAY WHEN VOLUME CHANGES"
-msgstr ""
+msgstr "音量变化时显示覆层"
 
 msgid "FRONTEND MUSIC"
 msgstr "前端音乐"
@@ -767,13 +767,13 @@ msgid "EMULATED WIIMOTES"
 msgstr "WIIMOTES 模拟"
 
 msgid "CHANGE SCREEN LAYOUT"
-msgstr ""
+msgstr "改变屏幕布局"
 
 msgid "LARGE SCREEN"
-msgstr ""
+msgstr "大屏"
 
 msgid "SIDE BY SIDE"
-msgstr ""
+msgstr "并排"
 
 msgid "INTERNAL RESOLUTION"
 msgstr "内部分辨率"
@@ -1144,10 +1144,10 @@ msgid "Md5 checksum"
 msgstr ""
 
 msgid "Game time"
-msgstr ""
+msgstr "游戏时间"
 
 msgid "how long the game has been played in total (seconds)"
-msgstr ""
+msgstr "游戏总共玩的时长（以秒计）"
 
 msgid "name"
 msgstr "游戏名"
@@ -1197,7 +1197,7 @@ msgid "KODI"
 msgstr "KODI"
 
 msgid "NETPLAY"
-msgstr ""
+msgstr "网络游戏"
 
 msgid "RANDOM"
 msgstr "随机"
@@ -1221,7 +1221,7 @@ msgid "Favorites"
 msgstr "收藏夹"
 
 msgid "LAUNCH THE GAME AS NETPLAY HOST ?"
-msgstr ""
+msgstr "作为主机开始网络游戏？"
 
 msgid "Preloading UI"
 msgstr "预加载 UI"
@@ -1305,25 +1305,25 @@ msgid "BEZELS INSTALLED SUCCESSFULLY"
 msgstr "框架安装成功"
 
 msgid "FAVORITES"
-msgstr ""
+msgstr "收藏夹"
 
 msgid "GENRE"
 msgstr "类型"
 
 msgid "PLAYERS"
-msgstr ""
+msgstr "人数"
 
 msgid "PUBLISHER / DEVELOPER"
-msgstr ""
+msgstr "发行商 / 开发商"
 
 msgid "RATING"
 msgstr "评分"
 
 msgid "KIDGAME"
-msgstr ""
+msgstr "儿童游戏"
 
 msgid "HASHING GAMES"
-msgstr ""
+msgstr "校验游戏"
 
 msgid "SEARCHING"
 msgstr "正在搜索"
@@ -1350,13 +1350,13 @@ msgid "SAVING METADATAS. PLEASE WAIT..."
 msgstr "正在保存数据，请稍候……"
 
 msgid "SCANNING BLUETOOTH"
-msgstr ""
+msgstr "扫描蓝牙设备"
 
 msgid "Searching controllers..."
-msgstr ""
+msgstr "查找控制器……"
 
 msgid "BLUETOOTH SCANNING IS ALREADY RUNNING."
-msgstr ""
+msgstr "已经开始扫描蓝牙设备。"
 
 msgid "UPDATE AVAILABLE"
 msgstr "发现可用更新"
@@ -1630,7 +1630,7 @@ msgid "REALLY RESTART EMULATIONSTATION?"
 msgstr "确定重启EMULATIONSTATION?"
 
 msgid "REALLY START RETROARCH?"
-msgstr "确定重启RETROARCH?"
+msgstr "确定启动RETROARCH?"
 
 msgid "START RETROARCH"
 msgstr "启动RETROARCH"
