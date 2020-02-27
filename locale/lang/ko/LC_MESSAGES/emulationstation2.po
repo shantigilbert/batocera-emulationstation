@@ -112,8 +112,7 @@ msgid "This collection contains %1$i game, including %2$s among other titles."
 msgid_plural ""
 "This collection contains %1$i games, including %2$s among other titles."
 msgstr[0] ""
-"이 컬렉션에는 다른 타이틀 중 % 2 $ s을 (를) 포함한 % 1 $ i 게임이 포함되어 있"
-"습니다."
+"이 컬렉션에는 %2$s을(를) 포함한 다른 타이틀에서 %1$i 게임이 포함되어 있습니다."
 
 msgid "Loading..."
 msgstr "로딩"
@@ -252,13 +251,13 @@ msgid "Path to video"
 msgstr "비디오 경로"
 
 msgid "enter path to thumbnail"
-msgstr "축소판 그림 경로 입력"
+msgstr "썸네일 경로 입력"
 
 msgid "Path to marquee"
 msgstr "움직이는 텍스트 경로"
 
 msgid "Thumbnail"
-msgstr "축소판 그림"
+msgstr "썸네일"
 
 msgid "enter rating"
 msgstr "평점 입력"
@@ -681,7 +680,7 @@ msgid "FILE GENERATED SUCCESSFULLY"
 msgstr "파일 생성 완료"
 
 msgid "OK"
-msgstr "확인"
+msgstr "결정"
 
 msgid "FILE GENERATION FAILED"
 msgstr "파일 생성 실패"
