@@ -1002,7 +1002,8 @@ void GuiMenu::openSystemSettings_batocera()
 		brightnessComponent->setValue(brighness);
 		brightnessComponent->setOnValueChanged([](const float &newVal)
 		{
-			ApiSystem::getInstance()->setBrighness((int)Math::round(newVal));
+			float mappedQuadratic = pow(newVal, 2.0f) / 100.0f; // equals 100 * x^2 / 100^2
+			ApiSystem::getInstance()->setBrighness((int)(mappedQuadratic + 0.5));
 		});
 
 		s->addWithLabel(_("BRIGHTNESS"), brightnessComponent);
