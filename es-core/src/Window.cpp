@@ -132,8 +132,8 @@ bool Window::init(bool initRenderer, bool initInputManager)
 		mClock->setFont(Font::get(FONT_SIZE_SMALL));
 		mClock->setHorizontalAlignment(ALIGN_RIGHT);
 		mClock->setVerticalAlignment(ALIGN_TOP);
-		mClock->setPosition(Renderer::getScreenWidth()*0.94, Renderer::getScreenHeight()*0.9965 - Font::get(FONT_SIZE_SMALL)->getHeight());
-		mClock->setSize(Renderer::getScreenWidth()*0.05, 0);
+		mClock->setPosition(Renderer::getScreenWidth()*0.89, Renderer::getScreenHeight()*0.9965 - Font::get(FONT_SIZE_SMALL)->getHeight());
+		mClock->setSize(Renderer::getScreenWidth()*0.10, 0);
 		mClock->setColor(0x777777FF);
 	}
 
@@ -934,8 +934,8 @@ void Window::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 				mClock->setFont(Font::getFromTheme(elem, ThemeFlags::ALL, Font::get(FONT_SIZE_MEDIUM)));
 		}
 		
-		mClock->setPosition(Renderer::getScreenWidth()*0.94, Renderer::getScreenHeight()*0.9965 - mClock->getFont()->getHeight());
-		mClock->setSize(Renderer::getScreenWidth()*0.05, 0);
+		mClock->setPosition(Renderer::getScreenWidth()*0.89, Renderer::getScreenHeight()*0.9965 - mClock->getFont()->getHeight());
+		mClock->setSize(Renderer::getScreenWidth()*0.10, 0);
 
 		mClock->applyTheme(theme, "screen", "clock", ThemeFlags::ALL ^ (ThemeFlags::TEXT));
 	}
