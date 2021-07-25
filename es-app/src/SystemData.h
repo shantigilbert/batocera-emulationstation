@@ -16,8 +16,6 @@
 #include "KeyboardMapping.h"
 #include "math/Vector2f.h"
 
-#define _ENABLEEMUELEC
-
 class FileData;
 class FolderData;
 class ThemeData;
