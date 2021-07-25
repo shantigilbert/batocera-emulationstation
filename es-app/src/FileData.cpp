@@ -232,11 +232,11 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
-const std::string& FileData::getSortName()
+const std::string FileData::getSortName() const
 {
-	std::string sortName = getMetadata(MetaDataId::SortName);
+	std::string sortName = mMetadata.get("sortname");
 	if (sortName.empty())
-		return getName();
+		return mMetadata.get("name");
 	else
 		return sortName;
 }

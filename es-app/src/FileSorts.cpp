@@ -79,12 +79,6 @@ namespace FileSorts
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
 		std::string name1 = file1->getSortName();
 		std::string name2 = file2->getSortName();
-		if(name1.empty()){
-			name1 = file1->getName();
-		}
-		if(name2.empty()){
-			name2 = file2->getName();
-		}
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
 

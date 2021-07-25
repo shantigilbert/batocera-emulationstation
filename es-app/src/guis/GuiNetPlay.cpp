@@ -22,6 +22,7 @@
 #include <rapidjson/pointer.h>
 
 #define WINDOW_WIDTH (float)Math::min(Renderer::getScreenHeight() * 1.125f, Renderer::getScreenWidth() * 0.90f)
+#define _ENABLEEMUELEC true
 
 // http://lobby.libretro.com/list/
 // Core list :

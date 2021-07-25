@@ -11,6 +11,8 @@
 #define sleep Sleep
 #endif
 
+#define _ENABLEEMUELEC
+
 class Window;
 
 enum QuitMode
