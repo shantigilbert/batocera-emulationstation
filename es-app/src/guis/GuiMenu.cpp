@@ -4341,12 +4341,17 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("Emulator"), emulChoice);
 	}
 
-	auto videoNativeResolutionMode_choice = createNativeVideoResolutionModeOptionList(mWindow, configName);
-	systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
-	systemConfiguration->addSaveFunc([configName, videoNativeResolutionMode_choice] {
-		SystemConf::getInstance()->set(configName + ".nativevideo", videoNativeResolutionMode_choice->getSelected());
-		SystemConf::getInstance()->saveSystemConf();
-	});
+#ifdef _ENABLEEMUELEC
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::nativevideo))
+	{
+		auto videoNativeResolutionMode_choice = createNativeVideoResolutionModeOptionList(mWindow, configName);
+		systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
+		systemConfiguration->addSaveFunc([configName, videoNativeResolutionMode_choice] {
+			SystemConf::getInstance()->set(configName + ".nativevideo", videoNativeResolutionMode_choice->getSelected());
+			SystemConf::getInstance()->saveSystemConf();
+		});
+	}
+#endif 
 
 	// Screen ratio choice
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::ratio))
@@ -4826,6 +4831,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 	return ratio_choice;
 }
 
+#ifdef _ENABLEEMUELEC
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoResolutionModeOptionList(Window *window, std::string configname)
 {
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(window, "NATIVE VIDEO", false);
@@ -4853,6 +4859,8 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 
 	return emuelec_video_mode;
 }
+#endif 
+
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createVideoResolutionModeOptionList(Window *window, std::string configname)
 {
