@@ -299,7 +299,6 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 			auto sysOptions = mSystem->isGroupSystem() ? srcSystem : mSystem;
 
 			bool showSystemOptions = ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS) && (sysOptions->hasFeatures() || sysOptions->hasEmulatorSelection());
-
 			/*
 			bool showGameOptions = (file != nullptr && file->getType() != FOLDER);
 
