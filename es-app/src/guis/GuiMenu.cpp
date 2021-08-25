@@ -4841,11 +4841,9 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 	videomode.push_back("720p60hz");
 	videomode.push_back("720p50hz");
 	videomode.push_back("480p60hz");
-	videomode.push_back("480cvbs");
 	videomode.push_back("576p50hz");
 	videomode.push_back("1080p50hz");
 	videomode.push_back("1080i50hz");
-	videomode.push_back("576cvbs");
 
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
