@@ -381,8 +381,11 @@ EmulatorFeatures::Features EmulatorFeatures::parseFeatures(const std::string fea
 		if (trim == "screen_layout") ret = ret | EmulatorFeatures::Features::screen_layout;
 		if (trim == "internal_resolution") ret = ret | EmulatorFeatures::Features::internal_resolution;
 		if (trim == "videomode") ret = ret | EmulatorFeatures::Features::videomode;
-		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;		
-		if (trim == "padtokeyboard") ret = ret | EmulatorFeatures::Features::padTokeyboard;		
+#ifdef _ENABLEEMUELEC
+		if (trim == "nativevideo") ret = ret | EmulatorFeatures::Features::nativevideo;
+#endif
+		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;
+		if (trim == "padtokeyboard") ret = ret | EmulatorFeatures::Features::padTokeyboard;
 		if (trim == "joystick2pad") ret = ret | EmulatorFeatures::Features::padTokeyboard;
 	}
 

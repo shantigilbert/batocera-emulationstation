@@ -68,7 +68,9 @@ public:
 		videomode = 16384,
 		colorization = 32768,
 		padTokeyboard = 65536,
-
+#ifdef _ENABLEEMUELEC
+				nativevideo = 131072,
+#endif
 		all = 0x0FFFFFFF
 	};
 
