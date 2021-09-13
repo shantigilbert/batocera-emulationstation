@@ -381,7 +381,10 @@ EmulatorFeatures::Features EmulatorFeatures::parseFeatures(const std::string fea
 		if (trim == "internal_resolution") ret = ret | EmulatorFeatures::Features::internal_resolution;
 		if (trim == "videomode") ret = ret | EmulatorFeatures::Features::videomode;
 		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;		
-		if (trim == "vertical") ret = ret | EmulatorFeatures::Features::vertical;		
+		if (trim == "vertical") ret = ret | EmulatorFeatures::Features::vertical;	
+#ifdef _ENABLEEMUELEC
+		if (trim == "nativevideo") ret = ret | EmulatorFeatures::Features::nativevideo;	
+#endif		
 	}
 
 	return ret;

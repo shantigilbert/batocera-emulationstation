@@ -54,8 +54,11 @@ public:
 		internal_resolution = 8192,
 		videomode = 16384,
 		colorization = 32768,
-        vertical = 65536,
-
+    vertical = 65536,
+#ifdef _ENABLEEMUELEC
+		nativevideo = 1048576,
+#endif
+				 
 		all = 0x0FFFFFFF
 	};
 
