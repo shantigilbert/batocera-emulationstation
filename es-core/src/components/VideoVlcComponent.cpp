@@ -66,7 +66,8 @@ VideoVlcComponent::VideoVlcComponent(Window* window, std::string subtitles) :
 {
 	mElapsed = 0;
 	mColorShift = 0xFFFFFFFF;
-	
+	mLinearSmooth = false;
+
 	mLoops = -1;
 	mCurrentLoop = 0;
 
@@ -228,10 +229,9 @@ void VideoVlcComponent::render(const Transform4x4f& parentTrans)
 		
 	Transform4x4f trans = parentTrans * getTransform();
 	
-	if (mRotation == 0 && !mTargetIsMin && !Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x(), mSize.y()))
+	if (mRotation == 0 && !mTargetIsMin && !Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x() * trans.r0().x(), mSize.y() * trans.r1().y()))
 		return;
-		
-	GuiComponent::renderChildren(trans);
+
 	Renderer::setMatrix(trans);
 
 	// Build a texture for the video frame
@@ -242,8 +242,11 @@ void VideoVlcComponent::render(const Transform4x4f& parentTrans)
 		{
 			if (mTexture == nullptr)
 			{
-				mTexture = TextureResource::get("");
+				mTexture = TextureResource::get("", false, mLinearSmooth);
+
 				resize();
+				trans = parentTrans * getTransform();
+				Renderer::setMatrix(trans);
 			}
 
 #ifdef _RPI_
@@ -253,7 +256,7 @@ void VideoVlcComponent::render(const Transform4x4f& parentTrans)
 #endif
 			{
 				mContext.mutexes[frame].lock();
-				mTexture->initFromExternalPixels(mContext.surfaces[frame], mVideoWidth, mVideoHeight);
+				mTexture->updateFromExternalPixels(mContext.surfaces[frame], mVideoWidth, mVideoHeight);
 				mContext.hasFrame[frame] = false;
 				mContext.mutexes[frame].unlock();
 
@@ -339,12 +342,14 @@ void VideoVlcComponent::render(const Transform4x4f& parentTrans)
 	
 	if (mTexture->bind())
 	{
+		beginCustomClipRect();
+
 		Vector2f targetSizePos = (mTargetSize - mSize) * mOrigin * -1;
 
 		if (mTargetIsMin)
 		{			
 			Vector2i pos(trans.translation().x() + (int)targetSizePos.x(), trans.translation().y() + (int)targetSizePos.y());
-			Vector2i size((int)mTargetSize.round().x(), (int)mTargetSize.round().y());
+			Vector2i size((int)(mTargetSize.x() * trans.r0().x()), (int)(mTargetSize.y() * trans.r1().y()));
 			Renderer::pushClipRect(pos, size);
 		}
 
@@ -377,6 +382,8 @@ void VideoVlcComponent::render(const Transform4x4f& parentTrans)
 
 		if (mTargetIsMin)
 			Renderer::popClipRect();
+
+		endCustomClipRect();
 
 		Renderer::bindTexture(0);
 	}
@@ -512,7 +519,7 @@ void VideoVlcComponent::handleLooping()
 				}
 			}
 
-			if (!getPlayAudio() || !Settings::getInstance()->getBool("VideoAudio") || (Settings::getInstance()->getBool("ScreenSaverVideoMute") && mScreensaverMode))
+			if (!getPlayAudio() || (!mScreensaverMode && !Settings::getInstance()->getBool("VideoAudio")) || (Settings::getInstance()->getBool("ScreenSaverVideoMute") && mScreensaverMode))
 				libvlc_audio_set_mute(mMediaPlayer, 1);
 
 			//libvlc_media_player_set_position(mMediaPlayer, 0.0f);
@@ -529,9 +536,10 @@ void VideoVlcComponent::startVideo()
 	if (mIsPlaying)
 		return;
 
-	if (hasStoryBoard() && mConfig.startDelay > 0)
+	if (hasStoryBoard("", true) && mConfig.startDelay > 0)
 		startStoryboard();
 
+	mTexture = nullptr;
 	mCurrentLoop = 0;
 	mVideoWidth = 0;
 	mVideoHeight = 0;
@@ -625,7 +633,7 @@ void VideoVlcComponent::startVideo()
 			
 				if (hasAudioTrack)
 				{
-					if (!getPlayAudio() || !Settings::getInstance()->getBool("VideoAudio") || (Settings::getInstance()->getBool("ScreenSaverVideoMute") && mScreensaverMode))
+					if (!getPlayAudio() || (!mScreensaverMode && !Settings::getInstance()->getBool("VideoAudio")) || (Settings::getInstance()->getBool("ScreenSaverVideoMute") && mScreensaverMode))
 						libvlc_audio_set_mute(mMediaPlayer, 1);
 					else
 						AudioManager::setVideoPlaying(true);
@@ -732,6 +740,9 @@ void VideoVlcComponent::applyTheme(const std::shared_ptr<ThemeData>& theme, cons
 	else
 		mLoops = -1;
 
+	if (elem->has("linearSmooth"))
+		mLinearSmooth = elem->get<bool>("linearSmooth");
+
 	applyStoryboard(elem);
 	mStaticImage.applyStoryboard(elem, "snapshot");
 }
@@ -748,7 +759,7 @@ void VideoVlcComponent::onShow()
 	VideoComponent::onShow();
 	mStaticImage.onShow();
 
-	if (hasStoryBoard() && mConfig.startDelay > 0)
+	if (hasStoryBoard("", true) && mConfig.startDelay > 0)
 		pauseStoryboard();
 }
 

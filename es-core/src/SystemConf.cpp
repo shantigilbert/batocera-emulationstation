@@ -5,11 +5,11 @@
 #include "utils/StringUtil.h"
 #include "utils/FileSystemUtil.h"
 
+#include <set>
 #include <regex>
 #include <string>
 #include <iostream>
 #include <SDL_timer.h>
-
 
 #if WIN32 & !_DEBUG
 	// NOBATOCERACONF routes all SystemConf to es_settings for Windows Release version
@@ -28,7 +28,7 @@
 
 SystemConf *SystemConf::sInstance = NULL;
 
-static std::vector<std::string> dontRemoveAutoValue
+static std::set<std::string> dontRemoveValue
 {
 	{ "audio.device" }
 };
@@ -37,7 +37,6 @@ static std::map<std::string, std::string> defaults =
 {
 	{ "kodi.enabled", "1" },
 	{ "kodi.atstartup", "0" },
-	{ "kodi.xbutton", "1" },
 	{ "audio.bgmusic", "1" },
 	{ "wifi.enabled", "0" },
 	{ "system.hostname", "BATOCERA" },
@@ -48,31 +47,10 @@ static std::map<std::string, std::string> defaults =
 	{ "global.retroachievements.screenshot", "0" },
 	{ "global.retroachievements.username", "" },
 	{ "global.retroachievements.password", "" },
+	{ "global.netplay_public_announce", "1" },
 	{ "global.ai_service_enabled", "0" },
 };
 
-/*
-kodi.enabled=1
-kodi.atstartup=0
-kodi.xbutton=1
-audio.bgmusic=1
-system.language=en_US
-controllers.bluetooth.enabled=1
-controllers.ps3.enabled=1
-controllers.ps3.driver=bluez
-controllers.xboxdrv.enabled=0
-controllers.xboxdrv.nbcontrols=2
-controllers.gpio.enabled=0
-controllers.gpio.args=map=1,2
-controllers.db9.enabled=0
-controllers.db9.args=map=1
-controllers.gamecon.enabled=0
-controllers.gamecon.args=map=1
-controllers.xarcade.enabled=1
-wifi.enabled=0
-system.hostname=BATOCERA
-global.retroachievements.*
-*/
 #ifdef _ENABLEEMUELEC
 std::string systemConfFile = "/storage/.config/emuelec/configs/emuelec.conf";
 std::string systemConfFileTmp = "/storage/.config/emuelec/configs/emuelec.conf.tmp";
@@ -189,7 +167,7 @@ bool SystemConf::saveSystemConf()
 			if (idx == 0 || (idx == 1 && (fc == ';' || fc == '#')))
 			{
 				std::string val = it.second;
-				if ((!val.empty() && val != "auto") || std::find(dontRemoveAutoValue.cbegin(), dontRemoveAutoValue.cend(), it.first) != dontRemoveAutoValue.cend())
+				if ((!val.empty() && val != "auto") || dontRemoveValue.find(it.first) != dontRemoveValue.cend())
 				{
 					auto defaultValue = defaults.find(key);
 					if (defaultValue != defaults.cend() && defaultValue->second == val)
@@ -247,9 +225,14 @@ std::string SystemConf::get(const std::string &name)
 	return Settings::getInstance()->getString(mapSettingsName(name));
 #endif
 	
-    if (confMap.count(name))
-        return confMap[name];
-    
+	auto it = confMap.find(name);
+	if (it != confMap.cend())
+		return it->second;
+
+	auto dit = defaults.find(name);
+	if (dit != defaults.cend())
+		return dit->second;
+
     return "";
 }
 

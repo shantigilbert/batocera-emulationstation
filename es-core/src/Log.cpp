@@ -6,6 +6,7 @@
 #include <mutex>
 #include "Settings.h"
 #include <iomanip> 
+#include <SDL_timer.h>
 
 #if WIN32
 #include <Windows.h>
@@ -58,7 +59,7 @@ void Log::init()
 	remove((getLogPath() + ".bak").c_str());
 
 	// rename previous log file
-	rename(getLogPath().c_str(), (getLogPath() + ".bak").c_str());
+	Utils::FileSystem::renameFile(getLogPath(), getLogPath() + ".bak");
 
 	file = fopen(getLogPath().c_str(), "w");
 	dirty = false;
@@ -156,4 +157,17 @@ void Log::setupReportingLevel()
 	}
 
 	setReportingLevel(lvl);
+}
+
+StopWatch::StopWatch(const std::string& elapsedMillisecondsMessage, LogLevel level)
+{ 
+	mMessage = elapsedMillisecondsMessage; 
+	mLevel = level;
+	mStartTicks = SDL_GetTicks();
+}
+
+StopWatch::~StopWatch()
+{
+	int elapsed = SDL_GetTicks() - mStartTicks;
+	LOG(mLevel) << mMessage << " " << elapsed << "ms";
 }

@@ -8,6 +8,7 @@
 #include "GuiComponent.h"
 #include <memory>
 #include <functional>
+#include "MultiStateInput.h"
 
 class AnimatedImageComponent;
 class SystemData;
@@ -45,9 +46,15 @@ struct SystemViewCarousel
 	Vector2f logoPos;
 	float zIndex;
 	float systemInfoDelay;
+	bool  systemInfoCountOnly;
 
+	float			minLogoOpacity;
+	float			transitionSpeed;
 	std::string		defaultTransition;
 	std::string		scrollSound;
+
+	bool anyLogoHasOpacityStoryboard;
+	bool anyLogoHasScaleStoryboard;
 };
 
 class SystemView : public IList<SystemViewData, SystemData*>
@@ -72,11 +79,16 @@ public:
 
 	void reloadTheme(SystemData* system);
 
+	SystemData* getActiveSystem();
+
 protected:
 	void onCursorChanged(const CursorState& state) override;
 
 private:
-	void	loadExtras(SystemData* system, IList<SystemViewData, SystemData*>::Entry& e);
+	void	 ensureLogo(IList<SystemViewData, SystemData*>::Entry& entry);
+	void	 loadExtras(SystemData* system, IList<SystemViewData, SystemData*>::Entry& e);
+	void	 updateExtraTextBinding();
+	void	 showQuickSearch();
 
 	void	 preloadExtraNeighbours(int cursor);
 	void	 setExtraRequired(int cursor, bool required);
@@ -86,8 +98,7 @@ private:
 	void	 clearEntries();
 
 	int		 moveCursorFast(bool forward = true);
-	void	 showManufacturerBar();
-	void	 showHardwareBar();
+	void	 showNavigationBar(const std::string& title, const std::function<std::string(SystemData* system)>& selector);
 
 	virtual void onScreenSaverActivate() override;
 	virtual void onScreenSaverDeactivate() override;
@@ -114,13 +125,14 @@ private:
 	float mExtrasFadeMove;
 	int	  mExtrasFadeOldCursor;
 
-	bool mViewNeedsReload;	
-	bool launchKodi;
+	bool mViewNeedsReload;		
 
 	bool mDisable;
 	bool mScreensaverActive;
 
 	int mLastCursor;	
+
+	MultiStateInput mYButton;
 };
 
 #endif // ES_APP_VIEWS_SYSTEM_VIEW_H

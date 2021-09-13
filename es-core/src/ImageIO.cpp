@@ -220,6 +220,13 @@ std::string getImageCacheFilename()
 	return Utils::FileSystem::getEsConfigPath() + "/imagecache.db";
 }
 
+void ImageIO::clearImageCache()
+{
+	std::string fname = getImageCacheFilename();
+	Utils::FileSystem::removeFile(fname);
+	sizeCache.clear();
+}
+
 void ImageIO::loadImageCache()
 {
 	std::string fname = getImageCacheFilename();
@@ -228,31 +235,58 @@ void ImageIO::loadImageCache()
 	if (f.fail())
 		return;
 
+	sizeCache.clear();
+
 #if WIN32
 	std::string relativeTo = Utils::FileSystem::getParent(Utils::FileSystem::getHomePath());
 #else
-	std::string relativeTo = "/userdata/";	
+	std::string relativeTo = "/userdata";	
 #endif
+
+	std::vector<std::string> splits;
 
 	std::string line;
 	while (std::getline(f, line))
 	{
-		auto splits = Utils::String::split(line, '|');
+		splits.clear();
+
+		const char* src = line.c_str();
+
+		while (true)
+		{
+			const char* d = strchr(src, '|');
+			size_t len = (d) ? d - src : strlen(src);
+
+			if (len)
+				splits.push_back(std::string(src, len)); // capture token
+
+			if (d) src += len + 1; else break;
+		}
+
 		if (splits.size() == 4)
 		{
-			std::string file = splits[0];
-			file = Utils::FileSystem::resolveRelativePath(splits[0], relativeTo, true);
+			std::string file = Utils::FileSystem::resolveRelativePath(splits[0], relativeTo, true);
 
 			CachedFileInfo fi;
-			fi.size = atoi(splits[1].c_str());
-			fi.x = atoi(splits[2].c_str());
-			fi.y = atoi(splits[3].c_str());
+			fi.size = Utils::String::toInteger(splits[1]);
+			fi.x = Utils::String::toInteger(splits[2]);
+			fi.y = Utils::String::toInteger(splits[3]);
 
 			sizeCache[file] = fi;
 		}
 	}
 
 	f.close();
+}
+
+static bool _isCachablePath(const std::string& path)
+{
+	return 
+		path.find("/themes/") == std::string::npos && 
+		path.find("/tmp/") != std::string::npos &&
+		path.find("/emulationstation.tmp/") != std::string::npos &&
+		path.find("/pdftmp/") == std::string::npos && 
+		path.find("/saves/") != std::string::npos;
 }
 
 void ImageIO::saveImageCache()
@@ -268,7 +302,7 @@ void ImageIO::saveImageCache()
 #if WIN32
 	std::string relativeTo = Utils::FileSystem::getParent(Utils::FileSystem::getHomePath());
 #else
-	std::string relativeTo = "/userdata/";
+	std::string relativeTo = "/userdata";
 #endif
 
 	for (auto it : sizeCache)
@@ -276,12 +310,10 @@ void ImageIO::saveImageCache()
 		if (it.second.size < 0)
 			continue;
 
-		if (it.first.find("/themes/") != std::string::npos || it.first.find("/tmp/") != std::string::npos || it.first.find("/pdftmp/") != std::string::npos)
+		if (!_isCachablePath(it.first))
 			continue;
 
-		std::string path = Utils::FileSystem::createRelativePath(it.first, "_path_", true);
-		if (path[0] != '~')
-			path = Utils::FileSystem::createRelativePath(it.first, relativeTo, false);
+		std::string path = Utils::FileSystem::createRelativePath(it.first, relativeTo, true); 
 
 		f << path;
 		f << "|";
@@ -322,7 +354,7 @@ void ImageIO::updateImageCache(const std::string fn, int sz, int x, int y)
 			item.y = y;
 			item.size = sz;
 
-			if (sz > 0 && x > 0 && fn.find("/themes/") == std::string::npos && fn.find("/tmp/") == std::string::npos && fn.find("/pdftmp/") == std::string::npos)
+			if (sz > 0 && x > 0 && _isCachablePath(fn))
 				sizeCacheDirty = true;
 		}
 	}
@@ -330,7 +362,7 @@ void ImageIO::updateImageCache(const std::string fn, int sz, int x, int y)
 	{
 		sizeCache[fn] = CachedFileInfo(sz, x, y);
 
-		if (sz > 0 && x > 0 && fn.find("/themes/") == std::string::npos && fn.find("/tmp/") == std::string::npos && fn.find("/pdftmp/") == std::string::npos)
+		if (sz > 0 && x > 0 && _isCachablePath(fn))
 			sizeCacheDirty = true;
 	}
 }

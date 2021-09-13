@@ -5,10 +5,16 @@
 #include "utils/FileSystemUtil.h"
 #include "MetaData.h"
 #include <unordered_map>
+#include <memory>
+#include <vector>
+#include <stack>
+#include "KeyboardMapping.h"
+#include "SystemData.h"
+#include "SaveState.h"
 
-class SystemData;
 class Window;
 struct SystemEnvironmentData;
+
 
 enum FileType
 {
@@ -43,18 +49,21 @@ struct LaunchGameOptions
 
 	std::string core;
 	std::string netplayClientPassword;
+
+	SaveState	saveStateInfo;
 };
 
 class FolderData;
 
 // A tree node that holds information for a file.
-class FileData
+class FileData : public IKeyboardMapContainer
 {
 public:
 	FileData(FileType type, const std::string& path, SystemData* system);
 	virtual ~FileData();
 
-	virtual const std::string getName();
+	virtual const std::string& getName();
+	virtual const std::string getSortName() const;
 
 	inline FileType getType() const { return mType; }
 	
@@ -84,27 +93,28 @@ public:
 	virtual const bool getHidden();
 	virtual const bool getFavorite();
 	virtual const bool getKidGame();
+	virtual const bool hasCheevos();
 
 	const std::string getConfigurationName();
 
-	inline bool isPlaceHolder() { return mType == PLACEHOLDER; };
-
-	virtual inline void refreshMetadata() { };
+	inline bool isPlaceHolder() { return mType == PLACEHOLDER; };	
 
 	virtual std::string getKey();
 	const bool isArcadeAsset();
+	const bool isVerticalArcadeGame();
+	const bool isLightGunGame();
 	inline std::string getFullPath() { return getPath(); };
 	inline std::string getFileName() { return Utils::FileSystem::getFileName(getPath()); };
 	virtual FileData* getSourceFileData();
 	virtual std::string getSystemName() const;
 
 	// Returns our best guess at the "real" name for this file (will attempt to perform MAME name translation)
-	std::string getDisplayName() const;
+	virtual std::string& getDisplayName();
 
 	// As above, but also remove parenthesis
-	std::string getCleanName() const;
+	std::string getCleanName();
 
-	void launchGame(Window* window, LaunchGameOptions options = LaunchGameOptions());
+	bool launchGame(Window* window, LaunchGameOptions options = LaunchGameOptions());
 
 	static void resetSettings();
 	
@@ -114,14 +124,32 @@ public:
 	void setMetadata(MetaDataList value) { getMetadata() = value; } 
 	
 	std::string getMetadata(MetaDataId key) { return getMetadata().get(key); }
-	//std::string getMetadata(const std::string& key) { return getMetadata().get(key); }
-	void setMetadata(const std::string& key, const std::string& value) { getMetadata().set(key, value); }
+	void setMetadata(MetaDataId key, const std::string& value) { return getMetadata().set(key, value); }
 
 	void detectLanguageAndRegion(bool overWrite);
 
 	void deleteGameFiles();
 
+	void checkCrc32(bool force = false);
+	void checkMd5(bool force = false);
+	void checkCheevosHash(bool force = false);
+
+	void importP2k(const std::string& p2k);
+	std::string convertP2kFile();
+	bool hasP2kFile();
+
+	bool hasKeyboardMapping();
+	KeyMappingFile getKeyboardMapping();
+	bool isFeatureSupported(EmulatorFeatures::Features feature);
+	bool isExtensionCompatible();
+
+	std::string getCurrentGameSetting(const std::string& settingName);
+
+	bool hasContentFiles();
+	std::set<std::string> getContentFiles();
+
 private:
+	std::string getKeyboardMappingFilePath();
 	MetaDataList mMetadata;
 
 protected:	
@@ -129,6 +157,7 @@ protected:
 	std::string mPath;
 	FileType mType;
 	SystemData* mSystem;
+	std::string* mDisplayName;
 };
 
 class CollectionFileData : public FileData
@@ -136,8 +165,7 @@ class CollectionFileData : public FileData
 public:
 	CollectionFileData(FileData* file, SystemData* system);
 	~CollectionFileData();
-	const std::string getName();
-	void refreshMetadata();
+	const std::string& getName();
 	FileData* getSourceFileData();
 	std::string getKey();
 	virtual const std::string getPath() const;
@@ -147,13 +175,11 @@ public:
 
 	virtual const MetaDataList& getMetadata() const { return mSourceFileData->getMetadata(); }
 	virtual MetaDataList& getMetadata() { return mSourceFileData->getMetadata(); }
+	virtual std::string& getDisplayName() { return mSourceFileData->getDisplayName(); }
 
 private:
 	// needs to be updated when metadata changes
-	std::string mCollectionFileName;
 	FileData* mSourceFileData;
-
-	bool mDirty;
 };
 
 class FolderData : public FileData
@@ -162,19 +188,10 @@ class FolderData : public FileData
 	friend class SystemData;
 
 public:
-	FolderData(const std::string& startpath, SystemData* system, bool ownsChildrens=true) : FileData(FOLDER, startpath, system)
-	{
-		mIsDisplayableAsVirtualFolder = false;
-		mOwnsChildrens = ownsChildrens;
-	}
-
-	~FolderData()
-	{
-		clear();
-	}
+	FolderData(const std::string& startpath, SystemData* system, bool ownsChildrens = true);
+	~FolderData();
 
 	inline bool isVirtualStorage() { return !mOwnsChildrens; }
-
 	inline bool isVirtualFolderDisplay() { return mIsDisplayableAsVirtualFolder && !mOwnsChildrens; }
 	
 	void enableVirtualFolderDisplay(bool value) { mIsDisplayableAsVirtualFolder = value; };
@@ -184,7 +201,9 @@ public:
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
 	const std::vector<FileData*> getChildrenListToDisplay();
-	std::vector<FileData*> getFilesRecursive(unsigned int typeMask, bool displayedOnly = false, SystemData* system = nullptr) const;
+	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
+
+	std::vector<FileData*> getFilesRecursive(unsigned int typeMask, bool displayedOnly = false, SystemData* system = nullptr, bool includeVirtualStorage = true) const;
 	std::vector<FileData*> getFlatGameList(bool displayedOnly, SystemData* system) const;
 
 	void addChild(FileData* file, bool assignParent = true); // Error if mType != FOLDER
@@ -194,18 +213,9 @@ public:
 
 	FileData* findUniqueGameForFolder();
 
-	void clear()
-	{
-		if (mOwnsChildrens)
-		{
-			for (int i = mChildren.size() - 1; i >= 0; i--)
-				delete mChildren.at(i);
-		}
-
-		mChildren.clear();
-	}	
-
+	void clear();
 	void removeVirtualFolders();
+	void removeFromVirtualFolders(FileData* game);
 
 private:
 	std::vector<FileData*> mChildren;

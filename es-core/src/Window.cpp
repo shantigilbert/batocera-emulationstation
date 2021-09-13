@@ -95,7 +95,7 @@ GuiComponent* Window::peekGui()
 	return mGuiStack.back();
 }
 
-bool Window::init(bool initRenderer)
+bool Window::init(bool initRenderer, bool initInputManager)
 {
 	LOG(LogInfo) << "Window::init";
 
@@ -110,7 +110,8 @@ bool Window::init(bool initRenderer)
 	else 
 		Renderer::activateWindow();
 
-	InputManager::getInstance()->init();
+	if (initInputManager)
+		InputManager::getInstance()->init();
 
 	ResourceManager::getInstance()->reloadAll();
 
@@ -151,8 +152,8 @@ bool Window::init(bool initRenderer)
 	if (peekGui())
 #ifdef _ENABLEEMUELEC	
 		// emuelec
-      if(Utils::FileSystem::exists("/emuelec/bin/fbfix")) {
-      system("/emuelec/bin/fbfix");      
+      if(Utils::FileSystem::exists("/usr/bin/fbfix")) {
+      system("/usr/bin/fbfix");      
   } else { 
 	  if(Utils::FileSystem::exists("/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/bin/fbfix")) {
 	   system("/storage/.kodi/addons/script.emuelec.Amlogic-ng.launcher/bin/fbfix");
@@ -202,6 +203,12 @@ void Window::textInput(const char* text)
 
 void Window::input(InputConfig* config, Input input)
 {
+	if (config == nullptr)
+		return;
+	
+	if (config->getDeviceIndex() > 0 && Settings::getInstance()->getBool("FirstJoystickOnly"))
+		return;
+
 	if (mScreenSaver) 
 	{
 		if (mScreenSaver->isScreenSaverActive() && Settings::getInstance()->getBool("ScreenSaverControls") &&
@@ -244,17 +251,17 @@ void Window::input(InputConfig* config, Input input)
 	if (config->getDeviceId() == DEVICE_KEYBOARD && input.value && input.id == SDLK_g && SDL_GetModState() & KMOD_LCTRL) // && Settings::getInstance()->getBool("Debug"))
 	{
 		// toggle debug grid with Ctrl-G
-		Settings::getInstance()->setBool("DebugGrid", !Settings::getInstance()->getBool("DebugGrid"));
+		Settings::DebugGrid = !Settings::DebugGrid;
 	}
 	else if (config->getDeviceId() == DEVICE_KEYBOARD && input.value && input.id == SDLK_t && SDL_GetModState() & KMOD_LCTRL) // && Settings::getInstance()->getBool("Debug"))
 	{
 		// toggle TextComponent debug view with Ctrl-T
-		Settings::getInstance()->setBool("DebugText", !Settings::getInstance()->getBool("DebugText"));
+		Settings::DebugText = !Settings::DebugText;
 	}
 	else if (config->getDeviceId() == DEVICE_KEYBOARD && input.value && input.id == SDLK_i && SDL_GetModState() & KMOD_LCTRL) // && Settings::getInstance()->getBool("Debug"))
 	{
 		// toggle TextComponent debug view with Ctrl-I
-		Settings::getInstance()->setBool("DebugImage", !Settings::getInstance()->getBool("DebugImage"));
+		Settings::DebugImage = !Settings::DebugImage;
 	}
 	else
 	{
@@ -377,30 +384,33 @@ void Window::layoutNotificationPopups()
 
 void Window::processSongTitleNotifications()
 {
-	if (!Settings::getInstance()->getBool("audio.display_titles"))
-		return;
-
-	std::string songName = AudioManager::getInstance()->getSongName();
-	if (!songName.empty())
+	if (AudioManager::getInstance()->songNameChanged())
 	{
-		std::unique_lock<std::mutex> lock(mNotificationMessagesLock);
-
-		for (int i = mNotificationPopups.size() - 1; i >= 0; i--)
+		if (Settings::getInstance()->getBool("audio.display_titles"))
 		{
-			if (mNotificationPopups[i]->getMessage().find(_U("\uF028")) != std::string::npos)
+			std::string songName = AudioManager::getInstance()->getSongName();
+			if (!songName.empty())
 			{
-				delete mNotificationPopups[i];
+				std::unique_lock<std::mutex> lock(mNotificationMessagesLock);
 
-				auto it = mNotificationPopups.begin();
-				std::advance(it, i);
-				mNotificationPopups.erase(it);
+				for (int i = mNotificationPopups.size() - 1; i >= 0; i--)
+				{
+					if (mNotificationPopups[i]->getMessage().find(_U("\uF028")) != std::string::npos)
+					{
+						delete mNotificationPopups[i];
+
+						auto it = mNotificationPopups.begin();
+						std::advance(it, i);
+						mNotificationPopups.erase(it);
+					}
+				}
+
+				lock.unlock();
+				displayNotificationMessage(_U("\uF028  ") + songName); // _("Now playing: ") + 
 			}
 		}
-		
-		lock.unlock();
 
-		displayNotificationMessage(_U("\uF028  ") + songName); // _("Now playing: ") + 
-		AudioManager::getInstance()->setSongName("");
+		AudioManager::getInstance()->resetSongNameChangedFlag();
 	}	
 }
 
@@ -459,11 +469,15 @@ void Window::update(int deltaTime)
 
 			if (clockTstruct.tm_year > 100) 
 			{ 
-				// Display the clock only if year is more than 1900+100 ; rpi have no internal clock and out of the networks, the date time information has no value */
+				// Display the clock only if year is more than 1900+100 ; rpi have no internal clock and out of the networks, the date time information has no value
 				// Visit http://en.cppreference.com/w/cpp/chrono/c/strftime for more information about date/time format
-				
-				char       clockBuf[32];
-				strftime(clockBuf, sizeof(clockBuf), "%H:%M", &clockTstruct);
+
+				std::string clockBuf;
+				if (Settings::getInstance()->getBool("ClockMode12"))
+					clockBuf = Utils::Time::timeToString(clockNow, "%I:%M %p");
+				else
+					clockBuf = Utils::Time::timeToString(clockNow, "%H:%M");
+
 				mClock->setText(clockBuf);
 			}
 
@@ -697,7 +711,7 @@ void Window::setHelpPrompts(const std::vector<HelpPrompt>& prompts, const HelpSt
 			"up/down/left/right",
 			"up/down",
 			"left/right",
-			"a", "b", "x", "y", "l", "r",
+			BUTTON_BACK, BUTTON_OK, "x", "y", "l", "r",
 			"start", "select",
 			NULL
 		};
@@ -869,11 +883,28 @@ void Window::updateAsyncNotifications(int deltaTime)
 		PowerSaver::resume();
 }
 
-void Window::postToUiThread(const std::function<void(Window*)>& func)
+void Window::unregisterPostedFunctions(void* data)
+{
+	if (data == nullptr)
+		return;
+
+	for (auto it = mFunctions.cbegin(); it != mFunctions.cend(); )
+	{
+		if ((*it).container == data)
+			it = mFunctions.erase(it);
+		else
+			it++;
+	}
+}
+
+void Window::postToUiThread(const std::function<void()>& func, void* data)
 {	
 	std::unique_lock<std::mutex> lock(mNotificationMessagesLock);
 
-	mFunctions.push_back(func);	
+	PostedFunction pf;
+	pf.func = func;
+	pf.container = data;
+	mFunctions.push_back(pf);	
 }
 
 void Window::processPostedFunctions()
@@ -881,7 +912,9 @@ void Window::processPostedFunctions()
 	std::unique_lock<std::mutex> lock(mNotificationMessagesLock);
 
 	for (auto func : mFunctions)
-		func(this);	
+	{
+		TRYCATCH("processPostedFunction", func.func())
+	}
 
 	mFunctions.clear();
 }

@@ -51,6 +51,7 @@ struct ScraperSearchResult
 
 	MetaDataList mdl;
 	std::map<MetaDataId, ScraperSearchItem> urls;
+	std::string p2k;
 
 	bool hasMedia()
 	{
@@ -124,6 +125,7 @@ public:
 	void update() override;
 
 	virtual int getPercent();
+	std::string getImageFileName() { return mSavePath; }
 
 private:
 	HttpReq* mRequest;
@@ -157,7 +159,7 @@ public:
 		return mPercent;
 	}
 
-	std::unique_ptr<ImageDownloadHandle> downloadImageAsync(const std::string& url, const std::string& saveAs);
+	std::unique_ptr<ImageDownloadHandle> downloadImageAsync(const std::string& url, const std::string& saveAs, bool resize = true);
 
 private:
 	ScraperSearchResult mResult;
@@ -165,7 +167,7 @@ private:
 	class ResolvePair
 	{	
 	public:
-		ResolvePair(std::function<std::unique_ptr<AsyncHandle>()> _invoker, std::function<void()> _function, std::string _name, std::string _source)
+		ResolvePair(std::function<std::unique_ptr<ImageDownloadHandle>()> _invoker, std::function<void(ImageDownloadHandle* result)> _function, std::string _name, std::string _source)
 		{
 			func = _invoker;
 			onFinished = _function;
@@ -178,14 +180,14 @@ private:
 			handle = func();
 		}
 	
-		std::function<void()> onFinished;
+		std::function<void(ImageDownloadHandle* result)> onFinished;
 		std::string name;
 		std::string source;
 
-		std::unique_ptr<AsyncHandle> handle;
+		std::unique_ptr<ImageDownloadHandle> handle;
 
 	private:
-		std::function<std::unique_ptr<AsyncHandle>()> func;
+		std::function<std::unique_ptr<ImageDownloadHandle>()> func;
 	};
 
 	std::vector<ResolvePair*> mFuncs;
@@ -194,19 +196,26 @@ private:
 	int mPercent;
 };
 
-
-
 class Scraper
 {
 public:
-	static std::map<std::string, Scraper*> scrapers;
-	static Scraper* getScraper();
+	static std::vector<std::pair<std::string, Scraper*>> scrapers;
+	
+	static Scraper* getScraper(const std::string name = "");
 	static std::vector<std::string> getScraperList();
 	static bool isValidConfiguredScraper();
 
+	//About the same as "~/.emulationstation/downloaded_images/[system_name]/[game_name].[url's extension]".
+	//Will create the "downloaded_images" and "subdirectory" directories if they do not exist.
+	static std::string getSaveAsPath(FileData* game, const MetaDataId metadataId, const std::string& url);
+
+	virtual	bool isSupportedPlatform(SystemData* system) = 0;
+
+	virtual	bool hasMissingMedia(FileData* file);
+
 	std::unique_ptr<ScraperSearchHandle> search(const ScraperSearchParams& params);
 
-	virtual	int getThreadCount() {
+	virtual	int getThreadCount(std::string &result) {
 		return 1;
 	}
 
@@ -215,11 +224,6 @@ protected:
 		std::queue<std::unique_ptr<ScraperRequest>>& requests,
 		std::vector<ScraperSearchResult>& results) = 0;
 };
-
-
-//About the same as "~/.emulationstation/downloaded_images/[system_name]/[game_name].[url's extension]".
-//Will create the "downloaded_images" and "subdirectory" directories if they do not exist.
-std::string getSaveAsPath(const ScraperSearchParams& params, const std::string& suffix, const std::string& url);
 
 //You can pass 0 for maxWidth or maxHeight to automatically keep the aspect ratio.
 //Will overwrite the image at [path] with the new resized one.

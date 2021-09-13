@@ -12,15 +12,11 @@
 ThreadedScraper* ThreadedScraper::mInstance = nullptr;
 bool ThreadedScraper::mPaused = false;
 
-ThreadedScraper::ThreadedScraper(Window* window, const std::queue<ScraperSearchParams>& searches)
+ThreadedScraper::ThreadedScraper(Window* window, const std::queue<ScraperSearchParams>& searches, int threadCount)
 	: mSearchQueue(searches), mWindow(window)
 {
 	mExitCode = ASYNC_IN_PROGRESS;
 	mTotal = (int) mSearchQueue.size();
-
-	int threadCount = Scraper::getScraper()->getThreadCount();
-	if (threadCount <= 0)
-		threadCount = 1;
 
 	mWndNotification = mWindow->createAsyncNotificationComponent();
 	mWndNotification->updateTitle(GUIICON + _("SCRAPING"));
@@ -147,7 +143,8 @@ void ThreadedScraper::processError(int status, const std::string statusString)
 		status == HttpReq::REQ_403_BADLOGIN || status == HttpReq::REQ_401_FORBIDDEN)
 	{
 		mExitCode = ASYNC_ERROR;
-		mWindow->postToUiThread([statusString](Window* w) { w->pushGui(new GuiMsgBox(w, _("SCRAPE FAILED") + " : " + statusString)); });
+		Window* w = mWindow;
+		mWindow->postToUiThread([statusString, w]() { w->pushGui(new GuiMsgBox(w, _("SCRAPE FAILED") + " : " + statusString)); });
 	}
 	else
 		mErrors.push_back(statusString);
@@ -209,7 +206,7 @@ void ThreadedScraper::run()
 	}
 	
 	if (mExitCode == ASYNC_DONE)
-		mWindow->displayNotificationMessage(GUIICON + _("SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."));
+		mWindow->displayNotificationMessage(GUIICON + _("SCRAPING FINISHED") + std::string(". ") + _("UPDATE GAMES LISTS TO APPLY CHANGES."));
 
 	delete this;
 	ThreadedScraper::mInstance = nullptr;
@@ -240,9 +237,10 @@ void ThreadedScraper::acceptResult(ScraperThread& thread)
 	ScraperSearchParams& search = thread.getSearchParams();
 	auto game = search.game;
 
-	mWindow->postToUiThread([game, result](Window* w)
+	mWindow->postToUiThread([game, result]()
 	{
 		LOG(LogDebug) << "ThreadedScraper::importScrappedMetadata";
+		game->importP2k(result.p2k);
 		game->getMetadata().importScrappedMetadata(result.mdl);
 		game->detectLanguageAndRegion(true);
 
@@ -258,7 +256,18 @@ void ThreadedScraper::start(Window* window, const std::queue<ScraperSearchParams
 	if (ThreadedScraper::mInstance != nullptr)
 		return;
 
-	ThreadedScraper::mInstance = new ThreadedScraper(window, searches);
+	std::string error;
+	int threadCount = Scraper::getScraper()->getThreadCount(error);
+	if (threadCount < 0)
+	{
+		window->pushGui(new GuiMsgBox(window, _("AN ERROR OCCURED") + std::string(" :\r\n") + error)); // batocera
+		return;
+	}
+
+	if (threadCount == 0)
+		threadCount = 1;
+
+	ThreadedScraper::mInstance = new ThreadedScraper(window, searches, threadCount);
 }
 
 void ThreadedScraper::stop()

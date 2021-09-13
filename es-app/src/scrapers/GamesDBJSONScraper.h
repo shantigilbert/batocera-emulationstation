@@ -2,6 +2,10 @@
 #ifndef ES_APP_SCRAPERS_GAMES_DB_JSON_SCRAPER_H
 #define ES_APP_SCRAPERS_GAMES_DB_JSON_SCRAPER_H
 
+#include "EmulationStation.h"
+
+#ifdef GAMESDB_APIKEY
+
 #include "scrapers/Scraper.h"
 
 namespace pugi
@@ -15,6 +19,9 @@ public:
 	void generateRequests(const ScraperSearchParams& params,
 		std::queue<std::unique_ptr<ScraperRequest>>& requests,
 		std::vector<ScraperSearchResult>& results) override;
+
+	bool isSupportedPlatform(SystemData* system) override;
+	bool hasMissingMedia(FileData* file) override;
 };
 
 class TheGamesDBJSONRequest : public ScraperHttpRequest
@@ -39,4 +46,5 @@ class TheGamesDBJSONRequest : public ScraperHttpRequest
 	std::queue<std::unique_ptr<ScraperRequest>>* mRequestQueue;
 };
 
+#endif
 #endif // ES_APP_SCRAPERS_GAMES_DB_JSON_SCRAPER_H

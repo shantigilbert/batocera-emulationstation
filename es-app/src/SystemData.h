@@ -8,16 +8,19 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <pugixml/src/pugixml.hpp>
 #include <unordered_map>
 #include <unordered_set>
 #include "FileFilterIndex.h"
+#include "KeyboardMapping.h"
 #include "math/Vector2f.h"
 
 class FileData;
 class FolderData;
 class ThemeData;
 class Window;
+class SaveStateRepository;
 
 struct CustomFeatureChoice
 {
@@ -29,7 +32,20 @@ struct CustomFeature
 {
 	std::string name;
 	std::string value;
+	std::string description;
 	std::vector<CustomFeatureChoice> choices;
+};
+
+struct GameCountInfo
+{
+	int visibleGames;
+	int totalGames;
+	int playCount;
+	int favoriteCount;
+	int hiddenCount;
+	int gamesPlayed;
+	std::string mostPlayed;
+	std::string lastPlayedDate;
 };
 
 class EmulatorFeatures
@@ -58,11 +74,22 @@ public:
 #ifdef _ENABLEEMUELEC
 		nativevideo = 1048576,
 #endif
-				 
 		all = 0x0FFFFFFF
 	};
 
 	static Features parseFeatures(const std::string features);
+};
+
+struct SystemFeature
+{
+	SystemFeature()
+	{
+		features = EmulatorFeatures::Features::none;
+	}
+
+	std::string name;
+	EmulatorFeatures::Features features;
+	std::vector<CustomFeature> customFeatures;
 };
 
 struct CoreData
@@ -77,11 +104,14 @@ struct CoreData
 	std::string name;
 	bool netplay;
 	bool isDefault;
-
+	
 	std::string customCommandLine;
 	std::vector<CustomFeature> customFeatures;
+	std::vector<std::string> incompatibleExtensions;
 
 	EmulatorFeatures::Features features;
+
+	std::vector<SystemFeature> systemFeatures;
 };
 
 struct EmulatorData
@@ -96,8 +126,11 @@ struct EmulatorData
 
 	std::string customCommandLine;
 	std::vector<CustomFeature> customFeatures;
+	std::vector<std::string> incompatibleExtensions;
 
 	EmulatorFeatures::Features features;
+
+	std::vector<SystemFeature> systemFeatures;
 };
 
 struct SystemMetadata
@@ -113,32 +146,34 @@ struct SystemMetadata
 struct SystemEnvironmentData
 {
 	std::string mStartPath;
-	std::vector<std::string> mSearchExtensions;
+	std::set<std::string> mSearchExtensions;
 	std::string mLaunchCommand;
 	std::vector<PlatformIds::PlatformId> mPlatformIds;
 	std::string mGroup;
 
-	bool isValidExtension(const std::string extension)
+	inline bool isValidExtension(const std::string& extension)
 	{
-		return std::find(mSearchExtensions.cbegin(), mSearchExtensions.cend(), extension) != mSearchExtensions.cend();
+		return mSearchExtensions.find(extension) != mSearchExtensions.cend();
 	}
 };
 
-class SystemData
+class SystemData : public IKeyboardMapContainer
 {
 public:
-    SystemData(const SystemMetadata& type, SystemEnvironmentData* envData, std::vector<EmulatorData>* pEmulators, bool CollectionSystem = false, bool groupedSystem = false); // batocera
+    SystemData(const SystemMetadata& type, SystemEnvironmentData* envData, std::vector<EmulatorData>* pEmulators, bool CollectionSystem = false, bool groupedSystem = false, bool withTheme = true, bool loadThemeOnlyIfElements = false); // batocera
 	~SystemData();
 
 	static SystemData* getSystem(const std::string name);
+	static SystemData* getFirstVisibleSystem();
 
+	static std::map<std::string, EmulatorData> es_features;
 	static bool es_features_loaded;
 
 	inline FolderData* getRootFolder() const { return mRootFolder; };
 	inline const std::string& getName() const { return mMetadata.name; }
 	inline const std::string& getFullName() const { return mMetadata.fullName; }
 	inline const std::string& getStartPath() const { return mEnvData->mStartPath; }
-	inline const std::vector<std::string>& getExtensions() const { return mEnvData->mSearchExtensions; }
+	inline const std::set<std::string>& getExtensions() const { return mEnvData->mSearchExtensions; }
 	inline const std::string& getThemeFolder() const { return mMetadata.themeFolder; }
 	inline SystemEnvironmentData* getSystemEnvData() const { return mEnvData; }
 	inline const std::vector<PlatformIds::PlatformId>& getPlatformIds() const { return mEnvData->mPlatformIds; }
@@ -153,7 +188,7 @@ public:
 
 	unsigned int getGameCount() const;
 
-	int getDisplayedGameCount();
+	GameCountInfo* getGameCountInfo();
 	void updateDisplayedGameCount();
 
 	static bool isManufacturerSupported();
@@ -163,7 +198,10 @@ public:
 	static void writeExampleConfig(const std::string& path);
 	static std::string getConfigPath(bool forWrite); // if forWrite, will only return ~/.emulationstation/es_systems.cfg, never /etc/emulationstation/es_systems.cfg
 
-	static bool loadFeatures();
+	static bool loadEsFeaturesFile();
+	
+	bool loadFeatures();
+
 	static std::vector<CustomFeature> loadCustomFeatures(pugi::xml_node node);
 
 	static std::vector<SystemData*> sSystemVector;
@@ -187,6 +225,8 @@ public:
 	void loadTheme();
 
 	FileFilterIndex* getIndex(bool createIndex);
+	void setIndex(FileFilterIndex* index) { mFilterIndex = index; }
+
 	void deleteIndex();
 
 	void removeFromIndex(FileData* game) {
@@ -223,6 +263,8 @@ public:
 	size_t getGamelistHash() { return mGameListHash; }
 
 	bool isNetplaySupported();
+	bool isCheevosSupported();
+
 	static bool isNetplayActivated();
 
 	SystemData* getParentGroupSystem();
@@ -230,21 +272,50 @@ public:
 	static std::unordered_set<std::string> getAllGroupNames();
 	static std::unordered_set<std::string> getGroupChildSystemNames(const std::string groupName);
 
+	std::string getEmulator(bool resolveDefault = true);
+	std::string getCore(bool resolveDefault = true);
+
 	std::string getDefaultEmulator();
-	std::string getDefaultCore(const std::string emulatorName);
+	std::string getDefaultCore(const std::string emulatorName = "");
+
 	std::string getLaunchCommand(const std::string emulatorName, const std::string coreName);
 	std::vector<std::string> getCoreNames(std::string emulatorName);
 
 	bool isCurrentFeatureSupported(EmulatorFeatures::Features feature);
 	bool isFeatureSupported(std::string emulatorName, std::string coreName, EmulatorFeatures::Features feature);
 	std::vector<CustomFeature> getCustomFeatures(std::string emulatorName, std::string coreName);
-	
+	std::string		getCompatibleCoreNames(EmulatorFeatures::Features feature);
+
 	bool hasFeatures();
 	bool hasEmulatorSelection();
 
 	FileFilterIndex* getFilterIndex() { return mFilterIndex; }
 
+	static SystemData* loadSystem(std::string systemName, bool fullMode = true);
+	static std::map<std::string, std::string> getKnownSystemNames();
+
+	bool hasKeyboardMapping();
+	KeyMappingFile getKeyboardMapping();
+
+	bool shouldExtractHashesFromArchives();
+
+	static std::vector<CustomFeature> mGlobalFeatures;
+
+	bool getShowFilenames();
+	bool getShowParentFolder();
+	bool getShowFavoritesFirst();
+	bool getShowFavoritesIcon();
+	bool getShowCheevosIcon();
+	int  getShowFlags();
+	std::string getFolderViewMode();
+	bool getBoolSetting(const std::string& settingName);
+
+	static void resetSettings();
+
+	SaveStateRepository* getSaveStateRepository();
+
 private:
+	std::string getKeyboardMappingFilePath();
 	static void createGroupedSystems();
 
 	size_t mGameListHash;
@@ -252,6 +323,8 @@ private:
 	bool mIsCollectionSystem;
 	bool mIsGameSystem;
 	bool mIsGroupSystem;
+
+	int mIsCheevosSupported;
 
 	SystemMetadata mMetadata;
 
@@ -269,8 +342,10 @@ private:
 	void populateFolder(FolderData* folder, std::unordered_map<std::string, FileData*>& fileMap);
 	void indexAllGameFilters(const FolderData* folder);
 	void setIsGameSystemStatus();
-	
-	static SystemData* loadSystem(pugi::xml_node system);
+	void removeMultiDiskContent(std::unordered_map<std::string, FileData*>& fileMap);
+
+	static SystemData* loadSystem(pugi::xml_node system, bool fullMode = true);
+	static void loadAdditionnalConfig(pugi::xml_node& srcSystems);
 
 	FileFilterIndex* mFilterIndex;
 
@@ -281,8 +356,13 @@ private:
 	unsigned int mSortId;
 	std::string mViewMode;
 	Vector2f    mGridSizeOverride;	
+	
+	std::shared_ptr<bool> mShowFilenames;
 
-	int			mGameCount;
+	GameCountInfo* mGameCountInfo;
+	SaveStateRepository* mSaveRepository;
+
+	bool mHidden;
 };
 
 #endif // ES_APP_SYSTEM_DATA_H

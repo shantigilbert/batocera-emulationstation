@@ -127,6 +127,18 @@ HttpReq::HttpReq(const std::string& url, const std::string outputFilename)
 		return;
 	}
 
+	// Ignore expired SSL certificates
+	curl_easy_setopt(mHandle, CURLOPT_SSL_VERIFYPEER, 0L);
+
+	//set curl to handle redirects
+	err = curl_easy_setopt(mHandle, CURLOPT_CONNECTTIMEOUT, 10L);
+	if (err != CURLE_OK)
+	{
+		mStatus = REQ_IO_ERROR;
+		onError(curl_easy_strerror(err));
+		return;
+	}
+		
 	//set curl max redirects
 	err = curl_easy_setopt(mHandle, CURLOPT_MAXREDIRS, 2L);
 	if(err != CURLE_OK)
@@ -209,7 +221,12 @@ HttpReq::HttpReq(const std::string& url, const std::string outputFilename)
 		
 		Utils::FileSystem::removeFile(mTempStreamPath);
 
+#if defined(_WIN32)
+		mFile = _wfopen(Utils::String::convertToWideString(mTempStreamPath).c_str(), L"wb");
+#else
 		mFile = fopen(mTempStreamPath.c_str(), "wb");		
+#endif
+
 		if (mFile == nullptr)
 		{
 			mStatus = REQ_IO_ERROR;
@@ -309,11 +326,15 @@ HttpReq::Status HttpReq::status()
 					int http_status_code;
 					curl_easy_getinfo(msg->easy_handle, CURLINFO_RESPONSE_CODE, &http_status_code);
 
+					char *ct = NULL;
+					if (!curl_easy_getinfo(msg->easy_handle, CURLINFO_CONTENT_TYPE, &ct) && ct)
+						req->mResponseContentType = ct;
+
 					if (http_status_code < 200 || http_status_code > 299)
 					{
 						std::string err;
 
-						if (http_status_code >= 400 && http_status_code < 499)
+						if (http_status_code >= 400 && http_status_code <= 500)
 						{
 							if (req->mFilePath.empty())
 								err = req->getContent();
@@ -332,16 +353,16 @@ HttpReq::Status HttpReq::status()
 					{
 						if (!req->mFilePath.empty())
 						{
-							int err = std::rename(req->mTempStreamPath.c_str(), req->mFilePath.c_str());
-							if (err != 0)
+							bool renamed = Utils::FileSystem::renameFile(req->mTempStreamPath.c_str(), req->mFilePath.c_str());
+							if (!renamed)
 							{
 								// Strange behaviour on Windows : sometimes std::rename fails if it's done too early after closing stream
 								// Copy file instead & try to delete it
 								if (Utils::FileSystem::copyFile(req->mTempStreamPath, req->mFilePath))
-									err = 0;
+									renamed = true;
 							}
 
-							if (err == 0)
+							if (renamed)
 								req->mStatus = REQ_SUCCESS;
 							else
 							{

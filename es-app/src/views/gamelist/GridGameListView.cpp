@@ -10,12 +10,17 @@
 #include "Window.h"
 #include "SystemConf.h"
 #include "guis/GuiGamelistOptions.h"
+#include "GameNameFormatter.h"
+#include "utils/Randomizer.h"
 
 GridGameListView::GridGameListView(Window* window, FolderData* root, const std::shared_ptr<ThemeData>& theme, std::string themeName, Vector2f gridSize) :
 	ISimpleGameListView(window, root),
 	mGrid(window),
 	mDetails(this, &mGrid, mWindow, DetailedContainer::GridView)
 {
+	// Let DetailedContainer handle extras with activation scripts
+	mExtraMode = ThemeData::ExtraImportType::WITHOUT_ACTIVATESTORYBOARD;
+
 	setTag("grid");
 
 	const float padding = 0.01f;
@@ -55,40 +60,23 @@ FileData* GridGameListView::getCursor()
 	return mGrid.getSelected();
 }
 
-void GridGameListView::setCursor(FileData* file)
+void GridGameListView::resetLastCursor()
 {
-	if (!mGrid.setCursor(file) && file->getParent() != nullptr && !file->isPlaceHolder())
+	mGrid.resetLastCursor();
+}
+
+void GridGameListView::setCursor(FileData* cursor)
+{
+	if (cursor && !mGrid.setCursor(cursor) && !cursor->isPlaceHolder())
 	{
-		auto children = mRoot->getChildrenListToDisplay();
-
-		auto gameIter = std::find(children.cbegin(), children.cend(), file);
-		if (gameIter == children.cend())
+		std::stack<FileData*> stack;
+		auto childrenToDisplay = mRoot->findChildrenListToDisplayAtCursor(cursor, stack);
+		if (childrenToDisplay != nullptr)
 		{
-			children = file->getParent()->getChildrenListToDisplay();
-
-			// update our cursor stack in case our cursor just got set to some folder we weren't in before
-			if (mCursorStack.empty() || mCursorStack.top() != file->getParent())
-			{
-				std::stack<FileData*> tmp;
-				FileData* ptr = file->getParent();
-				while (ptr && ptr != mRoot)
-				{
-					tmp.push(ptr);
-					ptr = ptr->getParent();
-				}
-
-				// flip the stack and put it in mCursorStack
-				mCursorStack = std::stack<FileData*>();
-				while (!tmp.empty())
-				{
-					mCursorStack.push(tmp.top());
-					tmp.pop();
-				}
-			}
+			mCursorStack = stack;
+			populateList(*childrenToDisplay.get());
+			mGrid.setCursor(cursor);
 		}
-
-		populateList(children);
-		mGrid.setCursor(file);
 	}
 }
 
@@ -112,15 +100,20 @@ std::string GridGameListView::getQuickSystemSelectLeftButton()
 
 bool GridGameListView::input(InputConfig* config, Input input)
 {
+	/*
 	if (!UIModeController::getInstance()->isUIModeKid() && config->isMappedTo("select", input) && input.value)
 	{
+		auto idx = mRoot->getSystem()->getIndex(false);
+		if (idx != nullptr && idx->hasRelevency())
+			return true;
+
 		Sound::getFromTheme(mTheme, getName(), "menuOpen")->play();
-		mWindow->pushGui(new GuiGamelistOptions(mWindow, this->mRoot->getSystem(), true));
+		mWindow->pushGui(new GuiGamelistOptions(mWindow, this, this->mRoot->getSystem(), true));
 		return true;
 
 		// Ctrl-R to reload a view when debugging
 	}
-
+	*/
 	if(config->isMappedLike("left", input) || config->isMappedLike("right", input))
 		return GuiComponent::input(config, input);
 
@@ -133,8 +126,21 @@ const std::string GridGameListView::getImagePath(FileData* file)
 
 	if (src == ImageSource::IMAGE)
 		return file->getImagePath();
-	else if (src == ImageSource::MARQUEE || src == ImageSource::MARQUEEORTEXT)
+
+	if (src == TITLESHOT && !file->getMetadata(MetaDataId::TitleShot).empty())
+		return file->getMetadata(MetaDataId::TitleShot);
+	else if (src == BOXART && !file->getMetadata(MetaDataId::BoxArt).empty())
+		return file->getMetadata(MetaDataId::BoxArt);
+	else if ((src == MARQUEE || src == ImageSource::MARQUEEORTEXT) && !file->getMarqueePath().empty())
 		return file->getMarqueePath();
+	else if ((src == IMAGE || src == TITLESHOT) && !file->getImagePath().empty())
+		return file->getImagePath();
+	else if (src == FANART && !file->getMetadata(MetaDataId::FanArt).empty())
+		return file->getMetadata(MetaDataId::FanArt);
+	else if (src == CARTRIDGE && !file->getMetadata(MetaDataId::Cartridge).empty())
+		return file->getMetadata(MetaDataId::Cartridge);
+	else if (src == MIX && !file->getMetadata(MetaDataId::Mix).empty())
+		return file->getMetadata(MetaDataId::Mix);
 
 	return file->getThumbnailPath();
 }
@@ -146,10 +152,10 @@ const bool GridGameListView::isVirtualFolder(FileData* file)
 
 void GridGameListView::populateList(const std::vector<FileData*>& files)
 {
-	SystemData* system = mCursorStack.size() && mRoot->getSystem()->isGroupSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
+	SystemData* system = mCursorStack.size() && !mRoot->getSystem()->isGameSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
 
 	auto groupTheme = system->getTheme();
-	if (groupTheme)
+	if (groupTheme && mHeaderImage.hasImage())
 	{
 		const ThemeData::ThemeElement* logoElem = groupTheme->getElement(getName(), "logo", "image");
 		if (logoElem && logoElem->has("path") && Utils::FileSystem::exists(logoElem->get<std::string>("path")))
@@ -164,10 +170,7 @@ void GridGameListView::populateList(const std::vector<FileData*>& files)
 
 	if (files.size() > 0)
 	{
-		bool showParentFolder = Settings::getInstance()->getBool("ShowParentFolder");
-		auto spf = Settings::getInstance()->getString(mRoot->getSystem()->getName() + ".ShowParentFolder");
-		if (spf == "1") showParentFolder = true;
-		else if (spf == "0") showParentFolder = false;
+		bool showParentFolder = mRoot->getSystem()->getShowParentFolder();
 
 		if (mCursorStack.size())
 		{
@@ -210,49 +213,30 @@ void GridGameListView::populateList(const std::vector<FileData*>& files)
 			if (showParentFolder)
 			{
 				FileData* placeholder = new FileData(PLACEHOLDER, "..", this->mRoot->getSystem());
-				mGrid.add(". .", imagePath, "", "", false, true, displayAsVirtualFolder && !imagePath.empty(), placeholder);
+				mGrid.add(". .", imagePath, "", "", false, true, false, displayAsVirtualFolder && !imagePath.empty(), placeholder);
 			}
 		}
 
-		std::string systemName = mRoot->getSystem()->getName();
+		GameNameFormatter formatter(mRoot->getSystem());
 
-		bool favoritesFirst = Settings::getInstance()->getBool("FavoritesFirst");
-
-		auto fav = Settings::getInstance()->getString(mRoot->getSystem()->getName() + ".FavoritesFirst");
-		if (fav == "1") favoritesFirst = true;
-		else if (fav == "0") favoritesFirst = false;
-
-		bool showFavoriteIcon = (systemName != "favorites" && systemName != "recent");
-		if (!showFavoriteIcon)
-			favoritesFirst = false;
-
+		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
 		{
 			for (auto file : files)
 			{
-				if (file->getFavorite() && showFavoriteIcon)
-					mGrid.add(_U("\uF006 ") + file->getName(), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), true, file->getType() != GAME, isVirtualFolder(file), file);
+				if (!file->getFavorite())
+					continue;
+
+				mGrid.add(formatter.getDisplayName(file, file->getType() == FOLDER && Utils::FileSystem::exists(getImagePath(file))), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), file->getFavorite(), file->hasCheevos(), file->getType() != GAME, isVirtualFolder(file), file);
 			}
 		}
 
 		for (auto file : files)
 		{
-			if (file->getFavorite())
-			{
-				if (favoritesFirst)
-					continue;
+			if (file->getFavorite() && favoritesFirst)
+				continue;
 
-				if (showFavoriteIcon)
-				{
-					mGrid.add(_U("\uF006 ") + file->getName(), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), true, file->getType() != GAME, isVirtualFolder(file), file);
-					continue;
-				}
-			}
-
-			if (file->getType() == FOLDER && Utils::FileSystem::exists(getImagePath(file)))
-				mGrid.add(_U("\uF07C ") + file->getName(), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), file->getFavorite(), file->getType() != GAME, isVirtualFolder(file), file);
-			else
-				mGrid.add(file->getName(), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), file->getFavorite(), file->getType() != GAME, isVirtualFolder(file), file);
+			mGrid.add(formatter.getDisplayName(file, file->getType() == FOLDER && Utils::FileSystem::exists(getImagePath(file))), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), file->getFavorite(), file->hasCheevos(), file->getType() != GAME, isVirtualFolder(file), file);
 		}
 
 		// if we have the ".." PLACEHOLDER, then select the first game instead of the placeholder
@@ -263,41 +247,51 @@ void GridGameListView::populateList(const std::vector<FileData*>& files)
 		addPlaceholder();
 
 	updateFolderPath();
+
+	if (mShowing)
+		onShow();
 }
 
 void GridGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
 {
 	ISimpleGameListView::onThemeChanged(theme);
 
-	using namespace ThemeFlags;
-
-	mGrid.applyTheme(theme, getName(), "gamegrid", ALL);
+	mGrid.applyTheme(theme, getName(), "gamegrid", ThemeFlags::ALL);
 	mDetails.onThemeChanged(theme);
-	
-	sortChildren();
 	updateInfoPanel();
 }
 
 void GridGameListView::updateInfoPanel()
 {
+	if (!mShowing)
+		return;
+
 	if (mRoot->getSystem()->isCollection())
 		updateHelpPrompts();
 
 	FileData* file = (mGrid.size() == 0 || mGrid.isScrolling()) ? NULL : mGrid.getSelected();
 	bool isClearing = mGrid.getObjects().size() == 0 && mGrid.getCursorIndex() == 0 && mGrid.getScrollingVelocity() == 0;
-	mDetails.updateControls(file, isClearing);	
+	mDetails.updateControls(file, isClearing, mGrid.getCursorIndex() - mGrid.getLastCursor());
 }
 
 void GridGameListView::addPlaceholder()
 {
 	// empty grid - add a placeholder
 	FileData* placeholder = new FileData(PLACEHOLDER, "<" + _("No Entries Found") + ">", mRoot->getSystem());
-	mGrid.add(placeholder->getName(), "", "", "", false, false, false, placeholder);
+	mGrid.add(placeholder->getName(), "", "", "", false, false,false,false, placeholder);
 }
 
 void GridGameListView::launch(FileData* game)
 {
-	ViewController::get()->launch(game);
+	Vector3f target = mDetails.getLaunchTarget();
+	if (target == Vector3f(Renderer::getScreenWidth() / 2.0f, Renderer::getScreenHeight() / 2.0f, 0))
+	{
+		auto tile = mGrid.getSelectedTile();
+		if (tile != nullptr)
+			target = mGrid.getPosition() + tile->getLaunchTarget();
+	}
+
+	ViewController::get()->launch(game, target);
 }
 
 void GridGameListView::remove(FileData *game)
@@ -318,7 +312,9 @@ void GridGameListView::remove(FileData *game)
 	if(mGrid.size() == 0)
 		addPlaceholder();
 
+	mRoot->removeFromVirtualFolders(game);
 	delete game;                                 // remove before repopulating (removes from parent)
+
 	onFileChanged(parent, FILE_REMOVED);           // update the view, with game removed
 }
 
@@ -334,38 +330,6 @@ void GridGameListView::onFileChanged(FileData* file, FileChangeType change)
 	ISimpleGameListView::onFileChanged(file, change);
 }
 
-std::vector<HelpPrompt> GridGameListView::getHelpPrompts()
-{
-	std::vector<HelpPrompt> prompts;
-
-	if(Settings::getInstance()->getBool("QuickSystemSelect"))
-		prompts.push_back(HelpPrompt("lr", _("SYSTEM"))); // batocera
-
-	prompts.push_back(HelpPrompt("up/down/left/right", _("CHOOSE"))); // batocera
-	prompts.push_back(HelpPrompt(BUTTON_OK, _("LAUNCH")));
-	prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
-
-	if(!UIModeController::getInstance()->isUIModeKid())
-		prompts.push_back(HelpPrompt("select", _("OPTIONS"))); // batocera
-
-	FileData* cursor = getCursor();
-	if (cursor != nullptr && cursor->isNetplaySupported())
-		prompts.push_back(HelpPrompt("x", _("NETPLAY"))); // batocera
-	else
-		prompts.push_back(HelpPrompt("x", _("RANDOM"))); // batocera
-
-	if(mRoot->getSystem()->isGameSystem() && !UIModeController::getInstance()->isUIModeKid())
-	{
-		std::string prompt = CollectionSystemManager::get()->getEditingCollection();
-
-		if (Utils::String::toLower(prompt) == "favorites")
-			prompts.push_back(HelpPrompt("y", _("Favorites")));
-		else
-			prompts.push_back(HelpPrompt("y", prompt));
-	}
-	return prompts;
-}
-
 void GridGameListView::setCursorIndex(int cursor)
 {
 	mGrid.setCursorIndex(cursor);
@@ -379,4 +343,28 @@ int GridGameListView::getCursorIndex()
 std::vector<FileData*> GridGameListView::getFileDataEntries()
 {
 	return mGrid.getObjects();
+}
+
+void GridGameListView::update(int deltaTime)
+{
+	mDetails.update(deltaTime);
+	ISimpleGameListView::update(deltaTime);
+}
+
+void GridGameListView::moveToRandomGame()
+{
+	auto list = getFileDataEntries();
+
+	unsigned int total = (int)list.size();
+	if (total == 0)
+		return;
+
+	int target = Randomizer::random(total);
+	if (target >= 0 && target < total)
+	{
+		resetLastCursor();
+		setCursor(list.at(target));
+		if (isShowing())
+			onShow();
+	}
 }

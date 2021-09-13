@@ -22,6 +22,7 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/VolumeControl.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Window.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/MultiStateInput.h
 
 	# Animations
 	${CMAKE_CURRENT_SOURCE_DIR}/src/animations/Animation.h
@@ -63,6 +64,8 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/VolumeInfoComponent.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/MultiLineMenuEntry.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ScrollbarComponent.h	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ComponentTab.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/WebImageComponent.h
 
 	# Guis
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiDetectDevice.h
@@ -82,6 +85,7 @@ set(CORE_HEADERS
 
 	# Renderers
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/GlExtensions.h	
 
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.h
@@ -95,6 +99,11 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/StringUtil.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/TimeUtil.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/zip_file.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ZipFile.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/md5.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/Delegate.h
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/Randomizer.h
 )
 
 set(CORE_SOURCES
@@ -118,6 +127,7 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/ThemeData.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/VolumeControl.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Window.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/MultiStateInput.cpp
 
 	# Animations
 	${CMAKE_CURRENT_SOURCE_DIR}/src/animations/AnimationController.cpp	
@@ -152,15 +162,18 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/VideoVlcComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/VolumeInfoComponent.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ScrollbarComponent.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/MultiLineMenuEntry.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/ComponentTab.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/components/WebImageComponent.cpp	
 
 	# Guis
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiDetectDevice.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInputConfig.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiMsgBox.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInfoPopup.cpp # batocera
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiInfoPopup.cpp # batocera
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiTextEditPopup.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiTextEditPopupKeyboard.cpp # batocera
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemConf.cpp # batocera
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemConf.cpp # batocera
 
 	# Math
 	${CMAKE_CURRENT_SOURCE_DIR}/src/math/Misc.cpp
@@ -174,6 +187,9 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GL21.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GLES10.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Renderer_GLES20.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/GlExtensions.cpp	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/renderers/Shader.cpp	
 
 	# Resources
 	${CMAKE_CURRENT_SOURCE_DIR}/src/resources/Font.cpp
@@ -186,8 +202,26 @@ set(CORE_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/FileSystemUtil.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/StringUtil.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/TimeUtil.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ThreadPool.cpp	
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/ZipFile.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/md5.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/src/utils/Randomizer.cpp
 )
+
+# Keep Directory structure in Visual Studio
+if(MSVC)
+	file(
+		 GLOB_RECURSE source_list RELATIVE
+		 "${CMAKE_CURRENT_SOURCE_DIR}"
+		 *.cpp *.c
+		)
+	foreach(source IN LISTS source_list)
+		get_filename_component(source_path "${source}" PATH)
+		string(REPLACE "/" "\\" source_path_msvc "${source_path}")
+		string(REPLACE "src" "" source_path_final "${source_path_msvc}")
+		source_group("${source_path_final}" FILES "${source}")
+	endforeach()  	
+endif()
 
 include_directories(${COMMON_INCLUDE_DIRS})
 add_library(es-core STATIC ${CORE_SOURCES} ${CORE_HEADERS})

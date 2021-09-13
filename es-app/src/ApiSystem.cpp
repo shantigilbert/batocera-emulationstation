@@ -48,16 +48,16 @@
 
 #include <pugixml/src/pugixml.hpp>
 #include "platform.h"
+#include "RetroAchievements.h"
+#include "utils/ZipFile.h"
 
-ApiSystem::ApiSystem() 
-{
-}
+ApiSystem::ApiSystem() { }
 
-ApiSystem* ApiSystem::instance = NULL;
+ApiSystem* ApiSystem::instance = nullptr;
 
 ApiSystem *ApiSystem::getInstance() 
 {
-	if (ApiSystem::instance == NULL)
+	if (ApiSystem::instance == nullptr)
 #if WIN32
 		ApiSystem::instance = new Win32ApiSystem();
 #else
@@ -84,7 +84,7 @@ unsigned long ApiSystem::getFreeSpaceGB(std::string mountpoint)
 
 std::string ApiSystem::getFreeSpaceUserInfo() {
 #ifdef _ENABLEEMUELEC
-  return getFreeSpaceInfo("/storage");
+  return getFreeSpaceInfo("/storage/.update");
 #else
   return getFreeSpaceInfo("/userdata");
 #endif
@@ -129,7 +129,7 @@ std::string ApiSystem::getFreeSpaceInfo(const std::string mountpoint)
 bool ApiSystem::isFreeSpaceLimit() 
 {
 #ifdef _ENABLEEMUELEC
-	return getFreeSpaceGB("/storage/") < 2;
+	return getFreeSpaceGB("/storage/.update") < 2;
 #else
 	return getFreeSpaceGB("/userdata/") < 2;
 #endif
@@ -139,7 +139,7 @@ std::string ApiSystem::getVersion()
 {
 	LOG(LogDebug) << "ApiSystem::getVersion";
 #ifdef _ENABLEEMUELEC
-	std::ifstream ifs("/storage/.config/EE_VERSION");
+	std::ifstream ifs("/usr/config/EE_VERSION");
 #else
 	std::ifstream ifs("/usr/share/batocera/batocera.version");
 #endif
@@ -152,6 +152,11 @@ std::string ApiSystem::getVersion()
 	}
 
 	return "";
+}
+
+std::string ApiSystem::getApplicationName()
+{
+	return "BATOCERA";
 }
 
 bool ApiSystem::setOverscan(bool enable) 
@@ -302,7 +307,10 @@ std::pair<std::string, int> ApiSystem::scrape(BusyComponent* ui)
 
 bool ApiSystem::ping() 
 {
-	return executeScript("timeout 1 ping -c 1 -t 1000 google.com");
+	if (!executeScript("timeout 1 ping -c 1 -t 1000 8.8.8.8")) // ping Google DNS
+		return executeScript("timeout 2 ping -c 1 -t 2000 8.8.4.4"); // ping Google secondary DNS & give 2 seconds
+
+	return true;
 }
 
 bool ApiSystem::canUpdate(std::vector<std::string>& output) 
@@ -368,7 +376,7 @@ bool ApiSystem::launchKodi(Window *window)
 	LOG(LogDebug) << "ApiSystem::launchKodi";
 
 	std::string commandline = InputManager::getInstance()->configureEmulators();
-	std::string command = "python /usr/lib/python2.7/site-packages/configgen/emulatorlauncher.py -system kodi -rom '' " + commandline;
+	std::string command = "batocera-kodi " + commandline;
 
 	ApiSystem::launchExternalWindow_before(window);
 
@@ -400,7 +408,7 @@ bool ApiSystem::launchFileManager(Window *window)
 {
 	LOG(LogDebug) << "ApiSystem::launchFileManager";
 
-	std::string command = "/emuelec/scripts/emuelec-utils filemanager";
+	std::string command = "/usr/bin/emuelec-utils filemanager";
 
 	ApiSystem::launchExternalWindow_before(window);
 
@@ -417,7 +425,7 @@ bool ApiSystem::launchErrorWindow(Window *window)
 {
 	LOG(LogDebug) << "ApiSystem::launchErrorWindow";
 
-	std::string command = "/emuelec/scripts/emuelec-utils error";
+	std::string command = "/usr/bin/emuelec-utils error";
 
 	ApiSystem::launchExternalWindow_before(window);
 
@@ -451,57 +459,12 @@ bool ApiSystem::disableWifi()
 std::string ApiSystem::getIpAdress() 
 {
 	LOG(LogDebug) << "ApiSystem::getIpAdress";
-
-	std::string result = "NOT CONNECTED";
-
-#if !WIN32
-	struct ifaddrs *ifAddrStruct = NULL;
-	struct ifaddrs *ifa = NULL;
-	void *tmpAddrPtr = NULL;
 	
-	getifaddrs(&ifAddrStruct);
-
-	for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-		if (!ifa->ifa_addr) {
-			continue;
-		}
-		if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-			// is a valid IP4 Address
-			tmpAddrPtr = &((struct sockaddr_in *) ifa->ifa_addr)->sin_addr;
-			char addressBuffer[INET_ADDRSTRLEN];
-			inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-			printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-			if (std::string(ifa->ifa_name).find("eth") != std::string::npos ||
-				std::string(ifa->ifa_name).find("wlan") != std::string::npos) {
-				result = std::string(addressBuffer);
-			}
-		}
-	}
-	// Seeking for ipv6 if no IPV4
-	if (result.compare("NOT CONNECTED") == 0) {
-		for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-			if (!ifa->ifa_addr) {
-				continue;
-			}
-			if (ifa->ifa_addr->sa_family == AF_INET6) { // check it is IP6
-				// is a valid IP6 Address
-				tmpAddrPtr = &((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr;
-				char addressBuffer[INET6_ADDRSTRLEN];
-				inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-				printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-				if (std::string(ifa->ifa_name).find("eth") != std::string::npos ||
-					std::string(ifa->ifa_name).find("wlan") != std::string::npos) {
-					return std::string(addressBuffer);
-				}
-			}
-		}
-	}
-	if (ifAddrStruct != NULL) 
-		freeifaddrs(ifAddrStruct);
-#endif
+	std::string result = queryIPAdress(); // platform.h
+	if (result.empty())
+		return "NOT CONNECTED";
 
 	return result;
-
 }
 
 bool ApiSystem::scanNewBluetooth(const std::function<void(const std::string)>& func)
@@ -558,13 +521,17 @@ std::vector<std::string> ApiSystem::getSystemInformations()
 	return executeEnumerationScript("batocera-info --full");
 }
 
-std::vector<BiosSystem> ApiSystem::getBiosInformations() 
+std::vector<BiosSystem> ApiSystem::getBiosInformations(const std::string system) 
 {
 	std::vector<BiosSystem> res;
 	BiosSystem current;
 	bool isCurrent = false;
 
-	auto systems = executeEnumerationScript("batocera-systems");
+	std::string cmd = "batocera-systems";
+	if (!system.empty())
+		cmd += " --filter " + system;
+
+	auto systems = executeEnumerationScript(cmd);
 	for (auto line : systems)
 	{
 		if (Utils::String::startsWith(line, "> ")) 
@@ -637,6 +604,16 @@ std::string ApiSystem::getCurrentStorage()
 bool ApiSystem::setStorage(std::string selected) 
 {
 	return executeScript("batocera-config storage " + selected);
+}
+
+bool ApiSystem::setButtonColorGameForce(std::string selected)
+{
+	return executeScript("batocera-gameforce buttonColorLed " + selected);
+}
+
+bool ApiSystem::setPowerLedGameForce(std::string selected)
+{
+	return executeScript("batocera-gameforce powerLed " + selected);
 }
 
 bool ApiSystem::forgetBluetoothControllers() 
@@ -713,178 +690,12 @@ bool ApiSystem::setAudioOutputDevice(std::string selected)
 
 	std::ostringstream oss;
 
-	AudioManager::getInstance()->deinit();
-	VolumeControl::getInstance()->deinit();
-
 	oss << "batocera-audio set" << " '" << selected << "'";
 	int exitcode = system(oss.str().c_str());
 
-	VolumeControl::getInstance()->init();
-	AudioManager::getInstance()->init();
 	Sound::get("/usr/share/emulationstation/resources/checksound.ogg")->play();
 
 	return exitcode == 0;
-}
-
-// Batocera
-RetroAchievementInfo ApiSystem::getRetroAchievements()
-{
-	RetroAchievementInfo info;
-
-	LOG(LogDebug) << "ApiSystem::getRetroAchievements";
-	
-	auto res = executeEnumerationScript("batocera-retroachievements-info " + SystemConf::getInstance()->get("global.retroachievements.username"));
-	std::string data = Utils::String::join(res, "\n");
-	if (data.empty())
-	{
-		info.error = "Error accessing 'batocera-retroachievements-info' script";
-		return info;
-	}
-
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load(data.c_str()); // doc.load_buffer(data.c_str(), data.size);
-
-	if (!result)
-	{
-		// Temporary retrocompatibility mode
-		auto lines = Utils::String::split(data, '\n');
-		if (lines.size() == 1)
-		{
-			info.error = lines[0];
-			return info;
-		}
-
-		for (auto line : lines)
-		{
-			std::vector<std::string> tokens = Utils::String::split(line, '@');
-			if (tokens.size() == 0)
-				continue;
-
-			if (tokens.size() == 1)
-			{					
-				if (info.username.empty())
-				{
-					auto userParse = Utils::String::split(line, ' ');
-					if (userParse.size() > 2)
-						info.username = userParse[1];
-
-					auto infoParsePoints = Utils::String::splitAny(line, "()");
-					if (infoParsePoints.size() > 3)
-					{
-						info.totalpoints = infoParsePoints[1];
-						info.rank = Utils::String::replace(infoParsePoints[2], " is ", "") + " (" + infoParsePoints[3] + ")";
-					}
-				}
-
-				continue;
-			}
-
-			RetroAchievementGame rg;
-			rg.name = tokens[0];
-			rg.achievements = Utils::String::replace(tokens[1], " achievements", "");
-
-			if (tokens.size() >= 4)
-			{
-				rg.points = Utils::String::replace(tokens[2], " points", ""); 
-				rg.lastplayed = Utils::String::replace(tokens[3], "Last played ", "");
-			}
-
-			info.games.push_back(rg);
-		}
-
-		return info;
-	}
-
-	pugi::xml_node root = doc.child("retroachievements");
-	if (!root)
-	{
-		LOG(LogError) << "Could not find <retroachievements> node";
-		return info;
-	}
-
-	for (pugi::xml_node node : root.children())
-	{
-		std::string tag = node.name();
-
-		if (tag == "error")
-		{
-			info.error = node.text().get();
-			break;
-		}
-
-		if (tag == "username")
-			info.username = node.text().get();
-		else if (tag == "totalpoints")
-			info.totalpoints = node.text().get();
-		else if (tag == "rank")
-			info.rank = node.text().get();
-		else if (tag == "userpic")
-		{
-			std::string userpic = node.text().get();
-			if (!userpic.empty())
-			{
-				std::string localPath = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/tmp");
-				if (!Utils::FileSystem::exists(localPath))
-					Utils::FileSystem::createDirectory(localPath);
-
-				std::string localFile = localPath + "/" + Utils::FileSystem::getFileName(userpic);
-				if (!Utils::FileSystem::exists(localFile))
-				{
-					HttpReq httpreq(userpic, localFile);
-					httpreq.wait();
-				}
-
-				if (Utils::FileSystem::exists(localFile))
-					info.userpic = localFile;
-			}
-		}
-		else if (tag == "registered")
-			info.registered = node.text().get();
-		else if (tag == "game")
-		{
-			RetroAchievementGame rg;
-
-			for (pugi::xml_node game : node.children())
-			{
-				tag = game.name();
-
-				if (tag == "name")
-					rg.name = game.text().get();
-				else if (tag == "achievements")
-					rg.achievements = game.text().get();
-				else if (tag == "points")
-					rg.points = game.text().get();
-				else if (tag == "lastplayed")
-					rg.lastplayed = game.text().get();
-				else if (tag == "badge")
-				{
-					std::string badge = game.text().get();
-
-					if (!badge.empty())
-					{
-						std::string localPath = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/tmp");
-						if (!Utils::FileSystem::exists(localPath))
-							Utils::FileSystem::createDirectory(localPath);
-
-						std::string localFile = localPath + "/" + Utils::FileSystem::getFileName(badge);
-						if (!Utils::FileSystem::exists(localFile))
-						{
-							HttpReq httpreq(badge, localFile);
-							httpreq.wait();
-						}
-
-						if (Utils::FileSystem::exists(localFile))
-							rg.badge = localFile;
-					}
-				}
-			}
-
-			if (!rg.name.empty())
-				info.games.push_back(rg);
-		}
-	}
-
-	return info;
 }
 
 std::vector<BatoceraTheme> ApiSystem::getBatoceraThemesList()
@@ -921,7 +732,27 @@ std::vector<BatoceraTheme> ApiSystem::getBatoceraThemesList()
 		}
 	}
 	pclose(pipe);
+
+	getBatoceraThemesImages(res);
 	return res;
+}
+
+std::string ApiSystem::getUpdateUrl()
+{
+	auto systemsetting = SystemConf::getInstance()->get("global.updates.url");
+	if (!systemsetting.empty())
+		return systemsetting;
+#ifdef _ENABLEEMUELEC
+	return "https://raw.githubusercontent.com/EmuELEC/emuelec.github.io/master/";
+#else
+	return "https://updates.batocera.org";
+#endif
+}
+
+void ApiSystem::getBatoceraThemesImages(std::vector<BatoceraTheme>& items)
+{
+	for (auto it = items.begin(); it != items.end(); ++it)
+		it->image = getUpdateUrl() + "/themes/" + it->name + ".jpg";
 }
 
 std::pair<std::string, int> ApiSystem::installBatoceraTheme(std::string thname, const std::function<void(const std::string)>& func)
@@ -933,7 +764,6 @@ std::pair<std::string, int> ApiSystem::uninstallBatoceraTheme(std::string thname
 {
 	return executeScript("batocera-es-theme remove " + thname, func);
 }
-
 
 std::vector<BatoceraBezel> ApiSystem::getBatoceraBezelsList()
 {
@@ -974,66 +804,177 @@ std::pair<std::string, int> ApiSystem::uninstallBatoceraBezel(std::string bezels
 	return executeScript("batocera-es-thebezelproject remove " + bezelsystem, func);
 }
 
-std::string ApiSystem::getCRC32(std::string fileName, bool fromZipContents)
+std::string ApiSystem::getMD5(const std::string fileName, bool fromZipContents)
 {
-	bool useUnzip = false;
+	LOG(LogDebug) << "getMD5 >> " << fileName;
 
-	std::string cmd = "7zr h \"" + fileName + "\"";
-	
+	// 7za x -so test.7z | md5sum
 	std::string ext = Utils::String::toLower(Utils::FileSystem::getExtension(fileName));
-
-	if (fromZipContents)
+	if (ext == ".zip" && fromZipContents)
 	{
-		if (ext == ".7z")
-			cmd = "7zr l -slt \"" + fileName + "\"";
-		else
+		Utils::Zip::ZipFile file;
+		if (file.load(fileName))
 		{
-			useUnzip = true;
-			cmd = "unzip -l -v \"" + fileName + "\"";
-		}
-	}
+			std::string romName;
 
-	std::string crc;
-	std::string fn = Utils::FileSystem::getFileName(fileName);
-
-	FILE *pipe = popen(cmd.c_str(), "r");
-	if (pipe == NULL)
-		return "";
-
-	char line[1024];
-	while (fgets(line, 1024, pipe)) 
-	{
-		strtok(line, "\n");
-
-		if (!crc.empty())
-			continue;
-
-		std::string all = line;
-
-		if (useUnzip)
-		{
-			// Parse unzip results
-			if (!Utils::String::startsWith(all, "Archive"))
+			for (auto name : file.namelist())
 			{
-				auto split = Utils::String::split(all, ' ', true);
-				if (split.size() >= 8 && split[6].size() == 8 && split[3].find("%") != std::string::npos)
-					crc = Utils::String::toUpper(split[6]);
+				if (Utils::FileSystem::getExtension(name) != ".txt" && !Utils::String::endsWith(name, "/"))
+				{
+					if (!romName.empty())
+					{
+						romName = "";
+						break;
+					}
+
+					romName = name;
+				}
 			}
 
-			continue;
+			if (!romName.empty())
+				return file.getFileMd5(romName);
+		}
+	}
+
+#if !WIN32
+	if (fromZipContents && ext == ".7z")
+	{
+		auto cmd = getSevenZipCommand() + " x -so \"" + fileName + "\" | md5sum";
+		auto ret = executeEnumerationScript(cmd);
+		if (ret.size() == 1 && ret.cbegin()->length() >= 32)
+			return ret.cbegin()->substr(0, 32);
+	}
+#endif
+
+	std::string contentFile = fileName;
+	std::string ret;
+	std::string tmpZipDirectory;
+
+	if (fromZipContents && ext == ".7z")
+	{
+		tmpZipDirectory = Utils::FileSystem::combine(Utils::FileSystem::getTempPath(), Utils::FileSystem::getStem(fileName));
+		Utils::FileSystem::deleteDirectoryFiles(tmpZipDirectory);
+
+		if (unzipFile(fileName, tmpZipDirectory))
+		{
+			auto fileList = Utils::FileSystem::getDirContent(tmpZipDirectory, true);
+
+			std::vector<std::string> res;
+			std::copy_if(fileList.cbegin(), fileList.cend(), std::back_inserter(res), [](const std::string file) { return Utils::FileSystem::getExtension(file) != ".txt";  });
+		
+			if (res.size() == 1)
+				contentFile = *res.cbegin();
 		}
 
-		// Parse 7zr results
-		int idx = all.find("CRC = ");
-		if (idx != std::string::npos)
-			crc = all.substr(idx + 6);
-		else if (all.find(fn) == (all.size() - fn.size()) && all.length() > 8 && all[9] == ' ')
-			crc = all.substr(0, 8);		
+		// if there's no file or many files ? get md5 of archive
+	}
+
+	ret = Utils::FileSystem::getFileMd5(contentFile);
+
+	if (!tmpZipDirectory.empty())
+		Utils::FileSystem::deleteDirectoryFiles(tmpZipDirectory, true);
+
+	LOG(LogDebug) << "getMD5 << " << ret;
+
+	return ret;
+}
+
+std::string ApiSystem::getCRC32(std::string fileName, bool fromZipContents)
+{
+	LOG(LogDebug) << "getCRC32 >> " << fileName;
+
+	std::string ext = Utils::String::toLower(Utils::FileSystem::getExtension(fileName));
+
+	if (ext == ".7z" && fromZipContents)
+	{
+		LOG(LogDebug) << "getCRC32 is using 7z";
+
+		std::string fn = Utils::FileSystem::getFileName(fileName);
+		auto cmd = getSevenZipCommand() + " l -slt \"" + fileName + "\"";
+		auto lines = executeEnumerationScript(cmd);
+		for (std::string all : lines)
+		{
+			int idx = all.find("CRC = ");
+			if (idx != std::string::npos)
+				return all.substr(idx + 6);
+			else if (all.find(fn) == (all.size() - fn.size()) && all.length() > 8 && all[9] == ' ')
+				return all.substr(0, 8);
+		}
+	}
+	else if (ext == ".zip" && fromZipContents)
+	{
+		LOG(LogDebug) << "getCRC32 is using ZipFile";
+
+		Utils::Zip::ZipFile file;
+		if (file.load(fileName))
+		{
+			std::string romName;
+
+			for (auto name : file.namelist())
+			{
+				if (Utils::FileSystem::getExtension(name) != ".txt" && !Utils::String::endsWith(name, "/"))
+				{
+					if (!romName.empty())
+					{
+						romName = "";
+						break;
+					}
+
+					romName = name;
+				}
+			}
+
+			if (!romName.empty())
+				return file.getFileCrc(romName);
+		}
+	}
+
+	LOG(LogDebug) << "getCRC32 is using fileBuffer";
+	return Utils::FileSystem::getFileCrc32(fileName);
+}
+
+bool ApiSystem::unzipFile(const std::string fileName, const std::string destFolder, const std::function<bool(const std::string)>& shouldExtract)
+{
+	LOG(LogDebug) << "unzipFile >> " << fileName << " to " << destFolder;
+
+	if (!Utils::FileSystem::exists(destFolder))
+		Utils::FileSystem::createDirectory(destFolder);
+		
+	if (Utils::String::toLower(Utils::FileSystem::getExtension(fileName)) == ".zip")
+	{
+		LOG(LogDebug) << "unzipFile is using ZipFile";
+
+		Utils::Zip::ZipFile file;
+		if (file.load(fileName))
+		{
+			for (auto name : file.namelist())
+			{
+				if (Utils::String::endsWith(name, "/"))
+				{
+					Utils::FileSystem::createDirectory(Utils::FileSystem::combine(destFolder, name.substr(0, name.length() - 1)));
+					continue;
+				}
+
+				if (shouldExtract != nullptr && !shouldExtract(Utils::FileSystem::combine(destFolder, name)))
+					continue;
+
+				file.extract(name, destFolder);
+			}
+
+			LOG(LogDebug) << "unzipFile << OK";
+			return true;
+		}
+
+		LOG(LogDebug) << "unzipFile << KO Bad format ?" << fileName;
+		return false;
 	}
 	
-	pclose(pipe);
+	LOG(LogDebug) << "unzipFile is using 7z";
 
-	return crc;
+	std::string cmd = getSevenZipCommand() + " x \"" + Utils::FileSystem::getPreferredPath(fileName) + "\" -y -o\"" + Utils::FileSystem::getPreferredPath(destFolder) + "\"";
+	bool ret = executeScript(cmd);
+	LOG(LogDebug) << "unzipFile <<";
+	return ret;
 }
 
 const char* BACKLIGHT_BRIGHTNESS_NAME = "/sys/class/backlight/backlight/brightness";
@@ -1079,7 +1020,7 @@ bool ApiSystem::getBrighness(int& value)
 
 	close(fd);
 
-	value = (uint32_t) (value / (float)max * 100.0f);
+	value = (uint32_t) ((value / (float)max * 100.0f) + 0.5f);
 	return true;
 #endif
 }
@@ -1117,7 +1058,7 @@ void ApiSystem::setBrighness(int value)
 	if (fd < 0)
 		return;
 	
-	float percent = value / 100.0f * (float)max;
+	float percent = (value / 100.0f * (float)max) + 0.5f;
 	sprintf(buffer, "%d\n", (uint32_t)percent);
 
 	count = write(fd, buffer, strlen(buffer));
@@ -1140,6 +1081,7 @@ std::vector<std::string> ApiSystem::executeEnumerationScript(const std::string c
 	std::vector<std::string> res;
 
 	FILE *pipe = popen(command.c_str(), "r");
+
 	if (pipe == NULL)
 		return res;
 
@@ -1201,11 +1143,13 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 
 	switch (script)
 	{
+	case ApiSystem::RETROACHIVEMENTS:
+#ifdef CHEEVOS_DEV_LOGIN
+		return true;
+#endif
+		break;
 	case ApiSystem::KODI:
 		executables.push_back("kodi");
-		break;
-	case ApiSystem::RETROACHIVEMENTS:
-		executables.push_back("batocera-retroachievements-info");
 		break;
 	case ApiSystem::WIFI:
 		executables.push_back("batocera-wifi");
@@ -1225,9 +1169,11 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 	case ApiSystem::OVERCLOCK:
 		executables.push_back("batocera-overclock");
 		break;
+	case ApiSystem::THEMESDOWNLOADER:
+		executables.push_back("batocera-es-theme");
+		break;		
 	case ApiSystem::NETPLAY:
 		executables.push_back("7zr");
-		executables.push_back("unzip");
 		break;
 	case ApiSystem::PDFEXTRACTION:
 		executables.push_back("pdftoppm");
@@ -1236,6 +1182,18 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 	case ApiSystem::BATOCERASTORE:
 		executables.push_back("batocera-store");
 		break;
+	case ApiSystem::THEBEZELPROJECT:
+		executables.push_back("batocera-es-thebezelproject");
+		break;		
+	case ApiSystem::PADSINFO:
+		executables.push_back("batocera-padsinfo");
+		break;
+	case ApiSystem::EVMAPY:
+		executables.push_back("evmapy");
+		break;
+	case ApiSystem::BATOCERAPREGAMELISTSHOOK:
+		executables.push_back("batocera-preupdate-gamelists-hook");
+		break;
 	}
 
 	if (executables.size() == 0)
@@ -1243,7 +1201,7 @@ bool ApiSystem::isScriptingSupported(ScriptId script)
 
 	for (auto executable : executables)
 #ifdef _ENABLEEMUELEC
-		if (!Utils::FileSystem::exists("/emuelec/scripts/batocera/" + executable))
+		if (!Utils::FileSystem::exists("/usr/bin/batocera/" + executable))
 			return false;
 #else
 		if (!Utils::FileSystem::exists("/usr/bin/" + executable))
@@ -1331,10 +1289,9 @@ int ApiSystem::getPdfPageCount(const std::string fileName)
 	return 0;
 }
 
-std::vector<std::string> ApiSystem::extractPdfImages(const std::string fileName, int pageIndex, int pageCount)
+std::vector<std::string> ApiSystem::extractPdfImages(const std::string fileName, int pageIndex, int pageCount, bool bestQuality)
 {
-	auto pdfFolder = Utils::FileSystem::getGenericPath(Utils::FileSystem::getEsConfigPath() + "/pdftmp/");
-	Utils::FileSystem::createDirectory(pdfFolder);
+	auto pdfFolder = Utils::FileSystem::getPdfTempPath();
 
 	std::vector<std::string> ret;
 
@@ -1384,26 +1341,29 @@ std::vector<std::string> ApiSystem::extractPdfImages(const std::string fileName,
 
 	std::string page;
 
+	std::string quality = Renderer::isSmallScreen() ? "96" : "125";
+	if (bestQuality)
+		quality = "300";
+
 	std::string prefix = "extract";
 	if (pageIndex >= 0)
 	{
 		char buffer[12];
 		sprintf(buffer, "%08d", (uint32_t)pageIndex);
+		prefix = "page-" + quality + "-" + std::string(buffer) + "-pdf";
 
-		prefix = "page-" + std::string(buffer)+"-pdf";
 		page = " -f " + std::to_string(pageIndex) + " -l " + std::to_string(pageIndex + pageCount - 1);
 	}
 
-
 #if WIN32
-	executeEnumerationScript("pdftoppm -r 150"+ page +" \"" + fileName + "\" \""+ pdfFolder +"/" + prefix +"\"");
+	executeEnumerationScript("pdftoppm -r "+ quality + page +" \"" + fileName + "\" \""+ pdfFolder +"/" + prefix +"\"");
 #else
-	executeEnumerationScript("pdftoppm -jpeg -r 150 -cropbox" + page + " \"" + fileName + "\" \"" + pdfFolder + "/" + prefix + "\"");
+	executeEnumerationScript("pdftoppm -jpeg -r "+ quality +" -cropbox" + page + " \"" + fileName + "\" \"" + pdfFolder + "/" + prefix + "\"");
 #endif
 
 	int time = SDL_GetTicks() - lastTime;
 	std::string text = std::to_string(time);
-
+	
 	for (auto file : Utils::FileSystem::getDirContent(pdfFolder, false))
 	{
 		auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(file));
@@ -1436,7 +1396,7 @@ std::vector<PacmanPackage> ApiSystem::getBatoceraStorePackages()
 	}
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load(data.c_str());
+	pugi::xml_parse_result result = doc.load_string(data.c_str());
 	if (!result)
 	{
 		LOG(LogError) << "Unable to parse packages";
@@ -1477,7 +1437,8 @@ std::vector<PacmanPackage> ApiSystem::getBatoceraStorePackages()
 				package.repository = node.text().get();
 			if (tag == "url")
 				package.url = node.text().get();			
-
+			if (tag == "arch")
+				package.arch = node.text().get();
 			if (tag == "download_size")
 				package.download_size = node.text().as_llong();
 			if (tag == "installed_size")
@@ -1493,12 +1454,23 @@ std::vector<PacmanPackage> ApiSystem::getBatoceraStorePackages()
 
 std::pair<std::string, int> ApiSystem::installBatoceraStorePackage(std::string name, const std::function<void(const std::string)>& func)
 {
-	return executeScript("batocera-store install " + name, func);
+	return executeScript("batocera-store install \"" + name + "\"", func);
 }
 
 std::pair<std::string, int> ApiSystem::uninstallBatoceraStorePackage(std::string name, const std::function<void(const std::string)>& func)
 {
-	return executeScript("batocera-store remove " + name, func);
+	return executeScript("batocera-store remove \"" + name + "\"", func);
+}
+
+void ApiSystem::refreshBatoceraStorePackageList()
+{
+	executeScript("batocera-store refresh");
+	executeScript("batocera-store clean-all");
+}
+
+void ApiSystem::callBatoceraPreGameListsHook()
+{
+	executeScript("batocera-preupdate-gamelists-hook");
 }
 
 void ApiSystem::updateBatoceraStorePackageList()
@@ -1506,7 +1478,7 @@ void ApiSystem::updateBatoceraStorePackageList()
 	executeScript("batocera-store update");
 }
 
-std::vector<std::string> ApiSystem::getShaderList()
+std::vector<std::string> ApiSystem::getShaderList(const std::string systemName)
 {
 	Utils::FileSystem::FileSystemCacheActivator fsc;
 
@@ -1524,11 +1496,168 @@ std::vector<std::string> ApiSystem::getShaderList()
 					continue;
 
 				if (std::find(ret.cbegin(), ret.cend(), parent) == ret.cend())
-					ret.push_back(Utils::FileSystem::getParent(file));
+					ret.push_back(parent);
 			}
 		}
 	}
 
 	std::sort(ret.begin(), ret.end());
 	return ret;
+}
+
+
+std::vector<std::string> ApiSystem::getRetroachievementsSoundsList()
+{
+	Utils::FileSystem::FileSystemCacheActivator fsc;
+
+	std::vector<std::string> ret;
+
+	LOG(LogDebug) << "ApiSystem::getRetroAchievementsSoundsList";
+
+	std::vector<std::string> folderList = { "/usr/share/libretro/assets/sounds", "/userdata/sounds/retroachievements" };
+	for (auto folder : folderList)
+	{
+		for (auto file : Utils::FileSystem::getDirContent(folder, false))
+		{
+			auto sound = Utils::FileSystem::getFileName(file);
+			if (sound.substr(sound.find_last_of('.') + 1) == "ogg")
+			{
+				if (std::find(ret.cbegin(), ret.cend(), sound) == ret.cend())
+				  ret.push_back(sound.substr(0, sound.find_last_of('.')));
+			}
+		}
+	}
+
+	std::sort(ret.begin(), ret.end());
+	return ret;
+}
+
+std::vector<std::string> ApiSystem::getTimezones()
+{
+	std::vector<std::string> ret;
+
+	LOG(LogDebug) << "ApiSystem::getTimezones";
+
+	std::vector<std::string> folderList = { "/usr/share/zoneinfo/" };
+	for (auto folder : folderList)
+	{
+		for (auto continent : Utils::FileSystem::getDirContent(folder, false))
+		{
+			for (auto file : Utils::FileSystem::getDirContent(continent, false))
+			{
+				std::string short_continent = continent.substr(continent.find_last_of('/') + 1, -1);
+				if (short_continent == "Africa" || short_continent == "America"
+					|| short_continent == "Antarctica" || short_continent == "Asia"
+					|| short_continent == "Atlantic" || short_continent == "Australia"
+					|| short_continent == "Etc" || short_continent == "Europe"
+					|| short_continent == "Indian" || short_continent == "Pacific")
+				{
+					auto tz = Utils::FileSystem::getFileName(file);
+					if (std::find(ret.cbegin(), ret.cend(), tz) == ret.cend())
+						  ret.push_back(short_continent + "/" + tz);
+				}
+			}
+		}
+	}
+	std::sort(ret.begin(), ret.end());
+	return ret;
+}
+
+std::string ApiSystem::getCurrentTimezone()
+{
+	LOG(LogInfo) << "ApiSystem::getCurrentTimezone";
+	auto cmd = executeEnumerationScript("batocera-timezone get");
+	std::string tz = Utils::String::join(cmd, "");
+	remove_if(tz.begin(), tz.end(), isspace);
+	if (tz.empty()) {
+		cmd = executeEnumerationScript("batocera-timezone detect");
+		tz = Utils::String::join(cmd, "");
+	}
+	return tz;
+}
+
+bool ApiSystem::setTimezone(std::string tz)
+{
+	if (tz.empty())
+		return false;
+	return executeScript("batocera-timezone set \"" + tz + "\"");
+}
+
+std::vector<PadInfo> ApiSystem::getPadsInfo()
+{
+	LOG(LogInfo) << "ApiSystem::getPadsInfo";
+
+	std::vector<PadInfo> ret;
+
+	auto res = executeEnumerationScript("batocera-padsinfo");
+	std::string data = Utils::String::join(res, "\n");
+	if (data.empty())
+	{
+		LOG(LogError) << "Package list is empty";
+		return ret;
+	}
+
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_string(data.c_str());
+	if (!result)
+	{
+		LOG(LogError) << "Unable to parse packages";
+		return ret;
+	}
+
+	pugi::xml_node root = doc.child("pads");
+	if (!root)
+	{
+		LOG(LogError) << "Could not find <pads> node";
+		return ret;
+	}
+
+	for (pugi::xml_node pad = root.child("pad"); pad; pad = pad.next_sibling("pad"))
+	{
+		PadInfo pi;
+
+		if (pad.attribute("device"))
+			pi.device = pad.attribute("device").as_string();
+
+		if (pad.attribute("id"))
+			pi.id = Utils::String::toInteger(pad.attribute("id").as_string());
+
+		if (pad.attribute("name"))
+			pi.name = pad.attribute("name").as_string();
+
+		if (pad.attribute("battery"))
+			pi.battery = Utils::String::toInteger(pad.attribute("battery").as_string());
+
+		if (pad.attribute("status"))
+			pi.status = pad.attribute("status").as_string();
+
+		ret.push_back(pi);
+	}
+
+	return ret;
+}
+
+std::string ApiSystem::getRunningArchitecture()
+{
+	auto res = executeEnumerationScript("uname -m");
+	if (res.size() > 0)
+		return res[0];
+
+	return "";
+}
+
+std::string ApiSystem::getHostsName()
+{
+	auto hostName = SystemConf::getInstance()->get("system.hostname");
+	if (!hostName.empty())
+		return hostName;
+
+	return "127.0.0.1";
+}
+
+bool ApiSystem::emuKill()
+{
+	LOG(LogDebug) << "ApiSystem::emuKill";
+
+	return executeScript("batocera-es-swissknife --emukill");
 }

@@ -12,6 +12,9 @@
 #include <assert.h>
 #include "Settings.h"
 #include <algorithm>
+#include <mutex>
+#include "utils/StringUtil.h"
+#include "LocaleES.h"
 
 #define KEYBOARD_GUID_STRING "-1"
 #define CEC_GUID_STRING      "-2"
@@ -31,7 +34,10 @@
 int SDL_USER_CECBUTTONDOWN = -1;
 int SDL_USER_CECBUTTONUP   = -1;
 
+static std::mutex mJoysticksLock;
+
 InputManager* InputManager::mInstance = NULL;
+Delegate<IJoystickChangedEvent> InputManager::joystickChanged;
 
 InputManager::InputManager() : mKeyboardInputConfig(NULL)
 {
@@ -52,18 +58,10 @@ InputManager* InputManager::getInstance()
 
 void InputManager::init()
 {
-	if(initialized())
+	if (initialized())
 		deinit();
 
-	SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, 
-		Settings::getInstance()->getBool("BackgroundJoystickInput") ? "1" : "0");
-	SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-	SDL_JoystickEventState(SDL_ENABLE);
-
-        // batocera
-	// first, open all currently present joysticks
-        this->addAllJoysticks();
-	computeLastKnownPlayersDeviceIndexes();
+	rebuildAllJoysticks(false);
 
 	mKeyboardInputConfig = new InputConfig(DEVICE_KEYBOARD, -1, "Keyboard", KEYBOARD_GUID_STRING, 0, 0, 0); // batocera
 	loadInputConfig(mKeyboardInputConfig);
@@ -75,117 +73,12 @@ void InputManager::init()
 	loadInputConfig(mCECInputConfig);
 }
 
-void InputManager::addJoystickByDeviceIndex(int id)
-{
-	assert(id >= 0 && id < SDL_NumJoysticks());
-	
-	// open joystick & add to our list
-	SDL_Joystick* joy = SDL_JoystickOpen(id);
-	assert(joy);
-
-	// add it to our list so we can close it again later
-	SDL_JoystickID joyId = SDL_JoystickInstanceID(joy);
-	mJoysticks[joyId] = joy;
-
-	char guid[65];
-	SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(joy), guid, 65);
-
-	// create the InputConfig
-	mInputConfigs[joyId] = new InputConfig(joyId, id, SDL_JoystickName(joy), guid, SDL_JoystickNumButtons(joy), SDL_JoystickNumHats(joy), SDL_JoystickNumAxes(joy)); // batocera
-	if(!loadInputConfig(mInputConfigs[joyId]))
-	{
-		LOG(LogInfo) << "Added unconfigured joystick " << SDL_JoystickName(joy) << " (GUID: " << guid << ", instance ID: " << joyId << ", device index: " << id << ").";
-	}else{
-		LOG(LogInfo) << "Added known joystick " << SDL_JoystickName(joy) << " (instance ID: " << joyId << ", device index: " << id << ")";
-	}
-
-	// set up the prevAxisValues
-	int numAxes = SDL_JoystickNumAxes(joy);
-	mPrevAxisValues[joyId] = new int[numAxes];
-	std::fill(mPrevAxisValues[joyId], mPrevAxisValues[joyId] + numAxes, 0); //initialize array to 0
-}
-
-void InputManager::removeJoystickByJoystickID(SDL_JoystickID joyId)
-{
-	assert(joyId != -1);
-
-	// delete old prevAxisValues
-	auto axisIt = mPrevAxisValues.find(joyId);
-	delete[] axisIt->second;
-	mPrevAxisValues.erase(axisIt);
-
-	// delete old InputConfig
-	auto it = mInputConfigs.find(joyId);
-	delete it->second;
-	mInputConfigs.erase(it);
-
-	// close the joystick
-	auto joyIt = mJoysticks.find(joyId);
-	if(joyIt != mJoysticks.cend())
-	{
-		SDL_JoystickClose(joyIt->second);
-		mJoysticks.erase(joyIt);
-	}else{
-		LOG(LogError) << "Could not find joystick to close (instance ID: " << joyId << ")";
-	}
-}
-
-// batocera
-void InputManager::addAllJoysticks()
-{
-    clearJoystick();
-    int numJoysticks = SDL_NumJoysticks();
-    for(int i = 0; i < numJoysticks; i++)
-    {
-            addJoystickByDeviceIndex(i);
-    }
-}
-
-// batocera
-void InputManager::clearJoystick()
-{
-    for(auto iter = mJoysticks.begin(); iter != mJoysticks.end(); iter++)
-	{
-		SDL_JoystickClose(iter->second);
-	}
-	mJoysticks.clear();
-
-	for(auto iter = mInputConfigs.begin(); iter != mInputConfigs.end(); iter++)
-	{
-		delete iter->second;
-	}
-	mInputConfigs.clear();
-
-	for(auto iter = mPrevAxisValues.begin(); iter != mPrevAxisValues.end(); iter++)
-	{
-		delete[] iter->second;
-	}
-	mPrevAxisValues.clear();
-
-}
-
 void InputManager::deinit()
 {
 	if(!initialized())
 		return;
 
-	for(auto iter = mJoysticks.cbegin(); iter != mJoysticks.cend(); iter++)
-	{
-		SDL_JoystickClose(iter->second);
-	}
-	mJoysticks.clear();
-
-	for(auto iter = mInputConfigs.cbegin(); iter != mInputConfigs.cend(); iter++)
-	{
-		delete iter->second;
-	}
-	mInputConfigs.clear();
-
-	for(auto iter = mPrevAxisValues.cbegin(); iter != mPrevAxisValues.cend(); iter++)
-	{
-		delete[] iter->second;
-	}
-	mPrevAxisValues.clear();
+	clearJoysticks();
 
 	if(mKeyboardInputConfig != NULL)
 	{
@@ -205,51 +98,127 @@ void InputManager::deinit()
 	SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
-int InputManager::getNumJoysticks() { return (int)mJoysticks.size(); }
-
-int InputManager::getAxisCountByDevice(SDL_JoystickID id)
-{
-	return SDL_JoystickNumAxes(mJoysticks[id]);
-}
-
-int InputManager::getButtonCountByDevice(SDL_JoystickID id)
-{
-	if(id == DEVICE_KEYBOARD)
-		return 120; //it's a lot, okay.
-	else if(id == DEVICE_CEC)
-#ifdef HAVE_CECLIB
-		return CEC::CEC_USER_CONTROL_CODE_MAX;
-#else // HAVE_LIBCEF
-		return 0;
-#endif // HAVE_CECLIB
-	else
-		return SDL_JoystickNumButtons(mJoysticks[id]);
+int InputManager::getNumJoysticks() 
+{ 
+	std::unique_lock<std::mutex> lock(mJoysticksLock);
+	return (int)mJoysticks.size(); 
 }
 
 InputConfig* InputManager::getInputConfigByDevice(int device)
 {
 	if(device == DEVICE_KEYBOARD)
 		return mKeyboardInputConfig;
-	else if(device == DEVICE_CEC)
+
+	if(device == DEVICE_CEC)
 		return mCECInputConfig;
-	else
-		return mInputConfigs[device];
+	
+	return mInputConfigs[device];
+}
+
+void InputManager::clearJoysticks()
+{
+	mJoysticksLock.lock();
+
+	for (auto iter = mJoysticks.begin(); iter != mJoysticks.end(); iter++)
+		SDL_JoystickClose(iter->second);
+
+	mJoysticks.clear();
+
+	for (auto iter = mInputConfigs.begin(); iter != mInputConfigs.end(); iter++)
+		if (iter->second)
+			delete iter->second;
+
+	mInputConfigs.clear();
+
+	for (auto iter = mPrevAxisValues.begin(); iter != mPrevAxisValues.end(); iter++)
+		if (iter->second)
+			delete[] iter->second;
+
+	mPrevAxisValues.clear();
+
+	mJoysticksLock.unlock();
+}
+
+void InputManager::rebuildAllJoysticks(bool deinit)
+{
+	if (deinit)
+		SDL_JoystickEventState(SDL_DISABLE);
+
+	clearJoysticks();
+
+	if (deinit)
+		SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+
+	SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, Settings::getInstance()->getBool("BackgroundJoystickInput") ? "1" : "0");
+	SDL_InitSubSystem(SDL_INIT_JOYSTICK);	
+
+	mJoysticksLock.lock();
+
+	int numJoysticks = SDL_NumJoysticks();
+	for (int idx = 0; idx < numJoysticks; idx++)
+	{
+		// open joystick & add to our list
+		SDL_Joystick* joy = SDL_JoystickOpen(idx);
+		if (joy == nullptr)
+			continue;
+
+		// add it to our list so we can close it again later
+		SDL_JoystickID joyId = SDL_JoystickInstanceID(joy);
+
+		mJoysticks.erase(joyId);
+		mJoysticks[joyId] = joy;
+
+		char guid[40];
+		SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(joy), guid, 40);
+
+		// create the InputConfig
+		auto cfg = mInputConfigs.find(joyId);
+		if (cfg != mInputConfigs.cend())
+		{
+			if (cfg->second != nullptr)
+				delete cfg->second;
+
+			mInputConfigs.erase(joyId);
+		}
+
+		mInputConfigs[joyId] = new InputConfig(joyId, idx, SDL_JoystickName(joy), guid, SDL_JoystickNumButtons(joy), SDL_JoystickNumHats(joy), SDL_JoystickNumAxes(joy)); // batocera
+
+		if (!loadInputConfig(mInputConfigs[joyId]))
+			LOG(LogInfo) << "Added unconfigured joystick " << SDL_JoystickName(joy) << " (GUID: " << guid << ", instance ID: " << joyId << ", device index: " << idx << ").";
+		else
+			LOG(LogInfo) << "Added known joystick " << SDL_JoystickName(joy) << " (GUID: " << guid << ", instance ID: " << joyId << ", device index: " << idx << ")";
+
+		// set up the prevAxisValues
+		int numAxes = SDL_JoystickNumAxes(joy);
+		
+		mPrevAxisValues.erase(joyId);
+		mPrevAxisValues[joyId] = new int[numAxes];
+		std::fill(mPrevAxisValues[joyId], mPrevAxisValues[joyId] + numAxes, 0); //initialize array to 0
+	}
+
+	mJoysticksLock.unlock();
+
+	computeLastKnownPlayersDeviceIndexes();
+
+	joystickChanged.invoke([](IJoystickChangedEvent* c) { c->onJoystickChanged(); });
+
+	SDL_JoystickEventState(SDL_ENABLE);
 }
 
 bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 {
 	bool causedEvent = false;
-	switch(ev.type)
+	switch (ev.type)
 	{
 	case SDL_JOYAXISMOTION:
-	  {
-            // batocera
-	    // some axes are "full" : from -32000 to +32000
-	    // in this case, their unpressed state is not 0
-	    // SDL provides a function to get this value
-	    // in es, the trick is to minus this value to the value to do as if it started at 0
-	    int initialValue = 0;
-	    Sint16 x;
+	{
+		// batocera
+	// some axes are "full" : from -32000 to +32000
+	// in this case, their unpressed state is not 0
+	// SDL provides a function to get this value
+	// in es, the trick is to minus this value to the value to do as if it started at 0
+		int initialValue = 0;
+		Sint16 x;
 
 #if SDL_VERSION_ATLEAST(2, 0, 9)
 		// SDL_JoystickGetAxisInitialState doesn't work with 8bitdo start+b
@@ -262,7 +231,7 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 
 			auto it = mJoysticksInitialValues.find(guid);
 			if (it != mJoysticksInitialValues.cend())
-				initialValue = it->second;			
+				initialValue = it->second;
 			else if (SDL_JoystickGetAxisInitialState(mJoysticks[ev.jaxis.which], ev.jaxis.axis, &x))
 			{
 				mJoysticksInitialValues[guid] = x;
@@ -271,25 +240,29 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		}
 #endif
 
-		//if it switched boundaries
-		if((abs(ev.jaxis.value-initialValue) > DEADZONE) != (abs(mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis]) > DEADZONE)) // batocera
-		{
-			int normValue;
-			if(abs(ev.jaxis.value-initialValue) <= DEADZONE) // batocera
-				normValue = 0;
-			else
-				if(ev.jaxis.value-initialValue > 0) // batocera
-					normValue = 1;
+		if (mPrevAxisValues.find(ev.jaxis.which) != mPrevAxisValues.cend())
+		{			
+			//if it switched boundaries
+			if ((abs(ev.jaxis.value - initialValue) > DEADZONE) != (abs(mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis]) > DEADZONE)) // batocera
+			{
+				int normValue;
+				if (abs(ev.jaxis.value - initialValue) <= DEADZONE) // batocera
+					normValue = 0;
 				else
-					normValue = -1;
+					if (ev.jaxis.value - initialValue > 0) // batocera
+						normValue = 1;
+					else
+						normValue = -1;
 
-			window->input(getInputConfigByDevice(ev.jaxis.which), Input(ev.jaxis.which, TYPE_AXIS, ev.jaxis.axis, normValue, false));
-			causedEvent = true;
+				window->input(getInputConfigByDevice(ev.jaxis.which), Input(ev.jaxis.which, TYPE_AXIS, ev.jaxis.axis, normValue, false));
+				causedEvent = true;
+			}
+
+			mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis] = ev.jaxis.value - initialValue; // batocera
 		}
 
-		mPrevAxisValues[ev.jaxis.which][ev.jaxis.axis] = ev.jaxis.value-initialValue; // batocera
 		return causedEvent;
-	  }
+	}
 	case SDL_JOYBUTTONDOWN:
 	case SDL_JOYBUTTONUP:
 		window->input(getInputConfigByDevice(ev.jbutton.which), Input(ev.jbutton.which, TYPE_BUTTON, ev.jbutton.button, ev.jbutton.state == SDL_PRESSED, false));
@@ -300,22 +273,11 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		return true;
 
 	case SDL_KEYDOWN:
-		if(ev.key.keysym.sym == SDLK_BACKSPACE && SDL_IsTextInputActive())
-		{
+		if (ev.key.keysym.sym == SDLK_BACKSPACE && SDL_IsTextInputActive())
 			window->textInput("\b");
-		}
 
-		if(ev.key.repeat)
+		if (ev.key.repeat)
 			return false;
-
-                // batocera
-		//if(ev.key.keysym.sym == SDLK_F4)
-		//{
-		//	SDL_Event* quit = new SDL_Event();
-		//	quit->type = SDL_QUIT;
-		//	SDL_PushEvent(quit);
-		//	return false;
-		//}
 
 #ifdef _ENABLEEMUELEC
 		/* use the POWER KEY to turn off EmuELEC, specially useful for GTKING-PRO and Odroid Go Advance*/
@@ -338,13 +300,28 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		break;
 
 	case SDL_JOYDEVICEADDED:
-		addJoystickByDeviceIndex(ev.jdevice.which); // ev.jdevice.which is a device index
-		computeLastKnownPlayersDeviceIndexes(); // batocera
+		{
+			std::string addedDeviceName;
+			auto id = SDL_JoystickGetDeviceInstanceID(ev.jdevice.which);
+			auto it = std::find_if(mInputConfigs.cbegin(), mInputConfigs.cend(), [id](const std::pair<SDL_JoystickID, InputConfig*> & t) { return t.second != nullptr && t.second->getDeviceId() == id; });
+			if (it == mInputConfigs.cend())
+				addedDeviceName = SDL_JoystickNameForIndex(ev.jdevice.which);
+			
+			rebuildAllJoysticks();
+
+			if (!addedDeviceName.empty())
+				window->displayNotificationMessage(_U("\uF11B ") + Utils::String::format(_("%s connected").c_str(), Utils::String::trim(addedDeviceName).c_str()));
+		}
 		return true;
 
 	case SDL_JOYDEVICEREMOVED:
-		removeJoystickByJoystickID(ev.jdevice.which); // ev.jdevice.which is an SDL_JoystickID (instance ID)
-		computeLastKnownPlayersDeviceIndexes(); // batocera
+		{
+			auto it = mInputConfigs.find(ev.jdevice.which);
+			if (it != mInputConfigs.cend() && it->second != nullptr)
+				window->displayNotificationMessage(_U("\uF11B ") + Utils::String::format(_("%s disconnected").c_str(), Utils::String::trim(it->second->getDeviceName()).c_str()));
+	
+			rebuildAllJoysticks();
+		}
 		return false;
 	}
 
@@ -550,7 +527,9 @@ void InputManager::writeDeviceConfig(InputConfig* config)
 
 void InputManager::doOnFinish()
 {
-	assert(initialized());
+	if (!initialized())
+		return;
+
 	std::string path = getConfigPath();
 	pugi::xml_document doc;
 
@@ -612,149 +591,129 @@ bool InputManager::initialized() const
 int InputManager::getNumConfiguredDevices()
 {
 	int num = 0;
-	for(auto it = mInputConfigs.cbegin(); it != mInputConfigs.cend(); it++)
-	{
-		if(it->second->isConfigured())
-			num++;
-	}
 
-	if(mKeyboardInputConfig->isConfigured())
+	for(auto it = mInputConfigs.cbegin(); it != mInputConfigs.cend(); it++)
+		if(it->second && it->second->isConfigured())
+			num++;
+
+	if (mKeyboardInputConfig && mKeyboardInputConfig->isConfigured())
 		num++;
 
-	if(mCECInputConfig->isConfigured())
+	if (mCECInputConfig && mCECInputConfig->isConfigured())
 		num++;
 
 	return num;
 }
 
-std::string InputManager::getDeviceGUIDString(int deviceId)
+void InputManager::computeLastKnownPlayersDeviceIndexes() 
 {
-	if(deviceId == DEVICE_KEYBOARD)
-		return KEYBOARD_GUID_STRING;
+	std::map<int, InputConfig*> playerJoysticks = computePlayersConfigs();
 
-	if(deviceId == DEVICE_CEC)
-		return CEC_GUID_STRING;
-
-	auto it = mJoysticks.find(deviceId);
-	if(it == mJoysticks.cend())
+	m_lastKnownPlayersDeviceIndexes.clear();
+	for (int player = 0; player < MAX_PLAYERS; player++)
 	{
-		LOG(LogError) << "getDeviceGUIDString - deviceId " << deviceId << " not found!";
-		return "something went horribly wrong";
+		auto playerJoystick = playerJoysticks[player];
+		if (playerJoystick != nullptr)
+		{
+			PlayerDeviceInfo dev;
+			dev.index = playerJoystick->getDeviceIndex();
+			dev.batteryLevel = playerJoystick->getBatteryLevel();
+
+			m_lastKnownPlayersDeviceIndexes[player] = dev;
+		}
 	}
-
-	char guid[65];
-	SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(it->second), guid, 65);
-	return std::string(guid);
 }
 
-// batocera
-void InputManager::computeLastKnownPlayersDeviceIndexes() {
-  std::map<int, InputConfig*> playerJoysticks = computePlayersConfigs();
+std::map<int, InputConfig*> InputManager::computePlayersConfigs()
+{
+	std::unique_lock<std::mutex> lock(mJoysticksLock);
 
-  m_lastKnownPlayersDeviceIndexes.clear();
-  for (int player = 0; player < MAX_PLAYERS; player++) {
-    if(playerJoysticks[player] != NULL){
-      m_lastKnownPlayersDeviceIndexes[player] = playerJoysticks[player]->getDeviceIndex();
-    }
-  }
-}
+	// 1. Recuperer les configurated
+	std::vector<InputConfig *> availableConfigured;
+	for (auto conf : mInputConfigs)
+		if (conf.second != nullptr && conf.second->isConfigured())
+			availableConfigured.push_back(conf.second);
 
-// batocera
-std::map<int, int> InputManager::lastKnownPlayersDeviceIndexes() {
-  return m_lastKnownPlayersDeviceIndexes;
-}
+	// sort available configs
+	std::sort(availableConfigured.begin(), availableConfigured.end(), [](InputConfig * a, InputConfig * b) -> bool { return a->getDeviceIndex() < b->getDeviceIndex(); });
 
-// batocera
-std::map<int, InputConfig*> InputManager::computePlayersConfigs() {
-    // 1 recuperer les configurated
-    std::vector<InputConfig *> availableConfigured;
-
-    for(auto iter = mJoysticks.begin(); iter != mJoysticks.end(); iter++) {
-        InputConfig * config = getInputConfigByDevice(iter->first);
-        if(config != NULL && config->isConfigured()) {
-            availableConfigured.push_back(config);
-        }
-    }
-    // sort available configs
-    std::sort(availableConfigured.begin(), availableConfigured.end(), [](InputConfig * a, InputConfig * b) -> bool { return a->getDeviceIndex() < b->getDeviceIndex();});
-
-    //2 pour chaque joueur verifier si il y a un configurated
-    // associer le input au joueur
-    // enlever des disponibles
-    std::map<int, InputConfig*> playerJoysticks;
+	// 2. Pour chaque joueur verifier si il y a un configurated
+	// associer le input au joueur
+	// enlever des disponibles
+	std::map<int, InputConfig*> playerJoysticks;
 
 	// First loop, search for GUID + NAME. High Priority
-    for (int player = 0; player < MAX_PLAYERS; player++) {
-        std::stringstream sstm;
-        sstm << "INPUT P" << player+1;
-		std::string confName = sstm.str()+"NAME";
-		std::string confGuid = sstm.str()+"GUID";
+	for (int player = 0; player < MAX_PLAYERS; player++) 
+	{
+		std::string playerConfigName = Settings::getInstance()->getString(Utils::String::format("INPUT P%iNAME", player + 1));
+		std::string playerConfigGuid = Settings::getInstance()->getString(Utils::String::format("INPUT P%iGUID", player + 1));
 
-		std::string playerConfigName = Settings::getInstance()->getString(confName);
-		std::string playerConfigGuid = Settings::getInstance()->getString(confGuid);
-
-        for (auto it1=availableConfigured.begin(); it1!=availableConfigured.end(); ++it1)
-        {
-            InputConfig * config = *it1;
-			bool nameFound = playerConfigName.compare(config->getDeviceName()) == 0;
-			bool guidfound = playerConfigGuid.compare(config->getDeviceGUIDString()) == 0;
-
-			if(nameFound && guidfound) {
-					availableConfigured.erase(it1);
-					playerJoysticks[player] = config;
-					break;
-			}
-        }
-    }
-	// Second loop, search for NAME. Low Priority
-	for (int player = 0; player < MAX_PLAYERS; player++) {
-		std::stringstream sstm;
-		sstm << "INPUT P" << player+1;
-		std::string confName = sstm.str()+"NAME";
-
-		std::string playerConfigName = Settings::getInstance()->getString(confName);
-
-		for (auto it1=availableConfigured.begin(); it1!=availableConfigured.end(); ++it1)
+		for (auto it1 = availableConfigured.begin(); it1 != availableConfigured.end(); ++it1)
 		{
-			InputConfig * config = *it1;
-			bool nameFound = playerConfigName.compare(config->getDeviceName()) == 0;
-			if(nameFound) {
-					availableConfigured.erase(it1);
-					playerJoysticks[player] = config;
-					break;
+			InputConfig* config = *it1;
+			if (playerConfigName == config->getDeviceName() && playerConfigGuid == config->getDeviceGUIDString())
+			{
+				availableConfigured.erase(it1);
+				playerJoysticks[player] = config;
+				break;
 			}
 		}
 	}
 
-    // Last loop, search for free controllers for remaining players.
-    for (int player = 0; player < MAX_PLAYERS; player++) {
-        // si aucune config a été trouvé pour le joueur, on essaie de lui filer un libre
-        if(playerJoysticks[player] == NULL){
-            for (auto it1=availableConfigured.begin(); it1!=availableConfigured.end(); ++it1)
-            {
-                playerJoysticks[player] = *it1;
-                availableConfigured.erase(it1);
-                break;
-            }
-        }
-    }
+	// Second loop, search for NAME. Low Priority
+	for (int player = 0; player < MAX_PLAYERS; player++) 
+	{
+		if (playerJoysticks[player] != nullptr)
+			continue;
 
-    // in case of hole (player 1 missing, but player 4 set, fill the holes with last players joysticks)
-    for (int player = 0; player < MAX_PLAYERS; player++) {
-      if(playerJoysticks[player] == NULL){
-    	for (int repplayer = MAX_PLAYERS; repplayer > player; repplayer--) {
-    	  if(playerJoysticks[player] == NULL && playerJoysticks[repplayer] != NULL){
-    	    playerJoysticks[player]    = playerJoysticks[repplayer];
-	    playerJoysticks[repplayer] = NULL;
-    	  }
-    	}
-      }
-    }
+		std::string playerConfigName = Settings::getInstance()->getString(Utils::String::format("INPUT P%dNAME", player + 1));
 
-    return playerJoysticks;
+		for (auto it1 = availableConfigured.begin(); it1 != availableConfigured.end(); ++it1)
+		{
+			InputConfig * config = *it1;
+			if (playerConfigName == config->getDeviceName())
+			{
+				availableConfigured.erase(it1);
+				playerJoysticks[player] = config;
+				break;
+			}
+		}
+	}
+
+	// Last loop, search for free controllers for remaining players.
+	for (int player = 0; player < MAX_PLAYERS; player++) 
+	{
+		if (playerJoysticks[player] != nullptr)
+			continue;
+
+		// si aucune config a été trouvé pour le joueur, on essaie de lui filer un libre
+		for (auto it1 = availableConfigured.begin(); it1 != availableConfigured.end(); ++it1)
+		{
+			playerJoysticks[player] = *it1;
+			availableConfigured.erase(it1);
+			break;
+		}
+	}
+
+	// in case of hole (player 1 missing, but player 4 set, fill the holes with last players joysticks)
+	for (int player = 0; player < MAX_PLAYERS; player++) 
+	{
+		if (playerJoysticks[player] != nullptr)
+			continue;
+
+		for (int repplayer = MAX_PLAYERS; repplayer > player; repplayer--) 
+		{
+			if (playerJoysticks[player] == NULL && playerJoysticks[repplayer] != NULL) 
+			{
+				playerJoysticks[player] = playerJoysticks[repplayer];
+				playerJoysticks[repplayer] = NULL;
+			}
+		}		
+	}
+
+	return playerJoysticks;
 }
 
-// batocera
 std::string InputManager::configureEmulators() {
   std::map<int, InputConfig*> playerJoysticks = computePlayersConfigs();
   std::stringstream command;
@@ -779,4 +738,45 @@ std::string InputManager::configureEmulators() {
   }
   LOG(LogInfo) << "Configure emulators command : " << command.str().c_str();
   return command.str();
+}
+
+void InputManager::updateBatteryLevel(int id, std::string device, int level)
+{
+	bool changed = false;
+
+	mJoysticksLock.lock();
+
+	for (auto joy : mJoysticks) 
+	{
+		InputConfig* config = getInputConfigByDevice(joy.first);
+		if (config != NULL && config->isConfigured())
+		{
+			if (Utils::String::compareIgnoreCase(config->getDeviceGUIDString(), device) == 0)
+			{
+				config->updateBatteryLevel(level);
+				changed = true;
+			}
+		}
+	}
+
+	mJoysticksLock.unlock();
+
+	if (changed)
+		computeLastKnownPlayersDeviceIndexes();
+}
+
+std::vector<InputConfig*> InputManager::getInputConfigs()
+{
+	std::vector<InputConfig*> ret;
+
+	std::map<int, InputConfig*> playerJoysticks = computePlayersConfigs();
+
+	for (int player = 0; player < MAX_PLAYERS; player++)
+	{
+		auto playerJoystick = playerJoysticks[player];
+		if (playerJoystick != nullptr && playerJoystick->isConfigured())
+			ret.push_back(playerJoystick);
+	}
+
+	return ret;
 }

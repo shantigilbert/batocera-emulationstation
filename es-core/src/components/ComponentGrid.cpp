@@ -154,7 +154,7 @@ void ComponentGrid::updateSeparators()
 	mLines.clear();
 
 	const unsigned int color = Renderer::convertColor(mSeparatorColor);
-	bool drawAll = Settings::getInstance()->getBool("DebugGrid");
+	bool drawAll = Settings::DebugGrid;
 
 	Vector2f pos;
 	Vector2f size;
@@ -285,8 +285,7 @@ bool ComponentGrid::moveCursor(Vector2i dir)
 
 		const GridEntry* cursorEntry;
 		//spread out on search axis+
-		while(mCursor.x() < mGridSize.x() && mCursor.y() < mGridSize.y()
-			&& mCursor.x() >= 0 && mCursor.y() >= 0)
+		while(mCursor.x() < mGridSize.x() && mCursor.y() < mGridSize.y() && mCursor.x() >= 0 && mCursor.y() >= 0)
 		{
 			cursorEntry = getCellAt(mCursor);
 			if(cursorEntry && cursorEntry->canFocus && cursorEntry != currentCursorEntry)
@@ -295,13 +294,12 @@ bool ComponentGrid::moveCursor(Vector2i dir)
 				return true;
 			}
 
-			mCursor += searchAxis;
+			mCursor += dir;
 		}
-
+		/*
 		//now again on search axis-
 		mCursor = curDirPos;
-		while(mCursor.x() >= 0 && mCursor.y() >= 0
-			&& mCursor.x() < mGridSize.x() && mCursor.y() < mGridSize.y())
+		while(mCursor.x() >= 0 && mCursor.y() >= 0 && mCursor.x() < mGridSize.x() && mCursor.y() < mGridSize.y())
 		{
 			cursorEntry = getCellAt(mCursor);
 			if(cursorEntry && cursorEntry->canFocus && cursorEntry != currentCursorEntry)
@@ -310,9 +308,9 @@ bool ComponentGrid::moveCursor(Vector2i dir)
 				return true;
 			}
 
-			mCursor -= searchAxis;
+			mCursor -= dir;
 		}
-
+		*/
 		mCursor = curDirPos;
 	}
 
@@ -356,7 +354,7 @@ void ComponentGrid::render(const Transform4x4f& parentTrans)
 {
 	Transform4x4f trans = parentTrans * getTransform();
 
-	if (!Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x(), mSize.y()))
+	if (!Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x() * trans.r0().x(), mSize.y() * trans.r1().y()))
 		return;
 
 	renderChildren(trans);
@@ -390,6 +388,15 @@ void ComponentGrid::onCursorMoved(Vector2i from, Vector2i to)
 	updateHelpPrompts();
 }
 
+bool ComponentGrid::isCursorTo(const std::shared_ptr<GuiComponent>& comp)
+{
+	for (auto it = mCells.cbegin(); it != mCells.cend(); it++)
+		if (it->component == comp && mCursor == it->pos)
+			return true;
+
+	return false;
+}
+
 void ComponentGrid::setCursorTo(const std::shared_ptr<GuiComponent>& comp)
 {
 	for(auto it = mCells.cbegin(); it != mCells.cend(); it++)
@@ -402,9 +409,6 @@ void ComponentGrid::setCursorTo(const std::shared_ptr<GuiComponent>& comp)
 			return;
 		}
 	}
-
-	// component not found!!
-	assert(false);
 }
 
 std::vector<HelpPrompt> ComponentGrid::getHelpPrompts()

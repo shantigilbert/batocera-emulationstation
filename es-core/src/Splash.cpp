@@ -36,7 +36,10 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	if (Utils::FileSystem::exists(themeFilePath))
 	{
 		std::map<std::string, std::string> sysData;
-		theme->loadFile("splash", sysData, themeFilePath);
+
+		try { theme->loadFile("splash", sysData, themeFilePath); }
+		catch(...) { }
+		
 		useOldSplashLayout = false;
 	}
 
@@ -51,12 +54,18 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	if (backGroundImageTheme && backGroundImageTheme->has("linearSmooth"))
 		linearSmooth = backGroundImageTheme->get<bool>("linearSmooth");
 	
-
 	if (fullScreenBackGround && !useOldSplashLayout)
 	{
 		mBackground.setOrigin(0.5, 0.5);
 		mBackground.setPosition(Renderer::getScreenWidth() / 2, Renderer::getScreenHeight() / 2);
-		mBackground.setMaxSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
+
+		if (backGroundImageTheme)
+			mBackground.setMaxSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
+		else
+		{
+			mBackground.setMinSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
+			linearSmooth = true;
+		}
 	}
 	else
 	{
@@ -196,10 +205,15 @@ Splash::Splash(Window* window, const std::string image, bool fullScreenBackGroun
 	}
 
 	std::stable_sort(mExtras.begin(), mExtras.end(), [](GuiComponent* a, GuiComponent* b) { return b->getZIndex() > a->getZIndex(); });
+
+	// Don't waste time in waiting for vsync
+	SDL_GL_SetSwapInterval(0);
 }
 
 Splash::~Splash()
 {
+	Renderer::setSwapInterval();
+
 	for (auto extra : mExtras)
 		delete extra;
 

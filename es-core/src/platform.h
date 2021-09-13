@@ -28,7 +28,26 @@ int quitES(QuitMode mode = QuitMode::QUIT);
 bool isFastShutdown();
 void processQuitMode();
 
+struct BatteryInformation
+{
+	BatteryInformation()
+	{
+		hasBattery = false;
+		level = 0;
+		isCharging = false;
+	}
+
+	bool hasBattery;
+	int  level;
+	bool isCharging;
+};
+
+BatteryInformation queryBatteryInformation();
+std::string queryIPAdress();
+
 #ifdef _ENABLEEMUELEC
 std::string getShOutput(const std::string& mStr); /* < emuelec */
 #endif
+std::string getArchString();
+
 #endif // ES_CORE_PLATFORM_H

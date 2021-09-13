@@ -6,6 +6,11 @@ namespace Utils
 {
 	namespace Time
 	{
+		DateTime DateTime::now()
+		{
+			return Utils::Time::DateTime(Utils::Time::now());
+		}
+
 		DateTime::DateTime()
 		{
 			mTime       = 0;
@@ -64,6 +69,22 @@ namespace Utils
 			setTime(stringToTime(_isoString));
 
 		} // DateTime::setIsoString
+
+		double	DateTime::elapsedSecondsSince(const DateTime& _since)
+		{
+			return difftime(mTime, _since.mTime);
+		}
+
+		std::string DateTime::toLocalTimeString()
+		{
+			time_t     clockNow = getTime();
+			struct tm  clockTstruct = *localtime(&clockNow);
+
+			char       clockBuf[256];
+			strftime(clockBuf, sizeof(clockBuf), "%Ex %R", &clockTstruct);
+			return clockBuf;
+		}
+
 
 		Duration::Duration(const time_t& _time)
 		{
@@ -240,6 +261,26 @@ namespace Utils
 						{
 							*s++ = (char)(timeStruct.tm_hour / 10) + '0';
 							*s++ = (char)(timeStruct.tm_hour % 10) + '0';
+						}
+						break;
+
+						case 'I': // The hour (12-hour clock) [01,12]
+						{
+							int h = timeStruct.tm_hour;
+							if (h >= 12)
+								h -= 12;
+							if (h == 0)
+								h = 12;
+
+							*s++ = (char)(h / 10) + '0';
+							*s++ = (char)(h % 10) + '0';
+						}
+						break;
+
+						case 'p': // AM / PM
+						{
+							*s++ = timeStruct.tm_hour < 12 ? 'A' : 'P';
+							*s++ = 'M';
 						}
 						break;
 

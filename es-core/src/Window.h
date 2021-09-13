@@ -59,7 +59,7 @@ public:
 	void update(int deltaTime);
 	void render();
 
-	bool init(bool initRenderer = true);
+	bool init(bool initRenderer = true, bool initInputManager = true);
 	void deinit(bool deinitRenderer = true);
 
 	void normalizeNextUpdate();
@@ -85,7 +85,8 @@ public:
 	bool cancelScreenSaver();
 	void renderScreenSaver();
 
-	void postToUiThread(const std::function<void(Window*)>& func);
+	void postToUiThread(const std::function<void()>& func, void* data = nullptr);
+	void unregisterPostedFunctions(void* data);
 	void reactivateGui();
 
 	void onThemeChanged(const std::shared_ptr<ThemeData>& theme);
@@ -101,7 +102,13 @@ private:
 	void updateAsyncNotifications(int deltaTime);
 	void renderAsyncNotifications(const Transform4x4f& trans);
 	
-	std::vector<std::function<void(Window*)>> mFunctions;
+	struct PostedFunction
+	{
+		std::function<void()> func;
+		void* container;
+	};
+
+	std::vector<PostedFunction> mFunctions;
 
 	std::vector<GuiInfoPopup*> mNotificationPopups;
 	void updateNotificationPopups(int deltaTime);

@@ -17,8 +17,9 @@ public:
 
 	virtual FileData* getCursor() override;
 	virtual void setCursor(FileData* file) override;
-	virtual int getCursorIndex() override; // batocera
-	virtual void setCursorIndex(int index) override; // batocera
+	virtual int getCursorIndex() override;
+	virtual void setCursorIndex(int index) override;
+	virtual void resetLastCursor() override;
 
 	virtual const char* getName() const override
 	{
@@ -28,7 +29,6 @@ public:
 		return "basic";
 	}
 
-	virtual std::vector<HelpPrompt> getHelpPrompts() override;
 	virtual void launch(FileData* game) override;
 	virtual std::vector<FileData*> getFileDataEntries() override;
 

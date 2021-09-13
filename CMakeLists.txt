@@ -1,17 +1,21 @@
 cmake_minimum_required(VERSION 2.8)
 
 option(GLES "Set to ON if targeting Embedded OpenGL" ${GLES})
+option(GLES2 "Set to ON if targeting OpenGL ES 2.0" ${GLES2})
 option(GL "Set to ON if targeting Desktop OpenGL" ${GL})
 option(RPI "Set to ON to enable the Raspberry PI video player (omxplayer)" ${RPI})
 option(CEC "CEC" ON)
 option(BCM "BCM host" OFF)
 
 # batocera
-option(ENABLE_FILEMANAGER "Set to ON to enable f1 shortcut for filesystem")
-option(DISABLE_KODI "Set to ON to disable kodi in menu")
+option(ENABLE_FILEMANAGER "Set to ON to enable f1 shortcut for filesystem" OFF)
+option(DISABLE_KODI "Set to ON to disable kodi in menu" OFF)
+option(ENABLE_PULSE "Set to ON to enable pulse audio (versus alsa)" OFF)
 
 # emuelec
 option(ENABLE_EMUELEC "Set to ON to enable EmuELEC changes" ${ENABLE_EMUELEC})
+option(ENABLE_GAMEFORCE "Set to ON to enable Gameforce specific changes" ${ENABLE_GAMEFORCE})
+option(ODROIDGOA "Set to ON to enable Odroid Go Advance specific changes" ${ODROIDGOA})
 
 project(emulationstation-all)
 
@@ -28,9 +32,17 @@ if("${ENABLE_EMUELEC}" STREQUAL "1")
   add_definitions(-D_ENABLEEMUELEC)
 endif()
 
+if("${ENABLE_GAMEFORCE}" STREQUAL "1")
+  add_definitions(-D_ENABLEGAMEFORCE)
+endif()
+
+if("${ODROIDGOA}" STREQUAL "1")
+  add_definitions(-DODROIDGOA)
+endif()
+
 # batocera / kodi menu
 # disable kodi
-if("${DISABLE_KODI}" STREQUAL "1")
+if(DISABLE_KODI)
   MESSAGE("kodi disabled")
 else()
   add_definitions(-D_ENABLE_KODI_)
@@ -38,7 +50,7 @@ endif()
 
 # batocera / file manager f1 button
 # disable file manager
-if("${ENABLE_FILEMANAGER}" STREQUAL "1")
+if(ENABLE_FILEMANAGER)
   MESSAGE("file manager enabled")
   add_definitions(-D_ENABLE_FILEMANAGER_)
 endif()
@@ -57,6 +69,8 @@ endif()
 #set up OpenGL system variable
 if(GLES)
     set(GLSystem "Embedded OpenGL" CACHE STRING "The OpenGL system to be used")
+elseif(GLES2)
+    set(GLSystem "OpenGL ES 2.0" CACHE STRING "The OpenGL system to be used")
 elseif(GL)
     set(GLSystem "Desktop OpenGL" CACHE STRING "The OpenGL system to be used")
 #-------------------------------------------------------------------------------
@@ -91,6 +105,8 @@ set_property(CACHE GLSystem PROPERTY STRINGS "Desktop OpenGL" "Embedded OpenGL")
 #-------------------------------------------------------------------------------
 if(${GLSystem} MATCHES "Desktop OpenGL")
     find_package(OpenGL REQUIRED)
+elseif(${GLSystem} MATCHES "OpenGL ES 2.0")
+    find_package(OpenGLES2 REQUIRED)
 else()
     find_package(OpenGLES REQUIRED)
 endif()
@@ -103,6 +119,14 @@ find_package(SDL2 REQUIRED)
 find_package(CURL REQUIRED)
 find_package(VLC REQUIRED)
 find_package(RapidJSON REQUIRED)
+
+if(ENABLE_PULSE)
+  MESSAGE("pulse audio enabled")
+  find_package(PulseAudio REQUIRED)
+  add_definitions(-D_ENABLE_PULSE_)
+else()
+  MESSAGE("pulse audio disabled")
+endif()
 
 if(CEC)
   find_package(libCEC)
@@ -129,6 +153,22 @@ if(CEC)
   endif()
 endif()
 
+if(DEFINED SCREENSCRAPER_SOFTNAME)
+    add_definitions(-DSCREENSCRAPER_SOFTNAME="${SCREENSCRAPER_SOFTNAME}")
+endif()
+
+if(DEFINED SCREENSCRAPER_DEV_LOGIN)
+    add_definitions(-DSCREENSCRAPER_DEV_LOGIN="${SCREENSCRAPER_DEV_LOGIN}")
+endif()
+
+if(DEFINED GAMESDB_APIKEY)
+    add_definitions(-DGAMESDB_APIKEY="${GAMESDB_APIKEY}")
+endif()
+
+if(DEFINED CHEEVOS_DEV_LOGIN)
+    add_definitions(-DCHEEVOS_DEV_LOGIN="${CHEEVOS_DEV_LOGIN}")
+endif()
+
 #-------------------------------------------------------------------------------
 
 if(MSVC)
@@ -152,13 +192,15 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -O0") #support C++11 for std::, optimize
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O0")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -O2") #support C++11 for std::, optimize
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2")  #-s = strip binary
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-attributes -O3") #support C++11 for std::, optimize
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O3")  #-s = strip binary
 endif()
 endif()
 
 if(${GLSystem} MATCHES "Desktop OpenGL")
     add_definitions(-DUSE_OPENGL_21)
+elseif(${GLSystem} MATCHES "OpenGL ES 2.0")
+    add_definitions(-DUSE_OPENGLES_20)
 else()
     add_definitions(-DUSE_OPENGLES_10)
 endif()
@@ -179,8 +221,9 @@ set(COMMON_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/es-core/src
 )
 
-if(NOT DEFINED MSVC)
+if(ENABLE_PULSE)
  LIST(APPEND COMMON_INCLUDE_DIRS
+    ${PULSEAUDIO_INCLUDE_DIR}
       )
 endif()
 
@@ -217,6 +260,10 @@ else()
         LIST(APPEND COMMON_INCLUDE_DIRS
             ${OPENGL_INCLUDE_DIR}
         )
+    elseif(${GLSystem} MATCHES "OpenGL ES 2.0")
+        LIST(APPEND COMMON_INCLUDE_DIRS
+            ${OPENGLES2_INCLUDE_DIR}
+        )
     else()
         LIST(APPEND COMMON_INCLUDE_DIRS
             ${OPENGLES_INCLUDE_DIR}
@@ -249,10 +296,12 @@ set(COMMON_LIBRARIES
     pugixml
     nanosvg
     id3v2
+	libcheevos	
 )
 
-if(NOT DEFINED MSVC)
+if(ENABLE_PULSE)
  LIST(APPEND COMMON_LIBRARIES
+    ${PULSEAUDIO_LIBRARY}
       )
 endif()
 
@@ -283,8 +332,12 @@ if(DEFINED BCMHOST)
     LIST(APPEND COMMON_LIBRARIES
         bcm_host
         brcmEGL
-        ${OPENGLES_LIBRARIES}
-    )
+	)
+    if(GLES)
+      LIST(APPEND COMMON_LIBRARIES ${OPENGLES_LIBRARIES})
+    else()
+      LIST(APPEND COMMON_LIBRARIES ${OPENGLES2_LIBRARIES})
+    endif()
 elseif(DEFINED VERO4K)
     LIST(APPEND COMMON_LIBRARIES
         EGL
@@ -299,6 +352,11 @@ else()
     if(${GLSystem} MATCHES "Desktop OpenGL")
         LIST(APPEND COMMON_LIBRARIES
             ${OPENGL_LIBRARIES}
+        )
+    elseif(${GLSystem} MATCHES "OpenGL ES 2.0")
+        LIST(APPEND COMMON_LIBRARIES
+            EGL
+            ${OPENGLES2_LIBRARIES}
         )
     else()
         LIST(APPEND COMMON_LIBRARIES

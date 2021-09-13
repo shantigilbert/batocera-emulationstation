@@ -54,7 +54,7 @@ void LangInfo::extractLang(std::string val)
 
 		{ { "jp", "japan", "ja", "j" }, "jp", "jp" },
 
-		{ { "br", "brazil", "b" }, "br", "br" },
+		{ { "br", "brazil" }, "br", "br" },
 		{ { "ru", "r" }, "ru", "ru" },
 		{ { "kr", "korea", "k" }, "kr", "kr" },
 		{ { "cn", "china", "hong", "kong", "ch", "hk", "as", "tw" }, "cn", "cn" },
@@ -92,7 +92,7 @@ void LangInfo::extractLang(std::string val)
 LangInfo LangInfo::parse(std::string rom, SystemData* system)
 {
 	LangInfo info;
-	if (rom.empty())
+	if (rom.empty() || (system && system->hasPlatformId(PlatformIds::IMAGEVIEWER)))
 		return info;
 
 	std::string fileName = Utils::String::toLower(Utils::FileSystem::getFileName(rom));
@@ -157,17 +157,26 @@ std::string LangInfo::getFlag(const std::string lang, const std::string region)
 	}
 
 	auto langs = Utils::String::split(lang, ',');
-	if (std::find(langs.cbegin(), langs.cend(), locale) != langs.cend())
+	if (locale != "en" && std::find(langs.cbegin(), langs.cend(), locale) != langs.cend())
 		return locale;
 
 	if (langs.size() >= 1 && region.empty() && langs[0] == "en")
 		return "us";
-	else if (langs.size() == 1 && langs[0] != "en")
-		return langs[0];
+	else if (langs.size() == 1 && lang != "en")
+		return lang;
 		
 	if (region == "eu" && langs.size() == 1 && std::find(langs.cbegin(), langs.cend(), "en") != langs.cend())
 		return "uk";
-	else if (!region.empty())
+	
+	if (region == "jp" && langs.size() == 1 && lang != "jp")
+	{
+		if (lang == "en")
+			return "us";
+
+		return lang;
+	}
+	
+	if (!region.empty())
 		return region;
 
 	return "eu";

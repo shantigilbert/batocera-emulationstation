@@ -63,6 +63,11 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(FILECREATION_DATE_DESCENDING, &compareFileCreationDate, false, _("FILE CREATION DATE, DESCENDING"), _U("\uF161 ")));
 		mSortTypes.push_back(SortType(GAMETIME_ASCENDING, &compareGameTime, true, _("GAME TIME, ASCENDING"), _U("\uF160 ")));
 		mSortTypes.push_back(SortType(GAMETIME_DESCENDING, &compareGameTime, false, _("GAME TIME, DESCENDING"), _U("\uF161 ")));
+
+		mSortTypes.push_back(SortType(SYSTEM_RELEASEDATE_ASCENDING, &compareSystemReleaseYear, true, _("SYSTEM, RELEASE YEAR, ASCENDING"), _U("\uF160 ")));
+		mSortTypes.push_back(SortType(SYSTEM_RELEASEDATE_DESCENDING, &compareSystemReleaseYear, false, _("SYSTEM, RELEASE YEAR, DESCENDING"), _U("\uF161 ")));
+		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_ASCENDING, &compareReleaseYearSystem, true, _("RELEASE YEAR, SYSTEM, ASCENDING"), _U("\uF160 ")));
+		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_DESCENDING, &compareReleaseYearSystem, false, _("RELEASE YEAR, SYSTEM, DESCENDING"), _U("\uF161 ")));
 	}
 
 	//returns if file1 should come before file2
@@ -71,22 +76,22 @@ namespace FileSorts
 		if (file1->getType() != file2->getType())
 			return file1->getType() == FOLDER;
 
-		// we compare the actual metadata name, as collection files have the system appended which messes up the order		
-		std::string name1 = ((FileData*)file1)->getName();
-		std::string name2 = ((FileData*)file2)->getName();
+		// we compare the actual metadata name, as collection files have the system appended which messes up the order
+		std::string name1 = file1->getSortName();
+		std::string name2 = file2->getSortName();
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
 
 	bool compareRating(const FileData* file1, const FileData* file2)
 	{
-		return file1->getMetadata().getFloat("rating") < file2->getMetadata().getFloat("rating");
+		return file1->getMetadata().getFloat(MetaDataId::Rating) < file2->getMetadata().getFloat(MetaDataId::Rating);
 	}
 
 	bool compareTimesPlayed(const FileData* file1, const FileData* file2)
 	{
 		//only games have playcount metadata
 		if (file1->getMetadata().getType() == GAME_METADATA && file2->getMetadata().getType() == GAME_METADATA)
-			return (file1)->getMetadata().getInt("playcount") < (file2)->getMetadata().getInt("playcount");
+			return (file1)->getMetadata().getInt(MetaDataId::PlayCount) < (file2)->getMetadata().getInt(MetaDataId::PlayCount);
 
 		return false;
 	}
@@ -95,7 +100,7 @@ namespace FileSorts
 	{
 		//only games have playcount metadata
 		if (file1->getMetadata().getType() == GAME_METADATA && file2->getMetadata().getType() == GAME_METADATA)
-			return (file1)->getMetadata().getInt("gametime") < (file2)->getMetadata().getInt("gametime");
+			return (file1)->getMetadata().getInt(MetaDataId::GameTime) < (file2)->getMetadata().getInt(MetaDataId::GameTime);
 
 		return false;
 	}
@@ -109,7 +114,44 @@ namespace FileSorts
 
 	bool compareNumPlayers(const FileData* file1, const FileData* file2)
 	{
-		return (file1)->getMetadata().getInt("players") < (file2)->getMetadata().getInt("players");
+		return (file1)->getMetadata().getInt(MetaDataId::Players) < (file2)->getMetadata().getInt(MetaDataId::Players);
+	}
+
+	bool compareSystemReleaseYear(const FileData* file1, const FileData* file2)
+	{
+		std::string system1 = ((FileData*)file1)->getSourceFileData()->getSystemName();
+		std::string system2 = ((FileData*)file2)->getSourceFileData()->getSystemName();
+
+		if (system1 == system2)
+		{
+			std::string year1 = file1->getMetadata().get(MetaDataId::ReleaseDate).substr(0, 4);
+			std::string year2 = file2->getMetadata().get(MetaDataId::ReleaseDate).substr(0, 4);
+
+			if (year1 == year2)
+				return Utils::String::compareIgnoreCase(((FileData*)file1)->getName(), ((FileData*)file2)->getName()) < 0;
+
+			return year1 < year2;
+		}
+		return Utils::String::compareIgnoreCase(system1, system2) < 0;
+	}
+
+	bool compareReleaseYearSystem(const FileData* file1, const FileData* file2)
+	{
+		std::string year1 = file1->getMetadata().get(MetaDataId::ReleaseDate).substr(0, 4);
+		std::string year2 = file2->getMetadata().get(MetaDataId::ReleaseDate).substr(0, 4);
+
+		if (year1 == year2)
+		{
+			std::string system1 = ((FileData*)file1)->getSourceFileData()->getSystemName();
+			std::string system2 = ((FileData*)file2)->getSourceFileData()->getSystemName();
+
+			if (system1 == system2)
+				return Utils::String::compareIgnoreCase(((FileData*)file1)->getName(), ((FileData*)file2)->getName()) < 0;
+
+			return Utils::String::compareIgnoreCase(system1, system2) < 0;
+		}
+
+		return year1 < year2;
 	}
 
 	bool compareReleaseDate(const FileData* file1, const FileData* file2)
@@ -150,8 +192,8 @@ namespace FileSorts
 
 	bool compareSystem(const FileData* file1, const FileData* file2)
 	{
-		std::string system1 = file1->getSystemName();
-		std::string system2 = file2->getSystemName();
+		std::string system1 = ((FileData*)file1)->getSourceFileData()->getSystemName();
+		std::string system2 = ((FileData*)file2)->getSourceFileData()->getSystemName();
 		return Utils::String::compareIgnoreCase(system1, system2) < 0;		
 	}
 };

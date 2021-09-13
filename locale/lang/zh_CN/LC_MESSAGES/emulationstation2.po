@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emulationstation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-09 21:10+0200\n"
+"POT-Creation-Date: 2021-08-28 08:17+0200\n"
 "Language: zh-CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,6 +79,12 @@ msgstr "手册"
 msgid "enter path to manual"
 msgstr "输入手册路径"
 
+msgid "Magazine"
+msgstr ""
+
+msgid "enter path to magazine"
+msgstr ""
+
 msgid "Map"
 msgstr "地图"
 
@@ -96,6 +102,12 @@ msgstr "包装盒封面"
 
 msgid "enter path to alt boxart"
 msgstr "输入包装盒封面路径"
+
+msgid "Box backside"
+msgstr ""
+
+msgid "enter path to box background"
+msgstr ""
 
 msgid "Wheel"
 msgstr "商标"
@@ -138,6 +150,18 @@ msgstr "游戏类型"
 
 msgid "enter game genre"
 msgstr "输入游戏类型"
+
+msgid "Game family"
+msgstr ""
+
+msgid "enter game family"
+msgstr ""
+
+msgid "Genres"
+msgstr ""
+
+msgid "enter game genres"
+msgstr ""
 
 msgid "Arcade system"
 msgstr "游戏系统"
@@ -205,6 +229,15 @@ msgstr "语言"
 msgid "Region"
 msgstr "区域"
 
+msgid "Cheevos Hash"
+msgstr ""
+
+msgid "Cheevos checksum"
+msgstr ""
+
+msgid "Cheevos Game ID"
+msgstr ""
+
 msgid "all games"
 msgstr "全部游戏"
 
@@ -223,8 +256,17 @@ msgstr "四人游戏"
 msgid "never played"
 msgstr "从未玩过的"
 
+msgid "retroachievements"
+msgstr ""
+
 msgid "arcade"
 msgstr "街机"
+
+msgid "vertical arcade"
+msgstr ""
+
+msgid "lightgun games"
+msgstr ""
 
 msgid "collections"
 msgstr "合辑"
@@ -372,7 +414,13 @@ msgid "ALPHABETICALLY"
 msgstr "按字母排序"
 
 msgid "BY MANUFACTURER"
-msgstr "由生产商提供"
+msgstr "按制造商"
+
+msgid "BY HARDWARE TYPE"
+msgstr "按硬件类型"
+
+msgid "BY RELEASE YEAR"
+msgstr "按发布年"
 
 msgid "SORT SYSTEMS"
 msgstr "系统分类"
@@ -383,6 +431,9 @@ msgstr "启动到系统"
 msgid "NONE"
 msgstr "无"
 
+msgid "RESTORE LAST SELECTED"
+msgstr "恢复上次的选择"
+
 msgid "START ON GAMELIST"
 msgstr "启动到游戏列表"
 
@@ -391,6 +442,9 @@ msgstr "对无主题的自定合辑进行分组"
 
 msgid "SHOW SYSTEM NAME IN COLLECTIONS"
 msgstr "在合辑中显示系统名称"
+
+msgid "SHOW GAMES OF HIDDEN SYSTEMS IN COLLECTIONS"
+msgstr ""
 
 msgid "UPDATE GAMES LISTS"
 msgstr "更新游戏列表"
@@ -405,6 +459,9 @@ msgid "SELECT COLLECTIONS"
 msgstr "选择合辑"
 
 msgid "AUTOMATIC COLLECTIONS"
+msgstr "自动合辑"
+
+msgid "PER GENRE"
 msgstr ""
 
 msgid "ARCADE SYSTEMS"
@@ -425,14 +482,30 @@ msgstr "自定游戏合辑"
 msgid "PLEASE WAIT"
 msgstr "请稍后"
 
+#, c-format
+msgid "%d%% (%d of %d)"
+msgstr ""
+
 msgid "RETROACHIEVEMENTS"
 msgstr "RetroArch成就"
 
-msgid "OK"
-msgstr "确定"
+msgid "Points"
+msgstr ""
+
+msgid "Rank"
+msgstr ""
+
+msgid "VIEW DETAILS"
+msgstr ""
+
+msgid "LAUNCH"
+msgstr "启动"
 
 msgid "FINISHED"
 msgstr "完成"
+
+msgid "OK"
+msgstr "确定"
 
 msgid "go back"
 msgstr "返回"
@@ -449,6 +522,9 @@ msgstr "游戏排序方式"
 msgid "OTHER FILTERS"
 msgstr "其他筛选器"
 
+msgid "FIND SIMILAR GAMES..."
+msgstr ""
+
 msgid "GAME MEDIAS"
 msgstr "游戏媒体"
 
@@ -457,6 +533,15 @@ msgstr "阅读游戏手册"
 
 msgid "VIEW GAME MAP"
 msgstr "阅读游戏地图"
+
+msgid "CURRENT CORE IS NOT COMPATIBLE"
+msgstr ""
+
+msgid "REQUIRED CORE"
+msgstr ""
+
+msgid "VIEW GAME ACHIEVEMENTS"
+msgstr ""
 
 msgid "COLLECTION"
 msgstr "合辑"
@@ -491,11 +576,20 @@ msgstr "高级系统选项"
 msgid "ADVANCED GAME OPTIONS"
 msgstr "高级游戏选项"
 
+msgid "EDIT PAD TO KEYBOARD CONFIGURATION"
+msgstr "编辑pad到键盘自定义"
+
+msgid "CREATE PAD TO KEYBOARD CONFIGURATION"
+msgstr "创建pad到键盘自定义"
+
 msgid "EDIT FOLDER METADATA"
 msgstr "编辑文件夹的信息"
 
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "编辑此游戏的信息"
+
+msgid "VIEW PAD TO KEYBOARD INFORMATION"
+msgstr ""
 
 msgid "RESET FILTERS"
 msgstr "重置筛选"
@@ -509,8 +603,8 @@ msgstr "这项功能在抓取进行时禁用"
 msgid "CLOSE"
 msgstr "关闭"
 
-msgid "ARE YOU SURE ?"
-msgstr "确定吗？"
+msgid "ARE YOU SURE YOU WANT TO DELETE THIS ITEM ?"
+msgstr "确定是否删除？"
 
 msgid "INPUT"
 msgstr "名称编辑"
@@ -533,11 +627,8 @@ msgstr "刷新"
 msgid "FAILED"
 msgstr "失败"
 
-msgid "LAUNCH"
-msgstr "启动"
-
 msgid "UNKNOWN ROM VERSION"
-msgstr "未知的ROM版本"
+msgstr "未知ROM版本"
 
 msgid "DIFFERENT ROM"
 msgstr "不同的ROM"
@@ -572,11 +663,50 @@ msgstr "未发现可用的WIFI网络"
 msgid "SEARCHING WIFI NETWORKS"
 msgstr "正在查询WIFI网络"
 
-msgid "THE BEZEL PROJECT"
-msgstr "框架项目"
+msgid "FORGET A BLUETOOTH DEVICE"
+msgstr ""
 
-msgid "SELECT BEZELS TO INSTALL / REMOVE"
-msgstr "选择BEZELS安装 / 卸载"
+msgid "REMOVE ALL"
+msgstr "移除所有"
+
+msgid "NO BLUETOOTH DEVICES FOUND"
+msgstr "未发现蓝牙设备"
+
+msgid "BLUETOOTH DEVICES HAVE BEEN DELETED."
+msgstr ""
+
+msgid "FILE BROWSER"
+msgstr ""
+
+msgid "RESET"
+msgstr "重置"
+
+msgid "PARENT FOLDER"
+msgstr ""
+
+msgid "SCREENSHOTS FOLDER"
+msgstr ""
+
+msgid "SELECT"
+msgstr "选择"
+
+msgid "ADD COMBINATION KEY"
+msgstr "增加组合键"
+
+msgid "CONTENT DOWNLOADER"
+msgstr "下载内容"
+
+msgid "SELECT CONTENT TO INSTALL / REMOVE"
+msgstr "选择内容以便安装 / 卸载"
+
+msgid "UPDATE INSTALLED CONTENT"
+msgstr ""
+
+msgid "There are no items in this view"
+msgstr "在此视角下没东西"
+
+msgid "MISC"
+msgstr "杂项"
 
 msgid "UPDATE"
 msgstr "更新"
@@ -588,46 +718,15 @@ msgstr "将 '%s' 添加到下载队列"
 msgid "REMOVE"
 msgstr "卸载"
 
+msgid "UNINSTALL ADDED TO QUEUE"
+msgstr "添加卸载到队伍"
+
 msgid "INSTALL"
 msgstr "安装"
 
 #, c-format
 msgid "CURRENTLY IN DOWNLOAD QUEUE"
 msgstr "当前下载排队"
-
-msgid "THEMES DOWNLOADER"
-msgstr "主题下载"
-
-msgid "SELECT THEMES TO INSTALL / REMOVE"
-msgstr "选择主题安装 / 卸载"
-
-#, c-format
-msgid "CURRENT THEME"
-msgstr "当前主题"
-
-msgid "FORGET A BLUETOOTH CONTROLLER"
-msgstr "清除一个蓝牙控制器"
-
-msgid "REMOVE ALL"
-msgstr "移除所有"
-
-msgid "NO BLUETOOTH DEVICES FOUND"
-msgstr "未发现蓝牙设备"
-
-msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
-msgstr "控制器链接已被删除。"
-
-msgid "CONTENT DOWNLOADER"
-msgstr "下载内容"
-
-msgid "SELECT CONTENT TO INSTALL / REMOVE"
-msgstr "选择内容以便安装 / 卸载"
-
-msgid "MISC"
-msgstr "杂项"
-
-msgid "UNINSTALL ADDED TO QUEUE"
-msgstr "添加卸载到队伍"
 
 msgid "NO MISSING BIOS"
 msgstr "未缺失的BIOS"
@@ -636,31 +735,31 @@ msgid "MISSING BIOS"
 msgstr "缺失的BIOS"
 
 msgid "dim"
-msgstr "变暗"
+msgstr "暗灰"
 
 msgid "black"
-msgstr "黑屏"
+msgstr "黑"
 
 msgid "random video"
 msgstr "随机视频"
 
 msgid "slideshow"
-msgstr "幻灯片"
+msgstr "片段展示"
 
 msgid "always"
 msgstr "总是"
 
 msgid "start & end"
-msgstr ""
+msgstr "开始和结束"
 
 msgid "never"
 msgstr "从未"
 
 msgid "none"
-msgstr ""
+msgstr "无"
 
 msgid "systems"
-msgstr ""
+msgstr "系统"
 
 msgid "random"
 msgstr "随机"
@@ -668,11 +767,17 @@ msgstr "随机"
 msgid "SCREENSAVER SETTINGS"
 msgstr "屏保设置"
 
+msgid "SETTINGS"
+msgstr "设置"
+
 msgid "SCREENSAVER AFTER"
 msgstr "屏保等待时间"
 
 msgid "SCREENSAVER BEHAVIOR"
 msgstr "屏保样式"
+
+msgid "STOP MUSIC ON SCREENSAVER"
+msgstr "录屏时停止音乐"
 
 msgid "RANDOM VIDEO SCREENSAVER SETTINGS"
 msgstr "屏保-随机视频设置"
@@ -737,6 +842,55 @@ msgstr "递归自定图像目录"
 msgid "CUSTOM IMAGE FILTER"
 msgstr "自定图像筛选"
 
+msgid "PAD TO KEYBOARD CONFIGURATION"
+msgstr "pad到键盘自动以"
+
+msgid "SELECT ACTIONS TO CHANGE"
+msgstr "选择行动来改变"
+
+msgid "SAVE"
+msgstr "保存"
+
+msgid "DELETE"
+msgstr "删除"
+
+msgid "PLAYER 1"
+msgstr "玩家一"
+
+msgid "PLAYER 2"
+msgstr "玩家二"
+
+msgid "COMBINATIONS"
+msgstr "组合键"
+
+msgid "MOUSE CURSOR"
+msgstr "鼠标光标"
+
+msgid "EMULATE MOUSE CURSOR"
+msgstr "仿真鼠标光标"
+
+msgid "LEFT ANALOG STICK"
+msgstr "左摇杆"
+
+msgid "RIGHT ANALOG STICK"
+msgstr "右摇杆"
+
+msgid "EDIT DESCRIPTION"
+msgstr "编辑描述"
+
+msgid "DELETE MAPPING"
+msgstr "删除标记"
+
+msgid "SAVE CHANGES?"
+msgstr "是否保存更改?"
+
+msgid "ARE YOU SURE ?"
+msgstr "确定吗？"
+
+#, c-format
+msgid "UPDATING %s"
+msgstr ""
+
 msgid "UPDATING BATOCERA"
 msgstr "更新 BATOCERA"
 
@@ -748,6 +902,12 @@ msgstr "重启系统并应用"
 
 msgid "REALLY UPDATE?"
 msgstr "是否进行更新?"
+
+#, c-format
+msgid ""
+"YOU ARE CURRENTLY USING VERSION : %s\n"
+"DO YOU WANT TO UPDATE TO VERSION : %s ?"
+msgstr ""
 
 msgid "NETWORK CONNECTION NEEDED"
 msgstr "需要连接到互联网"
@@ -761,9 +921,6 @@ msgstr "安装 BATOCERA"
 msgid "TARGET DEVICE"
 msgstr "目标设备"
 
-msgid "SELECT"
-msgstr "选择"
-
 msgid "TARGET ARCHITECTURE"
 msgstr "目标架构"
 
@@ -773,48 +930,106 @@ msgstr "需要联网"
 msgid "INVALID PARAMETERS"
 msgstr "参数无效"
 
-msgid "SCRAPING IN PROGRESS"
-msgstr "正在抓取元数据"
+msgid "GAME"
+msgstr ""
 
-msgid "SYSTEM"
-msgstr "系统"
+msgid "SAVE SNAPSHOTS"
+msgstr ""
 
-msgid "subtitle text"
-msgstr "小标题文本"
+msgid "OPEN"
+msgstr ""
 
-msgid "search"
-msgstr "搜索"
+msgid "START NETPLAY HOST"
+msgstr ""
 
-msgid "SKIP"
-msgstr "跳过"
+msgid "NETPLAY"
+msgstr "联网游戏"
 
-msgid "STOP"
-msgstr "停止"
+msgid "START GAME"
+msgstr ""
 
-msgid "stop (progress saved)"
-msgstr "停止 (保留进度)"
+msgid "YOU ARE NOT CONNECTED TO A NETWORK"
+msgstr "你没联网"
 
-#, c-format
-msgid "GAME %i OF %i"
-msgstr "游戏 %i - %i"
+msgid "PUBLICLY ANNOUNCE GAME"
+msgstr ""
+
+msgid "SET PLAYER PASSWORD"
+msgstr ""
+
+msgid "SET VIEWER PASSWORD"
+msgstr ""
+
+msgid "DELETE ITEM"
+msgstr ""
+
+msgid "DELETE GAME"
+msgstr ""
 
 msgid ""
-"WE CAN'T FIND ANY SYSTEMS!\n"
-"CHECK THAT YOUR PATHS ARE CORRECT IN THE SYSTEMS CONFIGURATION FILE, AND "
-"YOUR GAME DIRECTORY HAS AT LEAST ONE GAME WITH THE CORRECT EXTENSION."
+"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
+"ARE YOU SURE?"
 msgstr ""
-"未找到任何游戏平台\n"
-"请检查系统配置文件中的路径是否正确，并确保游戏目录下的ROM具有正确的扩展名。"
+"这将删除实际的游戏文件!\n"
+"确定执行吗?"
+
+msgid "COLLECTIONS"
+msgstr ""
 
 #, c-format
-msgid "%i GAME SUCCESSFULLY SCRAPED!"
-msgid_plural "%i GAMES SUCCESSFULLY SCRAPED!"
-msgstr[0] "成功抓取 %i 个游戏元数据!"
+msgid "REMOVE FROM %s"
+msgstr ""
 
 #, c-format
-msgid "%i GAME SKIPPED."
-msgid_plural "%i GAMES SKIPPED."
-msgstr[0] "跳过了 %i 个游戏。"
+msgid "ADD TO %s"
+msgstr ""
+
+msgid "FAVORITES"
+msgstr "收藏"
+
+msgid "ADD TO CUSTOM COLLECTION..."
+msgstr ""
+
+msgid "SCRAPE"
+msgstr "抓取元数据"
+
+msgid "THEMES DOWNLOADER"
+msgstr "主题下载"
+
+msgid "SELECT THEMES TO INSTALL / REMOVE"
+msgstr "选择主题安装 / 卸载"
+
+#, c-format
+msgid "CURRENT THEME"
+msgstr "当前主题"
+
+msgid "Unlocked on"
+msgstr ""
+
+msgid "THIS GAME HAS NO ACHIEVEMENT YET"
+msgstr ""
+
+msgid "Achievements won"
+msgstr ""
+
+#, c-format
+msgid "%d%% complete"
+msgstr ""
+
+msgid "START NEW GAME"
+msgstr ""
+
+msgid "START AUTO SAVE"
+msgstr ""
+
+msgid "AUTO SAVE"
+msgstr ""
+
+msgid "SLOT"
+msgstr ""
+
+msgid "COPY TO FREE SLOT"
+msgstr ""
 
 msgid "SCRAPE NOW"
 msgstr "开始抓取"
@@ -834,9 +1049,6 @@ msgstr "筛选"
 msgid "SCRAPE THESE SYSTEMS"
 msgstr "选择要抓取的游戏平台"
 
-msgid "USER DECIDES ON CONFLICTS"
-msgstr "人工处理数据冲突"
-
 msgid "START"
 msgstr "开始"
 
@@ -855,6 +1067,12 @@ msgstr "抓取进行中"
 msgid "NO GAMES FIT THAT CRITERIA."
 msgstr "没有匹配的游戏。"
 
+msgid "THE BEZEL PROJECT"
+msgstr "框架项目"
+
+msgid "SELECT BEZELS TO INSTALL / REMOVE"
+msgstr "选择BEZELS安装 / 卸载"
+
 msgid "fade"
 msgstr "淡出"
 
@@ -872,6 +1090,9 @@ msgstr "系统"
 
 msgid "Architecture"
 msgstr "结构"
+
+msgid "Disk format"
+msgstr ""
 
 msgid "Temperature"
 msgstr "温度"
@@ -894,6 +1115,39 @@ msgstr "CPU最大频率"
 msgid "Cpu feature"
 msgstr "CPU 特征"
 
+msgid "SCANLINES"
+msgstr "扫描线"
+
+msgid "RETRO"
+msgstr "复古"
+
+msgid "ENHANCED"
+msgstr "增强"
+
+msgid "CURVATURE"
+msgstr "弯曲"
+
+msgid "ZFAST"
+msgstr "ZFAST(贼快) 开发框架"
+
+msgid "FLATTEN-GLOW"
+msgstr "FLATTEN-GLOW 着色器集"
+
+msgid "RGA SCALING"
+msgstr ""
+
+msgid "VENDOR"
+msgstr ""
+
+msgid "RENDERER"
+msgstr ""
+
+msgid "VERSION"
+msgstr "版本"
+
+msgid "SHADERS"
+msgstr ""
+
 msgid "MAIN MENU"
 msgstr "主菜单"
 
@@ -903,8 +1157,8 @@ msgstr "KODI 媒体中心"
 msgid "GAMES SETTINGS"
 msgstr "游戏设置"
 
-msgid "CONTROLLERS SETTINGS"
-msgstr "控制器设置"
+msgid "CONTROLLERS & BLUETOOTH SETTINGS"
+msgstr ""
 
 msgid "UI SETTINGS"
 msgstr "UI 设置"
@@ -921,9 +1175,6 @@ msgstr "配置控制器"
 msgid "EMULATOR SETTINGS"
 msgstr "模拟器设置"
 
-msgid "SCRAPE"
-msgstr "抓取元数据"
-
 msgid "UPDATES & DOWNLOADS"
 msgstr "更新文件和下载文件"
 
@@ -932,6 +1183,9 @@ msgstr "系统设置"
 
 msgid "INFORMATIONS"
 msgstr "信息"
+
+msgid "UNLOCK UI MODE"
+msgstr "界面不锁定"
 
 msgid "QUIT"
 msgstr "退出"
@@ -987,8 +1241,17 @@ msgstr "抓取视频"
 msgid "SCRAPE FANART"
 msgstr "抓取同人作品"
 
+msgid "SCRAPE BOX BACKSIDE"
+msgstr ""
+
+msgid "SCRAPE MAP"
+msgstr ""
+
 msgid "SCRAPE MANUAL"
 msgstr "抓取手册"
+
+msgid "SCRAPE PADTOKEY SETTINGS"
+msgstr "抓取pad按键设置"
 
 msgid "USERNAME"
 msgstr "用户名"
@@ -1002,17 +1265,26 @@ msgstr "你确定需要设置控制器吗"
 msgid "CHOOSE"
 msgstr "浏览"
 
+msgid "UI MODE IS NOW UNLOCKED"
+msgstr "界面现在未锁定"
+
+msgid "PLEASE ENTER THE CODE TO UNLOCK THE CURRENT UI MODE"
+msgstr "请输入代码来解锁当前界面模式"
+
 msgid "INFORMATION"
 msgstr "系统信息"
-
-msgid "VERSION"
-msgstr "版本"
 
 msgid "USER DISK USAGE"
 msgstr "用户磁盘使用"
 
 msgid "SYSTEM DISK USAGE"
 msgstr "系统磁盘使用"
+
+msgid "SYSTEM"
+msgstr "系统"
+
+msgid "VIDEO DRIVER"
+msgstr ""
 
 msgid "DEVELOPER"
 msgstr "开发者选项"
@@ -1032,8 +1304,21 @@ msgstr "垂直同步"
 msgid "OVERSCAN"
 msgstr "过扫描"
 
+msgid "USE OMX PLAYER (HW ACCELERATED)"
+msgstr ""
+
 msgid "TOOLS"
 msgstr "工具"
+
+msgid "ENABLE PUBLIC WEB ACCESS"
+msgstr ""
+
+#, c-format
+msgid "Allow public web access API using %s"
+msgstr ""
+
+msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
+msgstr "需要重新启动系统才能应用新配置"
 
 msgid "LOG LEVEL"
 msgstr "日志级别"
@@ -1053,8 +1338,35 @@ msgstr "文件生成失败"
 msgid "FORMAT A DISK"
 msgstr "格式化磁盘"
 
+msgid "CLEAN GAMELISTS & REMOVE UNUSED MEDIAS"
+msgstr "清除游戏列表并删除未使用的媒体"
+
+msgid "Cleaning "
+msgstr "清理中"
+
+msgid "CLEAR CACHES"
+msgstr ""
+
+msgid "BUILD IMAGE CACHE"
+msgstr ""
+
+msgid "Building image cache"
+msgstr ""
+
+msgid "RESET FILE EXTENSIONS"
+msgstr "重置文件扩展"
+
+msgid "REDETECT GAMES LANG/REGION"
+msgstr "重新查询游戏的 语言/区域"
+
+msgid "FIND ALL GAMES WITH NETPLAY/ACHIEVEMENTS"
+msgstr ""
+
 msgid "DATA MANAGEMENT"
 msgstr "数据管理"
+
+msgid "IGNORE MULTIFILE DISK CONTENT (CUE/GDI/CCD/M3U)"
+msgstr ""
 
 msgid "ENABLE FILTERS"
 msgstr "启用筛选器"
@@ -1068,17 +1380,14 @@ msgstr "仅分析游戏列表"
 msgid "SEARCH FOR LOCAL ART"
 msgstr "在磁盘上查找图形"
 
-msgid "RESET FILE EXTENSIONS"
-msgstr "重置文件扩展"
-
-msgid "REDETECT GAMES LANG/REGION"
-msgstr "重新查询游戏的 语言/区域"
-
 msgid "UI"
 msgstr "用户界面"
 
 msgid "CAROUSEL TRANSITIONS"
 msgstr "循环画面转场"
+
+msgid "QUICK SYSTEM SELECT"
+msgstr "快速系统选择"
 
 msgid "ON SCREEN KEYBOARD"
 msgstr "虚拟键盘"
@@ -1089,14 +1398,29 @@ msgstr "运行游戏时隐藏"
 msgid "COMPLETE QUIT MENU"
 msgstr "完成并推出"
 
-msgid "USE RETROARCH RGUI MENU"
-msgstr "使用 RETROARCH 的用户界面菜单"
+msgid "RETROARCH MENU DRIVER"
+msgstr ""
+
+msgid "AUTO"
+msgstr "自动"
+
+msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
+msgstr "自动配置模拟的控制设备"
 
 msgid "SWITCH A/B BUTTONS IN EMULATIONSTATION"
 msgstr "在EMULATIONSTATION中切换 A/B 按键"
 
-msgid "AUTOCONFIGURE EMULATORS CONTROLLERS"
-msgstr "自动配置模拟的控制设备"
+msgid "ACCESS GAME OPTIONS WITH NORTH BUTTON"
+msgstr ""
+
+msgid "Inverts north button (savestates) & long press south (game options)"
+msgstr ""
+
+msgid "CONTROL EMULATIONSTATION ONLY WITH FIRST JOYSTICK"
+msgstr ""
+
+msgid "SHOW NETWORK INDICATOR"
+msgstr "显示网络标识"
 
 msgid "OPTIMIZATIONS"
 msgstr "优化"
@@ -1143,6 +1467,15 @@ msgstr "正在更新中"
 msgid "LANGUAGE"
 msgstr "语言"
 
+msgid "SELECT YOUR TIMEZONE"
+msgstr ""
+
+msgid "TIMEZONE"
+msgstr ""
+
+msgid "SHOW CLOCK IN 12-HOUR FORMAT"
+msgstr ""
+
 msgid "POWER SAVER MODES"
 msgstr "省电模式"
 
@@ -1170,9 +1503,6 @@ msgstr "启用 KODI"
 msgid "KODI AT START"
 msgstr "开机时进入KODI"
 
-msgid "START KODI WITH X"
-msgstr "按 X 键启动 KODI"
-
 msgid "HARDWARE"
 msgstr "硬件"
 
@@ -1182,11 +1512,29 @@ msgstr "亮度"
 msgid "VIDEO OUTPUT"
 msgstr "视频输出"
 
-msgid "A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"
-msgstr "需要重新启动系统才能应用新配置"
-
 msgid "AUDIO OUTPUT"
 msgstr "音频输出"
+
+msgid "SCREEN ROTATION"
+msgstr ""
+
+msgid "LEFT ROTATION"
+msgstr ""
+
+msgid "RIGHT ROTATION"
+msgstr ""
+
+msgid "INVERTED ROTATION"
+msgstr ""
+
+msgid "BOOT SPLASH"
+msgstr ""
+
+msgid "SILENT SPLASH"
+msgstr ""
+
+msgid "NO SPLASH"
+msgstr ""
 
 msgid "RETROACHIEVEMENTS SETTINGS"
 msgstr "RetroArch成就设置"
@@ -1194,17 +1542,53 @@ msgstr "RetroArch成就设置"
 msgid "NETPLAY SETTINGS"
 msgstr "联网游戏设置"
 
+msgid "CHECK BIOSES BEFORE RUNNING A GAME"
+msgstr "在启动游戏前检查BIOS"
+
 msgid "MULTIMEDIA KEYS"
 msgstr "多媒体功能键"
-
-msgid "AUTO"
-msgstr "自动"
 
 msgid "ON"
 msgstr "开"
 
 msgid "OFF"
 msgstr "关"
+
+msgid "BUTTON LED COLOR"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "red"
+msgstr ""
+
+msgid "green"
+msgstr ""
+
+msgid "blue"
+msgstr ""
+
+msgid "white"
+msgstr ""
+
+msgid "purple"
+msgstr ""
+
+msgid "yellow"
+msgstr ""
+
+msgid "cyan"
+msgstr ""
+
+msgid "POWER LED COLOR"
+msgstr ""
+
+msgid "heartbeat"
+msgstr ""
+
+msgid "on"
+msgstr ""
 
 msgid "OVERCLOCK"
 msgstr "超频"
@@ -1257,11 +1641,26 @@ msgstr "详细模式"
 msgid "AUTOMATIC SCREENSHOT"
 msgstr "自动截图"
 
+msgid "RETROACHIEVEMENTS UNLOCK SOUND"
+msgstr ""
+
+msgid "UNLOCK SOUND"
+msgstr ""
+
 msgid "SHOW IN MAIN MENU"
 msgstr "在主菜单中显示"
 
-msgid "SETTINGS"
-msgstr "设置"
+msgid "GAME INDEXES"
+msgstr "游戏索引"
+
+msgid "FIND ALL GAMES"
+msgstr ""
+
+msgid "FIND NEW GAMES"
+msgstr ""
+
+msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS :\r\n"
+msgstr ""
 
 msgid "ENABLE NETPLAY"
 msgstr "启用联网游戏"
@@ -1275,17 +1674,8 @@ msgstr "端口"
 msgid "USE RELAY SERVER"
 msgstr "使用中继服务"
 
-msgid "GAME INDEXES"
-msgstr "游戏索引"
-
 msgid "CHECK MISSING INDEXES AT STARTUP"
 msgstr "启动时检查丢失的索引"
-
-msgid "REINDEX ALL GAMES"
-msgstr "重新索引所有游戏"
-
-msgid "INDEX MISSING GAMES"
-msgstr "索引缺失的游戏"
 
 msgid "DEFAULT SETTINGS"
 msgstr "默认设置"
@@ -1302,38 +1692,26 @@ msgstr "图像平滑处理"
 msgid "REWIND"
 msgstr "倒带功能"
 
+msgid "INTEGER SCALE (PIXEL PERFECT)"
+msgstr "整数缩放 (像素完美显示)"
+
 msgid "AUTO SAVE/LOAD"
 msgstr "自动保存/加载"
 
+msgid "SHOW SAVE SNAPSHOTS"
+msgstr ""
+
+msgid "SHOW SNAPSHOTS IF NOT EMPTY"
+msgstr ""
+
 msgid "SHADERS SET"
 msgstr "着色器设置"
-
-msgid "SCANLINES"
-msgstr "扫描线"
-
-msgid "RETRO"
-msgstr "复古"
-
-msgid "ENHANCED"
-msgstr "增强"
-
-msgid "CURVATURE"
-msgstr "弯曲"
-
-msgid "ZFAST"
-msgstr "ZFAST(贼快) 开发框架"
-
-msgid "FLATTEN-GLOW"
-msgstr "FLATTEN-GLOW 着色器集"
-
-msgid "INTEGER SCALE (PIXEL PERFECT)"
-msgstr "整数缩放 (像素完美显示)"
 
 msgid "DECORATION"
 msgstr "装饰框"
 
 msgid "STRETCH BEZELS (4K & ULTRAWIDE)"
-msgstr ""
+msgstr "弹性挡板（4K和超宽）"
 
 msgid "AI GAME TRANSLATION"
 msgstr "AI游戏翻译"
@@ -1376,8 +1754,8 @@ msgstr ""
 "请使用 \"选择\" 按钮的按键同时作为 \"热键\"。\n"
 "长按任意键可跳过设置。按钮名称基于SNES控制器。"
 
-msgid "PAIR A BLUETOOTH CONTROLLER"
-msgstr "配对蓝牙控制器"
+msgid "PAIR A BLUETOOTH DEVICE"
+msgstr ""
 
 #, c-format
 msgid "INPUT P%i"
@@ -1389,11 +1767,17 @@ msgstr "默认"
 msgid "SHOW CONTROLLER ACTIVITY"
 msgstr "显示控制器活动"
 
+msgid "SHOW CONTROLLER BATTERY LEVEL"
+msgstr ""
+
 msgid "YOU MUST APPLY THE THEME BEFORE EDIT CONFIGURATION"
 msgstr "在编辑配置之前必须应用主题"
 
 msgid "THEME CONFIGURATION"
 msgstr "主题配置"
+
+msgid "GAMELIST STYLE"
+msgstr "游戏风格"
 
 msgid "basic"
 msgstr "基本列表"
@@ -1431,11 +1815,29 @@ msgstr "有多个游戏"
 msgid "SHOW '..' PARENT FOLDER"
 msgstr "显示 '..' 父文件夹"
 
+msgid "BEFORE NAME"
+msgstr ""
+
+msgid "AFTER NAME"
+msgstr ""
+
+msgid "SHOW LANGUAGE FLAG IN LISTS"
+msgstr ""
+
+msgid "SHOW SAVESTATES FLAG IN LISTS"
+msgstr ""
+
+msgid "SHOW MANUAL ICON IN LISTS"
+msgstr ""
+
+msgid "SHOW FILENAMES IN LISTS"
+msgstr "在列表中显示文件名"
+
 msgid "FILE EXTENSIONS"
 msgstr "文件扩展名"
 
-msgid "RESET GAMELIST CUSTOMISATIONS"
-msgstr "重置自定游戏列表"
+msgid "RESET CUSTOMISATIONS"
+msgstr ""
 
 msgid "APPEARENCE"
 msgstr "外观"
@@ -1467,8 +1869,11 @@ msgstr "显示帮助"
 msgid "SHOW BATTERY STATUS"
 msgstr "显示电池状态"
 
-msgid "SHOW FILENAMES IN LISTS"
-msgstr "在列表中显示文件名"
+msgid "ICON"
+msgstr ""
+
+msgid "ICON AND TEXT"
+msgstr ""
 
 msgid "VOLUME"
 msgstr "音量"
@@ -1512,17 +1917,17 @@ msgstr "启用导航声音"
 msgid "ENABLE VIDEO AUDIO"
 msgstr "启用视频音频"
 
+msgid "IP ADDRESS"
+msgstr "IP地址"
+
 msgid "CONNECTED"
 msgstr "已连接"
 
 msgid "NOT CONNECTED"
 msgstr "未连接"
 
-msgid "STATUS"
-msgstr "状态"
-
-msgid "IP ADDRESS"
-msgstr "IP地址"
+msgid "INTERNET STATUS"
+msgstr "网络状态"
 
 msgid "HOSTNAME"
 msgstr "主机名"
@@ -1542,23 +1947,20 @@ msgstr "WiFi 已启用"
 msgid "WIFI CONFIGURATION ERROR"
 msgstr "WiFi 配置错误"
 
-msgid "AUTOMATIC SCRAPER"
-msgstr "自动抓取游戏数据"
-
-msgid "REALLY SCRAPE?"
-msgstr "是否开始抓取?"
-
-msgid "MANUAL SCRAPER"
-msgstr "手动抓取游戏数据"
-
 msgid "QUICK ACCESS"
 msgstr "快速进入"
 
 msgid "SKIP TO NEXT SONG"
 msgstr "切换到下一首"
 
+msgid "LISTENING NOW"
+msgstr "开始聆听"
+
 msgid "LAUNCH SCREENSAVER"
 msgstr "启动屏保"
+
+msgid "VIEW USER'S MANUAL"
+msgstr ""
 
 msgid "VIEW BATOCERA MANUAL"
 msgstr "查看BATOCERA手册"
@@ -1608,6 +2010,9 @@ msgstr "并排"
 msgid "INTERNAL RESOLUTION"
 msgstr "内部分辨率"
 
+msgid "AUTOCONFIGURE CONTROLLERS"
+msgstr ""
+
 msgid "FORMAT DEVICE"
 msgstr "格式化装置"
 
@@ -1629,33 +2034,52 @@ msgstr "您确定要格式化此驱动器吗？"
 msgid "EDIT METADATA"
 msgstr "编辑元数据"
 
-msgid "SAVE"
-msgstr "保存"
+msgid "GENRES"
+msgstr ""
 
 msgid ""
-"THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
-"ARE YOU SURE?"
+"SOME FILES YOU LINKED ARE LOCATED OUTSIDE THE GAMELIST PATH.\n"
+"DO YOU WANT TO USE A COPY OF THESE FILES RELATIVE TO THE GAMELIST ?"
 msgstr ""
-"这将删除实际的游戏文件!\n"
-"确定执行吗?"
-
-msgid "DELETE"
-msgstr "删除"
-
-msgid "SAVE CHANGES?"
-msgstr "是否保存更改?"
 
 msgid "NO DEVICE FOUND"
 msgstr "未找到设备"
 
+msgid "ZOOM-"
+msgstr ""
+
+msgid "ZOOM+"
+msgstr ""
+
+msgid "MOVE"
+msgstr ""
+
+msgid "ZOOM"
+msgstr ""
+
+msgid "SYSTEM INFO"
+msgstr "系统信息"
+
 msgid "ERROR: EVERY SYSTEM IS HIDDEN, RE-DISPLAYING ALL OF THEM NOW"
 msgstr "错误：每个系统都被隐藏，现在重新显示"
 
-msgid "DO YOU WANT TO START KODI MEDIA CENTER ?"
-msgstr "是否启动 KODI 媒体中心?"
+msgid "QUICK SEARCH"
+msgstr "迅速搜"
+
+msgid "GO TO LETTER"
+msgstr ""
 
 msgid "GO TO MANUFACTURER"
 msgstr "访问制造商"
+
+msgid "GO TO HARDWARE"
+msgstr ""
+
+msgid "GO TO DECADE"
+msgstr ""
+
+msgid "CONFIGURATION"
+msgstr ""
 
 #, c-format
 msgid "%i COLLECTION"
@@ -1672,20 +2096,30 @@ msgid "%i GAME"
 msgid_plural "%i GAMES"
 msgstr[0] "%i 游戏"
 
-msgid "KODI"
-msgstr "KODI"
-
-msgid "NETPLAY"
-msgstr "联网游戏"
-
 msgid "RANDOM"
 msgstr "随机"
 
 msgid "FILES"
 msgstr "文件"
 
+msgid ""
+"WARNING : THIS GAME'S FORMAT IS NOT SUPPORTED BY THE CURRENT EMULATOR/CORE.\n"
+"DO YOU WANT TO LAUNCH IT ANYWAY ?"
+msgstr ""
+
+msgid ""
+"WARNING : THE SYSTEM HAS MISSING BIOS AND THE GAME MAY NOT WORK CORRECTLY.\n"
+"DO YOU WANT TO LAUNCH IT ANYWAY ?"
+msgstr ""
+
 msgid "Preloading UI"
 msgstr "预加载 UI"
+
+msgid "Loading theme"
+msgstr ""
+
+msgid "Loading gamelists"
+msgstr ""
 
 msgid "MENU"
 msgstr "菜单"
@@ -1705,26 +2139,24 @@ msgstr "发行日期"
 msgid "Times played"
 msgstr "游玩次数"
 
+#, c-format
+msgid "This folder contains %i game, including :%s"
+msgid_plural "This folder contains %i games, including :%s"
+msgstr[0] ""
+
 msgid "No Entries Found"
 msgstr "找不到条目"
 
-msgid "Favorites"
-msgstr "收藏夹"
+msgid "Games similar to"
+msgstr ""
 
-msgid "START GAME"
-msgstr "开始游戏"
+msgid "FAVORITE"
+msgstr ""
 
-msgid "START NETPLAY HOST"
-msgstr "开始做网络主机"
-
-msgid "ALLOW SPECTATOR MODE"
-msgstr "允许观看"
-
-msgid "SET PLAYER PASSWORD"
-msgstr "设置玩家密码"
-
-msgid "SET VIEWER PASSWORD"
-msgstr "设置观看者密码"
+msgid ""
+"A valid account is required. Please register an account on https://"
+"retroachievements.org"
+msgstr ""
 
 msgid "Searching"
 msgstr "搜索中"
@@ -1732,11 +2164,11 @@ msgstr "搜索中"
 msgid "NO GAMES FOUND - SKIP"
 msgstr "未发现游戏 - 跳过"
 
-msgid "AN ERROR HAS OCCURED"
-msgstr "发生了一个错误"
-
 msgid "RETRY"
 msgstr "重试"
+
+msgid "SKIP"
+msgstr "跳过"
 
 msgid "Downloading"
 msgstr "下载中"
@@ -1746,9 +2178,6 @@ msgstr "接受结果"
 
 msgid "Loading system config..."
 msgstr "正在载入系统配置..."
-
-msgid "Done."
-msgstr "完成。"
 
 msgid "SAVING METADATAS. PLEASE WAIT..."
 msgstr "正在保存游戏数据。请稍候..."
@@ -1828,17 +2257,32 @@ msgstr "游戏时间，升序"
 msgid "GAME TIME, DESCENDING"
 msgstr "游戏时间，降序"
 
+msgid "SYSTEM, RELEASE YEAR, ASCENDING"
+msgstr ""
+
+msgid "SYSTEM, RELEASE YEAR, DESCENDING"
+msgstr ""
+
+msgid "RELEASE YEAR, SYSTEM, ASCENDING"
+msgstr ""
+
+msgid "RELEASE YEAR, SYSTEM, DESCENDING"
+msgstr ""
+
 msgid "Extracting"
 msgstr "提取中"
 
-msgid "HASHING GAMES"
-msgstr "校验游戏"
+msgid "SEARCHING RETROACHIEVEMENTS"
+msgstr ""
 
-msgid "FAVORITES"
-msgstr "收藏"
+msgid "SEARCHING NETPLAY GAMES"
+msgstr ""
 
 msgid "GENRE"
 msgstr "类型"
+
+msgid "FAMILY"
+msgstr ""
 
 msgid "PLAYERS"
 msgstr "玩家数"
@@ -1849,6 +2293,9 @@ msgstr "发布者/开发者"
 msgid "RATING"
 msgstr "评分"
 
+msgid "YEAR"
+msgstr ""
+
 msgid "REGION"
 msgstr "区域"
 
@@ -1858,32 +2305,40 @@ msgstr "儿童游戏"
 msgid "ALREADY PLAYED"
 msgstr "玩过的游戏"
 
+msgid "HAS ACHIEVEMENTS"
+msgstr ""
+
+msgid "VERTICAL"
+msgstr ""
+
 msgid "SCRAPING"
 msgstr "抓取"
 
 msgid "SCRAPE FAILED"
 msgstr "抓取失败"
 
-msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
-msgstr "抓取完成。更新游戏列表以应用更改。"
+msgid "SCRAPING FINISHED"
+msgstr ""
 
-msgid "SPACE"
-msgstr "空格"
+#, c-format
+msgid "%s connected"
+msgstr ""
 
-msgid "DELETE A CHAR"
-msgstr "删除一个字符"
-
-msgid "RESET"
-msgstr "重置"
-
-msgid "DISCARD CHANGES"
-msgstr "放弃更改"
+#, c-format
+msgid "%s disconnected"
+msgstr ""
 
 msgid "SHIFTS FOR UPPER,LOWER, AND SPECIAL"
 msgstr "SHIFT键可切换大小写或特殊字符"
 
+msgid "ALT GR"
+msgstr ""
+
 msgid "SHIFT"
 msgstr "SHIFT"
+
+msgid "SPACE"
+msgstr "空格"
 
 msgid "UP"
 msgstr "上"
@@ -1900,26 +2355,26 @@ msgstr "右"
 msgid "LEFT ANALOG UP"
 msgstr "左侧类比摇杆 上"
 
-msgid "LEFT ANALOG RIGHT"
-msgstr "左侧类比摇杆 右"
-
 msgid "LEFT ANALOG DOWN"
-msgstr "左侧类比摇杆 下"
+msgstr ""
 
 msgid "LEFT ANALOG LEFT"
 msgstr "左侧类比摇杆 左"
+
+msgid "LEFT ANALOG RIGHT"
+msgstr ""
 
 msgid "RIGHT ANALOG UP"
 msgstr "右侧类比摇杆 上"
 
 msgid "RIGHT ANALOG DOWN"
-msgstr "右侧类比摇杆 下"
-
-msgid "RIGHT ANALOG RIGHT"
-msgstr "右侧类比摇杆 右"
+msgstr ""
 
 msgid "RIGHT ANALOG LEFT"
 msgstr "右侧类比摇杆 左"
+
+msgid "RIGHT ANALOG RIGHT"
+msgstr ""
 
 msgid "HOTKEY"
 msgstr "热键"
@@ -1978,6 +2433,12 @@ msgstr "未检测到游戏手柄"
 msgid "HOLD A BUTTON ON YOUR DEVICE TO CONFIGURE IT."
 msgstr "请按住控制器上的任意按键以继续配置。"
 
+msgid "DISCARD CHANGES"
+msgstr "放弃更改"
+
+msgid "up/down"
+msgstr "上/下"
+
 msgid "accept"
 msgstr "接受"
 
@@ -2007,9 +2468,6 @@ msgstr "移动鼠标"
 msgid "EDIT"
 msgstr "编辑"
 
-msgid "up/down"
-msgstr "上/下"
-
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -2035,22 +2493,120 @@ msgstr "进行中..."
 
 #, c-format
 msgid "%d h"
-msgstr "%d 时"
+msgstr ""
 
 #, c-format
 msgid "%d m"
-msgstr "%d 分"
+msgstr ""
 
 #, c-format
 msgid "%d s"
-msgstr "%d 秒"
+msgstr ""
 
+#~ msgid "FORGET A BLUETOOTH CONTROLLER"
+#~ msgstr "清除一个蓝牙控制器"
+
+#~ msgid "CONTROLLERS LINKS HAVE BEEN DELETED."
+#~ msgstr "控制器链接已被删除。"
+
+#~ msgid "CONTROLLERS SETTINGS"
+#~ msgstr "控制器设置"
+
+#~ msgid "PAIR A BLUETOOTH CONTROLLER"
+#~ msgstr "配对蓝牙控制器"
+
+#~ msgid "Done."
+#~ msgstr "完成。"
+
+#~ msgid "UPDATING EMULATIONSTATION"
+#~ msgstr "更新模拟器"
+
+#~ msgid "USE RETROARCH RGUI MENU"
+#~ msgstr "使用 RETROARCH 的用户界面菜单"
+
+#~ msgid "RESET GAMELIST CUSTOMISATIONS"
+#~ msgstr "重置自定游戏列表"
+
+#~ msgid "SCRAPING IN PROGRESS"
+#~ msgstr "正在抓取元数据"
+
+#~ msgid "subtitle text"
+#~ msgstr "小标题文本"
+
+#~ msgid "search"
+#~ msgstr "搜索"
+
+#~ msgid "STOP"
+#~ msgstr "停止"
+
+#~ msgid "stop (progress saved)"
+#~ msgstr "停止 (保留进度)"
+
+#~ msgid "GAME %i OF %i"
+#~ msgstr "游戏 %i - %i"
+
+#~ msgid ""
+#~ "WE CAN'T FIND ANY SYSTEMS!\n"
+#~ "CHECK THAT YOUR PATHS ARE CORRECT IN THE SYSTEMS CONFIGURATION FILE, AND "
+#~ "YOUR GAME DIRECTORY HAS AT LEAST ONE GAME WITH THE CORRECT EXTENSION."
+#~ msgstr ""
+#~ "未找到任何游戏平台\n"
+#~ "请检查系统配置文件中的路径是否正确，并确保游戏目录下的ROM具有正确的扩展"
+#~ "名。"
+
+#~ msgid "%i GAME SUCCESSFULLY SCRAPED!"
+#~ msgid_plural "%i GAMES SUCCESSFULLY SCRAPED!"
+#~ msgstr[0] "成功抓取 %i 个游戏元数据!"
+
+#~ msgid "%i GAME SKIPPED."
+#~ msgid_plural "%i GAMES SKIPPED."
+#~ msgstr[0] "跳过了 %i 个游戏。"
+
+#~ msgid "AUTOMATIC SCRAPER"
+#~ msgstr "自动抓取游戏数据"
+
+#~ msgid "REALLY SCRAPE?"
+#~ msgstr "是否开始抓取?"
+
+#~ msgid "MANUAL SCRAPER"
+#~ msgstr "手动抓取游戏数据"
+
+#~ msgid "Favorites"
+#~ msgstr "收藏夹"
+
+#~ msgid "AN ERROR HAS OCCURED"
+#~ msgstr "发生了一个错误"
+
+#~ msgid "USER DECIDES ON CONFLICTS"
+#~ msgstr "人工处理数据冲突"
+
+#~ msgid "SCRAPING FINISHED. REFRESH UPDATE GAMES LISTS TO APPLY CHANGES."
+#~ msgstr "抓取完成。更新游戏列表以应用更改。"
+
+#~ msgid "REINDEX ALL GAMES"
+#~ msgstr "重新索引所有游戏"
+
+#~ msgid "INDEX MISSING GAMES"
+#~ msgstr "索引缺失的游戏"
+
+#~ msgid "HASHING GAMES"
+#~ msgstr "校验游戏"
+
+#~ msgid "START KODI WITH X"
+#~ msgstr "按 X 键启动 KODI"
+
+#~ msgid "DO YOU WANT TO START KODI MEDIA CENTER ?"
+#~ msgstr "是否启动 KODI 媒体中心?"
+
+#~ msgid "KODI"
+#~ msgstr "KODI"
+
+#~ msgid "STATUS"
+#~ msgstr "状态"
 msgid "DANGER ZONE!"
 msgstr "危险设置区域！"
-
 msgid "You are about to set EmuELEC resolution to"
 msgstr "你即将设置 EmuELEC 分辨率为"
-
 msgid "Emulationstation will restart"
 msgstr "Emulationstation 即将重启"
 
@@ -2151,9 +2707,6 @@ msgstr "重启到 NAND"
 
 #~ msgid "STARTUP SETTINGS"
 #~ msgstr "启动项设置"
-
-#~ msgid "QUICK SYSTEM SELECT"
-#~ msgstr "快速系统选择"
 
 #~ msgid "LAUNCH THE GAME AS NETPLAY HOST ?"
 #~ msgstr "启动游戏作为网络游戏主机？"

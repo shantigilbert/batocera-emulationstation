@@ -19,6 +19,7 @@ TextEditComponent::TextEditComponent(Window* window) : GuiComponent(window),
 	mCursorRepeatDir(0)
 {
 	mBlinkTime = 0;
+	mDeferTextInputStart = false;
 
 	auto theme = ThemeData::getMenuTheme();
 	mBox.setImagePath(ThemeData::getMenuTheme()->Icons.textinput_ninepatch);
@@ -35,7 +36,7 @@ void TextEditComponent::onFocusGained()
 	mFocused = true;
 	mBox.setImagePath(ThemeData::getMenuTheme()->Icons.textinput_ninepatch_active);	
 
-	mWindow->postToUiThread([this](Window* w) { startEditing(); });
+	mWindow->postToUiThread([this]() { startEditing(); });
 }
 
 void TextEditComponent::onFocusLost()
@@ -43,7 +44,7 @@ void TextEditComponent::onFocusLost()
 	mFocused = false;
 	mBox.setImagePath(ThemeData::getMenuTheme()->Icons.textinput_ninepatch);
 	
-	mWindow->postToUiThread([this](Window* w) { stopEditing(); });
+	mWindow->postToUiThread([this]() { stopEditing(); });
 }
 
 void TextEditComponent::onSizeChanged()
@@ -86,12 +87,34 @@ void TextEditComponent::textInput(const char* text)
 	onCursorChanged();
 }
 
+bool TextEditComponent::hasAnyKeyPressed()
+{
+	bool anyKeyPressed = false;
+
+	int numKeys;
+	const Uint8* keys = SDL_GetKeyboardState(&numKeys);
+	for (int i = 0; i < numKeys && !anyKeyPressed; i++)
+		anyKeyPressed |= keys[i];
+
+	return anyKeyPressed;
+}
+
 void TextEditComponent::startEditing()
 {
 	if (mEditing)
 		return;
+	
+	if (hasAnyKeyPressed())
+	{
+		// Defer if a key is pressed to avoid repeat behaviour if a TextEditComponent is opened with a keypress
+		mDeferTextInputStart = true;
+	}
+	else
+	{
+		mDeferTextInputStart = false;
+		SDL_StartTextInput();
+	}
 
-	SDL_StartTextInput();
 	mEditing = true;
 	updateHelpPrompts();
 }
@@ -103,6 +126,7 @@ void TextEditComponent::stopEditing()
 
 	SDL_StopTextInput();
 	mEditing = false;
+	mDeferTextInputStart = false;
 	updateHelpPrompts();
 }
 
@@ -203,6 +227,15 @@ bool TextEditComponent::input(InputConfig* config, Input input)
 
 void TextEditComponent::update(int deltaTime)
 {
+	if (mEditing && mDeferTextInputStart)
+	{
+		if (!hasAnyKeyPressed())
+		{
+			SDL_StartTextInput();
+			mDeferTextInputStart = false;
+		}
+	}
+
 	mBlinkTime += deltaTime;
 	if (mBlinkTime >= BLINKTIME)
 		mBlinkTime = 0;
@@ -305,7 +338,7 @@ void TextEditComponent::render(const Transform4x4f& parentTrans)
 	Renderer::popClipRect();
 
 	// draw cursor
-	if(mEditing)
+	//if(mEditing)
 	{
 		Vector2f cursorPos;
 		if(isMultiline())
@@ -318,10 +351,14 @@ void TextEditComponent::render(const Transform4x4f& parentTrans)
 			cursorPos[1] = 0;
 		}
 
-		if (mBlinkTime < BLINKTIME / 2)
+		if (!mEditing || mBlinkTime < BLINKTIME / 2)
 		{
 			float cursorHeight = mFont->getHeight() * 0.8f;
+
 			auto cursorColor = (ThemeData::getMenuTheme()->Text.color & 0xFFFFFF00) | getOpacity();
+			if (!mEditing)
+				cursorColor = (ThemeData::getMenuTheme()->Text.color & 0xFFFFFF00) | (unsigned char) (getOpacity() * 0.25f);
+
 			Renderer::drawRect(cursorPos.x(), cursorPos.y() + (mFont->getHeight() - cursorHeight) / 2, 2.0f, cursorHeight, cursorColor, cursorColor); // 0x000000FF
 		}
 	}

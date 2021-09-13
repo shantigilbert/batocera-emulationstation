@@ -7,6 +7,7 @@
 #include "guis/GuiSettings.h"
 #include "components/OptionListComponent.h"
 #include <SystemData.h>
+#include "KeyboardMapping.h"
 
 class StrInputConfig
 {
@@ -42,7 +43,7 @@ public:
 	bool input(InputConfig* config, Input input) override;
 	void onSizeChanged() override;
 	std::vector<HelpPrompt> getHelpPrompts() override;	
-	static void openQuitMenu_batocera_static(Window *window, bool quickAccessMenu = false); // batocera
+	static void openQuitMenu_batocera_static(Window *window, bool quickAccessMenu = false, bool animate = true); // batocera
 
 	static void popSystemConfigurationGui(Window* mWindow, SystemData *systemData);
 	static void popGameConfigurationGui(Window* mWindow, FileData* fileData);
@@ -50,6 +51,7 @@ public:
 	static void openThemeConfiguration(Window* mWindow, GuiComponent* s, std::shared_ptr<OptionListComponent<std::string>> theme_set, const std::string systemTheme = "");
 
 	static void updateGameLists(Window* window, bool confirm = true);
+	static void editKeyboardMappings(Window *window, IKeyboardMapContainer* mapping, bool editable);
 
 private:
 	void addEntry(std::string name, bool add_arrow, const std::function<void()>& func, const std::string iconName = "");
@@ -64,13 +66,13 @@ private:
 
 #ifdef _ENABLEEMUELEC
 	void openEmuELECSettings(); /* < emuelec */
+    static void openDangerZone(Window* mWindow, std::string configName);
 #endif
 	// batocera	
 	void openSystemSettings_batocera();
 	void openGamesSettings_batocera();
-	void openControllersSettings_batocera();		
-	void openNetworkSettings_batocera(bool selectWifiEnable = false);
-	void openScraperSettings_batocera();
+	void openControllersSettings_batocera(int autoSel = 0);
+	void openNetworkSettings_batocera(bool selectWifiEnable = false);	
 	void openQuitMenu_batocera();
 	void openSystemInformations_batocera();
 	void openDeveloperSettings();
@@ -78,8 +80,7 @@ private:
 	void openRetroachievementsSettings();
 	void openMissingBiosSettings();
 	void openFormatDriveSettings();
-
-	static void reloadAllGames(Window* window, bool deleteCurrentGui = false);
+	void exitKidMode();
 
 	// windows
 	void openEmulatorSettings();
@@ -92,6 +93,9 @@ private:
 	TextComponent mVersion;
 
 	static std::shared_ptr<OptionListComponent<std::string>> createRatioOptionList(Window *window, std::string configname);
+#ifdef _ENABLEEMUELEC
+  static std::shared_ptr<OptionListComponent<std::string>> createNativeVideoResolutionModeOptionList(Window *window, std::string configname);
+#endif
 	static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname);
 #ifdef _ENABLEEMUELEC
   static std::shared_ptr<OptionListComponent<std::string>> createNativeVideoResolutionModeOptionList(Window *window, std::string configname);

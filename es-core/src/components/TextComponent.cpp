@@ -13,7 +13,7 @@ TextComponent::TextComponent(Window* window) : GuiComponent(window),
 	mFont(Font::get(FONT_SIZE_MEDIUM)), mUppercase(false), mColor(0x000000FF), mAutoCalcExtent(true, true),
 	mHorizontalAlignment(ALIGN_LEFT), mVerticalAlignment(ALIGN_CENTER), mLineSpacing(1.5f), mBgColor(0),
 	mRenderBackground(false), mGlowColor(0), mGlowSize(2), mPadding(Vector4f(0, 0, 0, 0)), mGlowOffset(Vector2f(0,0)),
-	mReflection(0.0f, 0.0f), mReflectOnBorders(false), mAutoScroll(AutoScrollType::NONE)
+	mReflection(0.0f, 0.0f), mReflectOnBorders(false), mAutoScroll(AutoScrollType::NONE), mTextLength(-1)
 {	
 	mMarqueeOffset = 0;
 	mMarqueeOffset2 = 0;
@@ -25,7 +25,7 @@ TextComponent::TextComponent(Window* window, const std::string& text, const std:
 	mFont(NULL), mUppercase(false), mColor(0x000000FF), mAutoCalcExtent(true, true),
 	mHorizontalAlignment(align), mVerticalAlignment(ALIGN_CENTER), mLineSpacing(1.5f), mBgColor(0),
 	mRenderBackground(false), mGlowColor(0), mGlowSize(2), mPadding(Vector4f(0, 0, 0, 0)), mGlowOffset(Vector2f(0, 0)),
-	mReflection(0.0f, 0.0f), mReflectOnBorders(false), mAutoScroll(AutoScrollType::NONE)
+	mReflection(0.0f, 0.0f), mReflectOnBorders(false), mAutoScroll(AutoScrollType::NONE), mTextLength(-1)
 {
 	setFont(font);
 	setColor(color);
@@ -47,6 +47,9 @@ void TextComponent::onSizeChanged()
 
 void TextComponent::setFont(const std::shared_ptr<Font>& font)
 {
+	if (mFont == font)
+		return;
+
 	mFont = font;
 	onTextChanged();
 }
@@ -104,13 +107,20 @@ void TextComponent::setText(const std::string& text)
 	mText = text;
 	mMarqueeOffset = 0;
 	mMarqueeOffset2 = 0;
-	mMarqueeTime = 0;
+
+	if (mAutoScroll != AutoScrollType::NONE && !mText.empty())
+		mMarqueeTime = -AUTO_SCROLL_DELAY + AUTO_SCROLL_SPEED;
+	else 
+		mMarqueeTime = 0;
 
 	onTextChanged();
 }
 
 void TextComponent::setUppercase(bool uppercase)
 {
+	if (mUppercase == uppercase)
+		return;
+
 	mUppercase = uppercase;
 	onTextChanged();
 }
@@ -118,17 +128,11 @@ void TextComponent::setUppercase(bool uppercase)
 void TextComponent::renderSingleGlow(const Transform4x4f& parentTrans, float yOff, float x, float y)
 {
 	Vector3f off = Vector3f(mPadding.x() + x + mGlowOffset.x(), mPadding.y() + yOff + y + mGlowOffset.y(), 0);
-	Transform4x4f trans = parentTrans * getTransform();
 
+	Transform4x4f trans = parentTrans * getTransform();
 	trans.translate(off);
-	trans.round();
 
 	Renderer::setMatrix(trans);
-
-	unsigned char alpha = (unsigned char) ((mGlowColor & 0xFF) * (mOpacity / 255.0));
-	unsigned int color = (mGlowColor & 0xFFFFFF00) | alpha;
-
-	mTextCache->setColor(color);
 	mFont->renderTextCache(mTextCache.get());	
 }
 
@@ -138,21 +142,41 @@ void TextComponent::renderGlow(const Transform4x4f& parentTrans, float yOff, flo
 	if (xOff != 0.0)
 		glowTrans.translate(Vector3f(xOff, 0, 0));
 
-	int x = -mGlowSize;
-	int y = -mGlowSize;
-	renderSingleGlow(glowTrans, yOff, x, y);
+	mTextCache->setRenderingGlow(true);
+	
+	if (mGlowSize == 1 && mGlowOffset == Vector2f::Zero())
+	{
+		int a = Math::min(0xFF, (mGlowColor & 0xFF) * 2);
+		mTextCache->setColor((mGlowColor & 0xFFFFFF00) | (unsigned char)(a * (mOpacity / 255.0)));
 
-	for (int i = 0; i < 2 * mGlowSize; i++)
-		renderSingleGlow(glowTrans, yOff, ++x, y);
+		renderSingleGlow(glowTrans, yOff, 1, 0);
+		renderSingleGlow(glowTrans, yOff, 0, 1);
+		renderSingleGlow(glowTrans, yOff, -1, 0);
+		renderSingleGlow(glowTrans, yOff, 0, -1);
+	}
+	else
+	{
+		mTextCache->setColor((mGlowColor & 0xFFFFFF00) | (unsigned char)((mGlowColor & 0xFF) * (mOpacity / 255.0)));
 
-	for (int i = 0; i < 2 * mGlowSize; i++)
-		renderSingleGlow(glowTrans, yOff, x, ++y);
+		int x = -mGlowSize;
+		int y = -mGlowSize;
 
-	for (int i = 0; i < 2 * mGlowSize; i++)
-		renderSingleGlow(glowTrans, yOff, --x, y);
+		renderSingleGlow(glowTrans, yOff, x, y);
 
-	for (int i = 0; i < 2 * mGlowSize; i++)
-		renderSingleGlow(glowTrans, yOff, x, --y);
+		for (int i = 0; i < 2 * mGlowSize; i++)
+			renderSingleGlow(glowTrans, yOff, ++x, y);
+
+		for (int i = 0; i < 2 * mGlowSize; i++)
+			renderSingleGlow(glowTrans, yOff, x, ++y);
+
+		for (int i = 0; i < 2 * mGlowSize; i++)
+			renderSingleGlow(glowTrans, yOff, --x, y);
+
+		for (int i = 0; i < 2 * mGlowSize; i++)
+			renderSingleGlow(glowTrans, yOff, x, --y);
+	}
+
+	mTextCache->setRenderingGlow(false);
 }
 
 void TextComponent::render(const Transform4x4f& parentTrans)
@@ -161,8 +185,8 @@ void TextComponent::render(const Transform4x4f& parentTrans)
 		return;
 
 	Transform4x4f trans = parentTrans * getTransform();
-
-	if (!Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x(), mSize.y()))
+	
+	if (!Renderer::isVisibleOnScreen(trans.translation().x(), trans.translation().y(), mSize.x() * trans.r0().x(), mSize.y() * trans.r1().y()))
 		return;
 
 	if (mRenderBackground)
@@ -173,140 +197,155 @@ void TextComponent::render(const Transform4x4f& parentTrans)
 		Renderer::drawRect(0.0f, 0.0f, mSize.x(), mSize.y(), bgColor, bgColor);
 	}
 
-	if (mAutoScroll != AutoScrollType::NONE)
-		Renderer::pushClipRect(Vector2i(trans.translation().x(), trans.translation().y()), Vector2i(mSize.x(), mSize.y()));
-
-	if (mTextCache && mFont)
+	if (mTextCache == nullptr && mFont != nullptr)
 	{
-		const Vector2f& textSize = mTextCache->metrics.size;
-		float yOff = 0;
-		switch(mVerticalAlignment)
-		{
-			case ALIGN_TOP:
-				yOff = 0;
-				break;
-			case ALIGN_BOTTOM:
-				yOff = (getSize().y() - textSize.y());
-				break;
-			case ALIGN_CENTER:
-				yOff = (getSize().y() - textSize.y()) / 2.0f;
-				break;
-		}
-		Vector3f off(mPadding.x(), mPadding.y() + yOff, 0);
+		buildTextCache();
+		onColorChanged();
+	}
 
-		if(Settings::getInstance()->getBool("DebugText"))
+	if (mTextCache == nullptr || mFont == nullptr)
+		return;
+
+	if (mAutoScroll != AutoScrollType::NONE)
+		Renderer::pushClipRect(Vector2i(trans.translation().x(), trans.translation().y()), Vector2i(mSize.x() * trans.r0().x(), mSize.y() * trans.r1().y()));
+	
+	beginCustomClipRect();
+
+	const Vector2f& textSize = mTextCache->metrics.size;
+	float yOff = 0;
+	switch(mVerticalAlignment)
+	{
+		case ALIGN_TOP:
+			yOff = 0;
+			break;
+		case ALIGN_BOTTOM:
+			yOff = (getSize().y() - textSize.y());
+			break;
+		case ALIGN_CENTER:
+			yOff = (getSize().y() - textSize.y()) / 2.0f;
+			break;
+	}
+	Vector3f off(mPadding.x(), mPadding.y() + yOff, 0);
+
+	if(Settings::DebugText)
+	{
+		// draw the "textbox" area, what we are aligned within
+		Renderer::setMatrix(trans);
+		Renderer::drawRect(0.0f, 0.0f, mSize.x(), mSize.y(), 0xFF000033, 0xFF000033);
+	}
+
+	if ((mGlowColor & 0x000000FF) != 0 && mGlowSize > 0)
+	{
+		if (mAutoScroll == AutoScrollType::VERTICAL)
+			renderGlow(parentTrans, yOff - mMarqueeOffset, 0);
+		else
+			renderGlow(parentTrans, yOff, -mMarqueeOffset);
+
+		onColorChanged();
+	}
+
+	Transform4x4f drawTrans = trans;
+
+	if (mMarqueeOffset != 0.0)
+	{
+		if (mAutoScroll == AutoScrollType::VERTICAL)
+			trans.translate(off - Vector3f(0, (float)mMarqueeOffset, 0));
+		else
+			trans.translate(off - Vector3f((float)mMarqueeOffset, 0, 0));
+	}
+	else
+		trans.translate(off);
+
+//		trans.translate(off);
+	Renderer::setMatrix(trans);
+
+	// draw the text area, where the text actually is going
+	if(Settings::DebugText)
+	{
+		switch(mHorizontalAlignment)
 		{
-			// draw the "textbox" area, what we are aligned within
-			Renderer::setMatrix(trans);
-			Renderer::drawRect(0.0f, 0.0f, mSize.x(), mSize.y(), 0xFF000033, 0xFF000033);
+		case ALIGN_LEFT:
+			Renderer::drawRect(0.0f, 0.0f, mTextCache->metrics.size.x(), mTextCache->metrics.size.y(), 0x00000033, 0x00000033);
+			break;
+		case ALIGN_CENTER:
+			Renderer::drawRect((mSize.x() - mTextCache->metrics.size.x()) / 2.0f, 0.0f, mTextCache->metrics.size.x(), mTextCache->metrics.size.y(), 0x00000033, 0x00000033);
+			break;
+		case ALIGN_RIGHT:
+			Renderer::drawRect(mSize.x() - mTextCache->metrics.size.x(), 0.0f, mTextCache->metrics.size.x(), mTextCache->metrics.size.y(), 0x00000033, 0x00000033);
+			break;
 		}
+	}
+		
+
+	mFont->renderTextCache(mTextCache.get());
+
+	// render currently selected item text again if
+	// marquee is scrolled far enough for it to repeat
+		
+	if (mMarqueeOffset2 != 0.0 && mAutoScroll != AutoScrollType::VERTICAL)
+	{
+		trans = drawTrans;
+		trans.translate(off - Vector3f((float)mMarqueeOffset2, 0, 0));
 
 		if ((mGlowColor & 0x000000FF) != 0 && mGlowSize > 0)
 		{
-			if (mAutoScroll == AutoScrollType::VERTICAL)
-				renderGlow(parentTrans, yOff - mMarqueeOffset, 0);
-			else
-				renderGlow(parentTrans, yOff, -mMarqueeOffset);
-
+			renderGlow(parentTrans, yOff, -mMarqueeOffset2);
 			onColorChanged();
 		}
 
-		Transform4x4f drawTrans = trans;
-
-		if (mMarqueeOffset != 0.0)
-		{
-			if (mAutoScroll == AutoScrollType::VERTICAL)
-				trans.translate(off - Vector3f(0, (float)mMarqueeOffset, 0));
-			else
-				trans.translate(off - Vector3f((float)mMarqueeOffset, 0, 0));
-		}
-		else
-			trans.translate(off);
-
-//		trans.translate(off);
 		Renderer::setMatrix(trans);
-
-		// draw the text area, where the text actually is going
-		if(Settings::getInstance()->getBool("DebugText"))
-		{
-			switch(mHorizontalAlignment)
-			{
-			case ALIGN_LEFT:
-				Renderer::drawRect(0.0f, 0.0f, mTextCache->metrics.size.x(), mTextCache->metrics.size.y(), 0x00000033, 0x00000033);
-				break;
-			case ALIGN_CENTER:
-				Renderer::drawRect((mSize.x() - mTextCache->metrics.size.x()) / 2.0f, 0.0f, mTextCache->metrics.size.x(), mTextCache->metrics.size.y(), 0x00000033, 0x00000033);
-				break;
-			case ALIGN_RIGHT:
-				Renderer::drawRect(mSize.x() - mTextCache->metrics.size.x(), 0.0f, mTextCache->metrics.size.x(), mTextCache->metrics.size.y(), 0x00000033, 0x00000033);
-				break;
-			}
-		}
-		
 		mFont->renderTextCache(mTextCache.get());
-
-		// render currently selected item text again if
-		// marquee is scrolled far enough for it to repeat
-		
-		if (mMarqueeOffset2 != 0.0 && mAutoScroll != AutoScrollType::VERTICAL)
-		{
-			trans = drawTrans;
-			trans.translate(off - Vector3f((float)mMarqueeOffset2, 0, 0));
-
-			if ((mGlowColor & 0x000000FF) != 0 && mGlowSize > 0)
-			{
-				renderGlow(parentTrans, yOff, -mMarqueeOffset2);
-				onColorChanged();
-			}
-
-			Renderer::setMatrix(trans);
-			mFont->renderTextCache(mTextCache.get());
-			Renderer::setMatrix(drawTrans);
-		}
-
-		if (mReflection.x() != 0 || mReflection.y() != 0)
-		{
-			Transform4x4f mirror = trans;
-			mirror.translate(-off);
-			mirror.r1().y() = -mirror.r1().y();
-			mirror.r3().y() = mirror.r3().y() + off.y() + textSize.y();
-
-			if (mReflectOnBorders)
-				mirror.r3().y() = mirror.r3().y() + mSize.y();
-			else
-				mirror.r3().y() = mirror.r3().y() + textSize.y();
-
-			Renderer::setMatrix(mirror);
-			
-			float baseOpacity = mOpacity / 255.0;
-			float alpha = baseOpacity * ((mColor & 0x000000ff)) / 255.0;
-			float alpha2 = baseOpacity * alpha * mReflection.y();
-
-			alpha *= mReflection.x();
-
-			const unsigned int colorT = Renderer::convertColor((mColor & 0xffffff00) + (unsigned char)(255.0*alpha));
-			const unsigned int colorB = Renderer::convertColor((mColor & 0xffffff00) + (unsigned char)(255.0*alpha2));
-
-			mFont->renderGradientTextCache(mTextCache.get(), colorB, colorT);
-		}
-
-		if (mAutoScroll != AutoScrollType::NONE)
-			Renderer::popClipRect();
+		Renderer::setMatrix(drawTrans);
 	}
-}
 
-void TextComponent::calculateExtent()
-{
-	if (mAutoCalcExtent.x())
-		mSize = mFont->sizeText(mUppercase ? Utils::String::toUpper(mText) : mText, mLineSpacing);
-	else if(mAutoCalcExtent.y())
-		mSize[1] = mFont->sizeWrappedText(mUppercase ? Utils::String::toUpper(mText) : mText, getSize().x(), mLineSpacing).y();
+	if (mReflection.x() != 0 || mReflection.y() != 0)
+	{
+		Transform4x4f mirror = trans;
+		mirror.translate(-off);
+		mirror.r1().y() = -mirror.r1().y();
+		mirror.r3().y() = mirror.r3().y() + off.y() + textSize.y();
+
+		if (mReflectOnBorders)
+			mirror.r3().y() = mirror.r3().y() + mSize.y();
+		else
+			mirror.r3().y() = mirror.r3().y() + textSize.y();
+
+		Renderer::setMatrix(mirror);
+			
+		float baseOpacity = mOpacity / 255.0;
+		float alpha = baseOpacity * ((mColor & 0x000000ff)) / 255.0;
+		float alpha2 = baseOpacity * alpha * mReflection.y();
+
+		alpha *= mReflection.x();
+
+		const unsigned int colorT = Renderer::convertColor((mColor & 0xffffff00) + (unsigned char)(255.0*alpha));
+		const unsigned int colorB = Renderer::convertColor((mColor & 0xffffff00) + (unsigned char)(255.0*alpha2));
+
+		mFont->renderGradientTextCache(mTextCache.get(), colorB, colorT);
+	}
+
+	endCustomClipRect();
+
+	if (mAutoScroll != AutoScrollType::NONE)
+		Renderer::popClipRect();
 }
 
 void TextComponent::onTextChanged()
 {
-	calculateExtent();
+	mTextLength = -1;
+	mTextCache = nullptr;
 
+	if (mAutoCalcExtent.x())
+	{
+		mSize = mFont->sizeText(mUppercase ? Utils::String::toUpper(mText) : mText, mLineSpacing);
+		mSize[0] += mPadding.x() + mPadding.z();
+	}
+	else if(mAutoCalcExtent.y())
+		mSize[1] = mFont->sizeWrappedText(mUppercase ? Utils::String::toUpper(mText) : mText, getSize().x(), mLineSpacing).y() + mPadding.y() + mPadding.w();
+}
+
+void TextComponent::buildTextCache()
+{	
 	if(!mFont || mText.empty())
 	{
 		mTextCache.reset();
@@ -360,6 +399,14 @@ void TextComponent::update(int deltaTime)
 {
 	GuiComponent::update(deltaTime);
 
+	if (!mShowing)
+	{
+		mMarqueeTime = 0;
+		mMarqueeOffset = 0;
+		mMarqueeOffset2 = 0;
+		return;
+	}
+
 	int sy = mSize.y() - mPadding.y() - mPadding.w();
 	const bool isMultiline = mAutoScroll != AutoScrollType::HORIZONTAL && (mSize.y() == 0 || sy > mFont->getHeight()*1.95f);
 
@@ -372,7 +419,11 @@ void TextComponent::update(int deltaTime)
 		std::string text = mUppercase ? Utils::String::toUpper(mText) : mText;
 
 		// if we're not scrolling and this object's text goes outside our size, marquee it!
-		const float textLength = mFont->sizeText(text).x();
+
+		if (mTextLength < 0)
+			mTextLength = mFont->sizeText(text).x();
+
+		const float textLength = mTextLength;
 		const float limit = mSize.x() - mPadding.x() - mPadding.z();
 		
 		if (textLength > limit)
@@ -402,7 +453,11 @@ void TextComponent::update(int deltaTime)
 		std::string text = mUppercase ? Utils::String::toUpper(mText) : mText;
 
 		// if we're not scrolling and this object's text goes outside our size, marquee it!
-		int textLength = mFont->sizeWrappedText(mUppercase ? Utils::String::toUpper(mText) : mText, getSize().x(), mLineSpacing).y();
+
+		if (mTextLength < 0)
+			mTextLength = mFont->sizeWrappedText(mUppercase ? Utils::String::toUpper(mText) : mText, getSize().x(), mLineSpacing).y();
+
+		int textLength = mTextLength;
 		int limit = mSize.y() - mPadding.y() - mPadding.y();
 
 		if (textLength > limit)
@@ -476,6 +531,9 @@ void TextComponent::setVerticalAlignment(Alignment align)
 
 void TextComponent::setLineSpacing(float spacing)
 {
+	if (mLineSpacing == spacing)
+		return;
+
 	mLineSpacing = spacing;
 	onTextChanged();
 }
@@ -609,7 +667,7 @@ void TextComponent::applyTheme(const std::shared_ptr<ThemeData>& theme, const st
 
 void TextComponent::setAutoScroll(bool scroll) 
 { 
-	setAutoScroll(scroll ? AutoScrollType::VERTICAL : AutoScrollType::NONE); 
+	setAutoScroll(scroll ? AutoScrollType::HORIZONTAL : AutoScrollType::NONE); 
 }
 
 void TextComponent::setAutoScroll(AutoScrollType value)
@@ -618,8 +676,7 @@ void TextComponent::setAutoScroll(AutoScrollType value)
 		return;
 
 	mAutoScroll = value;
-	onSizeChanged();
-	// onTextChanged();
+	onSizeChanged();	
 }
 
 ThemeData::ThemeElement::Property TextComponent::getProperty(const std::string name)
@@ -674,4 +731,13 @@ void TextComponent::setProperty(const std::string name, const ThemeData::ThemeEl
 		setValue(value.s);
 	else
 		GuiComponent::setProperty(name, value);
+}
+
+void TextComponent::setPadding(const Vector4f padding) 
+{ 
+	if (mPadding == padding) 
+		return;  
+	
+	mPadding = padding; 
+	onTextChanged();
 }

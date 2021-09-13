@@ -26,6 +26,7 @@ namespace PlatformIds
 		{ "atarixe",				ATARI_XE },
 		{ "colecovision",			COLECOVISION },
 		{ "c64",					COMMODORE_64 },
+		{ "vic20",				COMMODORE_VIC20 },
 		{ "intellivision",			INTELLIVISION },
 		{ "macintosh",				MAC_OS },
 		{ "xbox",					XBOX },
@@ -36,6 +37,7 @@ namespace PlatformIds
 		{ "ngpc",					NEOGEO_POCKET_COLOR },
 		{ "n3ds",					NINTENDO_3DS },
 		{ "n64",					NINTENDO_64 },
+		{ "n64dd",					NINTENDO_64_DISK_DRIVE },
 		{ "nds",					NINTENDO_DS },
 		{ "fds",					FAMICOM_DISK_SYSTEM },
 		{ "nes",					NINTENDO_ENTERTAINMENT_SYSTEM },
@@ -45,6 +47,7 @@ namespace PlatformIds
 		{ "gc",						NINTENDO_GAMECUBE },
 		{ "wii",					NINTENDO_WII },
 		{ "wiiu",					NINTENDO_WII_U },
+		{ "switch",					NINTENDO_SWITCH },
 		{ "virtualboy",				NINTENDO_VIRTUAL_BOY },
 		{ "gameandwatch",			NINTENDO_GAME_AND_WATCH },
 		{ "pc",						PC },
@@ -125,6 +128,37 @@ namespace PlatformIds
 		{ "palm",					PALMOS },
 		{ "daphne",					DAPHNE },
 		{ "solarus",				SOLARUS },
+
+		{ "vic20",					VIC20 },
+		{ "c20",					VIC20 },
+		{ "ti99",					TI99 },
+		{ "ti99_4a",				TI99 },
+		{ "pico8",					PICO8 },
+		{ "sgb",					SUPER_GAME_BOY },
+
+		{ "watara",					WATARA_SUPERVISION },
+		{ "supervision",			WATARA_SUPERVISION },
+
+		{ "model3",					MODEL3 },
+			
+		{ "imageviewer",			IMAGEVIEWER },
+			
+		{ "scv",					SUPER_CASSETTE_VISION },
+		{ "easyrpg",				EASYRPG },			
+		{ "pet",					COMMODORE_PET },
+		{ "cpet",					COMMODORE_PET },
+		{ "atom",					ACORN_ATOM },
+		{ "bbcmicro",				ACORN_BBC_MICRO },
+		{ "electron",				ACORN_ELECTRON },
+		{ "ngage",					NOKIA_NGAGE },
+		{ "astrocade",				ASTROCADE },
+		{ "archimedes",				ARCHIMEDES },			
+		{ "adam",					ADAM },
+
+		{ "fmtowns",				FMTOWNS },
+		{ "cdi",					PHILIPS_CDI },			
+
+		{ "snes-msu1",				SUPER_NINTENDO_MSU1 },
 
 		{ "ignore",					PLATFORM_IGNORE },
 		{ "invalid",				PLATFORM_COUNT }

@@ -62,6 +62,9 @@ void GuiSettings::close()
 
 void GuiSettings::save()
 {
+	if (!mDoSave)
+		return;
+
 	if(!mSaveFuncs.size())
 		return;
 
@@ -95,7 +98,10 @@ bool GuiSettings::input(InputConfig* config, Input input)
 HelpStyle GuiSettings::getHelpStyle()
 {
 	HelpStyle style = HelpStyle();
-	style.applyTheme(ViewController::get()->getState().getSystem()->getTheme(), "system");
+
+	if (ViewController::get()->getState().getSystem() != nullptr)
+		style.applyTheme(ViewController::get()->getState().getSystem()->getTheme(), "system");
+
 	return style;
 }
 

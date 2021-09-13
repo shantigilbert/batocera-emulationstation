@@ -9,6 +9,7 @@
 #include "SystemConf.h"
 #include "FileData.h"
 #include "LocaleES.h"
+#include "GameNameFormatter.h"
 
 BasicGameListView::BasicGameListView(Window* window, FolderData* root)
 	: ISimpleGameListView(window, root), mList(window)
@@ -51,10 +52,10 @@ void BasicGameListView::onFileChanged(FileData* file, FileChangeType change)
 
 void BasicGameListView::populateList(const std::vector<FileData*>& files)
 {
-	SystemData* system = mCursorStack.size() && mRoot->getSystem()->isGroupSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
+	SystemData* system = mCursorStack.size() && !mRoot->getSystem()->isGameSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
 
 	auto groupTheme = system->getTheme();
-	if (groupTheme)
+	if (groupTheme && mHeaderImage.hasImage())
 	{
 		const ThemeData::ThemeElement* logoElem = groupTheme->getElement(getName(), "logo", "image");
 		if (logoElem && logoElem->has("path") && Utils::FileSystem::exists(logoElem->get<std::string>("path")))
@@ -67,63 +68,33 @@ void BasicGameListView::populateList(const std::vector<FileData*>& files)
 
 	if (files.size() > 0)
 	{
-		bool showParentFolder = Settings::getInstance()->getBool("ShowParentFolder");
-		auto spf = Settings::getInstance()->getString(mRoot->getSystem()->getName() + ".ShowParentFolder");
-		if (spf == "1") showParentFolder = true;
-		else if (spf == "0") showParentFolder = false;
-
+		bool showParentFolder = mRoot->getSystem()->getShowParentFolder();
 		if (showParentFolder && mCursorStack.size())
 		{
 			FileData* placeholder = new FileData(PLACEHOLDER, "..", this->mRoot->getSystem());
 			mList.add(". .", placeholder, true);
 		}
 
-		std::string systemName = mRoot->getSystem()->getName();
+		GameNameFormatter formatter(mRoot->getSystem());
 
-		bool favoritesFirst = Settings::getInstance()->getBool("FavoritesFirst");
-		
-		auto fav = Settings::getInstance()->getString(mRoot->getSystem()->getName() + ".FavoritesFirst");
-		if (fav == "1") favoritesFirst = true;
-		else if (fav == "0") favoritesFirst = false;
-		
-		bool showFavoriteIcon = (systemName != "favorites" && systemName != "recent");
-		if (!showFavoriteIcon)
-			favoritesFirst = false;
-
+		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
-		{
+		{			
 			for (auto file : files)
 			{
 				if (!file->getFavorite())
 					continue;
-				
-				if (showFavoriteIcon)
-					mList.add(_U("\uF006 ") + file->getName(), file, file->getType() == FOLDER);
-				else if (file->getType() == FOLDER)
-					mList.add(_U("\uF07C ") + file->getName(), file, true);
-				else
-					mList.add(file->getName(), file, false);
+						
+				mList.add(formatter.getDisplayName(file), file, file->getType() == FOLDER);
 			}
 		}
 
 		for (auto file : files)		
 		{
-			if (file->getFavorite())
-			{
-				if (favoritesFirst)
-					continue;
-
-				if (showFavoriteIcon)
-				{
-					mList.add(_U("\uF006 ") + file->getName(), file, file->getType() == FOLDER);
-					continue;
-				}
-			}
-
-			if (file->getType() == FOLDER)
-				mList.add(_U("\uF07C ") + file->getName(), file, true);
-			else
-				mList.add(file->getName(), file, false); //  + _U(" \uF05A")
+			if (favoritesFirst && file->getFavorite())
+				continue;
+				
+			mList.add(formatter.getDisplayName(file), file, file->getType() == FOLDER);
 		}
 
 		// if we have the ".." PLACEHOLDER, then select the first game instead of the placeholder
@@ -136,6 +107,9 @@ void BasicGameListView::populateList(const std::vector<FileData*>& files)
 	}
 
 	updateFolderPath();
+
+	if (mShowing)
+		onShow();
 }
 
 FileData* BasicGameListView::getCursor()
@@ -146,41 +120,51 @@ FileData* BasicGameListView::getCursor()
 	return mList.getSelected();
 }
 
+std::shared_ptr<std::vector<FileData*>> recurseFind(FileData* toFind, FolderData* folder, std::stack<FileData*>& stack)
+{
+	auto items = folder->getChildrenListToDisplay();
+
+	for (auto item : items)
+		if (toFind == item)
+			return std::make_shared<std::vector<FileData*>>(items);
+
+	for (auto item : items)
+	{
+		if (item->getType() == FOLDER)
+		{
+			stack.push(item);
+
+			auto ret = recurseFind(toFind, (FolderData*)item, stack);
+			if (ret != nullptr)
+				return ret;
+
+			stack.pop();
+		}
+	}
+
+	if (stack.empty())
+		return std::make_shared<std::vector<FileData*>>(items);
+
+	return nullptr;
+}
+
+void BasicGameListView::resetLastCursor()
+{
+	mList.resetLastCursor();
+}
+
 void BasicGameListView::setCursor(FileData* cursor)
 {
-	if(!mList.setCursor(cursor) && (!cursor->isPlaceHolder()))
+	if (cursor && !mList.setCursor(cursor) && !cursor->isPlaceHolder())
 	{
-		auto children = mRoot->getChildrenListToDisplay();
-
-		auto gameIter = std::find(children.cbegin(), children.cend(), cursor);
-		if (gameIter == children.cend())
+		std::stack<FileData*> stack;
+		auto childrenToDisplay = mRoot->findChildrenListToDisplayAtCursor(cursor, stack);
+		if (childrenToDisplay != nullptr)
 		{
-			if (cursor->getParent() != nullptr)
-				children = cursor->getParent()->getChildrenListToDisplay();
-
-			// update our cursor stack in case our cursor just got set to some folder we weren't in before
-			if (mCursorStack.empty() || mCursorStack.top() != cursor->getParent())
-			{
-				std::stack<FileData*> tmp;
-				FileData* ptr = cursor->getParent();
-				while (ptr && ptr != mRoot)
-				{
-					tmp.push(ptr);
-					ptr = ptr->getParent();
-				}
-
-				// flip the stack and put it in mCursorStack
-				mCursorStack = std::stack<FileData*>();
-				while (!tmp.empty())
-				{
-					mCursorStack.push(tmp.top());
-					tmp.pop();
-				}
-			}
+			mCursorStack = stack;
+			populateList(*childrenToDisplay.get());
+			mList.setCursor(cursor);
 		}
-	
-		populateList(children);
-		mList.setCursor(cursor);
 	}
 }
 
@@ -224,39 +208,9 @@ void BasicGameListView::remove(FileData *game)
 	if(mList.size() == 0)
 		addPlaceholder();
 
+	mRoot->removeFromVirtualFolders(game);
 	delete game;                                 // remove before repopulating (removes from parent)
 	onFileChanged(parent, FILE_REMOVED);           // update the view, with game removed
-}
-
-std::vector<HelpPrompt> BasicGameListView::getHelpPrompts()
-{
-	std::vector<HelpPrompt> prompts;
-
-	if(Settings::getInstance()->getBool("QuickSystemSelect"))
-		prompts.push_back(HelpPrompt("left/right", _("SYSTEM"))); // batocera
-
-	prompts.push_back(HelpPrompt("up/down", _("CHOOSE"))); // batocera
-	prompts.push_back(HelpPrompt(BUTTON_OK, _("LAUNCH")));
-	prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
-	if(!UIModeController::getInstance()->isUIModeKid())
-	  prompts.push_back(HelpPrompt("select", _("OPTIONS"))); // batocera
-
-	FileData* cursor = getCursor();
-	if (cursor != nullptr && cursor->isNetplaySupported())
-		prompts.push_back(HelpPrompt("x", _("NETPLAY"))); // batocera
-	else
-		prompts.push_back(HelpPrompt("x", _("RANDOM"))); // batocera
-
-	if(mRoot->getSystem()->isGameSystem() && !UIModeController::getInstance()->isUIModeKid())
-	{
-		std::string prompt = CollectionSystemManager::get()->getEditingCollection();
-		
-		if (Utils::String::toLower(prompt) == "favorites")
-			prompts.push_back(HelpPrompt("y", _("Favorites")));
-		else
-			prompts.push_back(HelpPrompt("y", _(prompt.c_str())));
-	}
-	return prompts;
 }
 
 // batocera

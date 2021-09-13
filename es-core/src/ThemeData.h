@@ -122,11 +122,16 @@ struct MenuElement
 
 struct MenuBackground
 {
-	unsigned int color;
-	unsigned int centerColor;
-	std::string path;
-	std::string fadePath;	
-	Vector2f cornerSize;	
+	unsigned int	color;
+	unsigned int	centerColor;
+	std::string		path;
+	std::string		fadePath;	
+	Vector2f		cornerSize;	
+
+	unsigned int	scrollbarColor;
+	float			scrollbarSize;
+	float			scrollbarCorner;
+	std::string		scrollbarAlignment;
 };
 
 struct MenuGroupElement
@@ -143,8 +148,6 @@ struct MenuGroupElement
 
 struct IconElement 
 {
-	std::string button;
-	std::string button_filled;
 	std::string on;
 	std::string off;
 	std::string option_arrow;
@@ -152,6 +155,13 @@ struct IconElement
 	std::string knob;
 	std::string textinput_ninepatch;
 	std::string textinput_ninepatch_active;
+};
+
+struct ButtonElement
+{
+	std::string path;
+	std::string filledPath;
+	Vector2f	cornerSize;
 };
 
 class ThemeData
@@ -162,13 +172,14 @@ public:
 	public:
 		ThemeMenu(ThemeData* theme);
 
-		MenuBackground Background{ 0xFFFFFFFF, 0xFFFFFFFF, ":/frame.png", ":/scroll_gradient.png", Vector2f(16, 16) };
+		MenuBackground Background{ 0xFFFFFFFF, 0xFFFFFFFF, ":/frame.png", ":/scroll_gradient.png", Vector2f(16, 16), 0, 0.0025f, 0.01f, "innerright" };
 		MenuElement Title{ 0x555555FF, 0x555555FF, 0x555555FF, 0xFFFFFFFF, 0x555555FF, true, "", nullptr };
 		MenuElement Text{ 0x777777FF, 0xFFFFFFFF, 0x878787FF, 0xC6C7C6FF, 0x878787FF, true, "", nullptr };
 		MenuElement TextSmall{ 0x777777FF, 0xFFFFFFFF, 0x878787FF, 0xC6C7C6FF, 0x878787FF, true, "", nullptr };
 		MenuElement Footer{ 0xC6C6C6FF, 0xC6C6C6FF, 0xC6C6C6FF, 0xFFFFFFFF, 0xC6C6C6FF, true, "", nullptr };
 		MenuGroupElement Group{ 0x777777FF, 0x00000010, 0xC6C7C6FF, 2.0, "", nullptr, 0 /*ALIGN_LEFT*/, false };
-		IconElement Icons{ ":/button.png", ":/button_filled.png", ":/on.svg", ":/off.svg", ":/option_arrow.svg", ":/arrow.svg", ":/slider_knob.svg", ":/textinput_ninepatch.png", ":/textinput_ninepatch_active.png" };
+		IconElement Icons { ":/on.svg", ":/off.svg", ":/option_arrow.svg", ":/arrow.svg", ":/slider_knob.svg", ":/textinput_ninepatch.png", ":/textinput_ninepatch_active.png" };
+		ButtonElement Button { ":/button.png", ":/button_filled.png", Vector2f(16,16) };
 
 		std::string getMenuIcon(const std::string name)
 		{
@@ -301,7 +312,14 @@ public:
 	const ThemeElement* getElement(const std::string& view, const std::string& element, const std::string& expectedType) const;
 	const std::vector<std::string> getElementNames(const std::string& view, const std::string& expectedType) const;
 
-	static std::vector<GuiComponent*> makeExtras(const std::shared_ptr<ThemeData>& theme, const std::string& view, Window* window, bool forceLoad = false);
+	enum ExtraImportType
+	{
+		WITH_ACTIVATESTORYBOARD = 1,
+		WITHOUT_ACTIVATESTORYBOARD = 2,
+		ALL_EXTRAS = 1 + 2
+	};
+
+	static std::vector<GuiComponent*> makeExtras(const std::shared_ptr<ThemeData>& theme, const std::string& view, Window* window, bool forceLoad = false, ExtraImportType type = ExtraImportType::ALL_EXTRAS);
 
 	static const std::shared_ptr<ThemeData>& getDefault();
 
@@ -310,6 +328,7 @@ public:
 	
 	bool hasSubsets() { return mSubsets.size() > 0; }
 	static const std::shared_ptr<ThemeData::ThemeMenu>& getMenuTheme();
+	static unsigned int parseColor(const std::string& str);
 
 	std::vector<Subset>		    getSubSets() { return mSubsets; }
 	std::vector<std::string>	getSubSetNames(const std::string ofView = "");
@@ -425,7 +444,5 @@ private:
 	static std::shared_ptr<ThemeData::ThemeMenu> mMenuTheme;
 	static ThemeData* mDefaultTheme;	
 };
-
-extern unsigned int getHexColor(const char* str);
 
 #endif // ES_CORE_THEME_DATA_H

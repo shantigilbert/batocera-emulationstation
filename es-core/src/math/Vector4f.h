@@ -50,6 +50,8 @@ public:
 	Vector4f&      operator*=(const float& _other)          { *this = *this * _other; return *this; }
 	Vector4f&      operator/=(const float& _other)          { *this = *this / _other; return *this; }
 
+	Vector4f&      operator*=(const Vector2f& _other);
+
 	      float&   operator[](const int _index)             { assert(_index < 4 && "index out of range"); return (&mX)[_index]; }
 	const float&   operator[](const int _index) const       { assert(_index < 4 && "index out of range"); return (&mX)[_index]; }
 
@@ -79,6 +81,8 @@ public:
 
 	static const Vector4f parseString(const std::string& _input);
 
+	bool empty() { return mX == 0 && mY == 0 && mZ == 0 && mW == 0; }
+	
 private:
 
 	float mX;

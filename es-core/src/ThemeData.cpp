@@ -14,13 +14,36 @@
 #include "LocaleES.h"
 #include "anim/ThemeStoryboard.h"
 
-std::vector<std::string> ThemeData::sSupportedViews { { "system" }, { "basic" }, { "detailed" }, { "grid" }, { "video" }, { "menu" }, { "screen" }, { "splash" } };
-std::vector<std::string> ThemeData::sSupportedFeatures { { "video" }, { "carousel" }, { "z-index" }, { "visible" },{ "manufacturer" } };
+std::vector<std::string> ThemeData::sSupportedViews{ { "system" }, { "basic" }, { "detailed" }, { "grid" }, { "video" }, { "gamecarousel" }, { "menu" }, { "screen" }, { "splash" } };
+std::vector<std::string> ThemeData::sSupportedFeatures { { "video" }, { "carousel" }, { "gamecarousel" }, { "z-index" }, { "visible" },{ "manufacturer" } };
 
 std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> ThemeData::sElementMap {
 
 	{ "splash", {		
 		{ "backgroundColor", COLOR } } },
+
+	{ "control", { // Using "control" in themes.xml does affect the original type of the control when overriding common properties for multiple md_
+		{ "pos", NORMALIZED_PAIR },
+		{ "size", NORMALIZED_PAIR },
+		{ "x", FLOAT },
+		{ "y", FLOAT },
+		{ "h", FLOAT },
+		{ "w", FLOAT },
+
+		{ "scale", FLOAT },
+		{ "scaleOrigin", NORMALIZED_PAIR },
+
+		{ "rotation", FLOAT },
+		{ "rotationOrigin", NORMALIZED_PAIR },
+
+		{ "opacity", FLOAT },
+		{ "zIndex", FLOAT },
+		{ "visible", BOOLEAN },
+		{ "offset", NORMALIZED_PAIR },
+		{ "offsetX", FLOAT },
+		{ "offsetY", FLOAT },
+		{ "clipRect", NORMALIZED_RECT } } },
+
 	{ "image", {
 		{ "pos", NORMALIZED_PAIR },
 		{ "size", NORMALIZED_PAIR },
@@ -31,6 +54,13 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "w", FLOAT },
 		{ "scale", FLOAT },
 		{ "scaleOrigin", NORMALIZED_PAIR },
+		
+		{ "padding", NORMALIZED_RECT },
+
+		{ "offset", NORMALIZED_PAIR },
+		{ "offsetX", FLOAT },
+		{ "offsetY", FLOAT },
+		{ "clipRect", NORMALIZED_RECT },
 
 		{ "maxSize", NORMALIZED_PAIR },
 		{ "minSize", NORMALIZED_PAIR },
@@ -68,6 +98,9 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 
 		{ "margin", NORMALIZED_PAIR },
 		{ "padding", NORMALIZED_RECT },
+
+		{ "cellProportion", FLOAT },
+
 		{ "autoLayout", NORMALIZED_PAIR },
 		{ "autoLayoutSelectedZoom", FLOAT },
 		{ "animateSelection", BOOLEAN },
@@ -75,6 +108,7 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "zIndex", FLOAT },
 		{ "gameImage", PATH },
 		{ "folderImage", PATH },
+		{ "logoBackgroundImage", PATH },
 		{ "showVideoAtDelay", FLOAT },
 		{ "scrollDirection", STRING },
 		{ "scrollSound", PATH },
@@ -82,7 +116,7 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "scrollbarColor", COLOR },
 		{ "scrollbarSize", FLOAT },
 		{ "scrollbarCorner", FLOAT },
-		{ "scrollbarImagePath", PATH },
+		{ "scrollbarAlignment", STRING },
 
 		{ "centerSelection", STRING },
 		{ "scrollLoop", BOOLEAN } } },
@@ -101,6 +135,11 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 	{ "text", {
 		{ "pos", NORMALIZED_PAIR },
 		{ "size", NORMALIZED_PAIR },
+
+		{ "offset", NORMALIZED_PAIR },
+		{ "offsetX", FLOAT },
+		{ "offsetY", FLOAT },
+		{ "clipRect", NORMALIZED_RECT },
 
 		{ "x", FLOAT },
 		{ "y", FLOAT },
@@ -192,6 +231,8 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "opacity", FLOAT },
 		{ "rotation", FLOAT },
 		{ "rotationOrigin", NORMALIZED_PAIR },
+		
+		{ "padding", NORMALIZED_RECT },
 
 		{ "path", PATH },
 	 	{ "visible", BOOLEAN },
@@ -233,6 +274,11 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "pos", NORMALIZED_PAIR },
 		{ "size", NORMALIZED_PAIR },
 
+		{ "offset", NORMALIZED_PAIR },
+		{ "offsetX", FLOAT },
+		{ "offsetY", FLOAT },
+		{ "clipRect", NORMALIZED_RECT },
+
 		{ "x", FLOAT },
 		{ "y", FLOAT },
 		{ "h", FLOAT },
@@ -248,6 +294,7 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "unfilledColor", COLOR },
 		{ "filledPath", PATH },
 		{ "unfilledPath", PATH },
+		{ "horizontalAlignment", STRING },
 		{ "visible", BOOLEAN },
 		{ "zIndex", FLOAT } } },
 	{ "sound", {
@@ -255,24 +302,55 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 	{ "controllerActivity", {
 		{ "pos", NORMALIZED_PAIR },
 		{ "size", NORMALIZED_PAIR },
+
+		// Common
 		{ "itemSpacing", FLOAT },
 		{ "horizontalAlignment", STRING },
-		{ "imagePath", PATH },
+
+		// Controllers
+		{ "imagePath", PATH },		
 		{ "color", COLOR },
 		{ "activityColor", COLOR },
 		{ "hotkeyColor", COLOR },
-		{ "visible", BOOLEAN },
-		{ "zIndex", FLOAT } } },
-	{ "batteryIndicator", {
-		{ "pos", NORMALIZED_PAIR },
-		{ "size", NORMALIZED_PAIR },		
+		
+		// Wifi
+		{ "networkIcon", PATH },
+
+		// Battery
 		{ "incharge", PATH },
 		{ "full", PATH },
 		{ "at75", PATH },
 		{ "at50", PATH },
 		{ "at25", PATH },
 		{ "empty", PATH },
+
+		{ "visible", BOOLEAN },
+		{ "zIndex", FLOAT } } },
+	{ "batteryIndicator", {
+		{ "pos", NORMALIZED_PAIR },
+		{ "size", NORMALIZED_PAIR },	
+
+		// Common
+		{ "itemSpacing", FLOAT },
+		{ "horizontalAlignment", STRING },
+
+		// Controllers
+		{ "imagePath", PATH },
 		{ "color", COLOR },
+		{ "activityColor", COLOR },
+		{ "hotkeyColor", COLOR },
+
+		// Wifi
+		{ "networkIcon", PATH },
+
+		// Battery
+		{ "incharge", PATH },
+		{ "full", PATH },
+		{ "at75", PATH },
+		{ "at50", PATH },
+		{ "at25", PATH },
+		{ "empty", PATH },
+
 		{ "visible", BOOLEAN },
 		{ "zIndex", FLOAT } } },
 	{ "helpsystem", {
@@ -301,6 +379,12 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "y", FLOAT },
 		{ "h", FLOAT },
 		{ "w", FLOAT },
+
+		{ "offset", NORMALIZED_PAIR },
+		{ "offsetX", FLOAT },
+		{ "offsetY", FLOAT },
+		{ "clipRect", NORMALIZED_RECT },
+
 		{ "scale", FLOAT },
 		{ "scaleOrigin", NORMALIZED_PAIR },
 		{ "opacity", FLOAT },
@@ -319,8 +403,10 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "roundCorners", FLOAT },
 		{ "color", COLOR },
 		{ "snapshotSource", STRING }, // image, thumbnail, marquee
+		{ "defaultSnapshot", PATH },
 		{ "loops", FLOAT }, // Number of loops to do -1 (default) is infinite 
 		{ "audio", BOOLEAN },
+		{ "linearSmooth", BOOLEAN },
 		{ "showSnapshotNoVideo", BOOLEAN },
 		{ "showSnapshotDelay", BOOLEAN } } },
 	{ "carousel", {
@@ -339,9 +425,32 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "logoAlignment", STRING },
 		{ "maxLogoCount", FLOAT },
 		{ "systemInfoDelay", FLOAT },	
+		{ "systemInfoCountOnly", BOOLEAN },		
 		{ "defaultTransition", STRING },
+		{ "minLogoOpacity", FLOAT },
+		{ "transitionSpeed", FLOAT },
 		{ "scrollSound", PATH },
 		{ "zIndex", FLOAT } } },
+
+	{ "gamecarousel",{
+		{ "type", STRING },
+		{ "size", NORMALIZED_PAIR },
+		{ "pos", NORMALIZED_PAIR },
+		{ "origin", NORMALIZED_PAIR },
+		{ "imageSource", STRING }, // image, thumbnail, marquee
+		{ "logoScale", FLOAT },
+		{ "logoRotation", FLOAT },
+		{ "logoRotationOrigin", NORMALIZED_PAIR },
+		{ "logoSize", NORMALIZED_PAIR },
+		{ "logoPos", NORMALIZED_PAIR },
+		{ "logoAlignment", STRING },
+		{ "maxLogoCount", FLOAT },
+		{ "defaultTransition", STRING },
+		{ "minLogoOpacity", FLOAT },
+		{ "transitionSpeed", FLOAT },
+		{ "scrollSound", PATH },
+		{ "zIndex", FLOAT } } },
+
 	{ "menuText", {
 		{ "fontPath", PATH },
 		{ "fontSize", FLOAT },
@@ -369,7 +478,11 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 		{ "fadePath", PATH },
 		{ "color", COLOR },
 		{ "centerColor", COLOR },
-		{ "cornerSize", NORMALIZED_PAIR } } },
+		{ "cornerSize", NORMALIZED_PAIR },
+		{ "scrollbarColor", COLOR },
+		{ "scrollbarSize", FLOAT },
+		{ "scrollbarCorner", FLOAT },
+		{ "scrollbarAlignment", STRING } } },
 	{ "menuIcons", { 		
 		{ "iconSystem", PATH },
 		{ "iconUpdates", PATH },
@@ -390,6 +503,7 @@ std::map<std::string, std::map<std::string, ThemeData::ElementPropertyType>> The
 	{ "menuSlider",{
 		{ "path", PATH } } },
 	{ "menuButton",{
+		{ "cornerSize", NORMALIZED_PAIR },
 		{ "path", PATH },
 		{ "filledPath", PATH } } },
 };
@@ -400,33 +514,6 @@ ThemeData* ThemeData::mDefaultTheme = nullptr;
 #define MINIMUM_THEME_FORMAT_VERSION 3
 #define CURRENT_THEME_FORMAT_VERSION 6
 
-// helper
-unsigned int getHexColor(const char* str)
-{
-//	ThemeException error;
-	if (!str)
-	{
-		//throw error << "Empty color";
-		LOG(LogWarning) << "Empty color";
-		return 0;
-	}
-
-	size_t len = strlen(str);
-	if(len != 6 && len != 8)
-	{
-		//throw error << "Invalid color (bad length, \"" << str << "\" - must be 6 or 8)";
-		LOG(LogWarning) << "Invalid color (bad length, \"" << str << "\" - must be 6 or 8)";
-		return 0;
-	}
-
-	unsigned int val;
-	sscanf(str, "%x", &val);
-
-	if(len == 6)
-		val = (val << 8) | 0xFF;
-
-	return val;
-}
 
 std::string ThemeData::resolvePlaceholders(const char* in)
 {
@@ -499,7 +586,7 @@ void ThemeData::loadFile(const std::string system, std::map<std::string, std::st
 	mVariables["lang"] = mLanguage;
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result res = fromFile ? doc.load_file(path.c_str()) : doc.load(path.c_str());
+	pugi::xml_parse_result res = fromFile ? doc.load_file(path.c_str()) : doc.load_string(path.c_str());
 	if(!res)
 		throw error << "XML parsing error: \n    " << res.description();
 
@@ -662,7 +749,7 @@ bool ThemeData::parseSubset(const pugi::xml_node& node)
 
 			std::string appliesToAttr = resolvePlaceholders(node.attribute("appliesTo").as_string());
 			if (!appliesToAttr.empty())
-				subSet.appliesTo = Utils::String::splitAny(appliesToAttr, ",");
+				subSet.appliesTo = Utils::String::splitAny(appliesToAttr, ", ", true);
 
 			mSubsets.push_back(subSet);
 		}
@@ -825,7 +912,7 @@ void ThemeData::parseVariable(const pugi::xml_node& node)
 	if (!parseFilterAttributes(node))
 		return;
 
-	std::string val = node.text().as_string();
+	std::string val = resolvePlaceholders(node.text().as_string());
 	//if (val.empty()) return;
 	
 	mVariables.erase(key);
@@ -901,6 +988,18 @@ bool ThemeData::parseFilterAttributes(const pugi::xml_node& node)
 			return false;
 	}
 
+	if (node.attribute("verticalScreen"))
+	{
+		const std::string tinyScreenAttr = node.attribute("verticalScreen").as_string();
+
+		bool verticalScreen = Renderer::getScreenHeight() > Renderer::getScreenWidth();
+
+		if (!verticalScreen && tinyScreenAttr == "true")
+			return false;
+		else if (verticalScreen && tinyScreenAttr == "false")
+			return false;
+	}
+
 	if (node.attribute("ifHelpPrompts"))
 	{
 		const std::string helpVisibleAttr = node.attribute("ifHelpPrompts").as_string();
@@ -911,6 +1010,50 @@ bool ThemeData::parseFilterAttributes(const pugi::xml_node& node)
 		else if (help && helpVisibleAttr == "false")
 			return false;
 	}
+
+	if (node.attribute("ifCheevos"))
+	{
+		const std::string hasCheevosAttr = node.attribute("ifCheevos").as_string();
+		bool hasCheevos = mVariables.find("system.cheevos") != mVariables.cend();
+
+		if (!hasCheevos && hasCheevosAttr == "true")
+			return false;
+		else if (hasCheevos && hasCheevosAttr == "false")
+			return false;
+	}
+
+	if (node.attribute("ifArch"))
+	{
+		std::string arch = getArchString();
+		if (!arch.empty())
+		{
+			const std::string ifBoard = Utils::String::toLower(node.attribute("ifArch").as_string());
+
+			bool hasValue = false;
+			auto values = Utils::String::splitAny(Utils::String::trim(ifBoard), ",|", true);
+			for (auto value : values)
+				if (arch == value)
+					hasValue = true;
+
+			if (!hasValue)
+				return false;
+		}
+	}
+
+	if (node.attribute("ifNotArch"))
+	{
+		std::string arch = getArchString();
+		if (!arch.empty())
+		{
+			const std::string ifBoard = Utils::String::toLower(node.attribute("ifNotArch").as_string());
+
+			auto values = Utils::String::splitAny(Utils::String::trim(ifBoard), "|,", true);
+			for (auto value : values)
+				if (arch == value)
+					return false;
+		}
+	}
+
 
 	if (node.attribute("ifSubset"))
 	{
@@ -958,7 +1101,7 @@ bool ThemeData::parseFilterAttributes(const pugi::xml_node& node)
 				auto values = Utils::String::split(Utils::String::trim(subsetValue), '|', true);
 				for (auto value : values)
 					if (selectedSubset == value)
-						hasValue = true;;
+						hasValue = true;
 
 				if (!hasValue)
 					return false;
@@ -1196,6 +1339,28 @@ bool ThemeData::parseLanguage(const pugi::xml_node& node)
 	return false;
 }
 
+unsigned int ThemeData::parseColor(const std::string& str)
+{
+	if (str.empty())
+	{
+		LOG(LogWarning) << "Empty color";
+		return 0;
+	}
+
+	size_t len = str.length();
+	if (len != 6 && len != 8)
+	{
+		LOG(LogWarning) << "Invalid color (bad length, \"" << str << "\" - must be 6 or 8)";
+		return 0;
+	}
+
+	unsigned int val = Utils::String::fromHexString(str);
+	if (len == 6)
+		val = (val << 8) | 0xFF;
+
+	return val;
+}
+
 bool ThemeData::parseRegion(const pugi::xml_node& node)
 {
 	if (!node.attribute("region"))
@@ -1237,7 +1402,8 @@ void ThemeData::parseElement(const pugi::xml_node& root, const std::map<std::str
 	// ThemeException error;
 	// error.setFiles(mPaths);
 
-	element.type = root.name();
+	if (element.type.empty() || strcmp(root.name(), "control") != 0)
+		element.type = root.name();
 
 	if (root.attribute("extra"))
 	{
@@ -1254,48 +1420,69 @@ void ThemeData::parseElement(const pugi::xml_node& root, const std::map<std::str
 		if (!parseFilterAttributes(node))
 			continue;
 
+		std::string name = node.name();
+
 		ElementPropertyType type = STRING;
 
-		auto typeIt = typeMap.find(node.name());
+		auto typeIt = typeMap.find(name);
 		if(typeIt == typeMap.cend())
 		{
-			if (std::string(node.name()) == "storyboard")
+			if (name == "storyboard")
 			{
-				auto storyBoard = new ThemeStoryboard();
-				if (!storyBoard->fromXmlNode(node, typeMap))
+				if (node.first_child() == nullptr)
 				{
-					LOG(LogWarning) << "Storyboard \"" << node.name() << "\" has no <animation> items !";
-					delete storyBoard;
+					std::string eventName = node.attribute("event").as_string();
+
+					auto sb = element.mStoryBoards.find(eventName);
+					if (sb != element.mStoryBoards.cend())
+					{
+						delete sb->second;
+						element.mStoryBoards.erase(eventName);
+					}
 				}
 				else
 				{
-					auto sb = element.mStoryBoards.find(storyBoard->eventName);
-					if (sb != element.mStoryBoards.cend())
-						delete sb->second;
+					auto storyBoard = new ThemeStoryboard();
+					if (!storyBoard->fromXmlNode(node, typeMap))
+					{
+						auto sb = element.mStoryBoards.find(storyBoard->eventName);
+						if (sb != element.mStoryBoards.cend())
+						{
+							delete sb->second;
+							element.mStoryBoards.erase(storyBoard->eventName);
+						}
 
-					element.mStoryBoards[storyBoard->eventName] = storyBoard;
+						LOG(LogWarning) << "Storyboard \"" << name << "\" has no <animation> items !";
+						delete storyBoard;
+					}
+					else
+					{
+						auto sb = element.mStoryBoards.find(storyBoard->eventName);
+						if (sb != element.mStoryBoards.cend())
+							delete sb->second;
 
-					LOG(LogInfo) << "Storyboard \"" << node.name() << "\"!";
+						element.mStoryBoards[storyBoard->eventName] = storyBoard;
+						// LOG(LogInfo) << "Storyboard \"" << node.name() << "\"!";
+					}
 				}
-
 				continue;
 			}
 
 			// Exception for menuIcons that can be extended
 			if (element.type == "menuIcons")
 				type = PATH;
-			else if (std::string(node.name()) == "animate" && std::string(root.name()) == "imagegrid")
+			else if (name == "animate" && std::string(root.name()) == "imagegrid")
 				node.set_name("animateSelection");
 			else
 			{
-				LOG(LogWarning) << "Unknown property type \"" << node.name() << "\" (for element of type " << root.name() << ").";
+				LOG(LogWarning) << "Unknown property type \"" << name << "\" (for element of type " << root.name() << ").";
 				continue;
 			}
 		}
 		else
 			type = typeIt->second;
 		
-		if (!overwrite && element.properties.find(node.name()) != element.properties.cend())
+		if (!overwrite && element.properties.find(name) != element.properties.cend())
 			continue;
 
 		std::string str = resolveSystemVariable(mSystemThemeFolder, resolvePlaceholders(node.text().as_string()));
@@ -1304,46 +1491,16 @@ void ThemeData::parseElement(const pugi::xml_node& root, const std::map<std::str
 		{
 		case NORMALIZED_RECT:
 		{
-			Vector4f val;
-
-			auto splits = Utils::String::split(str, ' ');
-			if (splits.size() == 2)
-			{
-				val = Vector4f((float)atof(splits.at(0).c_str()), (float)atof(splits.at(1).c_str()),
-					(float)atof(splits.at(0).c_str()), (float)atof(splits.at(1).c_str()));
-			}
-			else if (splits.size() == 4)
-			{
-				val = Vector4f((float)atof(splits.at(0).c_str()), (float)atof(splits.at(1).c_str()),
-					(float)atof(splits.at(2).c_str()), (float)atof(splits.at(3).c_str()));
-			}
-
-			element.properties[node.name()] = val;
+			element.properties[name] = Vector4f::parseString(str);
 			break;
 		}
 		case NORMALIZED_PAIR:
 		{
-			size_t divider = str.find(' ');
-			if(divider == std::string::npos) 
-			{			
-				if (str.empty())
-				{
-					LOG(LogWarning) << "invalid normalized pair (property \"" << node.name() << "\", value \"" << str.c_str() << "\")";
-					break;
-				}
-
-				Vector2f val((float)atof(str.c_str()), (float)atof(str.c_str()));
-				element.properties[node.name()] = val;
-				break;
-			}			
-
-			float first = atof(str.substr(0, divider).c_str());
-			float second = atof(str.substr(divider, std::string::npos).c_str());
-			element.properties[node.name()] = Vector2f(first, second);
+			element.properties[name] = Vector2f::parseString(str);
 			break;
 		}
 		case STRING:
-			element.properties[node.name()] = str;
+			element.properties[name] = str;
 			break;
 		case PATH:
 		{
@@ -1364,17 +1521,17 @@ void ThemeData::parseElement(const pugi::xml_node& root, const std::map<std::str
 					LOG(LogWarning) << "random is only supported in systemview";
 				else if (element.type == "video" && path != "{random}")
 					LOG(LogWarning) << "video element only supports {random} element";
-				else if (element.type == "image" && path != "{random}" && path != "{random:thumbnail}" && path != "{random:marquee}" && path != "{random:image}")
+				else if (element.type == "image" && path != "{random}" && path != "{random:thumbnail}" && path != "{random:marquee}" && path != "{random:image}" && path != "{random:fanart}" && path != "{random:titleshot}")
 					LOG(LogWarning) << "unknow random element " << path;
 				else
-					element.properties[node.name()] = path;
+					element.properties[name] = path;
 
 				break;
 			}
 
 			if (path[0] == '/')
 			{
-#if WIN32 || defined _ENABLEEMUELEC
+#if WIN32
 				path = Utils::String::replace(path,
 					"/recalbox/share_init/system/.emulationstation/themes",
 					Utils::FileSystem::getEsConfigPath() + "/themes");
@@ -1385,32 +1542,39 @@ void ThemeData::parseElement(const pugi::xml_node& root, const std::map<std::str
 #endif
 			}
 
-			if (!ResourceManager::getInstance()->fileExists(path))
+			if (path == "none")
 			{
-				std::string rootPath = Utils::FileSystem::resolveRelativePath(str, Utils::FileSystem::getParent(mPaths.front()), true);
-				if (rootPath != path && ResourceManager::getInstance()->fileExists(rootPath))
-					path = rootPath;
-			}
-
-			if(!ResourceManager::getInstance()->fileExists(path))
-			{
-				std::stringstream ss;
-				ss << "Warning : could not find file \"" << node.text().get() << "\" ";
-				if(node.text().get() != path)
-					ss << "(which resolved to \"" << path << "\") ";
-				LOG(LogWarning) << ss.str();
+				if (element.properties.find(name) != element.properties.cend())
+					element.properties.erase(name);
 			}
 			else
-				element.properties[node.name()] = path;
+			{
+				if (ResourceManager::getInstance()->fileExists(path))
+				{
+					element.properties[name] = path;
+					break;
+				}
+				else if ((str[0] == '.' || str[0] == '~') && mPaths.size() > 1)
+				{
+					std::string rootPath = Utils::FileSystem::resolveRelativePath(str, Utils::FileSystem::getParent(mPaths.front()), true);
+					if (rootPath != path && ResourceManager::getInstance()->fileExists(rootPath))
+					{
+						element.properties[name] = rootPath;
+						break;
+					}
+				}				
+
+				LOG(LogDebug) << "Warning : could not find file \"" << node.text().get() << "\" " << "(which resolved to \"" << path << "\") ";
+			}
 
 			break;
 		}
 		case COLOR:
-			element.properties[node.name()] = getHexColor(str.c_str());
+			element.properties[name] = parseColor(str);
 			break;
 		case FLOAT:
 		{
-			element.properties[node.name()] = (float) atof(str.c_str());
+			element.properties[name] = Utils::String::toFloat(str);
 			break;
 		}
 
@@ -1421,11 +1585,11 @@ void ThemeData::parseElement(const pugi::xml_node& root, const std::map<std::str
 			// 1*, t* (true), T* (True), y* (yes), Y* (YES)
 			bool boolVal = (first == '1' || first == 't' || first == 'T' || first == 'y' || first == 'Y');
 
-			element.properties[node.name()] = boolVal;
+			element.properties[name] = boolVal;
 			break;
 		}
 		default:
-			LOG(LogWarning) << "Unknown ElementPropertyType for \"" << root.attribute("name").as_string() << "\", property " << node.name();
+			LOG(LogWarning) << "Unknown ElementPropertyType for \"" << root.attribute("name").as_string() << "\", property " << name;
 			break;
 		}
 	}
@@ -1528,7 +1692,7 @@ const std::shared_ptr<ThemeData>& ThemeData::getDefault()
 	return theme;
 }
 
-std::vector<GuiComponent*> ThemeData::makeExtras(const std::shared_ptr<ThemeData>& theme, const std::string& view, Window* window, bool forceLoad)
+std::vector<GuiComponent*> ThemeData::makeExtras(const std::shared_ptr<ThemeData>& theme, const std::string& view, Window* window, bool forceLoad, ExtraImportType type)
 {
 	std::vector<GuiComponent*> comps;
 
@@ -1540,7 +1704,21 @@ std::vector<GuiComponent*> ThemeData::makeExtras(const std::shared_ptr<ThemeData
 	{
 		ThemeElement& elem = viewIt->second.elements.at(*it);
 		if(elem.extra)
-		{
+		{			
+			if (type != ExtraImportType::ALL_EXTRAS)
+			{
+				bool hasActivationStoryBoard = elem.mStoryBoards.size() > 0 && (
+					elem.mStoryBoards.find("activate") != elem.mStoryBoards.cend() ||
+					elem.mStoryBoards.find("activateNext") != elem.mStoryBoards.cend() ||
+					elem.mStoryBoards.find("activatePrev") != elem.mStoryBoards.cend());
+
+				if ((type & ExtraImportType::WITH_ACTIVATESTORYBOARD) == ExtraImportType::WITH_ACTIVATESTORYBOARD && !hasActivationStoryBoard)
+					continue;
+
+				if ((type & ExtraImportType::WITHOUT_ACTIVATESTORYBOARD) == ExtraImportType::WITHOUT_ACTIVATESTORYBOARD && hasActivationStoryBoard)
+					continue;
+			}
+
 			GuiComponent* comp = nullptr;
 
 			const std::string& t = elem.type;
@@ -1576,7 +1754,11 @@ std::map<std::string, ThemeSet> ThemeData::getThemeSets()
 	{ 
 		"/etc/emulationstation/themes",
 		Utils::FileSystem::getEsConfigPath() + "/themes",
+#ifdef _ENABLEEMUELEC
+        "/emuelec/themes" // emuelec
+#else
 		"/userdata/themes" // batocera
+#endif
 	};
 
 	for(size_t i = 0; i < pathCount; i++)
@@ -1651,6 +1833,18 @@ ThemeData::ThemeMenu::ThemeMenu(ThemeData* theme)
 
 		if (elem->has("cornerSize"))
 			Background.cornerSize = elem->get<Vector2f>("cornerSize");
+
+		if (elem->has("scrollbarColor"))
+			Background.scrollbarColor = elem->get<unsigned int>("scrollbarColor");
+
+		if (elem->has("scrollbarSize"))
+			Background.scrollbarSize = elem->get<float>("scrollbarSize");
+
+		if (elem->has("scrollbarCorner"))
+			Background.scrollbarCorner = elem->get<float>("scrollbarCorner");		
+
+		if (elem->has("scrollbarAlignment"))
+			Background.scrollbarAlignment = elem->get<float>("scrollbarAlignment");
 	}
 
 	elem = theme->getElement("menu", "menutitle", "menuText");
@@ -1759,9 +1953,11 @@ ThemeData::ThemeMenu::ThemeMenu(ThemeData* theme)
 	if (elem)
 	{
 		if (elem->has("path"))
-			Icons.button = elem->get<std::string>("path");
+			Button.path = elem->get<std::string>("path");
 		if (elem->has("filledPath"))
-			Icons.button_filled = elem->get<std::string>("filledPath");
+			Button.filledPath = elem->get<std::string>("filledPath");
+		if (elem->has("cornerSize"))
+			Button.cornerSize = elem->get<Vector2f>("cornerSize");
 	}
 
 	elem = theme->getElement("menu", "menutextedit", "menuTextEdit");
@@ -1786,6 +1982,7 @@ ThemeData::ThemeMenu::ThemeMenu(ThemeData* theme)
 	if (elem && elem->has("path") && ResourceManager::getInstance()->fileExists(elem->get<std::string>("path")))
 		Icons.knob = elem->get<std::string>("path");
 
+	
 	elem = theme->getElement("menu", "menuicons", "menuIcons");
 	if (elem)
 	{

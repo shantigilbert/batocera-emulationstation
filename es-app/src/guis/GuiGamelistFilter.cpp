@@ -5,6 +5,7 @@
 #include "SystemData.h"
 #include "guis/GuiTextEditPopup.h"
 #include "guis/GuiTextEditPopupKeyboard.h"
+#include "Genres.h"
 
 GuiGamelistFilter::GuiGamelistFilter(Window* window, SystemData* system) : GuiComponent(window), mMenu(window, _("FILTER GAMELIST BY")), mSystem(system)
 {
@@ -116,18 +117,59 @@ void GuiGamelistFilter::addFiltersToMenu()
 		// add filters (with first one selected)
 		ComponentListRow row;
 
-		// add genres
 		optionList = std::make_shared< OptionListComponent<std::string> >(mWindow, menuLabel, true);
-		for (auto it : *allKeys)
+
+		if (it->type == GENRE_FILTER)
 		{
-			if (it.first == "UNKNOWN")
-				optionList->add(_("Unknown"), it.first, mFilterIndex->isKeyBeingFilteredBy(it.first, type));
-			else if (it.first == "TRUE")
-				optionList->add(_("YES"), it.first, mFilterIndex->isKeyBeingFilteredBy(it.first, type));
-			else if (it.first == "FALSE")
-				optionList->add(_("NO"), it.first, mFilterIndex->isKeyBeingFilteredBy(it.first, type));
-			else
-				optionList->add(_(it.first.c_str()), it.first, mFilterIndex->isKeyBeingFilteredBy(it.first, type));
+			std::map<std::string, std::string> keyValues;
+
+			for (auto key : *allKeys)
+				keyValues[Genres::genreStringFromIds({ key.first })] = key.first;
+		
+			for (auto key : keyValues)
+			{
+				auto label = key.first;
+
+				auto split = label.find("/");
+				if (split != std::string::npos)
+				{
+					auto parent = Utils::String::trim(label.substr(0, split));
+					if (keyValues.find(parent) != keyValues.cend())
+						label = "      " + Utils::String::trim(label.substr(split + 1));
+				}
+
+				optionList->add(label, key.second, mFilterIndex->isKeyBeingFilteredBy(key.second, type));
+			}
+		}
+		else
+		{
+			for (auto key : *allKeys)
+			{
+				if (key.first == "UNKNOWN")
+					optionList->add(_("Unknown"), key.first, mFilterIndex->isKeyBeingFilteredBy(key.first, type));
+				else if (key.first == "TRUE")
+					optionList->add(_("YES"), key.first, mFilterIndex->isKeyBeingFilteredBy(key.first, type));
+				else if (key.first == "FALSE")
+					optionList->add(_("NO"), key.first, mFilterIndex->isKeyBeingFilteredBy(key.first, type));
+				else
+				{
+					std::string label = key.first;
+
+					// Special display for GENRE
+					if (it->type == GENRE_FILTER)
+					{
+						auto split = key.first.find("/");
+						if (split != std::string::npos)
+						{
+							auto parent = Utils::String::trim(label.substr(0, split));
+							if (allKeys->find(parent) != allKeys->cend())
+								label = "      " + Utils::String::trim(label.substr(split + 1));
+						}
+					}
+
+					optionList->add(_(label.c_str()), key.first, mFilterIndex->isKeyBeingFilteredBy(key.first, type), false);
+				}
+			}
 		}
 
 		if (allKeys->size() > 0)
@@ -165,7 +207,7 @@ void GuiGamelistFilter::addSystemFilterToMenu()
 	mSystemFilter = std::make_shared<OptionListComponent<SystemData*>>(mWindow, _("SYSTEMS"), true);
 	
 	for (auto system : SystemData::sSystemVector)
-		if (!system->isCollection() && !system->isGroupSystem())
+		if (!system->isCollection() && system->isGameSystem())
 			mSystemFilter->add(system->getFullName(), system, cf->isSystemSelected(system->getName()));
 
 	mMenu.addWithLabel(_("SYSTEMS"), mSystemFilter);
@@ -192,7 +234,7 @@ void GuiGamelistFilter::applyFilters()
 		{
 			for (auto system : SystemData::sSystemVector)
 			{
-				if (system->isCollection() || system->isGroupSystem())
+				if (system->isCollection() || !system->isGameSystem())
 					continue;
 
 				bool sel = std::find(sys.cbegin(), sys.cend(), system) != sys.cend();

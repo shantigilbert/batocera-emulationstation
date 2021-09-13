@@ -10,6 +10,11 @@
 #include <string.h>
 #include "Settings.h"
 
+#include <algorithm>
+#include "utils/ZipFile.h"
+#include "utils/StringUtil.h"
+#include "utils/FileSystemUtil.h"
+
 #define DPI 96
 
 #define OPTIMIZEVRAM Settings::getInstance()->getBool("OptimizeVRAM")
@@ -68,9 +73,17 @@ bool TextureData::initSVGFromMemory(const unsigned char* fileData, size_t length
 	{
 		mSourceWidth = svgImage->width;
 		mSourceHeight = svgImage->height;
+
+		if (!mMaxSize.empty() && mSourceWidth < mMaxSize.x() && mSourceHeight < mMaxSize.y())
+		{
+			auto sz = ImageIO::adjustPictureSize(Vector2i(mSourceWidth, mSourceHeight), Vector2i(mMaxSize.x(), mMaxSize.y()));
+			mSourceWidth = sz.x();
+			mSourceHeight = sz.y();
+		}
 	}
 	else
 		mSourceWidth = (mSourceHeight * svgImage->width) / svgImage->height; // FCA : Always compute width using source aspect ratio
+
 
 	mWidth = (size_t)Math::round(mSourceWidth);
 	mHeight = (size_t)Math::round(mSourceHeight);
@@ -111,6 +124,12 @@ bool TextureData::initSVGFromMemory(const unsigned char* fileData, size_t length
 	else
 		mPackedSize = Vector2i(0, 0);
 
+	if (mWidth * mHeight <= 0)
+	{
+		LOG(LogError) << "Error parsing SVG image size.";
+		return false;
+	}
+
 	unsigned char* dataRGBA = new unsigned char[mWidth * mHeight * 4];
 
 	double scale = ((float)((int)mHeight)) / svgImage->height;
@@ -121,6 +140,7 @@ bool TextureData::initSVGFromMemory(const unsigned char* fileData, size_t length
 	NSVGrasterizer* rast = nsvgCreateRasterizer();
 	nsvgRasterize(rast, svgImage, 0, 0, scale, dataRGBA, (int)mWidth, (int)mHeight, (int)mWidth * 4);
 	nsvgDeleteRasterizer(rast);
+	nsvgDelete(svgImage);
 
 	ImageIO::flipPixelsVert(dataRGBA, mWidth, mHeight);
 
@@ -186,7 +206,7 @@ bool TextureData::initFromRGBA(unsigned char* dataRGBA, size_t width, size_t hei
 	return true;
 }
 
-bool TextureData::initFromExternalRGBA(unsigned char* dataRGBA, size_t width, size_t height)
+bool TextureData::updateFromExternalRGBA(unsigned char* dataRGBA, size_t width, size_t height)
 {
 	// If already initialised then don't read again
 	std::unique_lock<std::mutex> lock(mMutex);
@@ -200,9 +220,63 @@ bool TextureData::initFromExternalRGBA(unsigned char* dataRGBA, size_t width, si
 	mHeight = height;
 
 	if (mTextureID != 0)
-		Renderer::updateTexture(mTextureID, Renderer::Texture::RGBA, -1, -1, mWidth, mHeight, mDataRGBA);
+		Renderer::updateTexture(mTextureID, Renderer::Texture::RGBA, 0, 0, mWidth, mHeight, mDataRGBA);
 
 	return true;
+}
+
+static std::mutex mCbzMutex;
+
+bool TextureData::loadFromCbz()
+{
+	std::unique_lock<std::mutex> lock(mCbzMutex);
+
+	bool retval = false;
+
+	std::vector<Utils::Zip::ZipInfo> files;
+
+	Utils::Zip::ZipFile zipFile;
+	if (zipFile.load(mPath))
+	{
+		for (auto file : zipFile.infolist())
+		{
+			auto ext = Utils::String::toLower(Utils::FileSystem::getExtension(file.filename));
+			if (ext != ".jpg")
+				continue;
+
+			if (Utils::String::startsWith(file.filename, "__"))
+				continue;
+
+			files.push_back(file);
+		}
+
+		std::sort(files.begin(), files.end(), [](const Utils::Zip::ZipInfo& a, const Utils::Zip::ZipInfo& b) { return Utils::String::toLower(a.filename) < Utils::String::toLower(b.filename); });
+	}
+
+	if (files.size() > 0 && files[0].file_size > 0)
+	{
+		size_t size = files[0].file_size;
+		unsigned char* buffer = new unsigned char[size];
+
+		Utils::Zip::zip_callback func = [](void *pOpaque, unsigned long long ofs, const void *pBuf, size_t n)
+		{
+			unsigned char* pSource = (unsigned char*)pBuf;
+			unsigned char* pDest = (unsigned char*)pOpaque;
+
+			memcpy(pDest + ofs, pSource, n);
+
+			return n;
+		};
+
+		zipFile.readBuffered(files[0].filename, func, buffer);
+
+		retval = initImageFromMemory(buffer, size);
+
+		if (retval)
+			ImageIO::updateImageCache(mPath, Utils::FileSystem::getFileSize(mPath), mBaseSize.x(), mBaseSize.y());
+	}
+
+	return retval;
 }
 
 bool TextureData::load(bool updateCache)
@@ -214,6 +288,9 @@ bool TextureData::load(bool updateCache)
 	{
 		LOG(LogDebug) << "TextureData::load " << mPath;
 
+		if (mPath.substr(mPath.size() - 4, std::string::npos) == ".cbz")
+			return loadFromCbz();
+		
 		std::shared_ptr<ResourceManager>& rm = ResourceManager::getInstance();
 		const ResourceData& data = rm->getFileData(mPath);
 		// is it an SVG?
@@ -244,31 +321,29 @@ bool TextureData::uploadAndBind()
 {
 	// See if it's already been uploaded
 	std::unique_lock<std::mutex> lock(mMutex);
+
 	if (mTextureID != 0)
-	{
 		Renderer::bindTexture(mTextureID);
-	}
 	else
 	{
-		// Load it if necessary
-		if (!mDataRGBA)
+		// Make sure we're ready to upload
+		if (mWidth == 0 || mHeight == 0 || mDataRGBA == nullptr)
 		{
+			Renderer::bindTexture(mTextureID);
 			return false;
 		}
-		// Make sure we're ready to upload
-		if ((mWidth == 0) || (mHeight == 0) || (mDataRGBA == nullptr))
-			return false;
 
 		// Upload texture
 		mTextureID = Renderer::createTexture(Renderer::Texture::RGBA, mLinear, mTile, mWidth, mHeight, mDataRGBA);
-		if (mTextureID)
-		{
-			if (mDataRGBA != nullptr && !mIsExternalDataRGBA)
-				delete[] mDataRGBA;
+		if (mTextureID == 0)
+			return false;
 
-			mDataRGBA = nullptr;
-		}
+		if (mDataRGBA != nullptr && !mIsExternalDataRGBA)
+			delete[] mDataRGBA;
+
+		mDataRGBA = nullptr;
 	}
+
 	return true;
 }
 
@@ -332,12 +407,15 @@ void TextureData::setSourceSize(float width, float height)
 {
 	if (mScalable)
 	{
-		if (mSourceHeight < height)
+		if ((int) mSourceHeight < (int) height && (int) mSourceWidth != (int) width)
 		{
+			LOG(LogDebug) << "Requested scalable image size too small. Reloading image from (" << mSourceWidth << ", " << mSourceHeight << ") to (" << width << ", " << height << ")";
+
 			mSourceWidth = width;
 			mSourceHeight = height;
 			releaseVRAM();
 			releaseRAM();
+			load();
 		}
 	}
 }
@@ -352,6 +430,9 @@ size_t TextureData::getVRAMUsage()
 
 void TextureData::setMaxSize(MaxSizeInfo maxSize)
 {
+	if (!Settings::getInstance()->getBool("OptimizeVRAM"))
+		return;
+
 	if (mSourceWidth == 0 || mSourceHeight == 0)
 		mMaxSize = maxSize;
 	else

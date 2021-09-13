@@ -30,7 +30,8 @@ public:
 	void setDefaultImage(std::string path);
 
 	//Loads the image at the given filepath. Will tile if tile is true (retrieves texture as tiling, creates vertices accordingly).
-	void setImage(std::string path, bool tile = false, MaxSizeInfo maxSize = MaxSizeInfo());
+	virtual void setImage(std::string path, bool tile = false, MaxSizeInfo maxSize = MaxSizeInfo(), bool checkFileExists = true);
+
 	//Loads an image from memory.
 	void setImage(const char* image, size_t length, bool tile = false);
 	//Use an already existing texture.
@@ -103,13 +104,14 @@ public:
 		return MaxSizeInfo(mTargetSize, mTargetIsMax);
 	};
 
-	void setPadding(const Vector4f padding) { mPadding = padding; updateVertices(); }
+	Vector4f getPadding() { return mPadding; }
+	void setPadding(const Vector4f padding);
 
 	void setHorizontalAlignment(Alignment align) { mHorizontalAlignment = align; }
 	void setVerticalAlignment(Alignment align) { mVerticalAlignment = align; }
 
 	float getRoundCorners() { return mRoundCorners; }
-	void setRoundCorners(float value) { mRoundCorners = value; }
+	void setRoundCorners(float value);
 
 	virtual void onShow() override;
 	virtual void onHide() override;
@@ -125,20 +127,27 @@ public:
 
 	ThemeData::ThemeElement::Property getProperty(const std::string name) override;
 	void setProperty(const std::string name, const ThemeData::ThemeElement::Property& value) override;
+	void setTargetIsMax() { mTargetIsMax = true; }
+
+protected:
+	std::shared_ptr<TextureResource> mTexture;
+	std::shared_ptr<TextureResource> mLoadingTexture;
+
+	Vector2f mTargetSize;
 
 private:
-	Vector2f mTargetSize;
 
 	bool mFlipX, mFlipY, mTargetIsMax, mTargetIsMin;
 
 	// Calculates the correct mSize from our resizing information (set by setResize/setMaxSize).
 	// Used internally whenever the resizing parameters or texture change.
-	void resize();
 
 	Renderer::Vertex mVertices[4];
 
 	void updateVertices();
 	void updateColors();
+	void updateRoundCorners();
+
 	void fadeIn(bool textureLoaded);
 
 	unsigned int mColorShift;
@@ -147,7 +156,6 @@ private:
 
 	std::string mDefaultPath;
 
-	std::shared_ptr<TextureResource> mTexture;
 	unsigned char			mFadeOpacity;
 	bool					mFading;
 	bool					mForceLoad;
@@ -164,7 +172,6 @@ private:
 
 	std::string mPath;
 
-	std::shared_ptr<TextureResource> mLoadingTexture;
 	Vector4f	mPadding;
 
 	Alignment mHorizontalAlignment;
@@ -176,6 +183,12 @@ private:
 	float mPlaylistTimer;
 
 	bool mLinear;
+
+	std::vector<Renderer::Vertex>	mRoundCornerStencil;
+
+protected:
+	virtual void resize();
+	bool mCheckClipping;
 };
 
 #endif // ES_CORE_COMPONENTS_IMAGE_COMPONENT_H

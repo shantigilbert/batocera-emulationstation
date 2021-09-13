@@ -4,7 +4,6 @@
 
 #include "components/DateTimeComponent.h"
 #include "components/RatingComponent.h"
-#include "components/ScrollableContainer.h"
 #include "views/gamelist/BasicGameListView.h"
 #include "DetailedContainer.h"
 
@@ -34,7 +33,7 @@ protected:
 
 private:	
 	void updateInfoPanel();
-	DetailedContainer mDetails;	
+	DetailedContainerHost mDetails;	
 };
 
 #endif // ES_APP_VIEWS_GAME_LIST_VIDEO_GAME_LIST_VIEW_H

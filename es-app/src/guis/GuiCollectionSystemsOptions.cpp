@@ -77,7 +77,7 @@ void GuiCollectionSystemsOptions::initializeMenu()
 		if (Settings::getInstance()->setString("HiddenSystems", hiddenSystems))
 		{
 			Settings::getInstance()->saveFile();
-			setVariable("reloadAll", true);
+			setVariable("reloadSystems", true);
 		}
 	});
 
@@ -185,6 +185,7 @@ void GuiCollectionSystemsOptions::initializeMenu()
 	{
 		sortType->add(_("BY MANUFACTURER"), "manufacturer", sortMode == "manufacturer");
 		sortType->add(_("BY HARDWARE TYPE"), "hardware", sortMode == "hardware");
+		sortType->add(_("BY RELEASE YEAR"), "releaseDate", sortMode == "releaseDate");
 	}
 
 	if (!sortType->hasSelection())
@@ -202,6 +203,7 @@ void GuiCollectionSystemsOptions::initializeMenu()
 
 	auto systemfocus_list = std::make_shared< OptionListComponent<std::string> >(mWindow, _("START ON SYSTEM"), false);
 	systemfocus_list->add(_("NONE"), "", startupSystem == "");
+	systemfocus_list->add(_("RESTORE LAST SELECTED"), "lastsystem", startupSystem == "lastsystem");
 
 	if (SystemData::isManufacturerSupported() && Settings::getInstance()->getString("SortSystems") == "manufacturer")
 	{
@@ -227,8 +229,15 @@ void GuiCollectionSystemsOptions::initializeMenu()
 				systemfocus_list->add(system->getName(), system->getName(), startupSystem == system->getName());
 	}
 
+	if (!systemfocus_list->hasSelection())
+		systemfocus_list->selectFirstItem();
+
 	addWithLabel(_("START ON SYSTEM"), systemfocus_list);
-	addSaveFunc([systemfocus_list] { Settings::getInstance()->setString("StartupSystem", systemfocus_list->getSelected()); });
+	addSaveFunc([systemfocus_list] 
+	{ 
+		Settings::getInstance()->setString("StartupSystem", systemfocus_list->getSelected()); 
+		Settings::getInstance()->setString("LastSystem", "");
+	});
 
 	// START ON GAMELIST
 	auto startOnGamelist = std::make_shared<SwitchComponent>(mWindow);
@@ -266,22 +275,28 @@ void GuiCollectionSystemsOptions::initializeMenu()
 	{
 		if (Settings::getInstance()->setBool("CollectionShowSystemInfo", toggleSystemNameInCollections->getState()))
 		{
-			for (auto sys : SystemData::sSystemVector)
-				for (auto file : sys->getRootFolder()->getFilesRecursive(GAME, false))
-					file->refreshMetadata();
-
+			SystemData::resetSettings();
 			FileData::resetSettings();
 			setVariable("reloadAll", true);
 		}
 	});
 
+	std::shared_ptr<SwitchComponent> alsoHideGames = std::make_shared<SwitchComponent>(mWindow);
+	alsoHideGames->setState(Settings::HiddenSystemsShowGames());
+	addWithLabel(_("SHOW GAMES OF HIDDEN SYSTEMS IN COLLECTIONS"), alsoHideGames);
+	addSaveFunc([this, alsoHideGames]
+	{
+		if (Settings::getInstance()->setBool("HiddenSystemsShowGames", alsoHideGames->getState()))
+		{
+			FileData::resetSettings();
+			setVariable("reloadSystems", true);
+		}
+	});
+	
 #if defined(WIN32) && !defined(_DEBUG)		
 	if (!ApiSystem::getInstance()->isScriptingSupported(ApiSystem::GAMESETTINGS))
 		addEntry(_("UPDATE GAMES LISTS"), false, [this] { GuiMenu::updateGameLists(mWindow); }); // Game List Update
 #endif		
-
-	if(CollectionSystemManager::get()->isEditing())
-		addEntry((_("FINISH EDITING COLLECTION") + " : " + Utils::String::toUpper(CollectionSystemManager::get()->getEditingCollection())).c_str(), false, std::bind(&GuiCollectionSystemsOptions::exitEditMode, this));
 	
 	addSaveFunc([this]
 	{
@@ -346,8 +361,10 @@ void GuiCollectionSystemsOptions::createCollection(std::string inName)
 
 	ViewController::get()->goToSystemView(newSys);
 
+	// Make sure the physical file is created
+	CollectionSystemManager::get()->saveCustomCollection(newSys);
+
 	Window* window = mWindow;
-	CollectionSystemManager::get()->setEditMode(name);
 	while(window->peekGui() && window->peekGui() != ViewController::get())
 		delete window->peekGui();
 }
@@ -402,12 +419,6 @@ void GuiCollectionSystemsOptions::createFilterCollection(std::string inName)
 	window->pushGui(ggf);
 }
 
-void GuiCollectionSystemsOptions::exitEditMode()
-{
-	CollectionSystemManager::get()->exitEditMode();
-	close();
-}
-
 GuiCollectionSystemsOptions::~GuiCollectionSystemsOptions()
 {
 
@@ -422,6 +433,7 @@ void GuiCollectionSystemsOptions::addSystemsToMenu()
 	autoOptionList->addGroup(_("AUTOMATIC COLLECTIONS"));
 
 	bool hasGroup = false;
+	bool hasGenreGroup = false;
 
 	auto arcadeGames = CollectionSystemManager::get()->getArcadeCollection()->getRootFolder()->getFilesRecursive(GAME);
 
@@ -434,7 +446,17 @@ void GuiCollectionSystemsOptions::addSystemsToMenu()
 
         if (it->second.decl.displayIfEmpty)
             autoOptionList->add(it->second.decl.longName, it->second.decl.name, it->second.isEnabled);
-        else
+		else if (it->second.decl.isGenreCollection()) // Genre collections
+		{
+			if (!hasGenreGroup)
+			{
+				autoOptionList->addGroup(_("PER GENRE"));
+				hasGenreGroup = true;
+			}
+
+			autoOptionList->add(it->second.decl.longName, it->second.decl.name, it->second.isEnabled);
+		}
+        else if (it->second.decl.isArcadeSubSystem()) // Arcade collections
         {
 			bool hasGames = false;
 

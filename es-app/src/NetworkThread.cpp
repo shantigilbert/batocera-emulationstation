@@ -5,45 +5,82 @@
 #include "LocaleES.h"
 #include "Log.h"
 #include <chrono>
-#include <thread>
+
+#define CHECKUPDATE_MINUTES 60
 
 NetworkThread::NetworkThread(Window* window) : mWindow(window)
-{    
+{
 	LOG(LogDebug) << "NetworkThread : Starting";
 
-    // creer le thread
-    mFirstRun = true;
-    mRunning = true;
+	// creer le thread
+	mCheckUpdateTimer = CHECKUPDATE_MINUTES;
+	mFirstRun = true;
+	mRunning = true;
 	mThread = new std::thread(&NetworkThread::run, this);
+
+	InputManager::joystickChanged += this;
 }
 
-NetworkThread::~NetworkThread() 
+void NetworkThread::onJoystickChanged()
+{
+	mEvent.notify_one();
+}
+
+NetworkThread::~NetworkThread()
 {
 	LOG(LogDebug) << "NetworkThread : Exit";
+
+	mEvent.notify_all();
 
 	mRunning = false;
 	mThread->join();
 	delete mThread;
 }
 
-void NetworkThread::run() 
+void NetworkThread::checkPadsBatteryLevel()
 {
-	while (mRunning) 
+	if (!ApiSystem::getInstance()->isScriptingSupported(ApiSystem::PADSINFO))
+		return;
+
+	auto padsInfo = ApiSystem::getInstance()->getPadsInfo();
+	for (auto pad : padsInfo)
 	{
-		if (mFirstRun) 
+		if (pad.status == "Charging")
+			pad.battery = -1;
+
+		InputManager::getInstance()->updateBatteryLevel(pad.id, pad.device, pad.battery);
+	}
+}
+
+void NetworkThread::run()
+{
+	while (mRunning)
+	{
+		if (mFirstRun)
 		{
-			std::this_thread::sleep_for(std::chrono::seconds(15));
 			mFirstRun = false;
+			checkPadsBatteryLevel();
+
+			std::unique_lock<std::mutex> lock(mLock);
+			mEvent.wait_for(lock, std::chrono::seconds(15));
 		}
 		else
-			std::this_thread::sleep_for(std::chrono::hours(1));		
+		{			
+			std::unique_lock<std::mutex> lock(mLock);
+			mEvent.wait_for(lock, std::chrono::minutes(5));
+			mCheckUpdateTimer += 1;
+		}
+		
+		checkPadsBatteryLevel();
 
-		if (SystemConf::getInstance()->getBool("updates.enabled"))
+		if (mCheckUpdateTimer >= CHECKUPDATE_MINUTES && SystemConf::getInstance()->getBool("updates.enabled"))
 		{
+			mCheckUpdateTimer = 0;
+
 			LOG(LogDebug) << "NetworkThread : Checking for updates";
 
 			std::vector<std::string> msgtbl;
-			if (ApiSystem::getInstance()->canUpdate(msgtbl)) 
+			if (ApiSystem::getInstance()->canUpdate(msgtbl))
 			{
 				std::string msg = "";
 				for (int i = 0; i < msgtbl.size(); i++)
@@ -57,9 +94,7 @@ void NetworkThread::run()
 				mRunning = false;
 			}
 			else
-			{
-				LOG(LogDebug) << "NetworkThread : No update found";				
-			}
+				LOG(LogDebug) << "NetworkThread : No update found";
 		}
 	}
 }

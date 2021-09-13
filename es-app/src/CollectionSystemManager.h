@@ -23,6 +23,9 @@ enum CollectionSystemType
 	AUTO_AT4PLAYERS,
 	AUTO_NEVER_PLAYED,
 	AUTO_ARCADE,
+	AUTO_RETROACHIEVEMENTS,
+	AUTO_VERTICALARCADE,
+	AUTO_LIGHTGUN,
 	CUSTOM_COLLECTION,	
 };
 
@@ -35,6 +38,9 @@ struct CollectionSystemDecl
 	std::string themeFolder;
 	bool isCustom;	
     bool displayIfEmpty;
+
+	bool isArcadeSubSystem() { return (int)type >= 1000 && (int)type < 10000; }
+	bool isGenreCollection() { return (int)type >= 10000 && (int)type < 20000; }
 };
 
 struct CollectionSystemData
@@ -62,7 +68,7 @@ public:
 	static void deinit();
 	void saveCustomCollection(SystemData* sys);
 
-	void loadCollectionSystems(bool async = false);
+	void loadCollectionSystems();
 	void loadEnabledListFromSettings();
 	void updateSystemsList();
 
@@ -74,17 +80,13 @@ public:
 	inline std::map<std::string, CollectionSystemData> getCustomCollectionSystems() { return mCustomCollectionSystemsData; };
 	inline SystemData* getCustomCollectionsBundle() { return mCustomCollectionsBundle; };
 	std::vector<std::string> getUnusedSystemsFromTheme();
-	SystemData* addNewCustomCollection(std::string name);
+	SystemData* addNewCustomCollection(std::string name, bool needSave = true);
 
 	bool isThemeGenericCollectionCompatible(bool genericCustomCollections);
 	bool isThemeCustomCollectionCompatible(std::vector<std::string> stringVector);
 	std::string getValidNewCollectionName(std::string name, int index = 0);
-
-	void setEditMode(std::string collectionName);
-	void exitEditMode();
-	inline bool isEditing() { return mIsEditingCustom; };
-	inline std::string getEditingCollection() { return mEditingCollection; };
-	bool toggleGameInCollection(FileData* file);
+			
+	bool toggleGameInCollection(FileData* file, const std::string collectionName = "");
 
 	SystemData* getSystemToView(SystemData* sys);
 	void updateCollectionFolderMetadata(SystemData* sys);
@@ -94,7 +96,10 @@ public:
 	bool deleteCustomCollection(CollectionSystemData* data);
 
 	bool isCustomCollection(const std::string collectionName);
+	bool isDynamicCollection(const std::string collectionName);
 	
+	bool inInCustomCollection(FileData* file, const std::string collectionName);
+
 	SystemData* getArcadeCollection();
 
 private:
@@ -104,16 +109,12 @@ private:
 	std::map<std::string, CollectionSystemData> mAutoCollectionSystemsData;
 	std::map<std::string, CollectionSystemData> mCustomCollectionSystemsData;
 	Window* mWindow;
-	bool mIsEditingCustom;
-	std::string mEditingCollection;
-	CollectionSystemData* mEditingCollectionSystemData;
-
+	
 	void initAutoCollectionSystems();
 	void initCustomCollectionSystems();
-
-	
+		
 	SystemData* getAllGamesCollection();
-	SystemData* createNewCollectionEntry(std::string name, CollectionSystemDecl sysDecl, bool index = true);
+	SystemData* createNewCollectionEntry(std::string name, CollectionSystemDecl sysDecl, bool index = true, bool needSave = true);
 
 	void populateCustomCollection(CollectionSystemData* sysData, std::unordered_map<std::string, FileData*>* pMap = nullptr);
 

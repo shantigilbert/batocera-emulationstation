@@ -7,28 +7,72 @@
 #include "utils/StringUtil.h"
 #include "utils/FileSystemUtil.h"
 #include "components/ComponentGrid.h"
+#include "components/ButtonComponent.h"
 #include "components/MultiLineMenuEntry.h"
 #include "LocaleES.h"
 #include "guis/GuiMsgBox.h"
 #include "ContentInstaller.h"
 #include "GuiLoading.h"
+#include "guis/GuiTextEditPopup.h"
+#include "guis/GuiTextEditPopupKeyboard.h"
+
 #include <unordered_set>
 #include <algorithm>
 
-#define WINDOW_WIDTH (float)Math::max((int)Renderer::getScreenHeight(), (int)(Renderer::getScreenWidth() * 0.73f))
+#define WINDOW_WIDTH (float)Math::min(Renderer::getScreenHeight() * 1.125f, Renderer::getScreenWidth() * 0.95f)
 
 GuiBatoceraStore::GuiBatoceraStore(Window* window)
-	: GuiComponent(window), mMenu(window, _("CONTENT DOWNLOADER").c_str())
+	: GuiComponent(window), mGrid(window, Vector2i(1, 4)), mBackground(window, ":/frame.png")
 {
-	auto theme = ThemeData::getMenuTheme();
 	mReloadList = 1;
 
-	mMenu.setSubTitle(_("SELECT CONTENT TO INSTALL / REMOVE"));
-	
-	addChild(&mMenu);
+	addChild(&mBackground);
+	addChild(&mGrid);
 
-	mMenu.addButton(_("REFRESH"), "refresh", [&] { loadPackagesAsync(true); });
-	mMenu.addButton(_("BACK"), "back", [&] { delete this; });
+	// Form background
+	auto theme = ThemeData::getMenuTheme();
+	mBackground.setImagePath(theme->Background.path);
+	mBackground.setEdgeColor(theme->Background.color);
+	mBackground.setCenterColor(theme->Background.centerColor);
+	mBackground.setCornerSize(theme->Background.cornerSize);
+
+	// Title
+	mHeaderGrid = std::make_shared<ComponentGrid>(mWindow, Vector2i(1, 5));
+
+	mTitle = std::make_shared<TextComponent>(mWindow, _("CONTENT DOWNLOADER"), theme->Title.font, theme->Title.color, ALIGN_CENTER); // batocera
+	mSubtitle = std::make_shared<TextComponent>(mWindow, _("SELECT CONTENT TO INSTALL / REMOVE"), theme->TextSmall.font, theme->TextSmall.color, ALIGN_CENTER);
+	mHeaderGrid->setEntry(mTitle, Vector2i(0, 1), false, true);
+	mHeaderGrid->setEntry(mSubtitle, Vector2i(0, 3), false, true);
+
+	mGrid.setEntry(mHeaderGrid, Vector2i(0, 0), false, true);
+
+	// Tabs
+	mTabs = std::make_shared<ComponentTab>(mWindow);
+	mGrid.setEntry(mTabs, Vector2i(0, 1), false, true);	
+
+	// Entries
+	mList = std::make_shared<ComponentList>(mWindow);
+	mGrid.setEntry(mList, Vector2i(0, 2), true, true);
+
+	// Buttons
+	std::vector< std::shared_ptr<ButtonComponent> > buttons;
+	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("SEARCH"), _("SEARCH"), [this] {  showSearch(); }));
+	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("REFRESH"), _("REFRESH"), [this] {  loadPackagesAsync(true, true); }));
+	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("UPDATE INSTALLED CONTENT"), _("UPDATE INSTALLED CONTENT"), [this] {  loadPackagesAsync(true, false); }));
+	buttons.push_back(std::make_shared<ButtonComponent>(mWindow, _("BACK"), _("BACK"), [this] { delete this; }));
+
+	mButtonGrid = makeButtonGrid(mWindow, buttons);
+	mGrid.setEntry(mButtonGrid, Vector2i(0, 3), true, false);
+
+	mGrid.setUnhandledInputCallback([this](InputConfig* config, Input input) -> bool
+	{
+		if (config->isMappedLike("down", input)) { mGrid.setCursorTo(mList); mList->setCursorIndex(0); return true; }
+		if (config->isMappedLike("up", input)) { mList->setCursorIndex(mList->size() - 1); mGrid.moveCursor(Vector2i(0, 1)); return true; }
+		return false;
+	});
+
+	mArchitecture = ApiSystem::getInstance()->getRunningArchitecture();
+
 	centerWindow();
 
 	ContentInstaller::RegisterNotify(this);
@@ -51,72 +95,124 @@ void GuiBatoceraStore::update(int deltaTime)
 
 	if (mReloadList != 0)
 	{
-		bool silent = (mReloadList == 2);
+		bool refreshPackages = mReloadList == 2;
+		bool silent = (mReloadList == 2 || mReloadList == 3);
+		bool restoreIndex = (mReloadList != 3);		
 		mReloadList = 0;
 
 		if (silent)
-			loadList(false);
+		{
+			if (refreshPackages)
+				mPackages = queryPackages();
+
+			if (!restoreIndex)
+				mWindow->postToUiThread([this]() { loadList(false, false); });
+			else 
+				loadList(false, restoreIndex);
+		}
 		else 
-			loadPackagesAsync(false);
+			loadPackagesAsync(false, true);
 	}
 }
 
+void GuiBatoceraStore::onSizeChanged()
+{
+	mBackground.fitTo(mSize, Vector3f::Zero(), Vector2f(-32, -32));
+
+	mGrid.setSize(mSize);
+
+	const float titleHeight = mTitle->getFont()->getLetterHeight();
+	const float subtitleHeight = mSubtitle->getFont()->getLetterHeight();
+	const float titleSubtitleSpacing = mSize.y() * 0.03f;
+
+	mGrid.setRowHeightPerc(0, (titleHeight + titleSubtitleSpacing + subtitleHeight + TITLE_VERT_PADDING) / mSize.y());
+
+	if (mTabs->size() == 0)
+		mGrid.setRowHeightPerc(1, 0.00001f);
+	else 
+		mGrid.setRowHeightPerc(1, (titleHeight + titleSubtitleSpacing) / mSize.y());
+
+	mGrid.setRowHeightPerc(3, mButtonGrid->getSize().y() / mSize.y());
+
+	mHeaderGrid->setRowHeightPerc(1, titleHeight / mHeaderGrid->getSize().y());
+	mHeaderGrid->setRowHeightPerc(2, titleSubtitleSpacing / mHeaderGrid->getSize().y());
+	mHeaderGrid->setRowHeightPerc(3, subtitleHeight / mHeaderGrid->getSize().y());
+}
 
 void GuiBatoceraStore::centerWindow()
 {
 	if (Renderer::isSmallScreen())
-		mMenu.setSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
+		setSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
 	else
-		mMenu.setSize(WINDOW_WIDTH, Renderer::getScreenHeight() * 0.875f);
+		setSize(WINDOW_WIDTH, Renderer::getScreenHeight() * 0.875f);
 
-	mMenu.setPosition((Renderer::getScreenWidth() - mMenu.getSize().x()) / 2, (Renderer::getScreenHeight() - mMenu.getSize().y()) / 2);
+	setPosition((Renderer::getScreenWidth() - getSize().x()) / 2, (Renderer::getScreenHeight() - getSize().y()) / 2);
 }
 
 static bool sortPackagesByGroup(PacmanPackage& sys1, PacmanPackage& sys2)
 {
-	std::string name1 = Utils::String::toUpper(sys1.group);
-	std::string name2 = Utils::String::toUpper(sys2.group);
+	if (sys1.group == sys2.group)
+		return Utils::String::compareIgnoreCase(sys1.description, sys2.description) < 0;		
 
-	if (name1 == name2)
-		return Utils::String::toUpper(sys1.description).compare(Utils::String::toUpper(sys2.description)) < 0;
-
-	return name1.compare(name2) < 0;
+	return sys1.group.compare(sys2.group) < 0;
 }
 
-void GuiBatoceraStore::loadList(bool updatePackageList)
+void GuiBatoceraStore::loadList(bool updatePackageList, bool restoreIndex)
 {
-	int idx = updatePackageList ? -1 : mMenu.getCursorIndex();
-	mMenu.clear();
+	int idx = updatePackageList || !restoreIndex ? -1 : mList->getCursorIndex();
+	mList->clear();
 
-	std::unordered_set<std::string> groups;
+	std::unordered_set<std::string> repositories;
 	for (auto& package : mPackages)
 	{
-		if (package.group.empty())
-			package.group = package.repository;
+		if (!mArchitecture.empty() && !package.arch.empty() && package.arch != "any" && package.arch != mArchitecture)
+			continue;
 
-		if (groups.find(package.group) == groups.cend())
-			groups.insert(package.group);
+		if (repositories.find(package.repository) == repositories.cend())
+			repositories.insert(package.repository);
 	}
 
-	bool hasGroups = (groups.size() > 1);
+	if (repositories.size() > 0 && mTabs->size() == 0 && mTabFilter.empty())
+	{
+		std::vector<std::string> gps;
+		for (auto gp : repositories)
+			gps.push_back(gp);
 
-	if (hasGroups)
-		std::sort(mPackages.begin(), mPackages.end(), sortPackagesByGroup);
+		std::sort(gps.begin(), gps.end());
+		for (auto group : gps)
+			mTabs->addTab(group);
 
+		mTabFilter = gps[0];
+
+		mTabs->setCursorChangedCallback([&](const CursorState& /*state*/)
+		{
+			if (mTabFilter != mTabs->getSelected())
+			{
+				mTabFilter = mTabs->getSelected();
+				mWindow->postToUiThread([this]() 
+				{ 
+					mReloadList = 3;					
+				});
+			}
+		});
+	}
+	
 	std::string lastGroup = "-1**ce-fakegroup-c";
 
 	int i = 0;
 	for (auto package : mPackages)
 	{
-		if (hasGroups && lastGroup != package.group)
-		{
-			if (package.group.empty())
-				mMenu.addGroup(_("MISC"), false, false);
-			else
-				mMenu.addGroup(_(Utils::String::toUpper(package.group).c_str()), false, false);
+		if (!mArchitecture.empty() && !package.arch.empty() && package.arch != "any" && package.arch != mArchitecture)
+			continue;
 
-			i++;
-		}
+		if (!mTabFilter.empty() && package.repository != mTabFilter)				
+			continue;		
+
+		if (!mTextFilter.empty() && !Utils::String::containsIgnoreCase(package.name, mTextFilter))
+			continue;
+
+		if (lastGroup != package.group)
+			mList->addGroup(package.group, false);
 
 		lastGroup = package.group;
 
@@ -128,8 +224,18 @@ void GuiBatoceraStore::loadList(bool updatePackageList)
 		if (!grid->isInstallPending())
 			row.makeAcceptInputHandler([this, package] { processPackage(package); });
 
-		mMenu.addRow(row, i == idx, false);
+		mList->addRow(row, i == idx, false);
 		i++;
+	}
+
+	if (i == 0)
+	{
+		auto theme = ThemeData::getMenuTheme();
+		ComponentListRow row;
+		row.selectable = false;
+		auto text = std::make_shared<TextComponent>(mWindow, _("There are no items in this view"), theme->TextSmall.font, theme->Text.color, ALIGN_CENTER);
+		row.addElement(text, true, false);
+		mList->addRow(row, false, false);
 	}
 
 	centerWindow();
@@ -137,18 +243,53 @@ void GuiBatoceraStore::loadList(bool updatePackageList)
 	mReloadList = 0;
 }
 
-void GuiBatoceraStore::loadPackagesAsync(bool updatePackageList)
+std::vector<PacmanPackage> GuiBatoceraStore::queryPackages()
+{
+	auto systemNames = SystemData::getKnownSystemNames();
+	auto packages = ApiSystem::getInstance()->getBatoceraStorePackages();
+
+	std::vector<PacmanPackage> copy;
+	for (auto& package : packages)
+	{
+		if (package.group.empty())
+			package.group = _("MISC");
+		else
+		{
+			if (Utils::String::startsWith(package.group, "sys-"))
+			{
+				auto sysName = package.group.substr(4);
+
+				auto itSys = systemNames.find(sysName);
+				if (itSys == systemNames.cend())
+					continue;
+
+				package.group = Utils::String::toUpper(itSys->second);
+			}
+			else
+				package.group = _(Utils::String::toUpper(package.group).c_str());
+		}
+
+		copy.push_back(package);
+	}
+
+	std::sort(copy.begin(), copy.end(), sortPackagesByGroup);
+	return copy;
+}
+
+void GuiBatoceraStore::loadPackagesAsync(bool updatePackageList, bool refreshOnly)
 {
 	Window* window = mWindow;
 
 	mWindow->pushGui(new GuiLoading<std::vector<PacmanPackage>>(mWindow, _("PLEASE WAIT"),
-		[this,  updatePackageList]
+		[this,  updatePackageList, refreshOnly]
 		{	
 			if (updatePackageList)
-				ApiSystem::getInstance()->updateBatoceraStorePackageList();
+				if (refreshOnly)
+					ApiSystem::getInstance()->refreshBatoceraStorePackageList();
+				else
+					ApiSystem::getInstance()->updateBatoceraStorePackageList();
 
-			auto packages = ApiSystem::getInstance()->getBatoceraStorePackages();
-			return packages;
+			return queryPackages();
 		},
 		[this, updatePackageList](std::vector<PacmanPackage> packages)
 		{		
@@ -226,15 +367,41 @@ bool GuiBatoceraStore::input(InputConfig* config, Input input)
 		Window* window = mWindow;
 		while(window->peekGui() && window->peekGui() != ViewController::get())
 			delete window->peekGui();
+
+		return true;
 	}
+
+	if (config->isMappedTo("y", input) && input.value != 0)
+	{
+		showSearch();
+		return true;
+	}
+
+	if (mTabs->input(config, input))
+		return true;
 
 	return false;
 }
 
+void GuiBatoceraStore::showSearch()
+{
+	auto updateVal = [this](const std::string& newVal)
+	{
+		mTextFilter = newVal;
+		mReloadList = 3;
+	};
+
+	if (Settings::getInstance()->getBool("UseOSK"))
+		mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("SEARCH"), mTextFilter, updateVal, false));
+	else
+		mWindow->pushGui(new GuiTextEditPopup(mWindow, _("SEARCH"), mTextFilter, updateVal, false));
+}
+
 std::vector<HelpPrompt> GuiBatoceraStore::getHelpPrompts()
 {
-	std::vector<HelpPrompt> prompts = mMenu.getHelpPrompts();
+	std::vector<HelpPrompt> prompts = mList->getHelpPrompts();
 	prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
+	prompts.push_back(HelpPrompt("y", _("SEARCH")));
 	return prompts;
 }
 

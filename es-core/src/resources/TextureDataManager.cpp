@@ -194,7 +194,6 @@ void TextureDataManager::load(std::shared_ptr<TextureData> tex, bool block)
 		LOG(LogDebug) << "Cleanup VRAM\tCurrent VRAM : " << std::to_string(size / 1024.0 / 1024.0).c_str() << " MB";
 
 		std::unique_lock<std::mutex> lock(mMutex);
-
 		for (auto it = mTextures.crbegin(); it != mTextures.crend(); ++it)
 		{
 			if (size < max_texture)
