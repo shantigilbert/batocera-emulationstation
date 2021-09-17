@@ -4939,6 +4939,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, def_video, ','); ) {
 		if (!std::count(videomode.begin(), videomode.end(), def_video)) {
 			 videomode.push_back(def_video);
+		}
 	}
 	std::sort(videomode.begin(), videomode.end());
 	
