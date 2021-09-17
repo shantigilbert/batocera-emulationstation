@@ -4928,13 +4928,19 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 			std::vector<std::string> videomode;
 	videomode.push_back("1080p60hz");
 	videomode.push_back("1080i60hz");
-	videomode.push_back("720p60hz");
-	videomode.push_back("720p50hz");
-	videomode.push_back("480p60hz");
-	videomode.push_back("576p50hz");
 	videomode.push_back("1080p50hz");
 	videomode.push_back("1080i50hz");
-
+	videomode.push_back("720p60hz");
+	videomode.push_back("720p50hz");
+	videomode.push_back("720x480p60hz");
+	videomode.push_back("576p50hz");
+	videomode.push_back("480p60hz");
+	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, a, ','); ) {
+		if (!std::count(videomode.begin(), videomode.end(), a)) {
+			 videomode.push_back(a);
+	}
+	std::sort(videomode.begin(), videomode.end());
+	
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
 		if (index.empty())
