@@ -4935,9 +4935,10 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 	videomode.push_back("720x480p60hz");
 	videomode.push_back("576p50hz");
 	videomode.push_back("480p60hz");
-	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, a, ','); ) {
-		if (!std::count(videomode.begin(), videomode.end(), a)) {
-			 videomode.push_back(a);
+	std::string def_video;
+	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, def_video, ','); ) {
+		if (!std::count(videomode.begin(), videomode.end(), def_video)) {
+			 videomode.push_back(def_video);
 	}
 	std::sort(videomode.begin(), videomode.end());
 	
