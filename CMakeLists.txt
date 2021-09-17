@@ -293,7 +293,7 @@ set(COMMON_LIBRARIES
     # batocera / customisations    
     ${CURL_LIBRARIES}
     ${VLC_LIBRARIES}
-#    pugixml
+    pugixml
     nanosvg
     id3v2
 	libcheevos	
