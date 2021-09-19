@@ -4923,7 +4923,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 
 #ifdef _ENABLEEMUELEC
 
-int getResValue (std::string res)
+int getResWidth (std::string res)
 {
 	std::string tmp = "";
 	std::size_t pos = res.find("x");
@@ -4947,8 +4947,20 @@ int getResValue (std::string res)
 	return 0;
 }
 
+int getHzFromRes(std::string res)
+{
+	int tmp = atoi(res.substr(res.length()-4, 2));
+	if (tmp > 0) return tmp;
+	return 60;
+}
+
 bool sortResolutions (std::string a, std::string b) {
-	return (getResValue(a) <= getResValue(b));
+	int ia = getResWidth(a);
+	int ib = getResWidth(b);
+	
+	if (ia == ib) return (getHzFromRes(a) < getHzFromRes(b));
+	
+	return (ia < ib);
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoResolutionModeOptionList(Window *window, std::string configname)
