@@ -4934,12 +4934,12 @@ int getResValue (std::string res)
 	pos = res.find('p');
 	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
-		return ceil((16/9) * atoi( tmp.c_str() );
+		return ceil((16/9) * atoi( tmp.c_str() ));
 	}
 	pos = res.find('i');
 	if (pos != std::string::npos)	{
 		tmp = res.substr(0, pos);
-		return ceil((16/9) * atoi( tmp.c_str() );
+		return ceil((16/9) * atoi( tmp.c_str() ));
 	}
 	return 0;
 }
