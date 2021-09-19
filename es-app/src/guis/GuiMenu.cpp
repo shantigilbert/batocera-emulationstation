@@ -4925,7 +4925,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 
 int getResValue (std::string res)
 {
-	std::string::size_t pos = res.find('x');
+	std::size_t pos = res.find('x');
 	if (pos != std::string::npos)
 		return res.substr(0, pos);
 	pos = res.find('p');
