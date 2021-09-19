@@ -4969,9 +4969,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 	
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-		std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
-		if (index.empty())
-			index = SystemConf::getInstance()->get("global.videomode");
+		std::string index = SystemConf::getInstance()->get("global.videomode");
 		if (index.empty())
 			index = SystemConf::getInstance()->get("ee_videomode");
 
