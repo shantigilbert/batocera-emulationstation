@@ -4927,16 +4927,21 @@ int getResValue (std::string res)
 {
 	std::string tmp = "";
 	std::size_t pos = res.find('x');
-	if (pos != std::string::npos)
+	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
-	pos = res.find('p');
-	if (pos != std::string::npos)
-		tmp = res.substr(0, pos);
-	pos = res.find('i');
-	if (pos != std::string::npos)	
-		tmp = res.substr(0, pos);
-	if (tmp.length() > 0)
 		return atoi( tmp.c_str() );
+	}
+	pos = res.find('p');
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		return ceil((16/9) * atoi( tmp.c_str() );
+	}
+	pos = res.find('i');
+	if (pos != std::string::npos)	{
+		tmp = res.substr(0, pos);
+		return ceil((16/9) * atoi( tmp.c_str() );
+	}
+	return 0;
 }
 
 bool sortResolutions (std::string a, std::string b) {
