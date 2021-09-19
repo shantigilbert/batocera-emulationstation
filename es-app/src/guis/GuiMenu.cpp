@@ -4934,18 +4934,20 @@ int getResValue (std::string res)
 	pos = res.find('p');
 	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
-		return ceil((16/9) * atoi( tmp.c_str() ));
+		int resv = atoi(tmp.c_str());
+		return ceil((16/9) * resv);
 	}
 	pos = res.find('i');
 	if (pos != std::string::npos)	{
 		tmp = res.substr(0, pos);
-		return ceil((16/9) * atoi( tmp.c_str() ));
+		int resv = atoi(tmp.c_str());
+		return ceil((16/9) * resv);
 	}
 	return 0;
 }
 
 bool sortResolutions (std::string a, std::string b) {
-	return (getResValue(a) < getResValue(b));
+	return (getResValue(a) <= getResValue(b));
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoResolutionModeOptionList(Window *window, std::string configname)
