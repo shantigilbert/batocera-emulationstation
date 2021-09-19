@@ -4949,7 +4949,7 @@ int getResWidth (std::string res)
 
 int getHzFromRes(std::string res)
 {
-	int tmp = atoi(res.substr(res.length()-4, 2));
+	int tmp = atoi(res.substr(res.length()-4, 2).c_str());
 	if (tmp > 0) return tmp;
 	return 60;
 }
