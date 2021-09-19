@@ -4927,6 +4927,7 @@ int getResValue (std::string res)
 {
 	std::string tmp = "";
 	std::size_t pos = res.find("x");
+
 	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
 		return atoi( tmp.c_str() );
@@ -4935,13 +4936,13 @@ int getResValue (std::string res)
 	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
 		int resv = atoi(tmp.c_str());
-		return ceil( 16 / 9 * resv);
+		return std::ceil(( (float)16 / 9 * resv));
 	}
 	pos = res.find("i");
-	if (pos != std::string::npos)	{
+	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
 		int resv = atoi(tmp.c_str());
-		return ceil( 16 / 9 * resv);
+		return std::ceil(( (float)16 / 9 * resv));
 	}
 	return 0;
 }
