@@ -4926,22 +4926,22 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 int getResValue (std::string res)
 {
 	std::string tmp = "";
-	std::size_t pos = res.find('x');
+	std::size_t pos = res.find("x");
 	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
 		return atoi( tmp.c_str() );
 	}
-	pos = res.find('p');
+	pos = res.find("p");
 	if (pos != std::string::npos) {
 		tmp = res.substr(0, pos);
 		int resv = atoi(tmp.c_str());
-		return ceil((16/9) * resv);
+		return ceil( 16 / 9 * resv);
 	}
-	pos = res.find('i');
+	pos = res.find("i");
 	if (pos != std::string::npos)	{
 		tmp = res.substr(0, pos);
 		int resv = atoi(tmp.c_str());
-		return ceil((16/9) * resv);
+		return ceil( 16 / 9 * resv);
 	}
 	return 0;
 }
