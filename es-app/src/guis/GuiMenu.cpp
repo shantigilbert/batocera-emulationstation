@@ -4922,6 +4922,24 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 }
 
 #ifdef _ENABLEEMUELEC
+
+int getResValue (std::string res)
+{
+	std::string::size_type pos = res.find('x');
+	if (pos > 0)
+		return res.substr(0, pos);
+	pos = res.find('p');
+	if (pos > 0)
+		return res.substr(0, pos);
+	pos = res.find('i');
+	if (pos > 0)
+		return res.substr(0, pos);			
+}
+
+bool sortResolutions (std::string a, std::string b) {
+	return (getResValue(a) < getResValue(b));
+}
+
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoResolutionModeOptionList(Window *window, std::string configname)
 {
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(window, "NATIVE VIDEO", false);
@@ -4937,24 +4955,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 		}
 	}
 
-	int getResValue (std::string res)
-	{
-		std::string::size_type pos = res.find('x');
-		if (pos > 0)
-			return res.substr(0, pos);
-		pos = res.find('p');
-		if (pos > 0)
-			return res.substr(0, pos);
-		pos = res.find('i');
-		if (pos > 0)
-			return res.substr(0, pos);			
-	}
-
-	bool sortFunction (std::string a, std::string b) {
-		return (getResValue(a) < getResValue(b));
-	}
-
-	std::sort(videomode.begin(), videomode.end(), sortFunction);
+	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 	
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
