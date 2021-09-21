@@ -4993,6 +4993,8 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 			index = SystemConf::getInstance()->get("global.videomode");
 		if (index.empty())
 			index = SystemConf::getInstance()->get("ee_videomode");
+		if (index.empty())
+			index = "1080p60hz";
 
 		emuelec_video_mode->add(*it, *it, index == *it);
 	}
