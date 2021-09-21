@@ -4987,15 +4987,16 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 
-	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-		std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
-		if (index.empty())
-			index = SystemConf::getInstance()->get("global.videomode");
-		if (index.empty())
-			index = SystemConf::getInstance()->get("ee_videomode");
-		if (index.empty())
-			index = "1080p60hz";
+	std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
+	if (index.empty())
+		index = SystemConf::getInstance()->get("global.videomode");
+	if (index.empty())
+		index = SystemConf::getInstance()->get("ee_videomode");
+	if (index.empty())
+		index = "auto";
 
+	emuelec_video_mode->add(_("AUTO"), "auto", index == "auto");
+	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		emuelec_video_mode->add(*it, *it, index == *it);
 	}
 
