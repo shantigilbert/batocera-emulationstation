@@ -242,6 +242,14 @@ const std::string FileData::getSortName() const
 		return sortName;
 }
 
+#ifdef _ENABLEEMUELEC
+const std::string FileData::getSortNameCmp() const
+{
+	std::string sortName = mMetadata.get("sortname");
+	return sortName;
+}
+#endif
+
 const std::string FileData::getVideoPath()
 {
 	std::string video = getMetadata(MetaDataId::Video);

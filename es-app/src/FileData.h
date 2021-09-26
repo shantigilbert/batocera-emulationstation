@@ -64,7 +64,10 @@ public:
 
 	virtual const std::string& getName();
 	virtual const std::string getSortName() const;
-
+#ifdef _ENABLEEMUELEC
+	virtual const std::string getSortNameCmp() const;
+#endif
+	 
 	inline FileType getType() const { return mType; }
 	
 	inline FolderData* getParent() const { return mParent; }
