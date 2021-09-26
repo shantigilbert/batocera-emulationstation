@@ -245,8 +245,7 @@ const std::string FileData::getSortName() const
 #ifdef _ENABLEEMUELEC
 const std::string FileData::getSortNameCmp() const
 {
-	std::string sortName = mMetadata.get("sortname");
-	return sortName;
+	return mMetadata.get("sortname");
 }
 #endif
 
