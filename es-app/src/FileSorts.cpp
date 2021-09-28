@@ -138,7 +138,7 @@ namespace FileSorts
 							break;
 	        }
 	    }
-			return sName.substr(current, sName.length()-current-1);
+			return sName.substr(current);
 	}
 
 	bool compareNames(std::string name1, std::string name2)
