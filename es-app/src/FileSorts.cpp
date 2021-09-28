@@ -4,7 +4,7 @@
 #include "utils/StringUtil.h"
 #include "LocaleES.h"
 #include <locale>
- 
+
 namespace FileSorts
 {
 	static Singleton* sInstance = nullptr;
