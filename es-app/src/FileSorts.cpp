@@ -118,11 +118,11 @@ namespace FileSorts
 			name1 = ((FileData*)file1)->getName();
 			name2 = ((FileData*)file2)->getName();
 		}
-		if (name1.empty()) {
+		else if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
 			name2 = stripIndexInName(name2);
 		}
-		if (name2.empty()) {
+		else if (name2.empty()) {
 			name2 = ((FileData*)file2)->getName();
 			name1 = stripIndexInName(name1);
 		}
