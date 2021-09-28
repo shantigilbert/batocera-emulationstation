@@ -133,7 +133,7 @@ namespace FileSorts
 	{
 	    int current = 0;
 	    for(int i = 0; i < sName.length(); i++){
-	        if(isdigit(sName[i])){
+	        if(!isalpha(sName[i])){
 	            current++;
 	        }
 					else {
