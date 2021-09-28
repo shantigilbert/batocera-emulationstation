@@ -242,6 +242,11 @@ const std::string FileData::getSortName() const
 		return sortName;
 }
 
+const std::string FileData::getSortNameRaw() const
+{
+	return mMetadata.get("sortname");
+}
+
 const std::string FileData::getVideoPath()
 {
 	std::string video = getMetadata(MetaDataId::Video);

@@ -64,6 +64,7 @@ public:
 
 	virtual const std::string& getName();
 	virtual const std::string getSortName() const;
+	virtual const std::string getSortNameRaw() const;
 
 	inline FileType getType() const { return mType; }
 	

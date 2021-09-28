@@ -42,6 +42,12 @@ namespace FileSorts
 	{
 		mSortTypes.push_back(SortType(FILENAME_ASCENDING, &compareName, true, _("FILENAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(FILENAME_DESCENDING, &compareName, false, _("FILENAME, DESCENDING"), _U("\uF15e ")));
+
+		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
+		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
+		mSortTypes.push_back(SortType(MIXEDNAME_ASCENDING, &compareMixedName, true, _("MIXEDNAME, ASCENDING"), _U("\uF15d ")));
+		mSortTypes.push_back(SortType(MIXEDNAME_DESCENDING, &compareMixedName, false, _("MIXEDNAME, DESCENDING"), _U("\uF15e ")));
+
 		mSortTypes.push_back(SortType(RATING_ASCENDING, &compareRating, true, _("RATING, ASCENDING"), _U("\uF165 ")));
 		mSortTypes.push_back(SortType(RATING_DESCENDING, &compareRating, false, _("RATING, DESCENDING"), _U("\uF164 ")));
 		mSortTypes.push_back(SortType(TIMESPLAYED_ASCENDING, &compareTimesPlayed, true, _("TIMES PLAYED, ASCENDING"), _U("\uF160 ")));
@@ -81,6 +87,61 @@ namespace FileSorts
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
 		auto name1 = ((FileData *) file1)->getName();
 		auto name2 = ((FileData *) file2)->getName();
+		return compareName(name1, name2);
+	}
+
+	bool compareSortName(const FileData* file1, const FileData* file2)
+	{
+		if (file1->getType() != file2->getType())
+		{
+			return file1->getType() == FOLDER;
+		}
+		// we compare the actual metadata name, as collection files have the system appended which messes up the order
+		auto name1 = ((FileData *) file1)->getSortName();
+		auto name2 = ((FileData *) file2)->getSortName();
+		return compareName(name1, name2);
+	}
+
+	bool compareMixedName(const FileData* file1, const FileData* file2)
+	{
+		if (file1->getType() != file2->getType())
+		{
+			return file1->getType() == FOLDER;
+		}
+
+		auto name1 = file1->getSortNameRaw();
+		auto name2 = file2->getSortNameRaw();
+		if (name1.empty() && name2.empty()) {
+			name1 = ((FileData*)file1)->getName();
+			name2 = ((FileData*)file2)->getName();
+		}
+		if (name1.empty()) {
+			name1 = ((FileData*)file1)->getName();
+			name2 = stripIndexInName(name2);
+		}
+		if (name2.empty()) {
+			name2 = ((FileData*)file2)->getName();
+			name1 = stripIndexInName(name1);
+		}
+		return compareName(name1, name2);
+	}
+
+  std::string stripIndexInName(const std::string sName)
+	{
+	    int current = 0;
+	    for(int i = 0; i < sName.length(); i++){
+	        if(isdigit(sName[i])){
+	            current++;
+	        }
+					else {
+						break;
+					}
+	    }
+			return sName.substr(current, sName.length()-current);
+	}
+
+	bool compareNames(std::string name1, std::string name2)
+	{
 		const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
 		if (ignoreArticles)
 		{
