@@ -132,13 +132,11 @@ namespace FileSorts
   std::string stripIndexInName(const std::string sName)
 	{
 	    int current = 0;
-	    for(int i = 0; i < sName.length(); i++){
-	        if(!isalpha(sName[i])){
-	            current++;
+	    for(int i = 0; i < sName.length(); i++) {
+	        if(isalpha(sName[i])){
+	            current = i;
+							break;
 	        }
-					else {
-						break;
-					}
 	    }
 			return sName.substr(current, sName.length()-current);
 	}
