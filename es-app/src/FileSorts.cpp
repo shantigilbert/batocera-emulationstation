@@ -43,10 +43,12 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(FILENAME_ASCENDING, &compareName, true, _("FILENAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(FILENAME_DESCENDING, &compareName, false, _("FILENAME, DESCENDING"), _U("\uF15e ")));
 
+#ifdef _ENABLEEMUELEC
 		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
 		mSortTypes.push_back(SortType(MIXEDNAME_ASCENDING, &compareMixedName, true, _("MIXEDNAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(MIXEDNAME_DESCENDING, &compareMixedName, false, _("MIXEDNAME, DESCENDING"), _U("\uF15e ")));
+#endif
 
 		mSortTypes.push_back(SortType(RATING_ASCENDING, &compareRating, true, _("RATING, ASCENDING"), _U("\uF165 ")));
 		mSortTypes.push_back(SortType(RATING_DESCENDING, &compareRating, false, _("RATING, DESCENDING"), _U("\uF164 ")));
@@ -77,6 +79,7 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_DESCENDING, &compareReleaseYearSystem, false, _("RELEASE YEAR, SYSTEM, DESCENDING"), _U("\uF161 ")));
 	}
 
+#ifdef _ENABLEEMUELEC
 	//returns if file1 should come before file2
 	bool compareName(const FileData* file1, const FileData* file2)
 	{
@@ -87,7 +90,7 @@ namespace FileSorts
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
 		auto name1 = ((FileData *) file1)->getName();
 		auto name2 = ((FileData *) file2)->getName();
-		return compareName(name1, name2);
+		return compareNames(name1, name2);
 	}
 
 	bool compareSortName(const FileData* file1, const FileData* file2)
@@ -99,7 +102,7 @@ namespace FileSorts
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
 		auto name1 = ((FileData *) file1)->getSortName();
 		auto name2 = ((FileData *) file2)->getSortName();
-		return compareName(name1, name2);
+		return compareNames(name1, name2);
 	}
 
 	bool compareMixedName(const FileData* file1, const FileData* file2)
@@ -123,7 +126,7 @@ namespace FileSorts
 			name2 = ((FileData*)file2)->getName();
 			name1 = stripIndexInName(name1);
 		}
-		return compareName(name1, name2);
+		return compareNames(name1, name2);
 	}
 
   std::string stripIndexInName(const std::string sName)
@@ -151,6 +154,27 @@ namespace FileSorts
 		}
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
+#else
+	bool compareName(const FileData* file1, const FileData* file2)
+	{
+		if (file1->getType() != file2->getType())
+		{
+			return file1->getType() == FOLDER;
+
+		}
+		// we compare the actual metadata name, as collection files have the system appended which messes up the order
+		auto name1 = ((FileData *) file1)->getName();
+		auto name2 = ((FileData *) file2)->getName();
+		const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
+		if (ignoreArticles)
+		{
+			const auto articles = Utils::String::commaStringToVector(_("A,AN,THE"));
+			name1 = stripLeadingArticle(name1, articles);
+			name2 = stripLeadingArticle(name2, articles);
+		}
+		return Utils::String::compareIgnoreCase(name1, name2) < 0;
+	}
+#endif
 
 	std::string stripLeadingArticle(const std::string &string, const std::vector<std::string> &articles)
 	{

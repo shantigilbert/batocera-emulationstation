@@ -242,10 +242,12 @@ const std::string FileData::getSortName() const
 		return sortName;
 }
 
+#ifdef _ENABLEEMUELEC
 const std::string FileData::getSortNameRaw() const
 {
 	return mMetadata.get("sortname");
 }
+#endif
 
 const std::string FileData::getVideoPath()
 {
