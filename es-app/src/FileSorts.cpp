@@ -120,20 +120,21 @@ namespace FileSorts
 		}
 		else if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
+			name2 = stripIndexInName(name2);
 		}
 		else if (name2.empty()) {
 			name2 = ((FileData*)file2)->getName();
+			name1 = stripIndexInName(name1);
 		}
-		name1 = stripIndexInName(name1);
-		name2 = stripIndexInName(name2);
 		return compareNames(name1, name2);
 	}
 
   std::string stripIndexInName(const std::string sName)
 	{
+			std::locale loc;
 	    int current = 0;
 	    for(int i = 0; i < sName.length(); i++) {
-	        if(isalpha(sName[i])){
+	        if(std::isalpha(sName[i], loc)){
 	            current = i;
 							break;
 	        }
