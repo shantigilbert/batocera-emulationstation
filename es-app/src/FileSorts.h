@@ -75,8 +75,10 @@ namespace FileSorts
 	const std::vector<SortType>& getSortTypes();
 
 	bool compareName(const FileData* file1, const FileData* file2);
+#ifdef _ENABLEEMUELEC
 	bool compareSortName(const FileData* file1, const FileData* file2);
 	bool compareMixedName(const FileData* file1, const FileData* file2);
+#endif
 	bool compareRating(const FileData* file1, const FileData* file2);
 	bool compareTimesPlayed(const FileData* file1, const FileData* fil2);
 	bool compareLastPlayed(const FileData* file1, const FileData* file2);
@@ -92,8 +94,10 @@ namespace FileSorts
 	bool compareSystemReleaseYear(const FileData* file1, const FileData* file2);
 	bool compareReleaseYearSystem(const FileData* file1, const FileData* file2);
 
+#ifdef _ENABLEEMUELEC
 	bool compareNames(std::string name1, std::string name2);
 	std::string stripIndexInName(const std::string sName);
+#endif
 	std::string stripLeadingArticle(const std::string &string, const std::vector<std::string> &articles);
 };
 #endif // ES_APP_FILE_SORTS_H
