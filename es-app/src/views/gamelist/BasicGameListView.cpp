@@ -55,6 +55,11 @@ void BasicGameListView::onFileChanged(FileData* file, FileChangeType change)
 	ISimpleGameListView::onFileChanged(file, change);
 }
 
+bool isFavorite(FileData* file)
+{
+		return file->getFavorite();
+}
+
 void BasicGameListView::populateList(const std::vector<FileData*>& files)
 {
 	SystemData* system = mCursorStack.size() && !mRoot->getSystem()->isGameSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
@@ -85,10 +90,6 @@ void BasicGameListView::populateList(const std::vector<FileData*>& files)
 		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
 		{
-			bool isFavorite(FileData* file)
-			{
-					return file->getFavorite();
-			}			
 			std::vector<FileData*> favFiles = mRoot->getSubChildrenListToDisplay(&isFavorite);
 			mRoot->sortChildrenList(favFiles);			
 			for (auto file : favFiles)
