@@ -774,8 +774,7 @@ const std::string& CollectionFileData::getName()
 }
 
 
-void FolderData::sortChildrenList(std::vector<FileData*>::iterator _begin,
-	std::vector<FileData*>::iterator _end)
+void FolderData::sortChildrenList(std::vector<FileData*>& vec, int start, int end)
 {
 	FileFilterIndex* idx = getSystem()->getIndex(false);
 	if (idx != nullptr && !idx->isFiltered())
@@ -783,7 +782,7 @@ void FolderData::sortChildrenList(std::vector<FileData*>::iterator _begin,
 	
 	std::map<FileData*, int> scoringBoard;
 
-	for (auto it = _begin; it != _end; it++)
+	for (auto it = vec.cbegin(); it != vec.cend(); it++)
 	{
 		if (idx != nullptr)
 		{
@@ -804,7 +803,7 @@ void FolderData::sortChildrenList(std::vector<FileData*>::iterator _begin,
 
 	if (idx != nullptr && idx->hasRelevency())
 	{
-		std::sort(_begin, _end, [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
+		std::partial_sort(vec.begin()+start, vec.begin()+end, vec.end(), [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
 		{ 
 			auto s1 = scoringBoard.find((FileData*) file1);
 			auto s2 = scoringBoard.find((FileData*) file2);		
@@ -817,10 +816,10 @@ void FolderData::sortChildrenList(std::vector<FileData*>::iterator _begin,
 	}
 	else
 	{
-		std::sort(_begin, _end, compf);
+		std::partial_sort(vec.begin()+start, vec.begin()+end, vec.end());
 
 		if (!sort.ascending)
-			std::reverse(_begin, _end);
+			std::reverse(vec.begin()+start, vec.begin()+end);
 	}
 	
 }
@@ -934,13 +933,13 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 		}
 		if (sort) {
 			 int total = (countSortName-1);
-			 sortChildrenList(ret.begin(), ret.begin()+total);
-			 sortChildrenList(ret.begin()+(total+1), ret.end());
+			 sortChildrenList(ret, 0, total);
+			 sortChildrenList(ret, (total+1), ret.size());
 		}
 	}
 	else {
 		if (sort) ;
-			sortChildrenList(ret.begin(),ret.end());
+			sortChildrenList(ret, 0, ret.size());
 	}
 	return ret;
 }
