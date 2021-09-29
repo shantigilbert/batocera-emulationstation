@@ -776,10 +776,10 @@ const std::string& CollectionFileData::getName()
 
 void FolderData::sortChildrenList(std::vector<FileData*>& vec, int start, int end)
 {
+	std::vector<FileData*>::iterator vstart = vec.begin() + start;
 	std::vector<FileData*>::iterator vend;
 	vend = (end == 0) ? vec.end() : vec.begin() + (end-start);
-	std::vector<FileData*>::iterator vstart = vec.begin() + start;
-	
+
 	FileFilterIndex* idx = getSystem()->getIndex(false);
 	if (idx != nullptr && !idx->isFiltered())
 		idx = nullptr;
@@ -822,8 +822,8 @@ void FolderData::sortChildrenList(std::vector<FileData*>& vec, int start, int en
 	{
 		std::partial_sort(vstart, vend, vec.end());
 
-		if (!sort.ascending)
-			std::reverse(vstart, vend);
+		//if (!sort.ascending)
+			//std::reverse(vstart, vend);
 	}
 	
 }
@@ -936,9 +936,14 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 			countSortName++;
 		}
 		if (sort) {
-			 int total = (countSortName-1);
-			 sortChildrenList(ret, 0, total);
-			 sortChildrenList(ret, (total+1));
+			int total = (countSortName-1);
+			if (total > 0) {
+			 	sortChildrenList(ret, 0, total);
+			 	sortChildrenList(ret, (total+1));
+			}
+			else {
+				sortChildrenList(ret);
+			}
 		}
 	}
 	else {
