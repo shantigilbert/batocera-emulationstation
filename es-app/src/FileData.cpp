@@ -773,6 +773,16 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
+void removeDuplicates(std::vector<int> &v)
+{
+    auto end = v.end();
+    for (auto it = v.begin(); it != end; ++it) {
+        end = std::remove(it + 1, end, *it);
+    }
+ 
+    v.erase(end, v.end());
+}
+
 const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 {
 		std::vector<FileData*> list = getChildrenListToDisplay();
@@ -785,7 +795,8 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 			sortChildrenList(sortNameList, &FileSorts::compareSortName);
 			list.reserve(list.size() + sortNameList.size());
 			list.insert(list.end(), sortNameList.begin(), sortNameList.end());
-			std::unique(list.begin(), list.end());
+			//std::unique(list.begin(), list.end());
+			removeDuplicates(list);
 		//}
 		return list;
 }
