@@ -104,8 +104,8 @@ namespace FileSorts
 		std::string name1 = file1->getSortNameRaw();
 		std::string name2 = file2->getSortNameRaw();
 		if (name1.empty() && name2.empty()) {
-			name1 = file1->getSortName();
-			name2 = file2->getSortName();
+			name1 = file1->getName();
+			name2 = file2->getName();
 		}
 		if (name1.empty()) return false;
 		if (name2.empty()) return true;
@@ -119,8 +119,8 @@ namespace FileSorts
 			return file1->getType() == FOLDER;
 		}
 
-		std::string name1 = (std::string) file1->getSortNameRaw();
-		std::string name2 = (std::string) file2->getSortNameRaw();
+		std::string name1 = file1->getSortNameRaw();
+		std::string name2 = file2->getSortNameRaw();
 		//if (!name1.empty()) name1 = stripIndexInName(name1);
 		//if (!name2.empty()) name2 = stripIndexInName(name2);
 		if (name1.empty() && name2.empty()) {
