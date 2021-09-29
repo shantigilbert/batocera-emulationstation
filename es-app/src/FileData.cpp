@@ -943,7 +943,7 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 	}
 	else {
 		if (sort) ;
-			sortChildrenList(ret, 0, ret.size());
+			sortChildrenList(ret);
 	}
 	return ret;
 }
