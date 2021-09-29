@@ -45,10 +45,10 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(FILENAME_DESCENDING, &compareName, false, _("FILENAME, DESCENDING"), _U("\uF15e ")));
 
 //#ifdef _ENABLEEMUELEC
-		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
-		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
-		mSortTypes.push_back(SortType(MIXEDNAME_ASCENDING, &compareMixedName, true, _("MIXEDNAME, ASCENDING"), _U("\uF15d ")));
-		mSortTypes.push_back(SortType(MIXEDNAME_DESCENDING, &compareMixedName, false, _("MIXEDNAME, DESCENDING"), _U("\uF15e ")));
+		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
+		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
+		mSortTypes.push_back(SortType(MIXEDNAME_ASCENDING, &compareName, true, _("MIXEDNAME, ASCENDING"), _U("\uF15d ")));
+		mSortTypes.push_back(SortType(MIXEDNAME_DESCENDING, &compareName, false, _("MIXEDNAME, DESCENDING"), _U("\uF15e ")));
 //#endif
 
 		mSortTypes.push_back(SortType(RATING_ASCENDING, &compareRating, true, _("RATING, ASCENDING"), _U("\uF165 ")));

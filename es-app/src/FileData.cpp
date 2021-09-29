@@ -779,8 +779,10 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 		unsigned int sortId = getSystem()->getSortId();
 		if (sortId == FileSorts::SORTNAME_ASCENDING)
 		{
+			const FileSorts::SortType& sort = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
 			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileGotSortName);
-			sortChildrenList(sortNameList);
+			
+			sortChildrenList(sortNameList, &FileSorts::compareSortName);
 			list.reserve(list.size() + sortNameList.size());
 			list.insert(list.end(), sortNameList.begin(), sortNameList.end());
 			std::unique(list.begin(), list.end());
@@ -801,7 +803,8 @@ const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::functi
 		return subList;
 }
 
-void FolderData::sortChildrenList(std::vector<FileData*>& childList)
+void FolderData::sortChildrenList(std::vector<FileData*>& childList,
+	std::function<bool(const FileData*,const FileData*)> compf)
 {
 	FileFilterIndex* idx = getSystem()->getIndex(false);
 	if (idx != nullptr && !idx->isFiltered())
@@ -825,11 +828,11 @@ void FolderData::sortChildrenList(std::vector<FileData*>& childList)
 	if (currentSortId > FileSorts::getSortTypes().size())
 		currentSortId = 0;
 
-	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(currentSortId);
+	FileSorts::SortType& sort = (FileSorts::SortType&) FileSorts::getSortTypes().at(currentSortId);
 
 	if (idx != nullptr && idx->hasRelevency())
 	{
-		auto compf = sort.comparisonFunction;
+		
 
 		std::sort(childList.begin(), childList.end(), [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
 		{ 
@@ -844,7 +847,7 @@ void FolderData::sortChildrenList(std::vector<FileData*>& childList)
 	}
 	else
 	{
-		std::sort(childList.begin(), childList.end(), sort.comparisonFunction);
+		std::sort(childList.begin(), childList.end(), compf);
 
 		if (!sort.ascending)
 			std::reverse(childList.begin(), childList.end());

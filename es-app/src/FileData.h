@@ -203,7 +203,8 @@ public:
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
 	
-	void sortChildrenList(std::vector<FileData*>& childList);
+	void sortChildrenList(std::vector<FileData*>& childList, 
+		std::function<bool(const FileData*,const FileData*)> compf);
 	const std::vector<FileData*> getChildrenListToDisplay2();
 	const std::vector<FileData*> getChildrenListToDisplay();	
 	const std::vector<FileData*> getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison);
