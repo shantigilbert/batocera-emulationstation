@@ -222,11 +222,10 @@ void GridGameListView::populateList(const std::vector<FileData*>& files)
 		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
 		{
-			for (auto file : files)
+			auto favFiles = mRoot->getSubChildrenListToDisplay(&isFavorite);
+			mRoot->sortChildrenList(favFiles);
+			for (auto file : favFiles)
 			{
-				if (!file->getFavorite())
-					continue;
-
 				mGrid.add(formatter.getDisplayName(file, file->getType() == FOLDER && Utils::FileSystem::exists(getImagePath(file))), getImagePath(file), file->getVideoPath(), file->getMarqueePath(), file->getFavorite(), file->hasCheevos(), file->getType() != GAME, isVirtualFolder(file), file);
 			}
 		}
@@ -250,6 +249,11 @@ void GridGameListView::populateList(const std::vector<FileData*>& files)
 
 	if (mShowing)
 		onShow();
+}
+
+bool isFavorite(FileData* file)
+{
+		return file->getFavorite();
 }
 
 void GridGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)

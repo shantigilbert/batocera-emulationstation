@@ -84,12 +84,11 @@ void BasicGameListView::populateList(const std::vector<FileData*>& files)
 
 		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
-		{			
-			for (auto file : files)
+		{
+			auto favFiles = mRoot->getSubChildrenListToDisplay(&isFavorite);
+			mRoot->sortChildrenList(favFiles);			
+			for (auto file : favFiles)
 			{
-				if (!file->getFavorite())
-					continue;
-						
 				mList.add(formatter.getDisplayName(file), file, file->getType() == FOLDER);
 			}
 		}
@@ -115,6 +114,11 @@ void BasicGameListView::populateList(const std::vector<FileData*>& files)
 
 	if (mShowing)
 		onShow();
+}
+
+bool isFavorite(FileData* file)
+{
+		return file->getFavorite();
 }
 
 FileData* BasicGameListView::getCursor()
