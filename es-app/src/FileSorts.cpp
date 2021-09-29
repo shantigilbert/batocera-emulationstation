@@ -134,7 +134,7 @@ namespace FileSorts
 
 	bool is_alpha(char c) {
 	    std::locale loc;
-	    bool upper = std::use_facet< std::ctype<char> >(loc).is( std::ctype<char>::alpha, quote[0]);
+	    bool upper = std::use_facet< std::ctype<char> >(loc).is( std::ctype<char>::alpha, c);
 	    return upper;
 	}
 
