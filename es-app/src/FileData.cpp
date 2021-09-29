@@ -773,7 +773,7 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
-void removeDuplicates(std::vector<int> &v)
+void removeDuplicates(std::vector<FileData*> &v)
 {
     auto end = v.end();
     for (auto it = v.begin(); it != end; ++it) {
