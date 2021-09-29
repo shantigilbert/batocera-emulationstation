@@ -89,8 +89,8 @@ namespace FileSorts
 			return file1->getType() == FOLDER;
 		}
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
-		auto name1 = ((FileData *) file1)->getName();
-		auto name2 = ((FileData *) file2)->getName();
+		const std::string name1 = ((FileData *) file1)->getName();
+		const std::string name2 = ((FileData *) file2)->getName();
 		return compareNames(name1, name2);
 	}
 
@@ -101,8 +101,8 @@ namespace FileSorts
 			return file1->getType() == FOLDER;
 		}
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
-		std::string name1 = (std::string) file1->getSortName();
-		std::string name2 = (std::string) file2->getSortName();		
+		const std::string name1 = file1->getSortName();
+		const std::string name2 = file2->getSortName();		
 		return compareNames(name1, name2);
 	}
 
@@ -115,33 +115,40 @@ namespace FileSorts
 
 		std::string name1 = (std::string) file1->getSortNameRaw();
 		std::string name2 = (std::string) file2->getSortNameRaw();
-		if (name1.empty() || name2.empty()) {
+		//if (!name1.empty()) name1 = stripIndexInName(name1);
+		//if (!name2.empty()) name2 = stripIndexInName(name2);
+		if (name1.empty() && name2.empty()) {
 			name1 = ((FileData*)file1)->getName();
 			name2 = ((FileData*)file2)->getName();
 		}
-		/*else if (name1.empty()) {
+		else if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
 			name2 = stripIndexInName(name2);
 		}
 		else if (name2.empty()) {
 			name2 = ((FileData*)file2)->getName();
 			name1 = stripIndexInName(name1);
-		}*/
+		}
 		return compareNames(name1, name2);
 	}
 
-  /*std::string stripIndexInName(const std::string sName)
+	bool is_alpha(char c) {
+	    std::locale loc;
+	    bool upper = use_facet< ctype<char> >(loc).is( ctype<char>::alpha, quote[0]);
+	    return upper;
+	}
+
+  std::string stripIndexInName(const std::string sName)
 	{
-			std::locale loc;
 	    int current = 0;
 	    for(int i = 0; i < sName.length(); i++) {
-	        if(std::isalpha(sName[i], loc)){
+	        if(is_alpha(sName[i])){
 	            current = i;
 							break;
 	        }
 	    }
 			return sName.substr(current);
-	}*/
+	}
 
 	bool compareNames(std::string name1, std::string name2)
 	{
