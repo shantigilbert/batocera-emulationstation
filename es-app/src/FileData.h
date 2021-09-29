@@ -203,10 +203,9 @@ public:
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
 	
-	void sortChildrenList(std::vector<FileData*>& childList);
-	const std::vector<FileData*> getChildrenListToDisplay();
-	const std::vector<FileData*> getChildrenList(bool sort=true);	
-	const std::vector<FileData*> getSubChildrenList(std::function<bool(FileData*)> comparison, bool invert=false);
+	void sortChildrenList(std::vector<FileData*>::iterator begin,
+		std::vector<FileData*>::iterator end);
+	const std::vector<FileData*> getChildrenListToDisplay(bool sort=true);
 
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
 
