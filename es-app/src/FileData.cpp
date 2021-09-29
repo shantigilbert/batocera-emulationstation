@@ -773,7 +773,7 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
-void removeDuplicates(std::vector<FileData*> &v)
+/*void removeDuplicates(std::vector<FileData*> &v)
 {
     auto end = v.end();
     for (auto it = v.begin(); it != end; ++it) {
@@ -781,34 +781,33 @@ void removeDuplicates(std::vector<FileData*> &v)
     }
  
     v.erase(end, v.end());
-}
+}*/
 
 const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 {
-		std::vector<FileData*> list = getChildrenListToDisplay();
-		//unsigned int sortId = getSystem()->getSortId();
-		//if (sortId == FileSorts::SORTNAME_ASCENDING)
-		//{
-			//const FileSorts::SortType& sort = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
-			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileGotSortName);
-			
+		unsigned int sortId = getSystem()->getSortId();
+		if (sortId == FileSorts::SORTNAME_ASCENDING)
+		{
+			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileSortName);
+			std::vector<FileData*> list = getSubChildrenListToDisplay(&hasFileSortName,false);
 			sortChildrenList(sortNameList, &FileSorts::compareSortName);
-			list.reserve(list.size() + sortNameList.size());
-			list.insert(list.end(), sortNameList.begin(), sortNameList.end());
-			//std::unique(list.begin(), list.end());
-			removeDuplicates(list);
-		//}
-		return list;
+			list.insert(list.begin(), sortNameList.begin(), sortNameList.end());
+			return list;
+		}
+		else {
+			std::vector<FileData*> list = getChildrenListToDisplay();
+			return list;
+		}
 }
 
-const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison)
+const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison, bool invert)
 {
 		std::vector<FileData*> list = getChildrenListToDisplay();
 		std::vector<FileData*> subList;
 		
 		for (auto file : list)
 		{
-			if (comparison(file))
+			if (invert && comparison(file) || !invert && !comparison(file))
 				subList.push_back(file);
 		}
 		return subList;
@@ -1632,6 +1631,4 @@ void FileData::speak() {
   TextToSpeech::getInstance()->say(getName());
 };
 
-bool hasFileGotFavourite(FileData* file) { return file->getFavorite(); }
-bool hasFileGotSortName(FileData* file) { return !file->getSortName().empty(); }
-bool hasFileGotName(FileData* file) { return !file->getName().empty(); }
+bool hasFileSortName(FileData* file) { return !file->getSortName().empty(); }

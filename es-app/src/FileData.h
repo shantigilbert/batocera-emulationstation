@@ -207,7 +207,7 @@ public:
 		std::function<bool(const FileData*,const FileData*)> compf);
 	const std::vector<FileData*> getChildrenListToDisplay2();
 	const std::vector<FileData*> getChildrenListToDisplay();	
-	const std::vector<FileData*> getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison);
+	const std::vector<FileData*> getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison, bool invert=false);
 
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
 
@@ -239,8 +239,6 @@ private:
 #define FILE_COMPARISONS_H_
 
 
-bool hasFileGotFavourite(FileData* file);
-bool hasFileGotSortName(FileData* file);
-bool hasFileGotName(FileData* file);
+bool hasFileSortName(FileData* file);
 
 #endif
