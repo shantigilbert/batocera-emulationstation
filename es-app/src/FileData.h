@@ -206,10 +206,10 @@ public:
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
 	void sortChildrenList(std::vector<FileData*>& childList);
-	const std::vector<FileData*> getChildrenListToDisplay();
 	
+	const std::vector<FileData*> getChildrenListToDisplay();	
 	const std::vector<FileData*> getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison);
-	
+
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
 
 	std::vector<FileData*> getFilesRecursive(unsigned int typeMask, bool displayedOnly = false, SystemData* system = nullptr, bool includeVirtualStorage = true) const;
@@ -232,4 +232,13 @@ private:
 	bool	mIsDisplayableAsVirtualFolder;
 };
 
+
+
 #endif // ES_APP_FILE_DATA_H
+
+#ifndef FILE_COMPARISONS_H_
+#define FILE_COMPARISONS_H_
+
+bool getFavouriteFile(FileData* file);
+
+#endif

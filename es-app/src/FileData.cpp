@@ -782,7 +782,7 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
-const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison) 
+const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison)
 {
 		std::vector<FileData*> list = getChildrenListToDisplay();
 		std::vector<FileData*> subList;
@@ -1572,3 +1572,6 @@ std::string FileData::getCurrentGameSetting(const std::string& settingName)
 void FileData::speak() {
   TextToSpeech::getInstance()->say(getName());
 };
+
+bool getFavouriteFile(FileData* file) { return file->getFavorite(); }
+
