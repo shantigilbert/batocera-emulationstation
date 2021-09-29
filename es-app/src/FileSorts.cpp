@@ -101,12 +101,8 @@ namespace FileSorts
 			return file1->getType() == FOLDER;
 		}
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
-		std::string name1 = (std::string) file1->getSortNameRaw();
-		std::string name2 = (std::string) file2->getSortNameRaw();
-		if (name1.empty() && name2.empty()) {
-			name1 = ((FileData*)file1)->getName();
-			name2 = ((FileData*)file2)->getName();
-		}		
+		std::string name1 = (std::string) file1->getSortName();
+		std::string name2 = (std::string) file2->getSortName();		
 		return compareNames(name1, name2);
 	}
 
@@ -134,7 +130,7 @@ namespace FileSorts
 		return compareNames(name1, name2);
 	}
 
-  std::string stripIndexInName(const std::string sName)
+  /*std::string stripIndexInName(const std::string sName)
 	{
 			std::locale loc;
 	    int current = 0;
@@ -145,17 +141,17 @@ namespace FileSorts
 	        }
 	    }
 			return sName.substr(current);
-	}
+	}*/
 
 	bool compareNames(std::string name1, std::string name2)
 	{
-		const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
+		/*const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
 		if (ignoreArticles)
 		{
 			const auto articles = Utils::String::commaStringToVector(_("A,AN,THE"));
 			name1 = stripLeadingArticle(name1, articles);
 			name2 = stripLeadingArticle(name2, articles);
-		}
+		}*/
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
 #else

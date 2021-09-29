@@ -222,9 +222,7 @@ void GridGameListView::populateList(const std::vector<FileData*>& files)
 		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
 		{
-			std::vector<FileData*> favFiles = mRoot->getSubChildrenListToDisplay(&getFavouriteFile);
-			mRoot->sortChildrenList(favFiles);			
-			for (auto file : favFiles)
+			for (auto file : files)
 			{
 				if (!file->getFavorite())
 					continue;
