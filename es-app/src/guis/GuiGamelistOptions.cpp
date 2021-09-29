@@ -598,7 +598,7 @@ void GuiGamelistOptions::jumpToLetter()
 		if(files.at(mid)->getName().empty())
 			continue;
 
-		checkLetter = (char)toupper(files.at(mid)->getName()[0]);
+		char checkLetter = (char)toupper(files.at(mid)->getName()[0]);
 
 		if(checkLetter < letter)
 			min = mid + 1;
