@@ -203,11 +203,10 @@ public:
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
 	
-	void sortChildrenList(std::vector<FileData*>& childList, 
-		std::function<bool(const FileData*,const FileData*)> compf);
-	const std::vector<FileData*> getChildrenListToDisplay2();
-	const std::vector<FileData*> getChildrenListToDisplay(bool sort=true);	
-	const std::vector<FileData*> getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison, bool invert=false);
+	void sortChildrenList(std::vector<FileData*>& childList);
+	const std::vector<FileData*> getChildrenListToDisplay();
+	const std::vector<FileData*> getChildrenList(bool sort=true);	
+	const std::vector<FileData*> getSubChildrenList(std::function<bool(FileData*)> comparison, bool invert=false);
 
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
 

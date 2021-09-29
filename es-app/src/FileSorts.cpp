@@ -45,10 +45,8 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(FILENAME_DESCENDING, &compareName, false, _("FILENAME, DESCENDING"), _U("\uF15e ")));
 
 //#ifdef _ENABLEEMUELEC
-		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
-		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
-		mSortTypes.push_back(SortType(MIXEDNAME_ASCENDING, &compareName, true, _("MIXEDNAME, ASCENDING"), _U("\uF15d ")));
-		mSortTypes.push_back(SortType(MIXEDNAME_DESCENDING, &compareName, false, _("MIXEDNAME, DESCENDING"), _U("\uF15e ")));
+		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
+		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
 //#endif
 
 		mSortTypes.push_back(SortType(RATING_ASCENDING, &compareRating, true, _("RATING, ASCENDING"), _U("\uF165 ")));
@@ -107,61 +105,18 @@ namespace FileSorts
 			name1 = ((FileData*)file1)->getName();
 			name2 = ((FileData*)file2)->getName();
 		}
-		if (name1.empty()) return false;
-		if (name2.empty()) return true;
 		return compareNames(name1, name2);
-	}
-
-	bool compareMixedName(const FileData* file1, const FileData* file2)
-	{
-		if (file1->getType() != file2->getType())
-		{
-			return file1->getType() == FOLDER;
-		}
-		std::string name1 = file1->getSortName();
-		std::string name2 = file2->getSortName();
-		if (name1.empty() && name2.empty()) {
-			name1 = ((FileData*)file1)->getName();
-			name2 = ((FileData*)file2)->getName();
-		}
-		else if (name1.empty()) {
-			name1 = ((FileData*)file1)->getName();
-			name2 = stripIndexInName(name2);
-		}
-		else if (name2.empty()) {
-			name2 = ((FileData*)file2)->getName();
-			name1 = stripIndexInName(name1);
-		}
-		return compareNames(name1, name2);
-	}
-
-	bool is_alpha(char c) {
-	    std::locale loc;
-	    bool upper = std::use_facet< std::ctype<char> >(loc).is( std::ctype<char>::alpha, c);
-	    return upper;
-	}
-
-  std::string stripIndexInName(const std::string sName)
-	{
-	    int current = 0;
-	    for(int i = 0; i < sName.length(); i++) {
-	        if(is_alpha(sName[i])){
-	            current = i;
-							break;
-	        }
-	    }
-			return sName.substr(current);
 	}
 
 	bool compareNames(std::string name1, std::string name2)
 	{
-		/*const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
+		const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
 		if (ignoreArticles)
 		{
 			const auto articles = Utils::String::commaStringToVector(_("A,AN,THE"));
 			name1 = stripLeadingArticle(name1, articles);
 			name2 = stripLeadingArticle(name2, articles);
-		}*/
+		}
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
 /*#else

@@ -41,8 +41,6 @@ namespace FileSorts
 		RELEASEDATE_SYSTEM_DESCENDING = 27,
 		SORTNAME_ASCENDING = 28,
 		SORTNAME_DESCENDING = 29,
-		MIXEDNAME_ASCENDING = 30,
-		MIXEDNAME_DESCENDING = 31
 //#else
 //   RELEASEDATE_SYSTEM_DESCENDING = 27
 //#endif
@@ -77,7 +75,6 @@ namespace FileSorts
 	bool compareName(const FileData* file1, const FileData* file2);
 //#ifdef _ENABLEEMUELEC
 	bool compareSortName(const FileData* file1, const FileData* file2);
-	bool compareMixedName(const FileData* file1, const FileData* file2);
 //#endif
 	bool compareRating(const FileData* file1, const FileData* file2);
 	bool compareTimesPlayed(const FileData* file1, const FileData* fil2);
