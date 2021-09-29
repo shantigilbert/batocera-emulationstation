@@ -598,11 +598,11 @@ void GuiGamelistOptions::jumpToLetter()
 		if(files.at(mid)->getName().empty())
 			continue;
 
-		char checkLetter = (char)toupper(files.at(mid)->getSortName()[0]);
+		checkLetter = (char)toupper(files.at(mid)->getName()[0]);
 
 		if(checkLetter < letter)
 			min = mid + 1;
-		else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortName()[0]))))
+		else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getName()[0]))))
 			max = mid - 1;
 		else
 			break; //exact match found

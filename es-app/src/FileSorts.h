@@ -37,15 +37,15 @@ namespace FileSorts
 		SYSTEM_RELEASEDATE_ASCENDING = 24,
 		SYSTEM_RELEASEDATE_DESCENDING = 25,
 		RELEASEDATE_SYSTEM_ASCENDING = 26,
-#ifdef _ENABLEEMUELEC
+//#ifdef _ENABLEEMUELEC
 		RELEASEDATE_SYSTEM_DESCENDING = 27,
 		SORTNAME_ASCENDING = 28,
 		SORTNAME_DESCENDING = 29,
 		MIXEDNAME_ASCENDING = 30,
 		MIXEDNAME_DESCENDING = 31
-#else
-   RELEASEDATE_SYSTEM_DESCENDING = 27
-#endif
+//#else
+//   RELEASEDATE_SYSTEM_DESCENDING = 27
+//#endif
 	};
 
 	typedef bool ComparisonFunction(const FileData* a, const FileData* b);
@@ -75,10 +75,10 @@ namespace FileSorts
 	const std::vector<SortType>& getSortTypes();
 
 	bool compareName(const FileData* file1, const FileData* file2);
-#ifdef _ENABLEEMUELEC
+//#ifdef _ENABLEEMUELEC
 	bool compareSortName(const FileData* file1, const FileData* file2);
 	bool compareMixedName(const FileData* file1, const FileData* file2);
-#endif
+//#endif
 	bool compareRating(const FileData* file1, const FileData* file2);
 	bool compareTimesPlayed(const FileData* file1, const FileData* fil2);
 	bool compareLastPlayed(const FileData* file1, const FileData* file2);
@@ -94,10 +94,10 @@ namespace FileSorts
 	bool compareSystemReleaseYear(const FileData* file1, const FileData* file2);
 	bool compareReleaseYearSystem(const FileData* file1, const FileData* file2);
 
-#ifdef _ENABLEEMUELEC
+//#ifdef _ENABLEEMUELEC
 	bool compareNames(std::string name1, std::string name2);
 	std::string stripIndexInName(const std::string sName);
-#endif
+//#endif
 	std::string stripLeadingArticle(const std::string &string, const std::vector<std::string> &articles);
 };
 #endif // ES_APP_FILE_SORTS_H

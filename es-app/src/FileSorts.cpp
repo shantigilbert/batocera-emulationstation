@@ -44,12 +44,12 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(FILENAME_ASCENDING, &compareName, true, _("FILENAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(FILENAME_DESCENDING, &compareName, false, _("FILENAME, DESCENDING"), _U("\uF15e ")));
 
-#ifdef _ENABLEEMUELEC
+//#ifdef _ENABLEEMUELEC
 		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
 		mSortTypes.push_back(SortType(MIXEDNAME_ASCENDING, &compareMixedName, true, _("MIXEDNAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(MIXEDNAME_DESCENDING, &compareMixedName, false, _("MIXEDNAME, DESCENDING"), _U("\uF15e ")));
-#endif
+//#endif
 
 		mSortTypes.push_back(SortType(RATING_ASCENDING, &compareRating, true, _("RATING, ASCENDING"), _U("\uF165 ")));
 		mSortTypes.push_back(SortType(RATING_DESCENDING, &compareRating, false, _("RATING, DESCENDING"), _U("\uF164 ")));
@@ -80,7 +80,7 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_DESCENDING, &compareReleaseYearSystem, false, _("RELEASE YEAR, SYSTEM, DESCENDING"), _U("\uF161 ")));
 	}
 
-#ifdef _ENABLEEMUELEC
+//#ifdef _ENABLEEMUELEC
 	//returns if file1 should come before file2
 	bool compareName(const FileData* file1, const FileData* file2)
 	{
@@ -101,8 +101,8 @@ namespace FileSorts
 			return file1->getType() == FOLDER;
 		}
 		// we compare the actual metadata name, as collection files have the system appended which messes up the order
-		std::string name1 = file1->getSortNameRaw();
-		std::string name2 = file2->getSortNameRaw();
+		std::string name1 = file1->getSortName();
+		std::string name2 = file2->getSortName();
 		if (name1.empty() && name2.empty()) {
 			name1 = ((FileData*)file1)->getName();
 			name2 = ((FileData*)file2)->getName();
@@ -118,8 +118,8 @@ namespace FileSorts
 		{
 			return file1->getType() == FOLDER;
 		}
-		std::string name1 = file1->getSortNameRaw();
-		std::string name2 = file2->getSortNameRaw();
+		std::string name1 = file1->getSortName();
+		std::string name2 = file2->getSortName();
 		if (name1.empty() && name2.empty()) {
 			name1 = ((FileData*)file1)->getName();
 			name2 = ((FileData*)file2)->getName();
@@ -164,7 +164,7 @@ namespace FileSorts
 		}*/
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
-#else
+/*#else
 	bool compareName(const FileData* file1, const FileData* file2)
 	{
 		if (file1->getType() != file2->getType())
@@ -184,7 +184,7 @@ namespace FileSorts
 		}
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
-#endif
+#endif*/
 
 	std::string stripLeadingArticle(const std::string &string, const std::vector<std::string> &articles)
 	{

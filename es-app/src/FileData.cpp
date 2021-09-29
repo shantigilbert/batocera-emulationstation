@@ -233,21 +233,12 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
+//#ifdef _ENABLEEMUELEC
 const std::string FileData::getSortName() const
-{
-	std::string sortName = mMetadata.get("sortname");
-	if (sortName.empty())
-		return mMetadata.get("name");
-	else
-		return sortName;
-}
-
-#ifdef _ENABLEEMUELEC
-const std::string FileData::getSortNameRaw() const
 {
 	return mMetadata.get("sortname");
 }
-#endif
+//#endif
 
 const std::string FileData::getVideoPath()
 {
@@ -784,9 +775,9 @@ const std::string& CollectionFileData::getName()
 
 const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 {
-		std::vector<FileData*> list = getChildrenListToDisplay(&hasFileGotSortName);
-		unsigned int currentSortId = getSystem()->getSortId();
-		if (currentSortId == SORTNAME_ASCENDING)
+		std::vector<FileData*> list = getChildrenListToDisplay();
+		unsigned int sortId = getSystem()->getSortId();
+		if (sortId == FileSorts::SORTNAME_ASCENDING)
 		{
 			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileGotSortName);
 			sortChildrenList(sortNameList);
