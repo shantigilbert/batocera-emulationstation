@@ -782,10 +782,26 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
+const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
+{
+		std::vector<FileData*> list = getChildrenListToDisplay(&hasFileGotSortName);
+		unsigned int currentSortId = getSystem()->getSortId();
+		if (currentSortId == SORTNAME_ASCENDING)
+		{
+			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileGotSortName);
+			sortChildrenList(sortNameList);
+			list.reserve(list.size() + sortNameList.size());
+			list.insert(list.end(), sortNameList.begin(), sortNameList.end());
+			std::unique(list.begin(), list.end());
+		}
+		return list;
+}
+
 const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison)
 {
 		std::vector<FileData*> list = getChildrenListToDisplay();
 		std::vector<FileData*> subList;
+		
 		for (auto file : list)
 		{
 			if (comparison(file))
@@ -1611,5 +1627,6 @@ void FileData::speak() {
   TextToSpeech::getInstance()->say(getName());
 };
 
-bool getFavouriteFile(FileData* file) { return file->getFavorite(); }
-
+bool hasFileGotFavourite(FileData* file) { return file->getFavorite(); }
+bool hasFileGotSortName(FileData* file) { return !file->getSortName().empty(); }
+bool hasFileGotName(FileData* file) { return !file->getName().empty(); }

@@ -205,8 +205,9 @@ public:
 	FileData* FindByPath(const std::string& path);
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
-	void sortChildrenList(std::vector<FileData*>& childList);
 	
+	void sortChildrenList(std::vector<FileData*>& childList);
+	const std::vector<FileData*> getChildrenListToDisplay2();
 	const std::vector<FileData*> getChildrenListToDisplay();	
 	const std::vector<FileData*> getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison);
 
@@ -239,6 +240,9 @@ private:
 #ifndef FILE_COMPARISONS_H_
 #define FILE_COMPARISONS_H_
 
-bool getFavouriteFile(FileData* file);
+
+bool hasFileGotFavourite(FileData* file);
+bool hasFileGotSortName(FileData* file);
+bool hasFileGotName(FileData* file);
 
 #endif

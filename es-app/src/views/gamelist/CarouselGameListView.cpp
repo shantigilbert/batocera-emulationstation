@@ -27,7 +27,7 @@ CarouselGameListView::CarouselGameListView(Window* window, FolderData* root)
 		
 	addChild(&mList);
 
-	populateList(root->getChildrenListToDisplay());
+	populateList(root->getChildrenListToDisplay2());
 }
 
 void CarouselGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)

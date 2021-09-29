@@ -36,7 +36,7 @@ GridGameListView::GridGameListView(Window* window, FolderData* root, const std::
 
 	setTheme(theme);
 
-	populateList(mRoot->getChildrenListToDisplay());
+	populateList(mRoot->getChildrenListToDisplay2());
 	updateInfoPanel();
 }
 

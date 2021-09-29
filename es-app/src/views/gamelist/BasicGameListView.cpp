@@ -31,7 +31,7 @@ BasicGameListView::BasicGameListView(Window* window, FolderData* root)
 
 	addChild(&mList);
 
-	populateList(root->getChildrenListToDisplay());
+	populateList(root->getChildrenListToDisplay2());
 }
 
 void BasicGameListView::onThemeChanged(const std::shared_ptr<ThemeData>& theme)
