@@ -784,18 +784,17 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 			sortChildrenList(sortNameList, &FileSorts::compareSortName);
 			sortChildrenList(list, &FileSorts::compareName);
 			sortNameList.insert(sortNameList.end(), list.begin(), list.end());
-			return list;
+			return sortNameList;
 		}
 		else {
-			std::vector<FileData*> list = getChildrenListToDisplay();
-			sortChildrenList(list, &FileSorts::compareName);
+			std::vector<FileData*> list = getChildrenListToDisplay(true);
 			return list;
 		}
 }
 
 const std::vector<FileData*> FolderData::getSubChildrenListToDisplay(std::function<bool(FileData*)> comparison, bool invert)
 {
-		std::vector<FileData*> list = getChildrenListToDisplay();
+		std::vector<FileData*> list = getChildrenListToDisplay(false);
 		std::vector<FileData*> subList;
 		
 		for (auto file : list)
@@ -858,7 +857,7 @@ void FolderData::sortChildrenList(std::vector<FileData*>& childList,
 	
 }
 
-const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
+const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort) 
 {
 	std::vector<FileData*> ret;
 
@@ -950,6 +949,10 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 
 		ret.push_back(*it);
 	}
+	
+	if (sort) 
+		sortChildrenList(ret, &FileSorts::compareName);
+
 	return ret;
 }
 
