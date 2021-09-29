@@ -773,29 +773,22 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
-/*void removeDuplicates(std::vector<FileData*> &v)
-{
-    auto end = v.end();
-    for (auto it = v.begin(); it != end; ++it) {
-        end = std::remove(it + 1, end, *it);
-    }
- 
-    v.erase(end, v.end());
-}*/
 
 const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 {
 		unsigned int sortId = getSystem()->getSortId();
 		if (sortId == FileSorts::SORTNAME_ASCENDING)
 		{
-			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileSortName);
+			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileSortName,true);
 			std::vector<FileData*> list = getSubChildrenListToDisplay(&hasFileSortName,false);
 			sortChildrenList(sortNameList, &FileSorts::compareSortName);
-			list.insert(list.begin(), sortNameList.begin(), sortNameList.end());
+			sortChildrenList(list, &FileSorts::compareName);
+			sortNameList.insert(sortNameList.end(), list.begin(), list.end());
 			return list;
 		}
 		else {
 			std::vector<FileData*> list = getChildrenListToDisplay();
+			sortChildrenList(list, &FileSorts::compareName);
 			return list;
 		}
 }
@@ -866,6 +859,101 @@ void FolderData::sortChildrenList(std::vector<FileData*>& childList,
 }
 
 const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
+{
+	std::vector<FileData*> ret;
+
+	std::string showFoldersMode = getSystem()->getFolderViewMode();
+	
+	bool showHiddenFiles = Settings::getInstance()->getBool("ShowHiddenFiles");
+
+	auto shv = Settings::getInstance()->getString(getSystem()->getName() + ".ShowHiddenFiles");
+	if (shv == "1") showHiddenFiles = true;
+	else if (shv == "0") showHiddenFiles = false;
+
+	bool filterKidGame = false;
+
+	if (!Settings::getInstance()->getBool("ForceDisableFilters"))
+	{
+		if (UIModeController::getInstance()->isUIModeKiosk())
+			showHiddenFiles = false;
+
+		if (UIModeController::getInstance()->isUIModeKid())
+			filterKidGame = true;
+	}
+
+	auto sys = CollectionSystemManager::get()->getSystemToView(mSystem);
+
+	std::vector<std::string> hiddenExts;
+	if (mSystem->isGameSystem() && !mSystem->isCollection())
+		for (auto ext : Utils::String::split(Settings::getInstance()->getString(mSystem->getName() + ".HiddenExt"), ';'))	
+			hiddenExts.push_back("." + Utils::String::toLower(ext));
+	
+	FileFilterIndex* idx = sys->getIndex(false);
+	if (idx != nullptr && !idx->isFiltered())
+		idx = nullptr;
+
+  std::vector<FileData*>* items = &mChildren;
+	
+	std::vector<FileData*> flatGameList;
+	if (showFoldersMode == "never")
+	{
+		flatGameList = getFlatGameList(false, sys);
+		items = &flatGameList;		
+	}
+
+	bool refactorUniqueGameFolders = (showFoldersMode == "having multiple games");
+
+	for (auto it = items->cbegin(); it != items->cend(); it++)
+	{
+		if (!showHiddenFiles && (*it)->getHidden())
+			continue;
+
+		if (filterKidGame && (*it)->getType() == GAME && !(*it)->getKidGame())
+			continue;
+
+		if (hiddenExts.size() > 0 && (*it)->getType() == GAME)
+		{
+			std::string extlow = Utils::String::toLower(Utils::FileSystem::getExtension((*it)->getFileName()));
+			if (std::find(hiddenExts.cbegin(), hiddenExts.cend(), extlow) != hiddenExts.cend())
+				continue;
+		}
+
+		if ((*it)->getType() == FOLDER && refactorUniqueGameFolders)
+		{
+			FolderData* pFolder = (FolderData*)(*it);
+			if (pFolder->getChildren().size() == 0)
+				continue;
+
+			if (pFolder->isVirtualStorage() && pFolder->getSourceFileData()->getSystem()->isGroupChildSystem() && pFolder->getSourceFileData()->getSystem()->getName() == "windows_installers")
+			{
+				ret.push_back(*it);
+				continue;
+			}
+
+			auto fd = pFolder->findUniqueGameForFolder();
+			if (fd != nullptr)
+			{
+				if (idx != nullptr && !idx->showFile(fd))
+					continue;
+
+				if (!showHiddenFiles && fd->getHidden())
+					continue;
+
+				if (filterKidGame && !fd->getKidGame())
+					continue;
+
+				ret.push_back(fd);
+
+				continue;
+			}
+		}
+
+		ret.push_back(*it);
+	}
+	return ret;
+}
+
+/*const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
 {
 	std::vector<FileData*> ret;
 
@@ -999,7 +1087,7 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 	}
 
 	return ret;
-}
+}*/
 
 std::shared_ptr<std::vector<FileData*>> FolderData::findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack)
 {
