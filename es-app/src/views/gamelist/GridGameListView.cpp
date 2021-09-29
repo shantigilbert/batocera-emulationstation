@@ -150,11 +150,6 @@ const bool GridGameListView::isVirtualFolder(FileData* file)
 	return file->getType() == FOLDER && ((FolderData*)file)->isVirtualFolderDisplay();
 }
 
-bool isFavorite(FileData* file)
-{
-		return file->getFavorite();
-}
-
 void GridGameListView::populateList(const std::vector<FileData*>& files)
 {
 	SystemData* system = mCursorStack.size() && !mRoot->getSystem()->isGameSystem() ? mCursorStack.top()->getSystem() : mRoot->getSystem();
