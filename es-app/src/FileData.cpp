@@ -776,17 +776,17 @@ const std::string& CollectionFileData::getName()
 const std::vector<FileData*> FolderData::getChildrenListToDisplay2()
 {
 		std::vector<FileData*> list = getChildrenListToDisplay();
-		unsigned int sortId = getSystem()->getSortId();
-		if (sortId == FileSorts::SORTNAME_ASCENDING)
-		{
-			const FileSorts::SortType& sort = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
+		//unsigned int sortId = getSystem()->getSortId();
+		//if (sortId == FileSorts::SORTNAME_ASCENDING)
+		//{
+			//const FileSorts::SortType& sort = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
 			std::vector<FileData*> sortNameList = getSubChildrenListToDisplay(&hasFileGotSortName);
 			
 			sortChildrenList(sortNameList, &FileSorts::compareSortName);
 			list.reserve(list.size() + sortNameList.size());
 			list.insert(list.end(), sortNameList.begin(), sortNameList.end());
 			std::unique(list.begin(), list.end());
-		}
+		//}
 		return list;
 }
 
