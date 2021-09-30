@@ -39,6 +39,7 @@ namespace Utils
 		bool        containsIgnoreCase(const std::string & _string, const std::string & _what);
 		bool		startsWithIgnoreCase(const std::string& name1, const std::string& name2);
 
+		int			unicodeToInteger(const std::string& string);
 		int			toInteger(const std::string& string);
 		float		toFloat(const std::string& string);
 

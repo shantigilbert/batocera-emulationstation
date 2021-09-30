@@ -236,7 +236,8 @@ const std::string& FileData::getName()
 const std::string FileData::getSortName() const
 {
 	std::string s = mMetadata.get(MetaDataId::SortName);
-	if (std::atoi(s.c_str()) > 10000000) return "";
+	int i = Utils::String::unicodeToInteger(s);
+	if (i > 10000000) return "";
 	return s;
 }
 

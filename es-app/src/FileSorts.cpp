@@ -100,9 +100,10 @@ namespace FileSorts
 
 		std::string name1 = file1->getSortName();
 		std::string name2 = file2->getSortName();
-		int index1 = std::atoi(name1.c_str());
-		int index2 = std::atoi(name2.c_str());
-		if (index1 > 0 || index2 > 0)
+
+		int i1 = Utils::String::unicodeToInteger(name1);
+		int i2 = Utils::String::unicodeToInteger(name2);
+		if (i1 > 0 || i2 > 0)
 			return index1 < index2;
 
 		if (name1.empty()) {
