@@ -1723,4 +1723,6 @@ void FileData::speak() {
   TextToSpeech::getInstance()->say(getName());
 };
 
+#ifdef _ENABLEEMUELEC
 bool hasFileSortName(FileData* file) { return !file->getSortName().empty(); }
+#endif

@@ -234,10 +234,11 @@ private:
 
 #endif // ES_APP_FILE_DATA_H
 
-#ifndef FILE_COMPARISONS_H_
-#define FILE_COMPARISONS_H_
+#ifdef _ENABLEEMUELEC
+	#ifndef FILE_COMPARISONS_H_
+	#define FILE_COMPARISONS_H_
 
+	bool hasFileSortName(FileData* file);
 
-bool hasFileSortName(FileData* file);
-
+	#endif
 #endif

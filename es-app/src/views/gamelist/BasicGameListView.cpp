@@ -84,12 +84,12 @@ void BasicGameListView::populateList(const std::vector<FileData*>& files)
 
 		bool favoritesFirst = mRoot->getSystem()->getShowFavoritesFirst();
 		if (favoritesFirst)
-		{
+		{			
 			for (auto file : files)
 			{
 				if (!file->getFavorite())
 					continue;
-
+						
 				mList.add(formatter.getDisplayName(file), file, file->getType() == FOLDER);
 			}
 		}

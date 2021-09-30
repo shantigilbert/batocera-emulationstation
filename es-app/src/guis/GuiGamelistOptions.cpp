@@ -609,10 +609,10 @@ void GuiGamelistOptions::jumpToLetter()
 		bool sortName = false;
 		if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
 			sortName = true;
-#endif
 
 		if (sortName)
 			checkLetter = (char)toupper(files.at(mid)->getSortName()[0]);
+#endif
 
 		if(checkLetter < letter)
 			min = mid + 1;
