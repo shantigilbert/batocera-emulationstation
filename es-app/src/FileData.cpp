@@ -938,22 +938,18 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 			if (hasFileSortName(file))
 				countSortName++;
 		}
-
-		/*if (sort) {
+		
+		int total = countSortName;
+		if (total > 0 && ret.size() > 1) {
+		 	sortChildrenList(ret, 0, total);
+		 	sortChildrenList(ret, total);
+		}
+		else {
 			sortChildrenList(ret);
-			int total = countSortName;
-			if (total > 0 && ret.size() > 1) {
-			 	sortChildrenList(ret, 0, total);
-			 	sortChildrenList(ret, total);
-			}
-			else {
-				sortChildrenList(ret);
-			}
-		}*/
+		}
 	}
 	else {
-		if (sort)
-			sortChildrenList(ret);
+		sortChildrenList(ret);
 	}
 	return ret;
 }
