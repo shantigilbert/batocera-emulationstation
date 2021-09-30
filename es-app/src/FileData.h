@@ -200,9 +200,7 @@ public:
 	bool isVirtualFolderDisplayEnabled() { return mIsDisplayableAsVirtualFolder; };
 
 	FileData* FindByPath(const std::string& path);
-
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
-
 	const std::vector<FileData*> getChildrenListToDisplay();
 
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
@@ -226,7 +224,5 @@ private:
 	bool	mOwnsChildrens;
 	bool	mIsDisplayableAsVirtualFolder;
 };
-
-
 
 #endif // ES_APP_FILE_DATA_H
