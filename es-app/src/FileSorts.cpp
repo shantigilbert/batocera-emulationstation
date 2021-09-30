@@ -105,10 +105,10 @@ namespace FileSorts
 			name1 = ((FileData*)file1)->getName();
 			name2 = ((FileData*)file2)->getName();
 		}
-		if (name1.empty())
-			return false;
-		if (name2.empty())
+		else if (name1.empty())
 			return true;
+		else if (name2.empty())
+			return false;
 
 		return compareNames(name1, name2);
 	}
