@@ -921,7 +921,10 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
 	{
 		std::sort( ret.begin( ), ret.end( ), [ ](FileData* lhs, FileData* rhs )
-		{				
+		{
+			if (lhs->getType() != rhs->getType())
+				return lhs->getType() == FOLDER;
+
 			return (hasFileSortName(lhs) ? 1 : 0) > (hasFileSortName(rhs) ? 1 : 0);
 		});
 
