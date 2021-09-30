@@ -941,11 +941,11 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 		}
 
 		if (countSortName > 0 && ret.size() > 1) {
-			std::vector<FileData*> vNames = std::vector<FileData*>(ret.begin()+countSortName, ret.end());
-			sortChildrenList(vNames);
-			ret.erase(ret.begin()+countSortName, ret.end());
+			//std::vector<FileData*> vNames = std::vector<FileData*>(ret.begin()+countSortName, ret.end());
+			//sortChildrenList(vNames);
+			//ret.erase(ret.begin()+countSortName, ret.end());
 			sortChildrenList(ret);
-			ret.insert(ret.end(),vNames.begin(), vNames.end());
+			//ret.insert(ret.end(),vNames.begin(), vNames.end());
 		}
 		else {
 			sortChildrenList(ret);

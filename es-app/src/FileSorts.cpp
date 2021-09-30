@@ -97,7 +97,9 @@ namespace FileSorts
 		{
 			return file1->getType() == FOLDER;
 		}
-		// we compare the actual metadata name, as collection files have the system appended which messes up the order
+		if (file1->getSortName().empty() != file2->getSortName().empty())
+			return !file1->getSortName().empty();
+
 		std::string name1 = file1->getSortName();
 		std::string name2 = file2->getSortName();
 		if (name1.empty() && name2.empty()) {
