@@ -919,41 +919,7 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 		ret.push_back(*it);
 	}
 
-	unsigned int sortId = getSystem()->getSortId();
-	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
-	{
-		std::sort( ret.begin( ), ret.end( ), [ ](FileData* lhs, FileData* rhs )
-		{
-			if (lhs->getType() != rhs->getType())
-				return lhs->getType() == FOLDER;
-
-			return (hasFileSortName(lhs) ? 1 : 0) > (hasFileSortName(rhs) ? 1 : 0);
-		});
-
-		int countSortName = 0;
-		for (auto file : ret)
-		{
-			if (file->getType() == FOLDER)
-				continue;
-
-			if (hasFileSortName(file))
-				countSortName++;
-		}
-
-		if (countSortName > 0 && ret.size() > 1) {
-			//std::vector<FileData*> vNames = std::vector<FileData*>(ret.begin()+countSortName, ret.end());
-			//sortChildrenList(vNames);
-			//ret.erase(ret.begin()+countSortName, ret.end());
-			sortChildrenList(ret);
-			//ret.insert(ret.end(),vNames.begin(), vNames.end());
-		}
-		else {
-			sortChildrenList(ret);
-		}		
-	}
-	else {
-		sortChildrenList(ret);
-	}
+	sortChildrenList(ret);
 	return ret;
 }
 #else
