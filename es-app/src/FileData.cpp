@@ -233,12 +233,12 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
-//#ifdef _ENABLEEMUELEC
 const std::string FileData::getSortName() const
 {
-	return mMetadata.get(MetaDataId::SortName);
+	std::string s = mMetadata.get(MetaDataId::SortName);
+	if (std::atoi(s.c_str()) > 10000000) return "";
+	return s;
 }
-//#endif
 
 const std::string FileData::getVideoPath()
 {

@@ -100,14 +100,18 @@ namespace FileSorts
 
 		std::string name1 = file1->getSortName();
 		std::string name2 = file2->getSortName();
+		int index1 = std::atoi(name1.c_str());
+		int index2 = std::atoi(name2.c_str());
+		if (index1 > 0 || index2 > 0)
+			return index1 < index2;
 
-		/*if (name1.empty()) {
+		if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
 		}
 		if (name2.empty()) {
 			name2 = ((FileData*)file2)->getName();
-		}*/
-		
+		}
+
 		return compareNames(name1, name2);
 	}
 
