@@ -4619,7 +4619,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([configName, vert_aspect_enabled] { SystemConf::getInstance()->set(configName + ".vert_aspect", vert_aspect_enabled->getSelected()); });
 	}
 
-        // Set as boot game 
+    // Set as boot game, only show if its a game and not system
+    if (fileData != nullptr) {
         std::string currentBootEmulator = SystemConf::getInstance()->get(configName + ".core");
 		std::string currentBootCore = SystemConf::getInstance()->get(configName + ".emulator");
    
@@ -4642,7 +4643,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
                 SystemConf::getInstance()->set("global.bootgamepath", "auto");
             }
         });
-
+    }
 #else
 	// Shaders preset
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::SHADERS) &&
