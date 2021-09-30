@@ -774,19 +774,15 @@ const std::string& CollectionFileData::getName()
 }
 
 
-void FolderData::sortChildrenList(std::vector<FileData*>& vec, int start, int end)
+void FolderData::sortChildrenList(std::vector<FileData*>& vec)
 {
-	std::vector<FileData*>::iterator vstart = vec.begin() + start;
-	std::vector<FileData*>::iterator vend;
-	vend = (end == 0) ? vec.end() : vec.begin() + end;
-
 	FileFilterIndex* idx = getSystem()->getIndex(false);
 	if (idx != nullptr && !idx->isFiltered())
 		idx = nullptr;
 	
 	std::map<FileData*, int> scoringBoard;
 
-	for (std::vector<FileData*>::iterator it = vstart; it != vend; it++)
+	for (std::vector<FileData*>::iterator it = vec.begin(); it != vec.end(); it++)
 	{
 		if (idx != nullptr)
 		{
@@ -807,7 +803,7 @@ void FolderData::sortChildrenList(std::vector<FileData*>& vec, int start, int en
 
 	if (idx != nullptr && idx->hasRelevency())
 	{
-		std::partial_sort(vstart, vend, vec.end(), [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
+		std::sort(vec.begin(), vec.end(), [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
 		{ 
 			auto s1 = scoringBoard.find((FileData*) file1);
 			auto s2 = scoringBoard.find((FileData*) file2);		
@@ -820,15 +816,15 @@ void FolderData::sortChildrenList(std::vector<FileData*>& vec, int start, int en
 	}
 	else
 	{
-		std::partial_sort(vstart, vend, vec.end(), compf);
+		std::sort(vec.begin(), vec.end(), compf);
 
 		if (!sort.ascending)
-			std::reverse(vstart, vend);
+			std::reverse(vec.begin(), vec.end());
 	}
 	
 }
 
-const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort) 
+const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
 {
 	std::vector<FileData*> ret;
 
@@ -938,16 +934,17 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 			if (hasFileSortName(file))
 				countSortName++;
 		}
-		
-		int total = countSortName;
-		/*if (total > 0 && ret.size() > 1) {
-		 	sortChildrenList(ret, 0, total);
-		 	sortChildrenList(ret, total);
+
+		if (countSortName > 0 && ret.size() > 1) {
+			std::vector<FileData*> vNames = std::vector<FileData*>(ret.begin()+countSortName, ret.end());
+			sortChildrenList(vNames);
+			ret.erase(ret.begin()+countSortName, ret.end());
+			sortChildrenList(ret);
+			ret.insert(ret.end(),vNames.begin(), vNames.end());
 		}
 		else {
 			sortChildrenList(ret);
-		}*/
-		sortChildrenList(ret);
+		}		
 	}
 	else {
 		sortChildrenList(ret);
