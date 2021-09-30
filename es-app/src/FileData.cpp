@@ -924,6 +924,11 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 	unsigned int sortId = getSystem()->getSortId();
 	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
 	{
+		std::sort( ret.begin( ), ret.end( ), [ ](FileData* lhs, FileData* rhs )
+		{				
+			return (hasFileSortName(lhs) ? 1 : 0) > (hasFileSortName(rhs) ? 1 : 0);
+		});
+
 		int countSortName = 0;
 		for (auto file : ret)
 		{
@@ -934,24 +939,17 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay(bool sort)
 				countSortName++;
 		}
 
-		if (countSortName > 0) {
-			std::sort( ret.begin( ), ret.end( ), [ ](FileData* lhs, FileData* rhs )
-			{				
-				return (hasFileSortName(lhs) ? 1 : 0) > (hasFileSortName(rhs) ? 1 : 0);
-			});
-		}
-
-		if (sort) {
+		/*if (sort) {
 			sortChildrenList(ret);
-			/*int total = countSortName;
-			if (total > 0 && ret.size() > 1 && total < ret.size()) {
+			int total = countSortName;
+			if (total > 0 && ret.size() > 1) {
 			 	sortChildrenList(ret, 0, total);
 			 	sortChildrenList(ret, total);
 			}
 			else {
 				sortChildrenList(ret);
-			}*/
-		}
+			}
+		}*/
 	}
 	else {
 		if (sort)
