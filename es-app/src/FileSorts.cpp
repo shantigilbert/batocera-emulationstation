@@ -104,7 +104,7 @@ namespace FileSorts
 		int i1 = Utils::String::unicodeToInteger(name1);
 		int i2 = Utils::String::unicodeToInteger(name2);
 		if (i1 > 0 || i2 > 0)
-			return index1 < index2;
+			return i1 < i2;
 
 		if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
