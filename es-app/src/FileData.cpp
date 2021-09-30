@@ -236,7 +236,9 @@ const std::string& FileData::getName()
 //#ifdef _ENABLEEMUELEC
 const std::string FileData::getSortName() const
 {
-	return mMetadata.get("sortname");
+	std::string s = mMetadata.get("sortname");
+	if (s.empty() && getType() == FOLDER) return mMetadata.getName();
+	return s;
 }
 //#endif
 
