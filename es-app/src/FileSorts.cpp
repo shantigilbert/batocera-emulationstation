@@ -108,7 +108,7 @@ namespace FileSorts
 		else if (name1.empty())
 			return false;
 		else if (name2.empty())
-			return false;
+			return true;
 
 		return compareNames(name1, name2);
 	}
