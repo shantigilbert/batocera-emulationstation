@@ -775,154 +775,6 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
-#ifdef _ENABLEEMUELEC
-void FolderData::sortChildrenList(std::vector<FileData*>& vec)
-{
-	FileFilterIndex* idx = getSystem()->getIndex(false);
-	if (idx != nullptr && !idx->isFiltered())
-		idx = nullptr;
-	
-	std::map<FileData*, int> scoringBoard;
-
-	for (std::vector<FileData*>::iterator it = vec.begin(); it != vec.end(); it++)
-	{
-		if (idx != nullptr)
-		{
-			int score = idx->showFile(*it);
-			if (score == 0)
-				continue;
-
-			scoringBoard[*it] = score;
-		}
-	}
-
-	unsigned int currentSortId = getSystem()->getSortId();
-	if (currentSortId > FileSorts::getSortTypes().size())
-		currentSortId = 0;
-
-	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(currentSortId);
-	auto compf = sort.comparisonFunction;
-
-	if (idx != nullptr && idx->hasRelevency())
-	{
-		std::sort(vec.begin(), vec.end(), [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
-		{ 
-			auto s1 = scoringBoard.find((FileData*) file1);
-			auto s2 = scoringBoard.find((FileData*) file2);		
-
-			if (s1 != scoringBoard.cend() && s2 != scoringBoard.cend() && s1->second != s2->second)
-				return s1->second < s2->second;
-			
-			return compf(file1, file2);
-		});
-	}
-	else
-	{
-		std::sort(vec.begin(), vec.end(), compf);
-
-		if (!sort.ascending)
-			std::reverse(vec.begin(), vec.end());
-	}
-	
-}
-
-const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
-{
-	std::vector<FileData*> ret;
-
-	std::string showFoldersMode = getSystem()->getFolderViewMode();
-	
-	bool showHiddenFiles = Settings::getInstance()->getBool("ShowHiddenFiles");
-
-	auto shv = Settings::getInstance()->getString(getSystem()->getName() + ".ShowHiddenFiles");
-	if (shv == "1") showHiddenFiles = true;
-	else if (shv == "0") showHiddenFiles = false;
-
-	bool filterKidGame = false;
-
-	if (!Settings::getInstance()->getBool("ForceDisableFilters"))
-	{
-		if (UIModeController::getInstance()->isUIModeKiosk())
-			showHiddenFiles = false;
-
-		if (UIModeController::getInstance()->isUIModeKid())
-			filterKidGame = true;
-	}
-
-	auto sys = CollectionSystemManager::get()->getSystemToView(mSystem);
-
-	std::vector<std::string> hiddenExts;
-	if (mSystem->isGameSystem() && !mSystem->isCollection())
-		for (auto ext : Utils::String::split(Settings::getInstance()->getString(mSystem->getName() + ".HiddenExt"), ';'))	
-			hiddenExts.push_back("." + Utils::String::toLower(ext));
-	
-	FileFilterIndex* idx = sys->getIndex(false);
-	if (idx != nullptr && !idx->isFiltered())
-		idx = nullptr;
-
-  std::vector<FileData*>* items = &mChildren;
-	
-	std::vector<FileData*> flatGameList;
-	if (showFoldersMode == "never")
-	{
-		flatGameList = getFlatGameList(false, sys);
-		items = &flatGameList;		
-	}
-
-	bool refactorUniqueGameFolders = (showFoldersMode == "having multiple games");
-
-	for (auto it = items->cbegin(); it != items->cend(); it++)
-	{
-		if (!showHiddenFiles && (*it)->getHidden())
-			continue;
-
-		if (filterKidGame && (*it)->getType() == GAME && !(*it)->getKidGame())
-			continue;
-
-		if (hiddenExts.size() > 0 && (*it)->getType() == GAME)
-		{
-			std::string extlow = Utils::String::toLower(Utils::FileSystem::getExtension((*it)->getFileName()));
-			if (std::find(hiddenExts.cbegin(), hiddenExts.cend(), extlow) != hiddenExts.cend())
-				continue;
-		}
-
-		if ((*it)->getType() == FOLDER && refactorUniqueGameFolders)
-		{
-			FolderData* pFolder = (FolderData*)(*it);
-			if (pFolder->getChildren().size() == 0)
-				continue;
-
-			if (pFolder->isVirtualStorage() && pFolder->getSourceFileData()->getSystem()->isGroupChildSystem() && pFolder->getSourceFileData()->getSystem()->getName() == "windows_installers")
-			{
-				ret.push_back(*it);
-				continue;
-			}
-
-			auto fd = pFolder->findUniqueGameForFolder();
-			if (fd != nullptr)
-			{
-				if (idx != nullptr && !idx->showFile(fd))
-					continue;
-
-				if (!showHiddenFiles && fd->getHidden())
-					continue;
-
-				if (filterKidGame && !fd->getKidGame())
-					continue;
-
-				ret.push_back(fd);
-
-				continue;
-			}
-		}
-
-		ret.push_back(*it);
-	}
-
-	sortChildrenList(ret);
-	return ret;
-}
-#else
 const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
 {
 	std::vector<FileData*> ret;
@@ -1058,8 +910,6 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 
 	return ret;
 }
-
-#endif
 
 std::shared_ptr<std::vector<FileData*>> FolderData::findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack)
 {
@@ -1690,7 +1540,3 @@ std::string FileData::getCurrentGameSetting(const std::string& settingName)
 void FileData::speak() {
   TextToSpeech::getInstance()->say(getName());
 };
-
-#ifdef _ENABLEEMUELEC
-bool hasFileSortName(FileData* file) { return !file->getSortName().empty(); }
-#endif

@@ -202,10 +202,7 @@ public:
 	FileData* FindByPath(const std::string& path);
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
-	
-#ifdef _ENABLEEMUELEC
-	void sortChildrenList(std::vector<FileData*>& vec);
-#endif
+
 	const std::vector<FileData*> getChildrenListToDisplay();
 
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
@@ -233,12 +230,3 @@ private:
 
 
 #endif // ES_APP_FILE_DATA_H
-
-#ifdef _ENABLEEMUELEC
-	#ifndef FILE_COMPARISONS_H_
-	#define FILE_COMPARISONS_H_
-
-	bool hasFileSortName(FileData* file);
-
-	#endif
-#endif

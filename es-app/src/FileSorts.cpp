@@ -95,14 +95,11 @@ namespace FileSorts
 	{
 		if (file1->getType() != file2->getType())
 		{
-			return file1->getType() != FOLDER;
+			return file1->getType() == FOLDER;
 		}
 
 		std::string name1 = file1->getSortName();
 		std::string name2 = file2->getSortName();
-
-		if (name1.empty() != name2.empty())
-			return name2.empty();
 
 		if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
