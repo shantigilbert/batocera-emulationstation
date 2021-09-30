@@ -773,7 +773,7 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
-
+#ifdef _ENABLEEMUELEC
 void FolderData::sortChildrenList(std::vector<FileData*>& vec)
 {
 	FileFilterIndex* idx = getSystem()->getIndex(false);
@@ -954,8 +954,8 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 	}
 	return ret;
 }
-
-/*const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
+#else
+const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
 {
 	std::vector<FileData*> ret;
 
@@ -1089,7 +1089,9 @@ const std::vector<FileData*> FolderData::getChildrenListToDisplay()
 	}
 
 	return ret;
-}*/
+}
+
+#endif
 
 std::shared_ptr<std::vector<FileData*>> FolderData::findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack)
 {

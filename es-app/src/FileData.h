@@ -203,7 +203,9 @@ public:
 
 	inline const std::vector<FileData*>& getChildren() const { return mChildren; }
 	
+#ifdef _ENABLEEMUELEC
 	void sortChildrenList(std::vector<FileData*>& vec);
+#endif
 	const std::vector<FileData*> getChildrenListToDisplay();
 
 	std::shared_ptr<std::vector<FileData*>> findChildrenListToDisplayAtCursor(FileData* toFind, std::stack<FileData*>& stack);
