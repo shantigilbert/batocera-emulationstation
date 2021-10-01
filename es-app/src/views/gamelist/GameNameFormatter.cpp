@@ -69,7 +69,7 @@ GameNameFormatter::GameNameFormatter(SystemData* system)
 
 	mShowYear =
 		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
-		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
+		mSortId == FileSorts::RELEASEDATE_DESCENDING ||
 		mSortId == FileSorts::SYSTEM_RELEASEDATE_ASCENDING ||
 		mSortId == FileSorts::SYSTEM_RELEASEDATE_DESCENDING ||
 		mSortId == FileSorts::RELEASEDATE_SYSTEM_ASCENDING ||

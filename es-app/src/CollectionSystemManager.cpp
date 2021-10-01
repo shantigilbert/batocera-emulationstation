@@ -465,8 +465,30 @@ void CollectionSystemManager::updateCollectionSystem(FileData* file, CollectionS
 		ViewController::get()->onFileChanged(rootFolder, FILE_METADATA_CHANGED);
 	}
 	else
+#ifdef _ENABLEEMUELEC
+	{
+		sortSystem(curSys);
+		ViewController::get()->onFileChanged(rootFolder, FILE_SORTED);		
+	}
+#else	
 		ViewController::get()->onFileChanged(rootFolder, FILE_SORTED);
+#endif
 }
+
+#ifdef _ENABLEEMUELEC
+void CollectionSystemManager::sortSystem(SystemData* system)
+{
+	FolderData* rootFolder = system->getRootFolder();
+	const unsigned int sortId = system->getSortId();
+
+	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(system->getSortId());
+
+	std::vector<FileData*>& childs = (std::vector<FileData*>&) rootFolder->getChildren();
+	std::sort(childs.begin(), childs.end(), sort.comparisonFunction);
+	if (!sort.ascending)
+		std::reverse(childs.begin(), childs.end());
+}
+#endif
 
 void CollectionSystemManager::sortLastPlayed(SystemData* system)
 {
@@ -474,6 +496,7 @@ void CollectionSystemManager::sortLastPlayed(SystemData* system)
 		return;
 
 	FolderData* rootFolder = system->getRootFolder();
+	const unsigned int sortId = system->getSortId();
 	system->setSortId(FileSorts::LASTPLAYED_DESCENDING);
 
 	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(system->getSortId());
