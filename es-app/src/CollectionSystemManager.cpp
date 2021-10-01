@@ -468,7 +468,7 @@ void CollectionSystemManager::updateCollectionSystem(FileData* file, CollectionS
 		ViewController::get()->onFileChanged(rootFolder, FILE_SORTED);
 }
 
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 void CollectionSystemManager::sortSystem(SystemData* system)
 {
 	FolderData* rootFolder = system->getRootFolder();
@@ -476,11 +476,47 @@ void CollectionSystemManager::sortSystem(SystemData* system)
 	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(system->getSortId());
 
 	std::vector<FileData*>& childs = (std::vector<FileData*>&) rootFolder->getChildren();
-	std::sort(childs.begin(), childs.end(), sort.comparisonFunction);
-	if (!sort.ascending)
-		std::reverse(childs.begin(), childs.end());
+
+	FileFilterIndex* idx = system->getIndex(false);
+	if (idx != nullptr && !idx->isFiltered())
+		idx = nullptr;
+
+	std::map<FileData*, int> scoringBoard;
+	for (auto it = childs.cbegin(); it != childs.cend(); it++)
+	{
+		if (idx != nullptr)
+		{
+			int score = idx->showFile(*it);
+			if (score == 0)
+				continue;
+
+			scoringBoard[*it] = score;
+		}
+	}
+
+	auto compf = sort.comparisonFunction;
+	if (idx != nullptr && idx->hasRelevency())
+	{
+		std::sort(childs.begin(), childs.end(), [scoringBoard, compf](const FileData* file1, const FileData* file2) -> bool
+		{ 
+			auto s1 = scoringBoard.find((FileData*) file1);
+			auto s2 = scoringBoard.find((FileData*) file2);		
+
+			if (s1 != scoringBoard.cend() && s2 != scoringBoard.cend() && s1->second != s2->second)
+				return s1->second < s2->second;
+			
+			return compf(file1, file2);
+		});
+	}
+	else
+	{
+		std::sort(childs.begin(), childs.end(), compf);
+
+		if (!sort.ascending)
+			std::reverse(childs.begin(), childs.end());
+	}
 }
-//#endif
+#endif
 
 void CollectionSystemManager::sortLastPlayed(SystemData* system)
 {
@@ -1075,11 +1111,11 @@ void CollectionSystemManager::populateAutoCollection(CollectionSystemData* sysDa
 		sortLastPlayed(newSys);
 		trimCollectionCount(rootFolder, LAST_PLAYED_MAX);
 	}
-//#ifdef _ENABLEEMUELEC	
+#ifdef _ENABLEEMUELEC	
 	else {
 		sortSystem(newSys);
 	}
-//#endif
+#endif
 
 	sysData->isPopulated = true;
 	updateCollectionFolderMetadata(newSys);
@@ -1180,9 +1216,9 @@ void CollectionSystemManager::populateCustomCollection(CollectionSystemData* sys
 		}
 	}
 
-//#ifdef _ENABLEEMUELEC	
+#ifdef _ENABLEEMUELEC	
 	sortSystem(newSys);
-//#endif
+#endif
 
 	updateCollectionFolderMetadata(newSys);
 }
