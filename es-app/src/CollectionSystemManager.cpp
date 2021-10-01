@@ -468,6 +468,20 @@ void CollectionSystemManager::updateCollectionSystem(FileData* file, CollectionS
 		ViewController::get()->onFileChanged(rootFolder, FILE_SORTED);
 }
 
+//#ifdef _ENABLEEMUELEC
+void CollectionSystemManager::sortSystem(SystemData* system)
+{
+	FolderData* rootFolder = system->getRootFolder();
+
+	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(system->getSortId());
+
+	std::vector<FileData*>& childs = (std::vector<FileData*>&) rootFolder->getChildren();
+	std::sort(childs.begin(), childs.end(), sort.comparisonFunction);
+	if (!sort.ascending)
+		std::reverse(childs.begin(), childs.end());
+}
+//#endif
+
 void CollectionSystemManager::sortLastPlayed(SystemData* system)
 {
 	if (system->getName() != "recent")
@@ -1061,6 +1075,11 @@ void CollectionSystemManager::populateAutoCollection(CollectionSystemData* sysDa
 		sortLastPlayed(newSys);
 		trimCollectionCount(rootFolder, LAST_PLAYED_MAX);
 	}
+//#ifdef _ENABLEEMUELEC	
+	else {
+		sortSystem(newSys);
+	}
+//#endif
 
 	sysData->isPopulated = true;
 	updateCollectionFolderMetadata(newSys);
