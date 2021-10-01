@@ -1179,6 +1179,11 @@ void CollectionSystemManager::populateCustomCollection(CollectionSystemData* sys
 			LOG(LogInfo) << "Couldn't find game referenced at '" << gameKey << "' for system config '" << path << "'";
 		}
 	}
+
+//#ifdef _ENABLEEMUELEC	
+	sortSystem(newSys);
+//#endif
+
 	updateCollectionFolderMetadata(newSys);
 }
 
