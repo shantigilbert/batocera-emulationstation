@@ -474,7 +474,6 @@ void CollectionSystemManager::sortLastPlayed(SystemData* system)
 		return;
 
 	FolderData* rootFolder = system->getRootFolder();
-	const unsigned int sortId = system->getSortId();
 	system->setSortId(FileSorts::LASTPLAYED_DESCENDING);
 
 	const FileSorts::SortType& sort = FileSorts::getSortTypes().at(system->getSortId());
