@@ -133,9 +133,9 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 			#ifdef _ENABLEEMUELEC			
 						if (i == 1)
 						{
-							FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
+							FileSorts::SortType& st = (FileSorts::SortType&) FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
 							mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
-							st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
+							st = (FileSorts::SortType&) FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
 							mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
 						}
 			#endif			
