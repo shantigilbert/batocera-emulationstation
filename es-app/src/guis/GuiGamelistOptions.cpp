@@ -131,14 +131,16 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 			const FileSorts::SortType& sort = FileSorts::getSortTypes().at(i);
 			mListSort->add(sort.icon + sort.description, sort.id, sort.id == currentSortId); // TODO - actually make the sort type persistent
 			#ifdef _ENABLEEMUELEC			
+						if (i = (FileSorts::getSortTypes().size()-2))
+							break;
 						if (i == 1)
 						{
-							FileSorts::SortType& st = (FileSorts::SortType&) FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
-							mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
-							st = (FileSorts::SortType&) FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
-							mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
+							const FileSorts::SortType& st1 = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
+							mListSort->add(st1.icon + st1.description, st1.id, st1.id == currentSortId);
+							const FileSorts::SortType& st2 = FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
+							mListSort->add(st2.icon + st2.description, st2.id, st2.id == currentSortId);
 						}
-			#endif			
+			#endif
 		}
 
 		mMenu.addWithLabel(_("SORT GAMES BY"), mListSort); // batocera	
