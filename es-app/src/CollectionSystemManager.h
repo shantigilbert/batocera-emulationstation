@@ -128,6 +128,9 @@ private:
 	std::vector<std::string> getUserCollectionThemeFolders();
 
 	void trimCollectionCount(FolderData* rootFolder, int limit);
+#ifdef _ENABLEEMUELEC
+	void sortSystem(SystemData* system);
+#endif
 	void sortLastPlayed(SystemData* system);
 
 	bool themeFolderExists(std::string folder);
