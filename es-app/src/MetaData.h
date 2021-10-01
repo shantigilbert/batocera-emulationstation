@@ -32,7 +32,7 @@ enum MetaDataType
 enum MetaDataId
 {
 	Name = 0,
-	SortName = 1,
+	SortName = 41,
 	Desc = 2,
 	Emulator = 3,
 	Core = 4,
