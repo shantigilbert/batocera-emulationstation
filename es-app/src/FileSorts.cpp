@@ -69,11 +69,10 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(SYSTEM_RELEASEDATE_DESCENDING, &compareSystemReleaseYear, false, _("SYSTEM, RELEASE YEAR, DESCENDING"), _U("\uF161 ")));
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_ASCENDING, &compareReleaseYearSystem, true, _("RELEASE YEAR, SYSTEM, ASCENDING"), _U("\uF160 ")));
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_DESCENDING, &compareReleaseYearSystem, false, _("RELEASE YEAR, SYSTEM, DESCENDING"), _U("\uF161 ")));		
-		#ifdef _ENABLEEMUELEC
-				mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
-				mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
-		#endif
-
+#ifdef _ENABLEEMUELEC
+		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
+		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
+#endif
 	}
 
 #ifdef _ENABLEEMUELEC
@@ -100,8 +99,8 @@ namespace FileSorts
 		std::string name1 = file1->getSortName();
 		std::string name2 = file2->getSortName();
 
-		int i1 = Utils::String::unicodeToInteger(name1);
-		int i2 = Utils::String::unicodeToInteger(name2);
+		int i1 = std::atoi(name1.c_str());
+		int i2 = std::atoi(name2.c_str());
 		if (i1 > 0 || i2 > 0)
 			return i1 < i2;
 

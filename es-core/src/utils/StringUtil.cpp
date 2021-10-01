@@ -769,37 +769,6 @@ namespace Utils
 			return value;
 		}
 
-		int	unicodeToInteger(const std::string& string)
-		{
-			if (string.empty())
-				return 0;
-
-			const char* str = string.c_str();
-			while (*str == 0x20)
-				str++;
-
-			bool neg = false;
-			if (*str == 0x2D)
-			{
-				neg = true;
-				++str;
-			}
-			else if (*str == 0x2B)
-				++str;
-
-			int64_t value = 0;
-			for (; *str && *str != 0x2E && *str != 0x20; str++)
-			{
-				if (*str < 0x30 || *str > 0x39)
-					break;
-
-				value *= 10;
-				value += *str - 0x30;
-			}
-
-			return neg ? -value : value;
-		}
-
 		int	toInteger(const std::string& string)
 		{
 			if (string.empty())

@@ -235,10 +235,7 @@ const std::string& FileData::getName()
 
 const std::string FileData::getSortName() const
 {
-	std::string s = mMetadata.get(MetaDataId::SortName);
-	int i = Utils::String::unicodeToInteger(s);
-	if (i > 10000000) return "";
-	return s;
+	return mMetadata.get(MetaDataId::SortName);
 }
 
 const std::string FileData::getVideoPath()
