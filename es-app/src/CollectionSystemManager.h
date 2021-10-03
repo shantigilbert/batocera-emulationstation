@@ -129,9 +129,6 @@ private:
 
 	void trimCollectionCount(FolderData* rootFolder, int limit);
 	void sortLastPlayed(SystemData* system);
-#ifdef _ENABLEEMUELEC
-	void sortSystem(SystemData* system);
-#endif
 
 	bool themeFolderExists(std::string folder);
 

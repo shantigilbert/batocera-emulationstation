@@ -108,7 +108,7 @@ namespace FileSorts
 		if (i1 == 0) i1 = INT_MAX;
 		if (i2 == 0) i2 = INT_MAX;
 		if (i1 != i2)
-			return i1 < i2;
+			return i1 < i2 || compareNames(name1, name2);
 
 		if (name1.empty()) {
 			name1 = ((FileData*)file1)->getName();
@@ -122,7 +122,7 @@ namespace FileSorts
 		if (i1 == 0) i1 = INT_MAX;
 		if (i2 == 0) i2 = INT_MAX;
 		if (i1 != i2)
-			return i1 < i2;
+			return i1 < i2 || compareNames(name1, name2);
 
 		return compareNames(name1, name2);
 	}
