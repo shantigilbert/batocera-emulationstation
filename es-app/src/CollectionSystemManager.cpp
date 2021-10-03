@@ -1105,7 +1105,7 @@ void CollectionSystemManager::populateCustomCollection(CollectionSystemData* sys
 				}
 			}
 		}
-	}
+    }
 		updateCollectionFolderMetadata(newSys);
 		return;
 	}
