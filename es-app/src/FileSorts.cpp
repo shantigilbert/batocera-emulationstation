@@ -98,8 +98,11 @@ namespace FileSorts
 		int l = s.size();
 		int i = 0;
 		while(i < l) {
-		   if(!std::isdigit(s[i]) || s[i] == ' ') {
-		      return i;
+		   if(!std::isdigit(s[i])) {
+				 	if (s[i] != ' ')
+						return 0;
+					else
+		      	return i;
 		   }
 		   ++i;
 		}
