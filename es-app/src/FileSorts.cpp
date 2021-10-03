@@ -110,6 +110,11 @@ namespace FileSorts
 			name2 = ((FileData*)file2)->getName();
 		}
 
+		int p1 = findFirstNonDigit(name1);
+		int p2 = findFirstNonDigit(name2);
+		if (p1 != p2)
+			return p1 > p2;
+
 		int i1 = std::atoi(name1.c_str());
 		int i2 = std::atoi(name2.c_str());
 		if (i1 == 0) i1 = INT_MAX;
@@ -118,6 +123,18 @@ namespace FileSorts
 			return i1 < i2;
 
 		return compareNames(name1, name2);
+	}
+
+	int findFirstNonDigit(const std::string s)
+	{
+		int l = strlen(s);
+		int i = 0;
+		while(i < l) {
+		   if(!isdigit(arrayString[i])) {
+		      return i;
+		   }
+		   ++i;
+		}		
 	}
 
 	bool compareNames(std::string name1, std::string name2)
