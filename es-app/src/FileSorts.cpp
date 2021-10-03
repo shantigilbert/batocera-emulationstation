@@ -130,7 +130,7 @@ namespace FileSorts
 		int l = strlen(s);
 		int i = 0;
 		while(i < l) {
-		   if(!isdigit(arrayString[i])) {
+		   if(!isdigit(s[i])) {
 		      return i;
 		   }
 		   ++i;
