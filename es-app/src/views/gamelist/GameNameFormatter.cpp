@@ -68,11 +68,10 @@ GameNameFormatter::GameNameFormatter(SystemData* system)
 	mShowFlags = system->getShowFlags();
 
 	mShowYear =
-#ifdef _ENABLEEMUELEC	
 		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
+#ifdef _ENABLEEMUELEC			
 		mSortId == FileSorts::RELEASEDATE_DESCENDING ||
-#else 
-		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
+#else
 		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
 #ifdef _ENABLEEMUELEC
 		mSortId == FileSorts::SYSTEM_RELEASEDATE_ASCENDING ||
