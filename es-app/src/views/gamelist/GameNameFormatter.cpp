@@ -109,7 +109,7 @@ std::string GameNameFormatter::getDisplayName(FileData* fd, bool showFolderIcon)
 {
 	std::string name = fd->getName();
 #ifdef _ENABLEEMUELEC
-	if (!fd.getSortName().empty())
+	if (!fd->getSortName().empty())
 		name = fd->getSortName();
 #endif
 
