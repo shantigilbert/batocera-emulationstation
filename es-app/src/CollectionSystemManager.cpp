@@ -1111,7 +1111,7 @@ void CollectionSystemManager::populateAutoCollection(CollectionSystemData* sysDa
 		sortLastPlayed(newSys);
 		trimCollectionCount(rootFolder, LAST_PLAYED_MAX);
 	}
-#ifdef _ENABLEEMUELEC	
+#ifdef _ENABLEEMUELEC2
 	else {
 		sortSystem(newSys);
 	}
@@ -1216,7 +1216,7 @@ void CollectionSystemManager::populateCustomCollection(CollectionSystemData* sys
 		}
 	}
 
-#ifdef _ENABLEEMUELEC	
+#ifdef _ENABLEEMUELEC2
 	sortSystem(newSys);
 #endif
 
