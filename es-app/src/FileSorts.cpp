@@ -93,16 +93,17 @@ namespace FileSorts
 		return compareNames(name1, name2);
 	}
 
-	int findFirstNonDigit(const std::string s)
+	int digitPrefixLength(const std::string s)
 	{
 		int l = s.size();
 		int i = 0;
 		while(i < l) {
-		   if(!std::isdigit(s[i])) {
+		   if(!std::isdigit(s[i]) || s[i] == ' ') {
 		      return i;
 		   }
 		   ++i;
-		}		
+		}
+		return 0;
 	}
 
 	bool compareSortName(const FileData* file1, const FileData* file2)
@@ -122,8 +123,8 @@ namespace FileSorts
 			name2 = ((FileData*)file2)->getName();
 		}
 
-		int p1 = findFirstNonDigit(name1);
-		int p2 = findFirstNonDigit(name2);
+		int p1 = digitPrefixLength(name1);
+		int p2 = digitPrefixLength(name2);
 		if (p1 != p2)
 			return p1 > p2;
 
