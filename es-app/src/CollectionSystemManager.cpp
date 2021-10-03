@@ -1160,7 +1160,6 @@ void CollectionSystemManager::populateCustomCollection(CollectionSystemData* sys
 			LOG(LogInfo) << "Couldn't find game referenced at '" << gameKey << "' for system config '" << path << "'";
 		}
 	}
-
 	updateCollectionFolderMetadata(newSys);
 }
 
