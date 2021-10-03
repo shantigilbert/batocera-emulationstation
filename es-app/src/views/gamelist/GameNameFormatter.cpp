@@ -73,7 +73,7 @@ GameNameFormatter::GameNameFormatter(SystemData* system)
 		mSortId == FileSorts::RELEASEDATE_DESCENDING ||
 #else
 		mSortId == FileSorts::RELEASEDATE_ASCENDING ||
-#ifdef _ENABLEEMUELEC
+#endif
 		mSortId == FileSorts::SYSTEM_RELEASEDATE_ASCENDING ||
 		mSortId == FileSorts::SYSTEM_RELEASEDATE_DESCENDING ||
 		mSortId == FileSorts::RELEASEDATE_SYSTEM_ASCENDING ||
