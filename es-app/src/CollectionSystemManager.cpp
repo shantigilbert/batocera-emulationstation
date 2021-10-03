@@ -1061,7 +1061,6 @@ void CollectionSystemManager::populateAutoCollection(CollectionSystemData* sysDa
 		sortLastPlayed(newSys);
 		trimCollectionCount(rootFolder, LAST_PLAYED_MAX);
 	}
-
 	sysData->isPopulated = true;
 	updateCollectionFolderMetadata(newSys);
 }
