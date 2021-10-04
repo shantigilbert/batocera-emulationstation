@@ -1516,8 +1516,8 @@ bool SystemData::isVisible()
 {
 	if (mIsCollectionSystem)
 	{
-		//if (mMetadata.name != "favorites" && !UIModeController::getInstance()->isUIModeFull() && getGameCountInfo()->totalGames == 0)
-			//return false;
+		if (mMetadata.name != "favorites" && !UIModeController::getInstance()->isUIModeFull() && getGameCountInfo()->totalGames == 0)
+			return false;
 
 		return true;
 	}
@@ -1525,7 +1525,7 @@ bool SystemData::isVisible()
 	if (isGroupChildSystem())
 		return false;
 
-	if (!mHidden && getGameCountInfo()->totalGames > 0)
+	if (!mHidden && !mIsCollectionSystem && getGameCountInfo()->totalGames > 0)
 		return true;
 
 	return false;

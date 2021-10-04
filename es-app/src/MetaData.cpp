@@ -162,6 +162,7 @@ MetaDataList MetaDataList::createFromXML(MetaDataListType type, pugi::xml_node& 
 		}
 
 		MetaDataDecl& mdd = mMetaDataDecls[mMetaDataIndexes[it->second]];
+
 		if (mdd.isAttribute)
 			continue;
 
