@@ -852,6 +852,7 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 	rootFolder->setMetadata(MetaDataId::KidGame, "false");
 	rootFolder->setMetadata(MetaDataId::Hidden, "false");
 	rootFolder->setMetadata(MetaDataId::Favorite, "false");
+	rootFolder->setMetadata(MetaDataId::SortName, "");
 
 	rootFolder->getMetadata().resetChangedFlag();
 }
