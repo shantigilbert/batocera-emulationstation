@@ -54,7 +54,8 @@ SystemData::SystemData(const SystemMetadata& meta, SystemEnvironmentData* envDat
 	loadFeatures();
 
 	// if it's an actual system, initialize it, if not, just create the data structure
-	if (!mIsCollectionSystem && mIsGameSystem)
+	if (mIsGameSystem)
+	//if (!mIsCollectionSystem && mIsGameSystem)
 	{
 		mRootFolder = new FolderData(mEnvData->mStartPath, this);
 		mRootFolder->getMetadata().set(MetaDataId::Name, mMetadata.fullName);
