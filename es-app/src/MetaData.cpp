@@ -257,6 +257,7 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 			continue;
 		}
 
+
 		// Don't save GenreIds
 		if (mddIter->id == MetaDataId::GenreIds)
 			continue;
@@ -274,7 +275,9 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 			if (mddIter->type == MD_PATH)
 				value = Utils::FileSystem::createRelativePath(value, relativeTo, true);
 
-			
+            if (mddIter->id == MetaDataId::SortName && value.empty())
+                continue;
+
 			if (mddIter->isAttribute)
 				parent.append_attribute(mddIter->key.c_str()).set_value(value.c_str());
 			else
@@ -303,6 +306,9 @@ void MetaDataList::set(MetaDataId id, const std::string& value)
 		mWasChanged = true;
 		return;
 	}
+
+    if (id == MetaDataId::SortName && value.empty())
+        return;
 
 	// Players -> remove "1-"
 	if (mType == GAME_METADATA && id == MetaDataId::Players && Utils::String::startsWith(value, "1-")) // "players"
