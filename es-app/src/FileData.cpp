@@ -817,6 +817,11 @@ const std::string& CollectionFileData::getName()
 	return mSourceFileData->getName();
 }
 
+const std::string CollectionFileData::getSortName()
+{
+    return getMetadata().get(MetaDataId::SortName);
+}
+
 const std::vector<FileData*> FolderData::getChildrenListToDisplay() 
 {
 	std::vector<FileData*> ret;

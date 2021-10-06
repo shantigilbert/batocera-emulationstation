@@ -782,6 +782,7 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 	std::string video = "";
 	std::string thumbnail = "";
 	std::string image = "";
+    std::string sortname = "";
 
 	auto games = rootFolder->getChildren();
 	char trstring[1024];
@@ -803,6 +804,7 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 			std::string new_developer = file->getMetadata(MetaDataId::Developer);
 			std::string new_genre = file->getMetadata(MetaDataId::Genre);
 			std::string new_players = file->getMetadata(MetaDataId::Players);
+            std::string new_sortname = file->getMetadata(MetaDataId::SortName);
 
 			rating = (new_rating > rating ? (new_rating != "" ? new_rating : rating) : rating);
 			players = (new_players > players ? (new_players != "" ? new_players : players) : players);
@@ -810,6 +812,7 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 			// TRANSLATION: number of developpers / various developpers
 			developer = (developer == _("None") ? new_developer : (new_developer != developer ? _("Various") : new_developer));
 			genre = (genre == _("None") ? new_genre : (new_genre != genre ? _("Various") : new_genre));
+            sortname = new_sortname;
 
 			switch (games_counter)
 			{
@@ -852,6 +855,7 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 	rootFolder->setMetadata(MetaDataId::KidGame, "false");
 	rootFolder->setMetadata(MetaDataId::Hidden, "false");
 	rootFolder->setMetadata(MetaDataId::Favorite, "false");
+    rootFolder->setMetadata(MetaDataId::SortName, sortname);
 
 	rootFolder->getMetadata().resetChangedFlag();
 }
