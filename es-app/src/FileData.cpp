@@ -103,6 +103,9 @@ FileData::~FileData()
 	if (mDisplayName)
 		delete mDisplayName;
 
+    if (mSortName)
+        delete mSortName;
+
 	if(mParent)
 		mParent->removeChild(this);
 
@@ -258,9 +261,13 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
-const std::string FileData::getSortName() const
+const std::string& FileData::getSortName()
 {
-	return mMetadata.get(MetaDataId::SortName);
+    if (mSortName == nullptr)
+    {
+        mSortName = new std::string( getMetadata(MetaDataId::SortName));
+    }
+    return *mSortName;
 }
 
 const std::string FileData::getVideoPath()
@@ -816,11 +823,6 @@ FileData* CollectionFileData::getSourceFileData()
 const std::string& CollectionFileData::getName()
 {
 	return mSourceFileData->getName();
-}
-
-const std::string CollectionFileData::getSortName()
-{
-    return getMetadata().get(MetaDataId::SortName);
 }
 
 const std::vector<FileData*> FolderData::getChildrenListToDisplay() 

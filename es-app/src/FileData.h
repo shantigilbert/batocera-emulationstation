@@ -63,7 +63,7 @@ public:
 	virtual ~FileData();
 
 	virtual const std::string& getName();
-	virtual const std::string getSortName() const;
+    virtual const std::string& getSortName();
 
 	inline FileType getType() const { return mType; }
 	
@@ -163,6 +163,7 @@ protected:
 	FileType mType;
 	SystemData* mSystem;
 	std::string* mDisplayName;
+    std::string* mSortName;
 };
 
 class CollectionFileData : public FileData
@@ -171,7 +172,7 @@ public:
 	CollectionFileData(FileData* file, SystemData* system);
 	~CollectionFileData();
 	const std::string& getName();
-    const std::string getSortName();
+
 	FileData* getSourceFileData();
 	std::string getKey();
 	virtual const std::string getPath() const;
