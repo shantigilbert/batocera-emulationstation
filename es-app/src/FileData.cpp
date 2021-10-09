@@ -31,7 +31,7 @@
 #include "TextToSpeech.h"
 
 FileData::FileData(FileType type, const std::string& path, SystemData* system)
-  : mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
+	: mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
 {
 #ifdef _ENABLEEMUELEC
     mSortName = nullptr;
@@ -790,7 +790,7 @@ CollectionFileData::CollectionFileData(FileData* file, SystemData* system)
 	: FileData(file->getSourceFileData()->getType(), "", system)
 {
 	mSourceFileData = file->getSourceFileData();
-  mParent = NULL;
+	mParent = NULL;
 }
 
 SystemEnvironmentData* CollectionFileData::getSystemEnvData() const

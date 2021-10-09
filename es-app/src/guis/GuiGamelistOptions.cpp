@@ -593,7 +593,7 @@ void GuiGamelistOptions::jumpToLetter()
 	if (mListSort->getSelected() != 0)
 	{
 #ifdef _ENABLEEMUELEC
-        if (mListSort->getSelected() > 1)
+        if (mListSort->getSelected() > 2)
             mListSort->selectFirstItem();
         mSystem->setSortId(mListSort->getSelected());
 #else

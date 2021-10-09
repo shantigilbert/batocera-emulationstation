@@ -273,7 +273,7 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 			if (mddIter->type == MD_PATH)
 				value = Utils::FileSystem::createRelativePath(value, relativeTo, true);
 
-
+			
 			if (mddIter->isAttribute)
 				parent.append_attribute(mddIter->key.c_str()).set_value(value.c_str());
 			else
