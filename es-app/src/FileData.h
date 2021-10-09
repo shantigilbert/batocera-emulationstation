@@ -176,7 +176,6 @@ public:
 	CollectionFileData(FileData* file, SystemData* system);
 	~CollectionFileData();
 	const std::string& getName();
-
 	FileData* getSourceFileData();
 	std::string getKey();
 	virtual const std::string getPath() const;

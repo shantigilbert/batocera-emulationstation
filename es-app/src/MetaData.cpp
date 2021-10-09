@@ -162,7 +162,6 @@ MetaDataList MetaDataList::createFromXML(MetaDataListType type, pugi::xml_node& 
 		}
 
 		MetaDataDecl& mdd = mMetaDataDecls[mMetaDataIndexes[it->second]];
-
 		if (mdd.isAttribute)
 			continue;
 
@@ -256,7 +255,6 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 			parent.append_child("name").text().set(mName.c_str());
 			continue;
 		}
-
 
 		// Don't save GenreIds
 		if (mddIter->id == MetaDataId::GenreIds)
