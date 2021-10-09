@@ -31,7 +31,7 @@
 #include "TextToSpeech.h"
 
 FileData::FileData(FileType type, const std::string& path, SystemData* system)
-	: mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
+    : mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mSortName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
 {
 	// metadata needs at least a name field (since that's what getName() will return)
 	if (mMetadata.get(MetaDataId::Name).empty() && !mPath.empty())
