@@ -593,12 +593,23 @@ void GuiGamelistOptions::jumpToLetter()
 	if (mListSort->getSelected() != 0)
 	{
 #ifdef _ENABLEEMUELEC
-        if (mListSort->getSelected() > 2)
-            mListSort->selectFirstItem();
-        mSystem->setSortId(mListSort->getSelected());
+				int nameSorts[4] = {
+					FileSorts::FILENAME_ASCENDING,
+					FileSorts::FILENAME_DESCENDING,
+					FileSorts::SORTNAME_ASCENDING,
+					FileSorts::SORTNAME_DESCENDING};
+				int val = mListSort->getSelected();
+				if (std::find(std::begin(nameSorts), std::end(nameSorts), val) != std::end(nameSorts))
+				{
+					mSystem->setSortId(val);
+				}
+				else {
+					mListSort->selectFirstItem();
+					mSystem->setSortId(0);
+				}
 #else
 		mListSort->selectFirstItem();
-        mSystem->setSortId(0);
+		mSystem->setSortId(0);
 #endif
 
 		FolderData* root = mSystem->getRootFolder();
