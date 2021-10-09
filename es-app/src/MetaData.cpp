@@ -174,9 +174,6 @@ MetaDataList MetaDataList::createFromXML(MetaDataListType type, pugi::xml_node& 
 			continue;
 		}
 
-        if (mdd.id == MetaDataId::SortName && value.empty())
-            continue;
-
 		if (mdd.id == MetaDataId::GenreIds)
 			continue;
 
@@ -277,12 +274,6 @@ void MetaDataList::appendToXML(pugi::xml_node& parent, bool ignoreDefaults, cons
 			std::string value = mapIter->second;
 			if (mddIter->type == MD_PATH)
 				value = Utils::FileSystem::createRelativePath(value, relativeTo, true);
-
-            if (mddIter->id == MetaDataId::SortName && value.empty())
-                continue;
-
-            if (mddIter->id == MetaDataId::SortName)
-                LOG(LogInfo) << MetaDataId::SortName << value << std::endl;
 
 			if (mddIter->isAttribute)
 				parent.append_attribute(mddIter->key.c_str()).set_value(value.c_str());

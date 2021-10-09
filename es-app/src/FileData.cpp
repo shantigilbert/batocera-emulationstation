@@ -31,8 +31,12 @@
 #include "TextToSpeech.h"
 
 FileData::FileData(FileType type, const std::string& path, SystemData* system)
-    : mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mSortName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
+    : mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
 {
+#ifdef _ENABLEEMUELEC
+    mSortName(nullptr);
+#endif
+
 	// metadata needs at least a name field (since that's what getName() will return)
 	if (mMetadata.get(MetaDataId::Name).empty() && !mPath.empty())
 		mMetadata.set(MetaDataId::Name, getDisplayName());
@@ -103,8 +107,10 @@ FileData::~FileData()
 	if (mDisplayName)
 		delete mDisplayName;
 
+#ifdef _ENABLEEMUELEC
     if (mSortName)
         delete mSortName;
+#endif
 
 	if(mParent)
 		mParent->removeChild(this);
@@ -261,6 +267,7 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
+#ifdef _ENABLEEMUELEC
 const std::string& FileData::getSortName()
 {
     if (mSortName == nullptr)
@@ -269,6 +276,7 @@ const std::string& FileData::getSortName()
     }
     return *mSortName;
 }
+#endif
 
 const std::string FileData::getVideoPath()
 {
