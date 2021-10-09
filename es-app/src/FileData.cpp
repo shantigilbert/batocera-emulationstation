@@ -775,7 +775,8 @@ CollectionFileData::CollectionFileData(FileData* file, SystemData* system)
 	: FileData(file->getSourceFileData()->getType(), "", system)
 {
 	mSourceFileData = file->getSourceFileData();
-	mParent = NULL;	
+    mParent = NULL;
+    setMetadata(mSourceFileData->getMetadata());
 }
 
 SystemEnvironmentData* CollectionFileData::getSystemEnvData() const

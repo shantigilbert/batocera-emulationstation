@@ -782,7 +782,7 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 	std::string video = "";
 	std::string thumbnail = "";
 	std::string image = "";
-    std::string sortname = "";
+    std::string sortname = _("None");
 
 	auto games = rootFolder->getChildren();
 	char trstring[1024];
