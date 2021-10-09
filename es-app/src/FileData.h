@@ -64,7 +64,8 @@ public:
 
 	virtual const std::string& getName();
 #ifdef _ENABLEEMUELEC
-    virtual const std::string& getSortName();
+  virtual const std::string& getSortName();
+	virtual const std::string getSortOrName();
 #endif
 
 	inline FileType getType() const { return mType; }

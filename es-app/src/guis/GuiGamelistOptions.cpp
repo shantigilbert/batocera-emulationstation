@@ -643,13 +643,15 @@ void GuiGamelistOptions::jumpToLetter()
 			sortName = true;
 
 		if (sortName)
-			checkLetter = (char)toupper(files.at(mid)->getSortName()[0]);
+		{
+			checkLetter = (char)toupper(files.at(mid)->getSortOrName()[0]);			
+		}
 #endif
 			
 		if(checkLetter < letter)
 			min = mid + 1;
 #ifdef _ENABLEEMUELEC			
-		else if(sortName && (checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortName()[0])))))
+		else if(sortName && (checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortOrName()[0])))))
 			max = mid - 1;
 #endif
 		else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getName()[0]))))

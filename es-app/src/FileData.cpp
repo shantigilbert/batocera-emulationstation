@@ -276,6 +276,14 @@ const std::string& FileData::getSortName()
     }
     return *mSortName;
 }
+
+const std::string FileData::getSortOrName()
+{
+  if (!getSortName().empty())
+    return getSortName();
+  return getName();
+}
+
 #endif
 
 const std::string FileData::getVideoPath()
