@@ -34,7 +34,7 @@ FileData::FileData(FileType type, const std::string& path, SystemData* system)
     : mPath(path), mType(type), mSystem(system), mParent(nullptr), mDisplayName(nullptr), mMetadata(type == GAME ? GAME_METADATA : FOLDER_METADATA) // metadata is REALLY set in the constructor!
 {
 #ifdef _ENABLEEMUELEC
-    mSortName(nullptr);
+    mSortName = nullptr;
 #endif
 
 	// metadata needs at least a name field (since that's what getName() will return)

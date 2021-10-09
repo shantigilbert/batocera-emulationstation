@@ -803,7 +803,6 @@ void CollectionSystemManager::updateCollectionFolderMetadata(SystemData* sys)
 			std::string new_developer = file->getMetadata(MetaDataId::Developer);
 			std::string new_genre = file->getMetadata(MetaDataId::Genre);
 			std::string new_players = file->getMetadata(MetaDataId::Players);
-            std::string new_sortname = file->getMetadata(MetaDataId::SortName);
 
 			rating = (new_rating > rating ? (new_rating != "" ? new_rating : rating) : rating);
 			players = (new_players > players ? (new_players != "" ? new_players : players) : players);
