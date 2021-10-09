@@ -592,9 +592,15 @@ void GuiGamelistOptions::jumpToLetter()
 
 	if (mListSort->getSelected() != 0)
 	{
+#ifdef _ENABLEEMUELEC
+        if (mListSort->getSelected() > 1)
+            mListSort->selectFirstItem();
+        mSystem->setSortId(mListSort->getSelected());
+#else
 		mListSort->selectFirstItem();
-		mSystem->setSortId(0);
-		
+        mSystem->setSortId(0);
+#endif
+
 		FolderData* root = mSystem->getRootFolder();
 		/*
 		const FolderData::SortType& sort = FileSorts::getSortTypes().at(0);
@@ -619,7 +625,7 @@ void GuiGamelistOptions::jumpToLetter()
 			continue;
 
 		char checkLetter = (char)toupper(files.at(mid)->getName()[0]);
-#ifdef _ENABLEEMUELEC		
+#ifdef _ENABLEEMUELEC
 		unsigned int sortId = mSystem->getSortId();
 		bool sortName = false;
 		if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)

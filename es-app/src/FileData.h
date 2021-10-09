@@ -166,7 +166,7 @@ protected:
 	SystemData* mSystem;
 	std::string* mDisplayName;
 #ifdef _ENABLEEMUELEC
-    std::string* mSortName;
+	std::string* mSortName;
 #endif
 };
 

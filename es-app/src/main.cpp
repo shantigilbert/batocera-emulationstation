@@ -499,7 +499,7 @@ int main(int argc, char* argv[])
 
 	//start the logger
 	Log::setupReportingLevel();
-    Log::init();
+	Log::init();	
 	LOG(LogInfo) << "EmulationStation - v" << PROGRAM_VERSION_STRING << ", built " << PROGRAM_BUILT_STRING;
 
 	//always close the log on exit
