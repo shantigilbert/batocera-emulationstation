@@ -80,54 +80,26 @@ namespace FileSorts
 	}
 
 #ifdef _ENABLEEMUELEC
-	//returns if file1 should come before file2
-	bool compareName(const FileData* file1, const FileData* file2)
-	{
-		if (file1->getType() != file2->getType())
-		{
-			return file1->getType() == FOLDER;
-		}
-		// we compare the actual metadata name, as collection files have the system appended which messes up the order
-		const std::string name1 = ((FileData *) file1)->getName();
-		const std::string name2 = ((FileData *) file2)->getName();
-		return compareNames(name1, name2);
-	}
-
-	int digitPrefixLength(const std::string s)
+	int _digitPrefixLength(const std::string s)
 	{
 		int l = s.size();
 		int i = 0;
 		while(i < l) {
-		   if(!std::isdigit(s[i])) {
-				 	if (s[i] != ' ')
+			 if(!std::isdigit(s[i])) {
+					if (s[i] != ' ')
 						return 0;
 					else
-		      	return i;
-		   }
-		   ++i;
+						return i;
+			 }
+			 ++i;
 		}
 		return 0;
 	}
 
-	bool compareSortName(const FileData* file1, const FileData* file2)
+	bool _comparePrefixDigits(std::string name1, std::string name2)
 	{
-		if (file1->getType() != file2->getType())
-		{
-			return file1->getType() == FOLDER;
-		}
-
-        std::string name1 = (std::string) ((FileData *) file1)->getSortName();
-        std::string name2 = (std::string) ((FileData *) file2)->getSortName();
-
-		if (name1.empty()) {
-			name1 = ((FileData*)file1)->getName();
-		}
-		if (name2.empty()) {
-			name2 = ((FileData*)file2)->getName();
-		}
-
-		int p1 = digitPrefixLength(name1);
-		int p2 = digitPrefixLength(name2);
+		int p1 = _digitPrefixLength(name1);
+		int p2 = _digitPrefixLength(name2);
 		if (p1 != p2)
 			return p1 > p2;
 
@@ -136,12 +108,10 @@ namespace FileSorts
 		if (i1 == 0) i1 = INT_MAX;
 		if (i2 == 0) i2 = INT_MAX;
 		if (i1 != i2)
-			return i1 < i2;
-
-		return compareNames(name1, name2);
+			return i1 < i2;		
 	}
 
-	bool compareNames(std::string name1, std::string name2)
+	bool _compareNames(std::string name1, std::string name2)
 	{
 		const bool ignoreArticles = Settings::getInstance()->getBool("IgnoreLeadingArticles");
 		if (ignoreArticles)
@@ -152,6 +122,41 @@ namespace FileSorts
 		}
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
+
+	//returns if file1 should come before file2
+	bool compareName(const FileData* file1, const FileData* file2)
+	{
+		if (file1->getType() != file2->getType())
+		{
+			return file1->getType() == FOLDER;
+		}
+
+		// we compare the actual metadata name, as collection files have the system appended which messes up the order
+		const std::string name1 = ((FileData *) file1)->getName();
+		const std::string name2 = ((FileData *) file2)->getName();
+
+		if (_digitPrefixLength(name1) || _digitPrefixLength(name2))
+			return _comparePrefixDigits(name1, name2);
+		
+		return _compareNames(name1, name2);
+	}
+
+	bool compareSortName(const FileData* file1, const FileData* file2)
+	{
+		if (file1->getType() != file2->getType())
+		{
+			return file1->getType() == FOLDER;
+		}
+
+    std::string name1 = (std::string) ((FileData *) file1)->getSortOrName();
+    std::string name2 = (std::string) ((FileData *) file2)->getSortOrName();
+
+		if (_digitPrefixLength(name1) || _digitPrefixLength(name2))
+			return _comparePrefixDigits(name1, name2);
+
+		return _compareNames(name1, name2);
+	}
+
 #else
 	bool compareName(const FileData* file1, const FileData* file2)
 	{

@@ -268,6 +268,7 @@ const std::string& FileData::getName()
 }
 
 #ifdef _ENABLEEMUELEC
+
 const std::string& FileData::getSortName()
 {
     if (mSortName == nullptr)
@@ -279,8 +280,9 @@ const std::string& FileData::getSortName()
 
 const std::string FileData::getSortOrName()
 {
-  if (!getSortName().empty())
-    return getSortName();
+	std::string s( getSortName());
+  if (!s.empty())
+    return s;
   return getName();
 }
 
