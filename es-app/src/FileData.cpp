@@ -800,7 +800,7 @@ CollectionFileData::CollectionFileData(FileData* file, SystemData* system)
 	: FileData(file->getSourceFileData()->getType(), "", system)
 {
 	mSourceFileData = file->getSourceFileData();
-	mParent = NULL;
+	mParent = NULL; 
 }
 
 SystemEnvironmentData* CollectionFileData::getSystemEnvData() const
