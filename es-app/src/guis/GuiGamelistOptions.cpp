@@ -631,6 +631,15 @@ void GuiGamelistOptions::jumpToLetter()
 	unsigned int sortId = mSystem->getSortId();
 	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
 	{
+		char letter1;
+		char letter2;
+		if (sortId == FileSorts::SORTNAME_ASCENDING) {
+			letter2 = mJumpToLetterList->getSelected();
+		}
+		else {
+			letter1 = mJumpToLetterList->getSelected();				
+		}
+		
 		while(max >= min)
 		{
 			mid = ((max - min) / 2) + min;
@@ -639,14 +648,25 @@ void GuiGamelistOptions::jumpToLetter()
 			if(files.at(mid)->getSortOrName().empty())
 				continue;
 
-			char checkLetter = (char)toupper(files.at(mid)->getSortOrName()[0]);
-			
-			if(checkLetter < letter)
-				min = mid + 1;
-			else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortOrName()[0]))))
-				max = mid - 1;
-			else
-				break; //exact match found
+			if (sortId == FileSorts::SORTNAME_ASCENDING) {
+				letter1 = (char)toupper(files.at(mid)->getSortOrName()[0]);
+				if(letter1 < letter2)
+					min = mid + 1;
+				else if(letter1 > letter2 || (mid > 0 && (letter2 == toupper(files.at(mid - 1)->getSortOrName()[0]))))
+					max = mid - 1;
+				else
+					break; //exact match found
+				
+			}
+			else {
+				letter2 = (char)toupper(files.at(mid)->getSortOrName()[0]);
+				if(letter1 < letter2)
+					min = mid + 1;
+				else if(letter1 > letter2 || (mid > 0 && (letter1 == toupper(files.at(mid - 1)->getSortOrName()[0]))))
+					max = mid - 1;
+				else
+					break; //exact match found				
+			}
 		}
 		gamelist->setCursor(files.at(mid));
 		delete this;
