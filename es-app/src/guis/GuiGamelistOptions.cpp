@@ -643,7 +643,7 @@ void GuiGamelistOptions::jumpToLetter()
 			
 			if(checkLetter < letter)
 				min = mid + 1;
-			else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortOrName()[0])))))
+			else if(checkLetter > letter || (mid > 0 && (letter == toupper(files.at(mid - 1)->getSortOrName()[0]))))
 				max = mid - 1;
 			else
 				break; //exact match found
