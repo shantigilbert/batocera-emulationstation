@@ -303,12 +303,6 @@ void MetaDataList::set(MetaDataId id, const std::string& value)
 		return;
 	}
 
-    if (id == MetaDataId::SortName && value.empty())
-        return;
-
-    if (id == MetaDataId::SortName)
-        LOG(LogInfo) << MetaDataId::SortName << value << std::endl;
-
 	// Players -> remove "1-"
 	if (mType == GAME_METADATA && id == MetaDataId::Players && Utils::String::startsWith(value, "1-")) // "players"
 	{

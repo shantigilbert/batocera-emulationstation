@@ -82,7 +82,7 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 #ifdef _ENABLEEMUELEC				
 				unsigned int sortId = system->getSortId();
 				if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)
-					curChar = (char)toupper(getGamelist()->getCursor()->getSortName()[0]);
+					curChar = (char)toupper(getGamelist()->getCursor()->getSortOrName()[0]);
 #endif
 
 				if (std::find(letters.begin(), letters.end(), std::string(1, curChar)) == letters.end())
