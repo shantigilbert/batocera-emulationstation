@@ -639,7 +639,7 @@ void GuiGamelistOptions::jumpToLetter()
 			if(files.at(mid)->getSortOrName().empty())
 				continue;
 
-			checkLetter = (char)toupper(files.at(mid)->getSortOrName()[0]);
+			char checkLetter = (char)toupper(files.at(mid)->getSortOrName()[0]);
 			
 			if(checkLetter < letter)
 				min = mid + 1;
