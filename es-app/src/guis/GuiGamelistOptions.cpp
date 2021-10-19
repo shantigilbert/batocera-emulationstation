@@ -656,13 +656,13 @@ void GuiGamelistOptions::jumpToLetter()
 
 			char checkLetter = (char)toupper(files.at(mid)->getSortOrName()[0]);
 			if(checkLetter < letter)
-				min = mid + 1;
+				min = mid - sortMod;
 			else if(checkLetter > letter) 
-				max = mid - 1;
+				max = mid + sortMod;
 			else
 				break; //exact match found
 			if (mid > 0)
-				letter == toupper(getSortName(sortId, files.at(mid+sortMod))[0]);
+				letter = toupper(getSortName(sortId, files.at(mid+sortMod))[0]);
 		}
 	}
 	gamelist->setCursor(files.at(mid));

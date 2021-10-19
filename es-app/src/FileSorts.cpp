@@ -107,8 +107,8 @@ namespace FileSorts
 		int i2 = std::atoi(name2.c_str());
 		if (i1 == 0) i1 = INT_MAX;
 		if (i2 == 0) i2 = INT_MAX;
-		if (i1 != i2)
-			return i1 < i2;		
+		//if (i1 != i2)
+		return i1 < i2;
 	}
 
 	bool _compareNames(std::string name1, std::string name2)
