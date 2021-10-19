@@ -586,12 +586,12 @@ void GuiGamelistOptions::openMetaDataEd()
 }
 
 //#ifdef _ENABLEEMUELEC
-std::string getSortName(int sortId, FileData* fData) {
+char getSortLetter(int sortId, FileData* fData) {
 	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)	
-		return fData->getSortOrName();
+		return toupper(fData->getSortOrName()[0]);
 	if (sortId == FileSorts::FILENAME_ASCENDING || sortId == FileSorts::FILENAME_DESCENDING)	
-		return fData->getName();
-	return "";
+		return toupper(fData->getName()[0]);
+	return 0;
 }
 //#endif
 
@@ -645,24 +645,23 @@ void GuiGamelistOptions::jumpToLetter()
 
 	{
 		char letter = mJumpToLetterList->getSelected();
+		// game somehow has no first character to check
+		if(files.at(0)->getName().empty())
+			return;
 	
 		while(max >= min)
 		{
 			mid = ((max - min) / 2) + min;
 
-			// game somehow has no first character to check
-			if(getSortName(sortId,files.at(mid)).empty())
-				continue;
-
-			char checkLetter = (char)toupper(files.at(mid)->getSortOrName()[0]);
+			char checkLetter = getSortLetter(sortId, files.at(mid));
 			if(checkLetter < letter)
 				min = mid - sortMod;
-			else if(checkLetter > letter) 
+			else if(checkLetter > letter)
 				max = mid + sortMod;
 			else
 				break; //exact match found
 			if (mid > 0)
-				letter = toupper(getSortName(sortId, files.at(mid+sortMod))[0]);
+				letter = getSortLetter(sortId, files.at(mid-1));
 		}
 	}
 	gamelist->setCursor(files.at(mid));
