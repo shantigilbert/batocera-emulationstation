@@ -639,15 +639,15 @@ void GuiGamelistOptions::jumpToLetter()
 
 //#ifdef _ENABLEEMUELEC
 	unsigned int sortId = mSystem->getSortId();
-	int sortMod = -1;
+	//int sortMod = -1;
 	bool asc = true;
-	if (sortId == FileSorts::SORTNAME_DESCENDING || sortId == FileSorts::FILENAME_DESCENDING)
-		sortMod = 1;				
+	if (sortId == FileSorts::SORTNAME_DESCENDING || sortId == FileSorts::FILENAME_DESCENDING) {
+		//sortMod = 1;				
 		asc = false;
+	}
+
 	{
 		char letter = mJumpToLetterList->getSelected();
-		// game somehow has no first character to check
-	
 		while(max >= min)
 		{
 			mid = ((max - min) / 2) + min;
@@ -656,13 +656,23 @@ void GuiGamelistOptions::jumpToLetter()
 			if (checkLetter == 0)
 				continue;
 
-			bool midLet = (letter == getSortLetter(sortId, files.at(mid+sortMod) ));
-			if(checkLetter < letter || (!asc && mid > 0 && midLet))
-				min = mid - sortMod;
-			else if(checkLetter > letter || (asc && mid > 0 && midLet))
-				max = mid + sortMod;
-			else
-				break; //exact match found
+			bool midLet = (letter == getSortLetter(sortId, files.at(mid+1)));
+			if (asc) {
+				if(checkLetter < letter)
+					min = mid + 1;
+				else if(checkLetter > letter || (mid > 0 && midLet))
+					max = mid - 1;
+				else
+					break;
+			}
+			else {
+				if(checkLetter > letter)
+					min = mid + 1;
+				else if(checkLetter < letter || (mid > 0 && midLet))
+					max = mid - 1;
+				else
+					break;
+			}
 		}
 	}
 	gamelist->setCursor(files.at(mid));
