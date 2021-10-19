@@ -640,23 +640,26 @@ void GuiGamelistOptions::jumpToLetter()
 //#ifdef _ENABLEEMUELEC
 	unsigned int sortId = mSystem->getSortId();
 	int sortMod = -1;
+	bool asc = true;
 	if (sortId == FileSorts::SORTNAME_DESCENDING || sortId == FileSorts::FILENAME_DESCENDING)
 		sortMod = 1;				
-
+		asc = false;
 	{
 		char letter = mJumpToLetterList->getSelected();
 		// game somehow has no first character to check
-		if(files.at(0)->getName().empty())
-			return;
 	
 		while(max >= min)
 		{
 			mid = ((max - min) / 2) + min;
 
 			char checkLetter = getSortLetter(sortId, files.at(mid));
-			if(checkLetter < letter)
+			if (checkLetter == 0)
+				continue;
+
+			bool midLet = (letter == getSortLetter(sortId, files.at(mid+sortMod) ));
+			if(checkLetter < letter || (!asc && mid > 0 && midLet))
 				min = mid - sortMod;
-			else if(checkLetter > letter || (mid > 0 && (letter == getSortLetter(sortId, files.at(mid+sortMod) ))))
+			else if(checkLetter > letter || (asc && mid > 0 && midLet))
 				max = mid + sortMod;
 			else
 				break; //exact match found
