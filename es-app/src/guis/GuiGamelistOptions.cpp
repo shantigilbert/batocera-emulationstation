@@ -639,10 +639,10 @@ void GuiGamelistOptions::jumpToLetter()
 
 //#ifdef _ENABLEEMUELEC
 	unsigned int sortId = mSystem->getSortId();
-	int sortMod = -1;
+	int sortMod = 1;
 	bool asc = true;
 	if (sortId == FileSorts::SORTNAME_DESCENDING || sortId == FileSorts::FILENAME_DESCENDING) {
-		sortMod = 1;				
+		sortMod = -1;				
 		asc = false;
 	}
 
@@ -656,23 +656,23 @@ void GuiGamelistOptions::jumpToLetter()
 			if (checkLetter == 0)
 				continue;
 
-			bool midLet = (letter == getSortLetter(sortId, files.at(mid+sortMod)));
-			//if (asc) {
+			bool midLet = (mid > 0 && letter == getSortLetter(sortId, files.at(mid-sortMod)));
+			if (asc) {
 				if(checkLetter < letter)
-					min = mid - sortMod;
-				else if(checkLetter > letter || (mid > 0 && midLet))
-					max = mid + sortMod;
+					min = mid - 1;
+				else if(checkLetter > letter || midLet)
+					max = mid + 1;
 				else
 					break;
-			//}
-			/*else {
+			}
+			else {
 				if(checkLetter > letter)
-					min = mid - sortMod;
-				else if(checkLetter < letter || (mid > 0 && midLet))
-					max = mid + sortMod;
+					min = mid - 1;
+				else if(checkLetter < letter || midLet)
+					max = mid + 1;
 				else
 					break;
-			}*/
+			}
 		}
 	}
 	gamelist->setCursor(files.at(mid));
