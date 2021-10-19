@@ -656,7 +656,7 @@ void GuiGamelistOptions::jumpToLetter()
 			char checkLetter = getSortLetter(sortId, files.at(mid));
 			if(checkLetter < letter)
 				min = mid - sortMod;
-			else if(checkLetter > letter || (mid > 0 && (letter == getSortLetter(sortId, files.at(mid-1) ))))
+			else if(checkLetter > letter || (mid > 0 && (letter == getSortLetter(sortId, files.at(mid+sortMod) ))))
 				max = mid + sortMod;
 			else
 				break; //exact match found
