@@ -267,7 +267,7 @@ const std::string& FileData::getName()
 	return mMetadata.getName();
 }
 
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 
 const std::string& FileData::getSortName()
 {
@@ -286,7 +286,7 @@ const std::string FileData::getSortOrName()
   return getName();
 }
 
-//#endif
+#endif
 
 const std::string FileData::getVideoPath()
 {

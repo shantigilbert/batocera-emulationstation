@@ -130,21 +130,21 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 		{
 			const FileSorts::SortType& sort = FileSorts::getSortTypes().at(i);
 			mListSort->add(sort.icon + sort.description, sort.id, sort.id == currentSortId); // TODO - actually make the sort type persistent
-			#ifdef _ENABLEEMUELEC			
-						if (i == (FileSorts::getSortTypes().size()-3))
-							break;
-						if (i == FileSorts::FILENAME_DESCENDING)
-						{
-						  {
-								const FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
-								mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
-							}
-							{
-								const FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
-								mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
-							}
-						}
-			#endif
+#ifdef _ENABLEEMUELEC			
+			if (i == (FileSorts::getSortTypes().size()-3))
+				break;
+			if (i == FileSorts::FILENAME_DESCENDING)
+			{
+			  {
+					const FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
+					mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
+				}
+				{
+					const FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
+					mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
+				}
+			}
+#endif
 		}
 
 		mMenu.addWithLabel(_("SORT GAMES BY"), mListSort); // batocera	
@@ -585,7 +585,7 @@ void GuiGamelistOptions::openMetaDataEd()
 		std::bind(&ViewController::onFileChanged, ViewController::get(), file, FILE_METADATA_CHANGED), deleteBtnFunc, file));
 }
 
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 char getSortLetter(int sortId, FileData* fData) {
 	if (sortId == FileSorts::SORTNAME_ASCENDING || sortId == FileSorts::SORTNAME_DESCENDING)	
 		return toupper(fData->getSortOrName()[0]);
@@ -593,7 +593,7 @@ char getSortLetter(int sortId, FileData* fData) {
 		return toupper(fData->getName()[0]);
 	return 0;
 }
-//#endif
+#endif
 
 void GuiGamelistOptions::jumpToLetter()
 {
@@ -637,7 +637,7 @@ void GuiGamelistOptions::jumpToLetter()
 	long max = (long)files.size() - 1;
 	long mid = 0;
 
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 	unsigned int sortId = mSystem->getSortId();
 	bool asc = true;
 	if (sortId == FileSorts::SORTNAME_DESCENDING || sortId == FileSorts::FILENAME_DESCENDING) {
@@ -677,7 +677,7 @@ void GuiGamelistOptions::jumpToLetter()
 	delete this;
 	return;
 
-//#endif
+#endif
 
 	while(max >= min)
 	{

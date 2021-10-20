@@ -4,9 +4,9 @@
 #include "utils/StringUtil.h"
 #include "LocaleES.h"
 
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 	#include <climits>
-//#endif
+#endif
 
 namespace FileSorts
 {
@@ -73,13 +73,13 @@ namespace FileSorts
 		mSortTypes.push_back(SortType(SYSTEM_RELEASEDATE_DESCENDING, &compareSystemReleaseYear, false, _("SYSTEM, RELEASE YEAR, DESCENDING"), _U("\uF161 ")));
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_ASCENDING, &compareReleaseYearSystem, true, _("RELEASE YEAR, SYSTEM, ASCENDING"), _U("\uF160 ")));
 		mSortTypes.push_back(SortType(RELEASEDATE_SYSTEM_DESCENDING, &compareReleaseYearSystem, false, _("RELEASE YEAR, SYSTEM, DESCENDING"), _U("\uF161 ")));
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 		mSortTypes.push_back(SortType(SORTNAME_ASCENDING, &compareSortName, true, _("SORTNAME, ASCENDING"), _U("\uF15d ")));
 		mSortTypes.push_back(SortType(SORTNAME_DESCENDING, &compareSortName, false, _("SORTNAME, DESCENDING"), _U("\uF15e ")));
-//#endif
+#endif
 	}
 
-//#ifdef _ENABLEEMUELEC
+#ifdef _ENABLEEMUELEC
 	int _digitPrefixLength(const std::string s)
 	{
 		int l = s.size();
@@ -157,7 +157,7 @@ namespace FileSorts
 		return _compareNames(name1, name2);
 	}
 
-/*#else
+#else
 	bool compareName(const FileData* file1, const FileData* file2)
 	{
 		if (file1->getType() != file2->getType())
@@ -177,7 +177,7 @@ namespace FileSorts
 		}
 		return Utils::String::compareIgnoreCase(name1, name2) < 0;
 	}
-#endif*/
+#endif
 
 	std::string stripLeadingArticle(const std::string &string, const std::vector<std::string> &articles)
 	{
