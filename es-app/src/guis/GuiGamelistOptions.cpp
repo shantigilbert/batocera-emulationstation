@@ -659,17 +659,17 @@ void GuiGamelistOptions::jumpToLetter()
 			bool midLet = (mid > 0 && letter == getSortLetter(sortId, files.at(mid-sortMod)));
 			if (asc) {
 				if(checkLetter < letter)
-					min = mid - 1;
+					min = mid + 1;
 				else if(checkLetter > letter || midLet)
-					max = mid + 1;
+					max = mid - 1;
 				else
 					break;
 			}
 			else {
 				if(checkLetter > letter)
-					min = mid - 1;
+					min = mid + 1;
 				else if(checkLetter < letter || midLet)
-					max = mid + 1;
+					max = mid - 1;
 				else
 					break;
 			}
