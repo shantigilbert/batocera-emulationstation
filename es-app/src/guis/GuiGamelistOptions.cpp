@@ -656,23 +656,23 @@ void GuiGamelistOptions::jumpToLetter()
 			if (checkLetter == 0)
 				continue;
 
-			bool midLet = (mid > 0 && letter == getSortLetter(sortId, files.at(mid-sortMod)));
-			if (asc) {
-				if(checkLetter < letter)
+			bool midLet = (mid > 0 && letter == getSortLetter(sortId, files.at(mid-1)));
+			//if (asc) {
+				if(checkLetter < letter || (!asc && midLet))
 					min = mid + 1;
-				else if(checkLetter > letter || midLet)
+				else if(checkLetter > letter || (asc && midLet))
 					max = mid - 1;
 				else
 					break;
-			}
-			else {
+			//}
+			/*else {
 				if(checkLetter > letter)
 					min = mid + 1;
 				else if(checkLetter < letter || midLet)
 					max = mid - 1;
 				else
 					break;
-			}
+			}*/
 		}
 	}
 	gamelist->setCursor(files.at(mid));
