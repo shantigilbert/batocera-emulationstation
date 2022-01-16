@@ -4752,7 +4752,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	SystemConf::getInstance()->set(emulator + ".test123", "blah");
 	
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
-	std::string sRemapCount = SystemConf::getInstance()->get(emulator + ".joy_btn_count");
+	/*std::string sRemapCount = SystemConf::getInstance()->get(emulator + ".joy_btn_count");
 	int remapCount = 0;
 	if (!sRemapCount.empty())
 		remapCount = std::stoi(sRemapCount);
@@ -4776,7 +4776,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
 		joy_btn_cfg->add(*it, std::to_string(i), cindex == i);
 		i++;
-	}
+	}*/
 
 	return joy_btn_cfg;
 }
