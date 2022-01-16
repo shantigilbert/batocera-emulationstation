@@ -4749,21 +4749,21 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOptionList(Window *window, std::string configname, std::string emulator)
 {
-	SystemConf::getInstance()->set(emulator + ".test123");
+	SystemConf::getInstance()->set(emulator + ".test123", "blah");
 	
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 	std::string sRemapCount = SystemConf::getInstance()->get(emulator + ".joy_btn_count");
 	int remapCount = 0;
-	if (!remapCount.empty())
-		remapCount = std::stoi(remapCount);
-	
+	if (!sRemapCount.empty())
+		remapCount = std::stoi(sRemapCount);
+
 	if (remapCount == 0) {
 		joy_btn_cfg->add("auto", 0, true);
 		return joy_btn_cfg;
 	}
 	
 	std::vector<std::string> joy_btn_recs;
-	for (int i=0; i < index; ++i) {
+	for (int i=0; i < remapCount; ++i) {
 		joy_btn_recs.push_back(SystemConf::getInstance()->get(emulator + ".joy_btn_name" + std::to_string(i)));
 	}
 	
