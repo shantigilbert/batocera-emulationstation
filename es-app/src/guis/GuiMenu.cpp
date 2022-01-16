@@ -4752,8 +4752,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOptionList(Window *window, std::string configname, std::string core)
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
-	
-	SystemConf::getInstance()->set(core + ".test123", "blah");
+
 	std::string enabled = SystemConf::getInstance()->get("advmame_joy_remap");
 		
 	std::string sRemapCount = SystemConf::getInstance()->get(core + ".joy_btn_count");
@@ -4763,30 +4762,30 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 		remapCount = atoi(sRemapCount.c_str());
 
 	joy_btn_cfg->add("auto", "0", true);
-	return joy_btn_cfg;
 
-	/*if (enabled.compare("1") != 0 || remapCount == 0) {
-		joy_btn_cfg->add("auto", 0, true);
+	if (enabled.compare("1") != 0 || remapCount == 0) {
 		return joy_btn_cfg;
 	}
 	
 	std::vector<std::string> joy_btn_recs;
-	for (int i=0; i < remapCount; ++i) {
-		joy_btn_recs.push_back(SystemConf::getInstance()->get(core + ".joy_btn_name" + std::to_string(i)));
+	for (int i=1; i < remapCount; ++i) {
+		std::string joyBtnName = SystemConf::getInstance()->get(core + ".joy_btn_name" + std::to_string(i));
+		if (!joyBtnName.empty())
+			joy_btn_recs.push_back(joyBtnName);
 	}
 	
 	std::string choice = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
-	int cindex = 0;
+	int cfgIndex = 0;
 	if (!choice.empty())
-		cindex = std::stoi(choice);
+		cfgIndex = std::stoi(choice);
 
-	int i = 0;
+	int index = 0;
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
-		joy_btn_cfg->add(*it, std::to_string(i), cindex == i);
+		joy_btn_cfg->add(*it, std::to_string(i), cfgIndex == index);
 		i++;
-	}*/
+	}
 
-	//return joy_btn_cfg;
+	return joy_btn_cfg;
 }
 
 #endif 
