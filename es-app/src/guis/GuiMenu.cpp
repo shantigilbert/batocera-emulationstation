@@ -4750,23 +4750,22 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOptionList(Window *window, std::string configname, std::string emulator)
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
-	int index = SystemConf::getInstance()->get(emulator + ".joy_btn_count");
+	int index = std::stoi(SystemConf::getInstance()->get(emulator + ".joy_btn_count"));
 	
 	std::vector<std::pair<std::string,std::string>> joy_btn_recs;
 	for (int i=0; i < index; ++i) {
-		std::string name = SystemConf::getInstance()->get(emulator + ".joy_btn_name"+i);
-		std::string val = SystemConf::getInstance()->get(emulator + ".joy_btn_order"+i);
-		std::pair<std::string,std:string> rec{name,val};
+		std::string name = SystemConf::getInstance()->get(emulator + ".joy_btn_name" + std::tostring(i));
+		std::string val = SystemConf::getInstance()->get(emulator + ".joy_btn_order" + std::tostring(i));
+		std::pair<std::string,std::string> rec{name,val};
 		joy_btn_recs.push_back(rec);
 	}
 	
-	std::string index = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
-	if (index.empty())
-		index = "auto";
+	std::string sIndex = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
+	if (sIndex.empty())
+		sIndex = "auto";
 
-// TODO
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
-		joy_btn_cfg->add(it->first, it->second, index == it->second);
+		joy_btn_cfg->add(it->first, it->second, sIndex == it->first);
 	}
 
 	return joy_btn_cfg;
