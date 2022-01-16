@@ -4764,7 +4764,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 
 	int i = 0;
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
-		joy_btn_cfg->add(*it, i, cindex == i);
+		joy_btn_cfg->add(*it, std::to_string(i), cindex == i);
 		i++;
 	}
 
