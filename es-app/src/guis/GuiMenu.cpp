@@ -4160,6 +4160,17 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			SystemConf::getInstance()->saveSystemConf();
 		});
 	}
+	
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap))
+	{
+		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, currentEmulator);
+		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
+		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
+			SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
+			SystemConf::getInstance()->saveSystemConf();
+		});
+	}
+	
 #endif 
 
 	// Screen ratio choice
@@ -4735,6 +4746,27 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 
 	return emuelec_video_mode;
 }
+
+std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOptionList(Window *window, std::string configname, std::string emulator)
+{
+	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
+	int index = SystemConf::getInstance()->get(emulator + ".joy_btn_count");
+	
+	std::vector<std::string> joy_btn_names;
+	for (int i=0; i < index; ++i)
+		joy_btn_names.push_back(SystemConf::getInstance()->get(emulator + ".joy_btn_name"+i));
+
+	std::string index = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
+	if (index.empty())
+		index = "auto";
+
+	for (auto it = joy_btn_names.cbegin(); it != joy_btn_names.cend(); it++) {
+		joy_btn_cfg->add(*it, *it, index == *it);
+	}
+
+	return joy_btn_cfg;
+}
+
 #endif 
 
 
