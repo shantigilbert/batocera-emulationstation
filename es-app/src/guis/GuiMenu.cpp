@@ -4754,7 +4754,6 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 
 	std::string enabled = SystemConf::getInstance()->get("advmame_joy_remap");
-	SystemConf::getInstance()->set(core + ".blah123", "blah123");
 	
 	std::string sRemapCount = SystemConf::getInstance()->get(core + ".joy_btn_count");
 
@@ -4789,7 +4788,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	return joy_btn_cfg;
 }
 
-#endif 
+#endif
 
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createVideoResolutionModeOptionList(Window *window, std::string configname)
