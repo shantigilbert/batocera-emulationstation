@@ -4756,8 +4756,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	for (int i=0; i < index; ++i) {
 		std::string name = SystemConf::getInstance()->get(emulator + ".joy_btn_name" + std::tostring(i));
 		std::string val = SystemConf::getInstance()->get(emulator + ".joy_btn_order" + std::tostring(i));
-		std::pair<std::string,std::string> rec{name,val};
-		joy_btn_recs.push_back(rec);
+		joy_btn_recs.push_back( std::make_pair(name,val));
 	}
 	
 	std::string sIndex = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
