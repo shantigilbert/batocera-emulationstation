@@ -4752,16 +4752,21 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 	int index = SystemConf::getInstance()->get(emulator + ".joy_btn_count");
 	
-	std::vector<std::string> joy_btn_names;
-	for (int i=0; i < index; ++i)
-		joy_btn_names.push_back(SystemConf::getInstance()->get(emulator + ".joy_btn_name"+i));
-
+	std::vector<std::pair<std::string,std::string>> joy_btn_recs;
+	for (int i=0; i < index; ++i) {
+		std::string name = SystemConf::getInstance()->get(emulator + ".joy_btn_name"+i);
+		std::string val = SystemConf::getInstance()->get(emulator + ".joy_btn_order"+i);
+		std::pair<std::string,std:string> rec{name,val};
+		joy_btn_recs.push_back(rec);
+	}
+	
 	std::string index = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
 	if (index.empty())
 		index = "auto";
 
-	for (auto it = joy_btn_names.cbegin(); it != joy_btn_names.cend(); it++) {
-		joy_btn_cfg->add(*it, *it, index == *it);
+// TODO
+	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
+		joy_btn_cfg->add(it->first, it->second, index == it->second);
 	}
 
 	return joy_btn_cfg;
