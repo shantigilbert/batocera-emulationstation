@@ -4162,7 +4162,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		});
 	}
 
-	std::string tEmulator = (currentEmulator == "auto") ? systemData->getEmulator(true) : currentEmulator;
+	std::string tEmulator = (currentEmulator == "auto") ? systemData->getEmulator(false) : currentEmulator;
 	if (systemData->isFeatureSupported(tEmulator, currentCore, EmulatorFeatures::joybtnremap))
 	{
 		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
@@ -4758,12 +4758,12 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
 
 	if (remapCount == 0) {
-		joy_btn_cfg->add("auto", "0", true);
+		
 		return joy_btn_cfg;
 	}
 
 	std::vector<std::string> joy_btn_recs;
-	for (int i=0; i < remapCount; ++i) {
+	for (int i=1; i < remapCount; ++i) {
 		std::string joyBtnName = SystemConf::getInstance()->get(prefixName + ".joy_btn_name" + std::to_string(i));
 		if (!joyBtnName.empty())
 			joy_btn_recs.push_back(joyBtnName);
@@ -4772,6 +4772,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
 
 	int index = 0;
+	joy_btn_cfg->add("auto", "0", cfgIndex == index);
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
 		joy_btn_cfg->add(*it, std::to_string(index), cfgIndex == index);
 		index++;
