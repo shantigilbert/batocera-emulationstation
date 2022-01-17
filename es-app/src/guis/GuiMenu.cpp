@@ -4157,8 +4157,10 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		auto videoNativeResolutionMode_choice = createNativeVideoResolutionModeOptionList(mWindow, configName);
 		systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
 		systemConfiguration->addSaveFunc([configName, videoNativeResolutionMode_choice] {
-			SystemConf::getInstance()->set(configName + ".nativevideo", videoNativeResolutionMode_choice->getSelected());
-			//SystemConf::getInstance()->saveSystemConf();
+			if (videoNativeResolutionMode_choice->changed()) {
+				SystemConf::getInstance()->set(configName + ".nativevideo", videoNativeResolutionMode_choice->getSelected());
+				SystemConf::getInstance()->saveSystemConf();
+			}
 		});
 	}
 
@@ -4171,9 +4173,9 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
 		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
-			if (!joyBtn_choice->getSelected().empty()) {
+			if (joyBtn_choice->changed()) {
 				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
-				//SystemConf::getInstance()->saveSystemConf();
+				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
 	}
