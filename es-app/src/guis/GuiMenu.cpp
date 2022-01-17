@@ -4753,32 +4753,23 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 
-	std::string enabled = SystemConf::getInstance()->get("advmame_joy_remap");
-	SystemConf::getInstance()->set(systemName + ".blah123", "blah123");
+	int enabled = SystemConf::getInstance()->getInt("advmame_joy_remap");
 	
-	std::string sRemapCount = SystemConf::getInstance()->get(systemName + ".joy_btn_count");
+	int remapCount = SystemConf::getInstance()->getInt(systemName + ".joy_btn_count");
 
-	int remapCount = 0;
-	if (!sRemapCount.empty())
-		remapCount = atoi(sRemapCount.c_str());
-
-	joy_btn_cfg->add("auto", "0", true);
-
-	if (enabled.compare("1") != 0 || remapCount == 0) {
+	if (enabled != 1 || remapCount == 0) {
+		joy_btn_cfg->add("auto", "0", true);
 		return joy_btn_cfg;
 	}
 	
 	std::vector<std::string> joy_btn_recs;
-	for (int i=1; i < remapCount; ++i) {
+	for (int i=0; i < remapCount; ++i) {
 		std::string joyBtnName = SystemConf::getInstance()->get(systemName + ".joy_btn_name" + std::to_string(i));
 		if (!joyBtnName.empty())
 			joy_btn_recs.push_back(joyBtnName);
 	}
 	
-	std::string choice = SystemConf::getInstance()->get(configname + ".joy_btn_cfg");
-	int cfgIndex = 0;
-	if (!choice.empty())
-		cfgIndex = std::stoi(choice);
+	int cfgIndex = SystemConf::getInstance()->getInt(configname + ".joy_btn_cfg");
 
 	int index = 0;
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
