@@ -4755,7 +4755,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 
 	int enabled = atoi(SystemConf::getInstance()->get("advmame_joy_remap").c_str());
 	
-	int remapCount = atoi(SystemConf::getInstance()->get(systemName + ".joy_btn_count").c_str();
+	int remapCount = atoi(SystemConf::getInstance()->get(systemName + ".joy_btn_count").c_str());
 
 	if (enabled != 1 || remapCount == 0) {
 		joy_btn_cfg->add("auto", "0", true);
