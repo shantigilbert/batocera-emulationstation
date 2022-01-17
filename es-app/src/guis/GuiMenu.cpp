@@ -4162,10 +4162,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		});
 	}
 
+	std::string tEmulator = (systemData->getEmulator().empty() ? currentEmulator : systemData->getEmulator())
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap) ||
-			systemData->isFeatureSupported(systemData->getEmulator(), systemData->getCore(), EmulatorFeatures::joybtnremap))
+			systemData->isFeatureSupported(tEmulator, currentCore, EmulatorFeatures::joybtnremap))
 	{
-		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, systemData->getEmulator());
+		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
 		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
 			if (!joyBtn_choice->getSelected().empty() || joyBtn_choice->getSelected() != "0") {
