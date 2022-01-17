@@ -4151,6 +4151,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	auto customFeatures = systemData->getCustomFeatures(currentEmulator, currentCore);
 
 #ifdef _ENABLEEMUELEC
+
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::nativevideo))
 	{
 		auto videoNativeResolutionMode_choice = createNativeVideoResolutionModeOptionList(mWindow, configName);
@@ -4160,8 +4161,9 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			SystemConf::getInstance()->saveSystemConf();
 		});
 	}
-	
-	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap))
+
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap) ||
+			systemData->isFeatureSupported(systemData->getEmulator(), systemData->getCore(), EmulatorFeatures::joybtnremap))
 	{
 		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, currentCore);
 		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
