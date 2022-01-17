@@ -4158,7 +4158,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
 		systemConfiguration->addSaveFunc([configName, videoNativeResolutionMode_choice] {
 			SystemConf::getInstance()->set(configName + ".nativevideo", videoNativeResolutionMode_choice->getSelected());
-			SystemConf::getInstance()->saveSystemConf();
+			//SystemConf::getInstance()->saveSystemConf();
 		});
 	}
 
@@ -4173,7 +4173,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
 			if (!joyBtn_choice->getSelected().empty()) {
 				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
-				SystemConf::getInstance()->saveSystemConf();
+				//SystemConf::getInstance()->saveSystemConf();
 			}
 		});
 	}
@@ -4774,8 +4774,8 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 
 	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
 
-	int index = 0;
 	joy_btn_cfg->add("auto", "0", cfgIndex == index);
+	int index = 1;
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
 		joy_btn_cfg->add(*it, std::to_string(index), cfgIndex == index);
 		index++;
