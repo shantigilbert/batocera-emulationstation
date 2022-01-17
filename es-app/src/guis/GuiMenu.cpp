@@ -4161,8 +4161,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		});
 	}
 	
-	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap) ||
-		systemData->getDefaultEmulator(currentEmulator))
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap))
 	{
 		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, currentCore);
 		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
