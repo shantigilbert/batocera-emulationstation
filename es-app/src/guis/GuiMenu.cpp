@@ -4776,8 +4776,9 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 
 	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
 
+	int index = 0;
 	joy_btn_cfg->add("auto", "0", cfgIndex == index);
-	int index = 1;
+	index++;
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
 		joy_btn_cfg->add(*it, std::to_string(index), cfgIndex == index);
 		index++;
