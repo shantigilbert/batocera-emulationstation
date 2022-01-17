@@ -4163,9 +4163,12 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	}
 
 	//std::string tEmulator = (currentEmulator == "auto") ? systemData->getEmulator(true) : currentEmulator;
-	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::joybtnremap))
+	std::string tEmulator = fileData != nullptr ? fileData->getEmulator(true) : systemData->getEmulator(true);
+	if (tEmulator == "auto")
+		tEmulator = systemData->getEmulator(true);
+	if (!tEmulator.empty() && systemData->isFeatureSupported(tEmulator, currentCore, EmulatorFeatures::joybtnremap))
 	{
-		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, currentEmulator);
+		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
 		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
 			if (!joyBtn_choice->getSelected().empty()) {
@@ -4757,8 +4760,8 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 
 	int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
 
-	if (remapCount == 0) {
-		
+	if (prefixName == "auto" || prefixName.empty() || remapCount == 0) {
+		joy_btn_cfg->add("auto", "0", true);
 		return joy_btn_cfg;
 	}
 
