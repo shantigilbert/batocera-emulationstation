@@ -4105,7 +4105,7 @@ void GuiMenu::createBtnJoyCfg(Window *mWindow, std::string title)
 		// save to config
 	};
 
-	row.makeAcceptInputHandler([mTextRemap, updateVal]
+	row.makeAcceptInputHandler([mWindow, mTextRemap, updateVal]
 	{
 		if (Settings::getInstance()->getBool("UseOSK"))
 			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
@@ -4113,7 +4113,7 @@ void GuiMenu::createBtnJoyCfg(Window *mWindow, std::string title)
 			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
 	});
 
-	addRow(row);
+	systemConfiguration->addRow(row);
 }
 #endif
 
@@ -4208,13 +4208,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
 				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
 				SystemConf::getInstance()->saveSystemConf();
-				
-				
-		auto joyBtn_create = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
-		systemConfiguration->addWithLabel(_("CREATE BUTTON REMAP"), joyBtn_choice);
 		});
-		
-		
+
 		addCreateButtonRemapToMenu(mWindow, title);
 	}
 
