@@ -4210,7 +4210,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->saveSystemConf();
 		});
 
-		addCreateButtonRemapToMenu(mWindow, title);
+		createBtnJoyCfg(mWindow, title);
 	}
 
 #endif 
