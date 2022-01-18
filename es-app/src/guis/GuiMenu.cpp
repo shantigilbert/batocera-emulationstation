@@ -4108,7 +4108,7 @@ void GuiMenu::createBtnJoyCfg(Window *mWindow, GuiSettings *mSystemConfiguration
 			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("REMAP NAME"), text->getValue(), updateVal, false));
 	});
 
-	mSystemConfiguration->addRow(row, false);
+	mSystemConfiguration->addRow(row);
 }
 #endif
 
