@@ -4084,36 +4084,31 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
-void GuiMenu::createBtnJoyCfg(Window *mWindow, std::string title)
+void GuiMenu::createBtnJoyCfg(Window *mWindow, GuiSettings *mSystemConfiguration, std::string title)
 {
-	GuiSettings* systemConfiguration = new GuiSettings(mWindow, title.c_str());
-
 	auto theme = ThemeData::getMenuTheme();
-	std::shared_ptr<Font> font = theme->Text.font;
-	unsigned int color = theme->Text.color;
 
 	ComponentListRow row;
-	
-	auto mTextRemap = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), font, color);
-	row.addElement(mTextRemap, true);
 
+	auto text = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), theme->Text.font, theme->Text.color);
+	row.addElement(text, true);
 
-	auto updateVal = [mTextRemap](const std::string& newVal)
+	auto updateVal = [text](const std::string& newVal)
 	{
-		mTextRemap->setValue(Utils::String::toUpper(newVal));
+		text->setValue(Utils::String::toUpper(newVal));
 
 		// save to config
 	};
 
-	row.makeAcceptInputHandler([mWindow, mTextRemap, updateVal]
+	row.makeAcceptInputHandler([mWindow, text, updateVal]
 	{
 		if (Settings::getInstance()->getBool("UseOSK"))
-			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
+			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), text->getValue(), updateVal, false));
 		else
-			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
+			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("REMAP NAME"), text->getValue(), updateVal, false));
 	});
 
-	systemConfiguration->addRow(row);
+	mSystemConfiguration->addRow(row, false);
 }
 #endif
 
@@ -4210,7 +4205,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->saveSystemConf();
 		});
 
-		createBtnJoyCfg(mWindow, title);
+		createBtnJoyCfg(mWindow, systemConfiguration, title);
 	}
 
 #endif 

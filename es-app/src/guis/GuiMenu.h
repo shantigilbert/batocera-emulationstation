@@ -97,7 +97,7 @@ private:
 #ifdef _ENABLEEMUELEC
   static std::shared_ptr<OptionListComponent<std::string>> createNativeVideoResolutionModeOptionList(Window *window, std::string configname);
   static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnCfgOptionList(Window *window, std::string configname, std::string prefixName);
-  static void createBtnJoyCfg(Window *mWindow, std::string title);
+  static void createBtnJoyCfg(Window *mWindow, GuiSettings *mSystemConfiguration, std::string title);
 #endif
 	static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname);
 	static void popSpecificConfigurationGui(Window* mWindow, std::string title, std::string configName, SystemData *systemData, FileData* fileData, bool selectCoreLine = false);
