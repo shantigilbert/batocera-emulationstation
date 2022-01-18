@@ -4084,7 +4084,7 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
-void GuiMenu::createJoyBtnCfgOptionList(Window *mWindow, std::string title)
+void GuiMenu::createBtnJoyCfg(Window *mWindow, std::string title)
 {
 	GuiSettings* systemConfiguration = new GuiSettings(mWindow, title.c_str());
 
@@ -4098,7 +4098,7 @@ void GuiMenu::createJoyBtnCfgOptionList(Window *mWindow, std::string title)
 	row.addElement(mTextRemap, true);
 
 
-	auto updateVal = [this](const std::string& newVal)
+	auto updateVal = [mTextRemap](const std::string& newVal)
 	{
 		mTextRemap->setValue(Utils::String::toUpper(newVal));
 
