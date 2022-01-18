@@ -4084,7 +4084,7 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
-void GuiMenu::createBtnJoyCfg(Window *mWindow, GuiSettings *mSystemConfiguration, std::string title)
+void GuiMenu::createBtnJoyCfg(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName)
 {
 	auto theme = ThemeData::getMenuTheme();
 
@@ -4093,19 +4093,22 @@ void GuiMenu::createBtnJoyCfg(Window *mWindow, GuiSettings *mSystemConfiguration
 	auto text = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), theme->Text.font, theme->Text.color);
 	row.addElement(text, true);
 
-	auto updateVal = [text](const std::string& newVal)
+	auto updateVal = [text,prefixName](const std::string& newVal)
 	{
-		text->setValue(Utils::String::toUpper(newVal));
+		int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_count", std::to_string(++remapCount));
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_name" + std::to_string(remapCount), newVal);
 
+		
 		// save to config
 	};
 
 	row.makeAcceptInputHandler([mWindow, text, updateVal]
 	{
 		if (Settings::getInstance()->getBool("UseOSK"))
-			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), text->getValue(), updateVal, false));
+			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), "", updateVal, false));
 		else
-			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("REMAP NAME"), text->getValue(), updateVal, false));
+			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("REMAP NAME"), "", updateVal, false));
 	});
 
 	mSystemConfiguration->addRow(row);
@@ -4205,7 +4208,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->saveSystemConf();
 		});
 
-		createBtnJoyCfg(mWindow, systemConfiguration, title);
+		createBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
 	}
 
 #endif 
