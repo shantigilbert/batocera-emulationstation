@@ -4094,17 +4094,9 @@ void GuiMenu::createJoyBtnCfgOptionList(Window *mWindow, std::string title)
 
 	ComponentListRow row;
 	
-	mTextRemap = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), font, color);
+	auto mTextRemap = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), font, color);
 	row.addElement(mTextRemap, true);
 
-	auto spacer = std::make_shared<GuiComponent>(mWindow);
-	spacer->setSize(Renderer::getScreenWidth() * 0.005f, 0);
-	row.addElement(spacer, false);
-
-	auto bracket = std::make_shared<ImageComponent>(mWindow);
-
-	bracket->setResize(Vector2f(0, lbl->getFont()->getLetterHeight()));
-	row.addElement(bracket, false);
 
 	auto updateVal = [this](const std::string& newVal)
 	{
@@ -4113,7 +4105,7 @@ void GuiMenu::createJoyBtnCfgOptionList(Window *mWindow, std::string title)
 		// save to config
 	};
 
-	row.makeAcceptInputHandler([this, updateVal]
+	row.makeAcceptInputHandler([mTextRemap, updateVal]
 	{
 		if (Settings::getInstance()->getBool("UseOSK"))
 			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
