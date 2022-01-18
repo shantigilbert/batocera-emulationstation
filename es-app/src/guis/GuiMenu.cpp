@@ -4081,6 +4081,50 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 		fileData);
 }
 
+// TODO 
+
+#ifdef _ENABLEEMUELEC
+void GuiMenu::createJoyBtnCfgOptionList(Window *mWindow, std::string title)
+{
+	GuiSettings* systemConfiguration = new GuiSettings(mWindow, title.c_str());
+
+	auto theme = ThemeData::getMenuTheme();
+	std::shared_ptr<Font> font = theme->Text.font;
+	unsigned int color = theme->Text.color;
+
+	ComponentListRow row;
+	
+	mTextRemap = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), font, color);
+	row.addElement(mTextRemap, true);
+
+	auto spacer = std::make_shared<GuiComponent>(mWindow);
+	spacer->setSize(Renderer::getScreenWidth() * 0.005f, 0);
+	row.addElement(spacer, false);
+
+	auto bracket = std::make_shared<ImageComponent>(mWindow);
+
+	bracket->setResize(Vector2f(0, lbl->getFont()->getLetterHeight()));
+	row.addElement(bracket, false);
+
+	auto updateVal = [this](const std::string& newVal)
+	{
+		mTextRemap->setValue(Utils::String::toUpper(newVal));
+
+		// save to config
+	};
+
+	row.makeAcceptInputHandler([this, updateVal]
+	{
+		if (Settings::getInstance()->getBool("UseOSK"))
+			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
+		else
+			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("CREATE BUTTON REMAP NAME"), mTextRemap->getValue(), updateVal, false));
+	});
+
+	addRow(row);
+}
+#endif
+
 void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, std::string configName, SystemData *systemData, FileData* fileData, bool selectCoreLine)
 {
 	// The system configuration
@@ -4162,7 +4206,6 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		});
 	}
 
-	//std::string tEmulator = (currentEmulator == "auto") ? systemData->getEmulator(true) : currentEmulator;
 	std::string tEmulator = fileData != nullptr ? fileData->getEmulator(true) : systemData->getEmulator(true);
 	if (tEmulator == "auto")
 		tEmulator = systemData->getEmulator(true);
@@ -4173,9 +4216,16 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addSaveFunc([configName, joyBtn_choice] {
 				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
 				SystemConf::getInstance()->saveSystemConf();
+				
+				
+		auto joyBtn_create = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
+		systemConfiguration->addWithLabel(_("CREATE BUTTON REMAP"), joyBtn_choice);
 		});
+		
+		
+		addCreateButtonRemapToMenu(mWindow, title);
 	}
-	
+
 #endif 
 
 	// Screen ratio choice
