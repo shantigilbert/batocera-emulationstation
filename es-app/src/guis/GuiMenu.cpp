@@ -4376,7 +4376,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->get(configName + ".joy_btn_count") + " \n" +
 					SystemConf::getInstance()->get(configName + ".joy_btn_map_count") + " \n" +
 					SystemConf::getInstance()->get(configName + ".joy_btn_names") + " \n",
-					_("OK"), nullptr);
+					_("OK"), nullptr));
 				return;
 			}
 
