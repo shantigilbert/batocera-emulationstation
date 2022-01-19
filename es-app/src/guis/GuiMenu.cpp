@@ -4132,54 +4132,58 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 	}
 
 	systemConfiguration->addSaveFunc([mWindow, remap_choice, remapCount, prefixName, remapName] {
-		int err = 0;
-		int j=0;
-		[&] {
-			for(int i=0; i < remapCount; ++i) {
-				int choice = atoi(remap_choice[i]->getSelected().c_str());
-				if (choice == -1) {
-					err=1;
-					break;
-				}
-				for(j=0; j < remapCount; ++j) {
-					int choice2 = atoi(remap_choice[j]->getSelected().c_str());
-					if (choice2 == -1) {
+		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO CREATE THE REMAP?"),
+			_("YES"), [mWindow, remap_choice, remapCount, prefixName, remapName]
+		{		
+			int err = 0;
+			int j=0;
+			[&] {
+				for(int i=0; i < remapCount; ++i) {
+					int choice = atoi(remap_choice[i]->getSelected().c_str());
+					if (choice == -1) {
 						err=1;
-						return;
+						break;
 					}
-					if (i != j && choice == choice2) {
-						err=1;
-						return;
+					for(j=0; j < remapCount; ++j) {
+						int choice2 = atoi(remap_choice[j]->getSelected().c_str());
+						if (choice2 == -1) {
+							err=1;
+							return;
+						}
+						if (i != j && choice == choice2) {
+							err=1;
+							return;
+						}
 					}
 				}
+			}();
+
+			if (err > 0)
+			{
+				mWindow->pushGui(new GuiMsgBox(mWindow, _("ERROR - Remap is not configured properly, aborting. All buttons must be assigned and no duplicates."), "OK", nullptr));
+				return;
 			}
-		}();
 
-		if (err > 0)
-		{
-			mWindow->pushGui(new GuiMsgBox(mWindow, _("ERROR - Remap is not configured properly, aborting. All buttons must be assigned and no duplicates."), "OK", nullptr));
-			return;
-		}
+			int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
+			if (count == 0)
+				return;
 
-		int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
-		if (count == 0)
-			return;
+			SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(++count));
 
-		SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(++count));
+			std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
+			remapNames += ","+remapName;
+			SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
 
-		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
-		remapNames += ","+remapName;
-		SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
-
-		std::string joyRemap = "";
-		for(int i=0; i < remapCount; ++i)
-		{
-			if (i > 0)
-				joyRemap += " ";
-			joyRemap += remap_choice[i]->getSelected();
-		}
-		SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(count), joyRemap);
-		SystemConf::getInstance()->saveSystemConf();
+			std::string joyRemap = "";
+			for(int i=0; i < remapCount; ++i)
+			{
+				if (i > 0)
+					joyRemap += " ";
+				joyRemap += remap_choice[i]->getSelected();
+			}
+			SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(count), joyRemap);
+			SystemConf::getInstance()->saveSystemConf();
+		}, _("NO"), nullptr));
 	});
 }
 
