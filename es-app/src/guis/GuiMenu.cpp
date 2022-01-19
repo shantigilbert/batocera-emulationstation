@@ -4084,27 +4084,30 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
+static std::vector<std::string> explode(std::string sData)
+{
+	std::vector<std::string> arr;	
+	std::stringstream ssData(sData);
+	std::string datum;
+	while(std::getline(ssData, datum,','))
+	{
+			arr.push_back(datum);
+	}
+	return arr;
+}
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 
 	std::string joy_btns = SystemConf::getInstance()->get(prefixName + ".joy_btns");
-
+	
 	if (joy_btns.empty()) {
 		joy_btn_cfg->add("NONE", "-1", true);
 		return joy_btn_cfg;
 	}
 
-	std::vector<std::string> arr_joy_btn;
-
-	std::stringstream ssData(joy_btns);
-
-	std::string joybtn;
-	while(std::getline(ssData, joybtn,','))
-	{
-			arr_joy_btn.push_back(joybtn);
-	}
+	std::vector<std::string> arr_joy_btn(explode(joy_btns));
 
 	joy_btn_cfg->add("NONE", "-1", false);
 	int index = 0;
@@ -4128,21 +4131,34 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
 	}
 
-	systemConfiguration->addSaveFunc([remap_choice, remapCount, prefixName, remapName] {
+	systemConfiguration->addSaveFunc([mWindow, remap_choice, remapCount, prefixName, remapName] {
+		int err = 0;
 		int j=0;
-		for(int i=0; i < remapCount; ++i) {
-			int choice = atoi(remap_choice[i]->getSelected().c_str());
-			if (choice == -1)
-				return;
-			for(j=0; j < remapCount; ++j) {
-				int choice2 = atoi(remap_choice[j]->getSelected().c_str());
-				if (choice == -1)
-					return;
-				if (i != j && choice == choice2) {
-					remap_choice[j]->selectFirstItem();
-					return;
+		[&] {
+			for(int i=0; i < remapCount; ++i) {
+				int choice = atoi(remap_choice[i]->getSelected().c_str());
+				if (choice == -1) {
+					err=1;
+					break;
+				}
+				for(j=0; j < remapCount; ++j) {
+					int choice2 = atoi(remap_choice[j]->getSelected().c_str());
+					if (choice2 == -1) {
+						err=1;
+						return;
+					}
+					if (i != j && choice == choice2) {
+						err=1;
+						return;
+					}
 				}
 			}
+		}
+
+		if (err > 0)
+		{
+			mWindow->pushGui(new GuiMsgBox(mWindow, _("ERROR - Remap is not configured properly, aborting. All buttons must be assigned and no duplicates."), "OK", nullptr));
+			return;
 		}
 
 		int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
