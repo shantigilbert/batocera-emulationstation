@@ -4287,7 +4287,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				std::string sIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 				std::vector<int> iIndexes = int_explode(sIndexes);	
-				int remapIndex = iIndexes[index];
+				int remapIndex = iIndexes[delIndex];
 				iIndexes.erase(iIndexes.begin() + delIndex);
 
 				std::string remapNames = "";
