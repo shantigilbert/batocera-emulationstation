@@ -4136,30 +4136,33 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 {
 	std::vector<std::shared_ptr<OptionListComponent<std::string>>> remap_choice;
 
+	std::string btnNames = SystemConf::getInstance()->get(prefixName + ".joy_btns");
+	int btnCount = static_cast<int>(std::count(btnNames.begin(), btnNames.end(), ',')+1);
+
 	std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 	int remapCount = static_cast<int>(std::count(remapNames.begin(), remapNames.end(), ',')+1);
 	
-	for (int index=0; index < remapCount; ++index)
+	for (int index=0; index < btnCount; ++index)
 	{		
 		auto remap = createJoyBtnRemapOptionList(mWindow, prefixName, index);
 		remap_choice.push_back(remap);
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
 	}
 
-	systemConfiguration->addSaveFunc([mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames] {
+	systemConfiguration->addSaveFunc([mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount] {
 		int err = 0;
-		if (remapCount == 0)
+		if (btnCount == 0)
 			err = 1;
 
 		int j=0;
 		[&] {
-			for(int i=0; i < remapCount; ++i) {
+			for(int i=0; i < btnCount; ++i) {
 				int choice = atoi(remap_choice[i]->getSelected().c_str());
 				if (choice == -1) {
 					err=1;
 					break;
 				}
-				for(j=0; j < remapCount; ++j) {
+				for(j=0; j < btnCount; ++j) {
 					int choice2 = atoi(remap_choice[j]->getSelected().c_str());
 					if (choice2 == -1) {
 						err=1;
@@ -4188,7 +4191,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_names", names);
 
 			std::string joyRemap = "";
-			for(int i=0; i < remapCount; ++i)
+			for(int i=0; i < btnCount; ++i)
 			{
 				if (i > 0)
 					joyRemap += " ";
@@ -4231,7 +4234,10 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 	auto updateVal = [mWindow, prefixName, btn_choice, del_choice](const std::string& newVal)
 	{
 		if (newVal.empty()) return;
-
+		if(newVal.find(',') != std::string::npos) {
+			mWindow->pushGui(new GuiMsgBox(mWindow, _("YOU CANNOT HAVE COMMAS IN REMAP NAME"), _("OK"), nullptr));
+		  return;
+		}
 		GuiSettings* systemConfiguration = new GuiSettings(mWindow, "CREATE REMAP");
 		GuiMenu::createBtnJoyCfgRemap(mWindow, systemConfiguration, btn_choice, del_choice, prefixName, newVal);
 		mWindow->pushGui(systemConfiguration);
