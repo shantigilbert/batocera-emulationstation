@@ -4272,7 +4272,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->saveSystemConf();			
 			}, 
 			_("NO"), nullptr));
-	}());
+	});
 	
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption, delFunc);	
 	
