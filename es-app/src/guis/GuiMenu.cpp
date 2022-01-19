@@ -4084,28 +4084,86 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
-void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, std::string prefixName)
+
+std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string configname, std::string prefixName, int btnIndex)
 {
-	
-	
+	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
+
+	std::string joy_btns = SystemConf::getInstance()->get(prefixName + ".joy_btns");
+
+	if (joy_btns.empty()) {
+		joy_btn_cfg->add("NONE", "-1", true);
+		return joy_btn_cfg;
+	}
+
+	std::vector<std::string> arr_joy_btn;
+
+	std::stringstream ssData(joy_btns);
+
+	std::string joybtn;
+	while(std::getline(ssData, joybtn,','))
+	{
+			arr_joy_btn.push_back(joybtn);
+	}
+
+	int index = 0;
+	for (auto it = arr_joy_btn.cbegin(); it != arr_joy_btn.cend(); it++) {
+		joy_btn_cfg->add(*it, std::to_string(index), btnIndex == index);
+		index++;
+	}
+	return joy_btn_cfg;
 }
 
-void GuiMenu::createBtnJoyCfgName(Window *mWindow, std::string prefixName)
+
+void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName)
 {
-	auto updateVal = [mWindow, prefixName](const std::string& newVal)
+	int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
+	for (int index=0; index < remapCount; ++index)
+	{
+		auto remap_choice = createJoyBtnRemapOptionList(mWindow, configName, tEmulator, index);
+		mSystemConfiguration->addWithLabel(_("JOY BUTTON "+std::to_string(index)), remap_choice);
+		mSystemConfiguration->addSaveFunc([mWindow, configName, remap_choice, prefixName, index] {
+
+		});	
+	}
+}
+
+void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName)
+{
+	InputConfig* inputCfg = nullptr;
+	if (InputManager::getInstance()->getNumJoysticks() > 0) {
+		auto configList = InputManager::getInstance()->getInputConfigs();
+		inputCfg = configList[0];
+	}
+
+	if (inputCfg == nullptr)
+		return;
+
+	auto theme = ThemeData::getMenuTheme();
+
+	ComponentListRow row;
+
+	auto createText = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), theme->Text.font, theme->Text.color);
+	row.addElement(createText, true);
+	
+	auto updateVal = [mWindow, mSystemConfiguration, prefixName](const std::string& newVal)
 	{
 		int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_count", std::to_string(++remapCount));
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_name" + std::to_string(remapCount), newVal);
 
-		GuiMenu::createBtnJoyCfgRemap(mWindow, prefixName);
+		GuiMenu::createBtnJoyCfgRemap(mWindow, mSystemConfiguration, prefixName);
 	};
 
-	if (Settings::getInstance()->getBool("UseOSK"))
-		mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), "", updateVal, false));
-	else
-		mWindow->pushGui(new GuiTextEditPopup(mWindow, _("REMAP NAME"), "", updateVal, false));
-
+	row.makeAcceptInputHandler([mWindow, createText, updateVal]
+	{
+		if (Settings::getInstance()->getBool("UseOSK"))
+			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), "", updateVal, false));
+		else
+			mWindow->pushGui(new GuiTextEditPopup(mWindow, _("REMAP NAME"), "", updateVal, false));
+	});
+	
+	mSystemConfiguration->addRow(row);
 }
 #endif
 
@@ -4198,16 +4256,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 		systemConfiguration->addWithLabel(_("JOY BUTTON CFG"), joyBtn_choice);
 		systemConfiguration->addSaveFunc([mWindow, configName, joyBtn_choice, tEmulator] {
-			if (joyBtn_choice->getSelected() == std::to_string(joyBtn_choice->size()-1)) {
-				GuiMenu::createBtnJoyCfgName(mWindow, tEmulator);		
-			}
-			else {
 				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
 				SystemConf::getInstance()->saveSystemConf();
-			}
 		});
+		GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);		
 
-		
 	}
 
 #endif 
@@ -4814,7 +4867,6 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 		joy_btn_cfg->add(*it, std::to_string(index), cfgIndex == index);
 		index++;
 	}
-	joy_btn_cfg->add("add new", std::to_string(joy_btn_cfg->size()-1), cfgIndex == index);
 	return joy_btn_cfg;
 }
 
