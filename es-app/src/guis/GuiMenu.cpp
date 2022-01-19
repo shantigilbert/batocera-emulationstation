@@ -4274,7 +4274,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			_("NO"), nullptr));
 	});
 	
-	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption, delFunc);	
+	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption, *delFunc, "", false);	
 	
 	
 	/*systemConfiguration->addSaveFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
