@@ -4116,7 +4116,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 }
 
 
-void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName, std::string remapName)
+void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName, std::string remapName)
 {
 	std::vector<std::shared_ptr<OptionListComponent<std::string>>> remap_choice;
 	
@@ -4125,8 +4125,8 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfigur
 	{
 		
 		remap_choice.push_back(createJoyBtnRemapOptionList(mWindow, prefixName, index));
-		mSystemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
-		mSystemConfiguration->addSaveFunc([mWindow, remap_choice, remapCount, prefixName, remapName, index] {
+		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
+		systemConfiguration->addSaveFunc([mWindow, remap_choice, remapCount, prefixName, remapName, index] {
 
 			for(int i=0; i < remapCount; ++i)
 			{
