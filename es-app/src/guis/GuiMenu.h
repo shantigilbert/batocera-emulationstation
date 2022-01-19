@@ -98,9 +98,9 @@ private:
   static std::shared_ptr<OptionListComponent<std::string>> createNativeVideoResolutionModeOptionList(Window *window, std::string configname);
   static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnCfgOptionList(Window *window, std::string configname, std::string prefixName);
   
-  static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnRemapOptionList(Window *window, std::string configname, std::string prefixName, int btnIndex)
+  static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnRemapOptionList(Window *window, std::string configname, std::string prefixName, int btnIndex);
   static void createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName);
-  static void createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName);
+  static void createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName, std::string remapName);
   
 #endif
 	static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname);
