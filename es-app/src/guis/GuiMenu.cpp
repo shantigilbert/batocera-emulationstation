@@ -4350,8 +4350,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 		systemConfiguration->addWithLabel(_("BUTTON REMAP"), joyBtn_choice);
 		systemConfiguration->addSaveFunc([mWindow, configName, joyBtn_choice] {
+			if (!joyBtn_choice->getSelected())
+			{
 				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
 				SystemConf::getInstance()->saveSystemConf();
+			}
 		});
 		GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);
 		GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
