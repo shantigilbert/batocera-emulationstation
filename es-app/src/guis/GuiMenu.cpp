@@ -4251,7 +4251,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				//std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
 				int index = atoi(deleteOption->getSelected().c_str());
 
-				arr_joy_btn_names.erase(arr_joy_btn_names.begin() + index);
+				arr_joy_btn_names->erase(arr_joy_btn_names->begin() + index);
 
 				index++;
 
