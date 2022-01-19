@@ -4972,7 +4972,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	//int nameCount=remapCount+1;
 
 	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
-	if (cfgIndex >= joy_btn_recs.size())
+	if (cfgIndex > joy_btn_recs.size())
 		cfgIndex = 0;
 
 	int index = 0;
