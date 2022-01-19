@@ -4372,8 +4372,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
-		GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);
-		GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
+		if (!(fileData != nullptr && fileData->getEmulator(false)))
+		{
+			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);
+			GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
+		}
 	}
 
 #endif 
