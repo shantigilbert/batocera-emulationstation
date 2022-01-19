@@ -4178,9 +4178,10 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfigura
 	auto createText = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), theme->Text.font, theme->Text.color);
 	row.addElement(createText, true);
 	
-	auto updateVal = [mWindow, mSystemConfiguration, prefixName](const std::string& newVal)
+	auto updateVal = [mWindow, prefixName](const std::string& newVal)
 	{
-		GuiMenu::createBtnJoyCfgRemap(mWindow, mSystemConfiguration, prefixName, newVal);
+		GuiSettings* systemConfiguration = new GuiSettings(mWindow, "CREATE REMAP");
+		GuiMenu::createBtnJoyCfgRemap(mWindow, systemConfiguration, prefixName, newVal);
 	};
 
 	row.makeAcceptInputHandler([mWindow, createText, updateVal]
