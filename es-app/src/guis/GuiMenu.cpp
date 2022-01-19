@@ -4159,8 +4159,9 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 				joyRemap += " ";
 			joyRemap += remap_choice[i]->getSelected();
 		}
-		SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(remapCount), joyRemap);
-	});		
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(count), joyRemap);
+		SystemConf::getInstance()->saveSystemConf();
+	});
 }
 
 void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName)
@@ -4190,6 +4191,8 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfigura
 
 	row.makeAcceptInputHandler([mWindow, createText, updateVal]
 	{
+		if (updateVal.empty()) return;
+
 		if (Settings::getInstance()->getBool("UseOSK"))
 			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), "", updateVal, false));
 		else
