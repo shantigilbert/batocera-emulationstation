@@ -4132,38 +4132,38 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 	}
 
 	systemConfiguration->addSaveFunc([mWindow, remap_choice, remapCount, prefixName, remapName] {
+		int err = 0;
+		int j=0;
+		[&] {
+			for(int i=0; i < remapCount; ++i) {
+				int choice = atoi(remap_choice[i]->getSelected().c_str());
+				if (choice == -1) {
+					err=1;
+					break;
+				}
+				for(j=0; j < remapCount; ++j) {
+					int choice2 = atoi(remap_choice[j]->getSelected().c_str());
+					if (choice2 == -1) {
+						err=1;
+						return;
+					}
+					if (i != j && choice == choice2) {
+						err=1;
+						return;
+					}
+				}
+			}
+		}();
+
+		if (err > 0)
+		{
+			mWindow->pushGui(new GuiMsgBox(mWindow, _("ERROR - Remap is not configured properly, aborting. All buttons must be assigned and no duplicates."), "OK", nullptr));
+			return;
+		}
+		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO CREATE THE REMAP?"),
 			_("YES"), [mWindow, remap_choice, remapCount, prefixName, remapName]
 		{		
-			int err = 0;
-			int j=0;
-			[&] {
-				for(int i=0; i < remapCount; ++i) {
-					int choice = atoi(remap_choice[i]->getSelected().c_str());
-					if (choice == -1) {
-						err=1;
-						break;
-					}
-					for(j=0; j < remapCount; ++j) {
-						int choice2 = atoi(remap_choice[j]->getSelected().c_str());
-						if (choice2 == -1) {
-							err=1;
-							return;
-						}
-						if (i != j && choice == choice2) {
-							err=1;
-							return;
-						}
-					}
-				}
-			}();
-
-			if (err > 0)
-			{
-				mWindow->pushGui(new GuiMsgBox(mWindow, _("ERROR - Remap is not configured properly, aborting. All buttons must be assigned and no duplicates."), "OK", nullptr));
-				return;
-			}
-
 			int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
 			if (count == 0)
 				return;
@@ -4241,13 +4241,15 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption);	
 	
 	systemConfiguration->addSaveFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
+		int index = atoi(deleteOption->getSelected().c_str());
+		if (index == -1)
+			return;
+		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), [mWindow, deleteOption, prefixName, arr_joy_btn_names]
 			{
 				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
 				int index = atoi(deleteOption->getSelected().c_str());
-				if (index == -1)
-					return;
 
 				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + index);
 
