@@ -4251,9 +4251,11 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 }
 
 void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
-	 std::shared_ptr<OptionListComponent<std::string>> btn_choice, std::string prefixName) {
-	auto del_choice = std::make_shared<OptionListComponent<std::string>>(mWindow, _("DELETE REMAP"), false);
-	
+	 std::shared_ptr<OptionListComponent<std::string>> btn_choice,
+	 std::shared_ptr<OptionListComponent<std::string>> del_choice,
+	 std::string prefixName)
+{
+
 	std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 	std::vector<std::string> arr_joy_btn_names(explode(remapNames));
 
@@ -4418,6 +4420,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			}
 
 			auto btn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
+			auto del_choice = std::make_shared<OptionListComponent<std::string>>(mWindow, _("DELETE REMAP"), false);
 			systemConfiguration->addWithLabel(_("BUTTON REMAP"), btn_choice);
 			systemConfiguration->addSaveFunc([mWindow, configName, btn_choice] {
 				if (btn_choice->getSelectedIndex() >= 0)
@@ -4429,7 +4432,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			if (fileData == nullptr)
 			{
 				GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
-				GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, btn_choice, tEmulator);
+				GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
 			}
 		}();
 	}
