@@ -5017,17 +5017,15 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 
-	int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
+	std::string joyBtnNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
+	std::vector<std::string> joy_btn_recs(explode(joyBtnNames));
+
+	int remapCount = joy_btn_recs.size();
 
 	if (prefixName == "auto" || prefixName.empty() || remapCount == 0) {
 		joy_btn_cfg->add("auto", "0", true);
 		return joy_btn_cfg;
 	}
-
-	std::string joyBtnNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
-	std::vector<std::string> joy_btn_recs(explode(joyBtnNames));
-
-	//int nameCount=remapCount+1;
 
 	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
 	if (cfgIndex > joy_btn_recs.size())
