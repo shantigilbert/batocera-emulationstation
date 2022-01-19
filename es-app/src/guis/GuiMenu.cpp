@@ -4239,10 +4239,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		deleteOption->add(*it, std::to_string(index), false);
 		index++;
 	}
-	
-	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption);	
-	
-	systemConfiguration->addSaveFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
+
+	std::function<void()> delFunc = [mWindow, deleteOption, prefixName, arr_joy_btn_names] {
 		int index = atoi(deleteOption->getSelected().c_str());
 		if (index == -1)
 			return;
@@ -4274,7 +4272,44 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->saveSystemConf();			
 			}, 
 			_("NO"), nullptr));
-	});
+	};
+	
+	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption, delFunc);	
+	
+	
+	/*systemConfiguration->addSaveFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
+		int index = atoi(deleteOption->getSelected().c_str());
+		if (index == -1)
+			return;
+		
+		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
+			_("YES"), [mWindow, deleteOption, prefixName, arr_joy_btn_names]
+			{
+				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
+				int index = atoi(deleteOption->getSelected().c_str());
+
+				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + index);
+
+				index++;
+
+				std::string remapNames = "";
+				for(int i=0; i < l_arr_joy_btn_names.size(); ++i)
+				{
+					if (i > 0)
+						remapNames += ",";
+					remapNames += l_arr_joy_btn_names[i];
+				}		
+				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
+				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(index), "");
+				
+				int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
+				if (count > 0)
+					SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(--count));
+				
+				SystemConf::getInstance()->saveSystemConf();			
+			}, 
+			_("NO"), nullptr));
+	});*/
 }
 
 #endif
