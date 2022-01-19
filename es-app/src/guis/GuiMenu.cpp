@@ -4182,6 +4182,7 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfigura
 	{
 		GuiSettings* systemConfiguration = new GuiSettings(mWindow, "CREATE REMAP");
 		GuiMenu::createBtnJoyCfgRemap(mWindow, systemConfiguration, prefixName, newVal);
+		mWindow->pushGui(systemConfiguration);
 	};
 
 	row.makeAcceptInputHandler([mWindow, createText, updateVal]
