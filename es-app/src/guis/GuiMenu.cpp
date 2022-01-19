@@ -4126,7 +4126,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfigur
 		
 		remap_choice.push_back(createJoyBtnRemapOptionList(mWindow, prefixName, index));
 		mSystemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
-		mSystemConfiguration->addSaveFunc([mWindow, configName, remap_choice, remapCount, prefixName, remapName, index] {
+		mSystemConfiguration->addSaveFunc([mWindow, remap_choice, remapCount, prefixName, remapName, index] {
 
 			for(int i=0; i < remapCount; ++i)
 			{
