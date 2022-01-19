@@ -4184,6 +4184,8 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfigura
 	
 	auto updateVal = [mWindow, prefixName](const std::string& newVal)
 	{
+		if (newVal.empty()) return;
+
 		GuiSettings* systemConfiguration = new GuiSettings(mWindow, "CREATE REMAP");
 		GuiMenu::createBtnJoyCfgRemap(mWindow, systemConfiguration, prefixName, newVal);
 		mWindow->pushGui(systemConfiguration);
@@ -4191,8 +4193,6 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfigura
 
 	row.makeAcceptInputHandler([mWindow, createText, updateVal]
 	{
-		if (updateVal.empty()) return;
-
 		if (Settings::getInstance()->getBool("UseOSK"))
 			mWindow->pushGui(new GuiTextEditPopupKeyboard(mWindow, _("REMAP NAME"), "", updateVal, false));
 		else
