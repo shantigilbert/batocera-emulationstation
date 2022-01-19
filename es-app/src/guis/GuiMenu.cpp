@@ -4098,7 +4098,7 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, std::string prefixName)
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_count", std::to_string(++remapCount));
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_name" + std::to_string(remapCount), newVal);
 
-		MenuGui::createBtnJoyCfgRemap(mWindow, prefixName);
+		GuiMenu::createBtnJoyCfgRemap(mWindow, prefixName);
 	};
 
 	if (Settings::getInstance()->getBool("UseOSK"))
@@ -4814,7 +4814,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 		joy_btn_cfg->add(*it, std::to_string(index), cfgIndex == index);
 		index++;
 	}
-	joy_btn_cfg->add("add new", std::to_string(joy_btn_cfg.size()-1), cfgIndex == index);
+	joy_btn_cfg->add("add new", std::to_string(joy_btn_cfg->size()-1), cfgIndex == index);
 	return joy_btn_cfg;
 }
 
