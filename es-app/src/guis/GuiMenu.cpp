@@ -4237,20 +4237,21 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption);	
 	
 	systemConfiguration->addSaveFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
+		std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
 		int index = atoi(deleteOption->getSelected().c_str());
 		if (index == -1)
 			return;
 
-		arr_joy_btn_names.erase(arr_joy_btn_names.begin() + index);
+		l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + index);
 
 		index++;
 
 		std::string remapNames = "";
-		for(int i=0; i < arr_joy_btn_names.size(); ++i)
+		for(int i=0; i < l_arr_joy_btn_names.size(); ++i)
 		{
 			if (i > 0)
 				remapNames += ",";
-			remapNames += arr_joy_btn_names[i];
+			remapNames += l_arr_joy_btn_names[i];
 		}		
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(index), "");
