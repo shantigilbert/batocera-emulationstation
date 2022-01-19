@@ -4130,15 +4130,15 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 	return joy_btn_cfg;
 }
 
-// TODO - Send joy_btn_cfg_option and and del_btn_option to this function so they can auto update when a new remap created.
-
 void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfiguration,
 	std::shared_ptr<OptionListComponent<std::string>> btn_choice, std::shared_ptr<OptionListComponent<std::string>> del_choice,
 	std::string prefixName, std::string remapName)
 {
 	std::vector<std::shared_ptr<OptionListComponent<std::string>>> remap_choice;
+
+	std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
+	int remapCount = static_cast<int>(std::count(remapNames.begin(), remapNames.end(), ',')+1);
 	
-	int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
 	for (int index=0; index < remapCount; ++index)
 	{		
 		auto remap = createJoyBtnRemapOptionList(mWindow, prefixName, index);
@@ -4148,8 +4148,6 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 
 	systemConfiguration->addSaveFunc([mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName] {
 		int err = 0;
-		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
-		int remapCount = static_cast<int>(std::count(remapNames.begin(), remapNames.end(), ',')+1);
 		if (remapCount == 0)
 			err = 1;
 
