@@ -4085,7 +4085,7 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 
 #ifdef _ENABLEEMUELEC
 
-std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string configname, std::string prefixName, int btnIndex)
+std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 
@@ -4124,17 +4124,17 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfigur
 	for (int index=0; index < remapCount; ++index)
 	{
 		
-		remap_choice.push_back(createJoyBtnRemapOptionList(mWindow, configName, tEmulator, index));
-		mSystemConfiguration->addWithLabel(_("JOY BUTTON "+std::to_string(index)), remap_choice[index]);
+		remap_choice.push_back(createJoyBtnRemapOptionList(mWindow, prefixName, index));
+		mSystemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
 		mSystemConfiguration->addSaveFunc([mWindow, configName, remap_choice, remapCount, prefixName, remapName, index] {
 
 			for(int i=0; i < remapCount; ++i)
 			{
-				int choice = atoi(remap_choice[i]->getSelected()).c_str();
+				int choice = atoi(remap_choice[i]->getSelected().c_str());
 				if (choice == -1)
 					return;
 				for(int j=0; j < remapCount; ++j) {
-					int choice2 = atoi(remap_choice[j]->getSelected()).c_str();
+					int choice2 = atoi(remap_choice[j]->getSelected().c_str());
 					if (choice == -1)
 						return;
 					if (i != j && choice == choice2) {
@@ -4153,7 +4153,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *mSystemConfigur
 			{
 				if (i > 0)
 					joyRemap += " ";
-				joyRemap += remap_choice[i].getSelected();
+				joyRemap += remap_choice[i]->getSelected();
 			}
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(remapCount), joyRemap);
 		});	
