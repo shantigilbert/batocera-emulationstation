@@ -4271,25 +4271,24 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	}
 	
 	del_choice->setSelectedChangedCallback([mWindow, del_choice, prefixName, arr_joy_btn_names, btn_choice] (std::string s) {
-		int index = atoi(del_choice->getSelected().c_str());
-		if (index == -1)
+		int index = del_choice->getSelectedIndex();
+		if (index == 0)
 			return;
 		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), [mWindow, del_choice, prefixName, arr_joy_btn_names, btn_choice]
 			{
 				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
-				int index = atoi(del_choice->getSelected().c_str());
+				int delIndex = (del_choice->getSelectedIndex()-1);
 
-				std::string tName = l_arr_joy_btn_names[index];
+				std::string tName = l_arr_joy_btn_names[delIndex];
 
-				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + index);
+				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + delIndex);
 
 				std::string sIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 				std::vector<int> iIndexes = int_explode(sIndexes);	
-				iIndexes.erase(iIndexes.begin() + index);
-
-				index++;
+				int remapIndex = iIndexes[index];
+				iIndexes.erase(iIndexes.begin() + delIndex);
 
 				std::string remapNames = "";
 				for(int i=0; i < l_arr_joy_btn_names.size(); ++i)
@@ -4299,7 +4298,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 					remapNames += l_arr_joy_btn_names[i];
 				}
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
-				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(index), "");
+				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 				sIndexes = "";
 				for(int i=0; i < iIndexes.size(); ++i)
@@ -4316,7 +4315,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				del_choice->selectFirstItem();
 				
 				int btn_index = atoi(btn_choice->getSelected().c_str());
-				if (btn_index == index)
+				if (btn_index >= btn_choice->size())
 					btn_choice->selectFirstItem();
 				btn_choice->remove(tName);
 			}, 
