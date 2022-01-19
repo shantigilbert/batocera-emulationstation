@@ -4155,6 +4155,10 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 			}
 		}();
 
+		int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
+		if (count == 0)
+			err = 1;
+
 		if (err > 0)
 		{
 			mWindow->pushGui(new GuiMsgBox(mWindow, _("ERROR - Remap is not configured properly, aborting. All buttons must be assigned and no duplicates."), "OK", nullptr));
@@ -4165,8 +4169,6 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 			_("YES"), [mWindow, remap_choice, remapCount, prefixName, remapName]
 		{		
 			int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
-			if (count == 0)
-				return;
 
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(++count));
 
@@ -4363,20 +4365,28 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		tEmulator = systemData->getEmulator(true);
 	if (!tEmulator.empty() && systemData->isFeatureSupported(tEmulator, currentCore, EmulatorFeatures::joybtnremap))
 	{
-		auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
-		systemConfiguration->addWithLabel(_("BUTTON REMAP"), joyBtn_choice);
-		systemConfiguration->addSaveFunc([mWindow, configName, joyBtn_choice] {
-			if (joyBtn_choice->getSelectedIndex() >= 0)
+		[&] {
+			if (SystemConf::getInstance()->get(configName + ".joy_btns").empty() ||
+					SystemConf::getInstance()->get(configName + ".joy_btn_count").empty() ||
+					SystemConf::getInstance()->get(configName + ".joy_btn_map_count").empty() ||
+					SystemConf::getInstance()->get(configName + ".joy_btn_names").empty())
+				return;
+			
+			auto joyBtn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
+			systemConfiguration->addWithLabel(_("BUTTON REMAP"), joyBtn_choice);
+			systemConfiguration->addSaveFunc([mWindow, configName, joyBtn_choice] {
+				if (joyBtn_choice->getSelectedIndex() >= 0)
+				{
+					SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
+					SystemConf::getInstance()->saveSystemConf();
+				}
+			});
+			if (fileData == nullptr)
 			{
-				SystemConf::getInstance()->set(configName + ".joy_btn_cfg", joyBtn_choice->getSelected());
-				SystemConf::getInstance()->saveSystemConf();
+				GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);
+				GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
 			}
-		});
-		if (fileData == nullptr)
-		{
-			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);
-			GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
-		}
+		}();
 	}
 
 #endif 
