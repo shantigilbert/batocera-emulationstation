@@ -4365,13 +4365,14 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		tEmulator = systemData->getEmulator(true);
 	if (!tEmulator.empty() && systemData->isFeatureSupported(tEmulator, currentCore, EmulatorFeatures::joybtnremap))
 	{
-		[&] {
+		[&, mWindow, systemConfiguration, configName, tEmulator] {
 			if (SystemConf::getInstance()->get(configName + ".joy_btns").empty() ||
 					SystemConf::getInstance()->get(configName + ".joy_btn_count").empty() ||
 					SystemConf::getInstance()->get(configName + ".joy_btn_map_count").empty() ||
 					SystemConf::getInstance()->get(configName + ".joy_btn_names").empty())
 			{
 				mWindow->pushGui(new GuiMsgBox(mWindow, 
+					configName + " /n" +
 					SystemConf::getInstance()->get(configName + ".joy_btns") + " \n" +
 					SystemConf::getInstance()->get(configName + ".joy_btn_count") + " \n" +
 					SystemConf::getInstance()->get(configName + ".joy_btn_map_count") + " \n" +
