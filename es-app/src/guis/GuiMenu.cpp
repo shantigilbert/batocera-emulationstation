@@ -4241,9 +4241,10 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		if (index == -1)
 			return;
 
+		arr_joy_btn_names.erase(arr_joy_btn_names.begin() + index);
+
 		index++;
-		arr_joy_btn_names->erase(arr_joy_btn_names.begin() + index);
-		
+
 		std::string remapNames = "";
 		for(int i=0; i < arr_joy_btn_names.size(); ++i)
 		{
@@ -4252,7 +4253,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			remapNames += arr_joy_btn_names[i];
 		}		
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
-		SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+index, "");
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(index), "");
 		SystemConf::getInstance()->saveSystemConf();
 	});
 }
