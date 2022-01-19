@@ -4371,13 +4371,6 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->get(tEmulator + ".joy_btn_map_count").empty() ||
 					SystemConf::getInstance()->get(tEmulator + ".joy_btn_names").empty())
 			{
-				mWindow->pushGui(new GuiMsgBox(mWindow, 
-					tEmulator + " /n" +
-					SystemConf::getInstance()->get(tEmulator + ".joy_btns") + " \n" +
-					SystemConf::getInstance()->get(tEmulator + ".joy_btn_count") + " \n" +
-					SystemConf::getInstance()->get(tEmulator + ".joy_btn_map_count") + " \n" +
-					SystemConf::getInstance()->get(tEmulator + ".joy_btn_names") + " \n",
-					_("OK"), nullptr));
 				return;
 			}
 
