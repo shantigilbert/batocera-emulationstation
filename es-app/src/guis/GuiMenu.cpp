@@ -4123,42 +4123,44 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 	int remapCount = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_count").c_str());
 	for (int index=0; index < remapCount; ++index)
 	{		
-		remap_choice.push_back(createJoyBtnRemapOptionList(mWindow, prefixName, index));
+		auto remap = createJoyBtnRemapOptionList(mWindow, prefixName, index);
+		remap_choice.push_back(remap);
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
-		systemConfiguration->addSaveFunc([remap_choice, remapCount, prefixName, remapName, index] {
+	}
 
-			int choice = atoi(remap_choice[index]->getSelected().c_str());
+	systemConfiguration->addSaveFunc([remap_choice, remapCount, prefixName, remapName] {
+		int j=0;
+		for(int i=0; i < remapCount; ++i) {
+			int choice = atoi(remap_choice[i]->getSelected().c_str());
 			if (choice == -1)
 				return;
-			for(int j=0; j < remapCount; ++j) {
-				if (j == index)
-					continue;
+			for(j=0; j < remapCount; ++j) {
 				int choice2 = atoi(remap_choice[j]->getSelected().c_str());
 				if (choice == -1)
 					return;
-				if (choice == choice2) {
+				if (i != j && choice == choice2) {
 					remap_choice[j]->selectFirstItem();
 					return;
 				}
 			}
+		}
 
-			int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
-			if (count == 0)
-				return;
+		int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
+		if (count == 0)
+			return;
 
-			SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(++count));
-			SystemConf::getInstance()->set(prefixName + ".joy_btn_name" + std::to_string(count), remapName);
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(++count));
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_name" + std::to_string(count), remapName);
 
-			std::string joyRemap = "";
-			for(int i=0; i < remapCount; ++i)
-			{
-				if (i > 0)
-					joyRemap += " ";
-				joyRemap += remap_choice[i]->getSelected();
-			}
-			SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(remapCount), joyRemap);
-		});	
-	}
+		std::string joyRemap = "";
+		for(int i=0; i < remapCount; ++i)
+		{
+			if (i > 0)
+				joyRemap += " ";
+			joyRemap += remap_choice[i]->getSelected();
+		}
+		SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + std::to_string(remapCount), joyRemap);
+	});		
 }
 
 void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *mSystemConfiguration, std::string prefixName)
