@@ -4184,7 +4184,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO CREATE THE REMAP?"),
 			_("YES"), [mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames]
 		{
-			remapCount++;
+			int count = remapCount+1;
 
 			std::string names = remapNames+","+remapName;
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_names", names);
@@ -4196,7 +4196,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 					joyRemap += " ";
 				joyRemap += remap_choice[i]->getSelected();
 			}
-			std::string sCount = std::to_string(remapCount);
+			std::string sCount = std::to_string(count);
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_order" + sCount, joyRemap);
 
 			std::string indexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
@@ -4230,7 +4230,7 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 	auto createText = std::make_shared<TextComponent>(mWindow, _("CREATE BUTTON REMAP"), theme->Text.font, theme->Text.color);
 	row.addElement(createText, true);
 	
-	auto updateVal = [mWindow, prefixName](const std::string& newVal)
+	auto updateVal = [mWindow, prefixName, btn_choice, del_choice](const std::string& newVal)
 	{
 		if (newVal.empty()) return;
 
@@ -4317,7 +4317,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			_("NO"), nullptr));
 	});
 	
-	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption);	
+	systemConfiguration->addWithLabel(_("DELETE REMAP"), del_choice);	
 	
 }
 
@@ -4420,7 +4420,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			auto btn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 			systemConfiguration->addWithLabel(_("BUTTON REMAP"), btn_choice);
 			systemConfiguration->addSaveFunc([mWindow, configName, btn_choice] {
-				if (joyBtn_choice->getSelectedIndex() >= 0)
+				if (btn_choice->getSelectedIndex() >= 0)
 				{
 					SystemConf::getInstance()->set(configName + ".joy_btn_cfg", btn_choice->getSelected());
 					SystemConf::getInstance()->saveSystemConf();
