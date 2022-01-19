@@ -4240,13 +4240,13 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		index++;
 	}
 	
-	deleteOption->setSelectedChangedCallback([mWindow, deleteOption, prefixName, &arr_joy_btn_names] (std::string s) {
+	deleteOption->setSelectedChangedCallback([mWindow, deleteOption, prefixName, arr_joy_btn_names] (std::string s) {
 		int index = atoi(deleteOption->getSelected().c_str());
 		if (index == -1)
 			return;
 		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
-			_("YES"), [&, mWindow, deleteOption, prefixName, &arr_joy_btn_names]
+			_("YES"), [mWindow, deleteOption, prefixName, &arr_joy_btn_names]
 			{
 				//std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
 				int index = atoi(deleteOption->getSelected().c_str());
