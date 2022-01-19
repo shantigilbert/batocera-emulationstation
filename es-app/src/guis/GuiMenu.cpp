@@ -4227,7 +4227,8 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 	systemConfiguration->addRow(row);
 }
 
-void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName) {
+void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
+	 std::shared_ptr<OptionListComponent<std::string>> joyBtn_choice, std::string prefixName) {
 	auto deleteOption = std::make_shared<OptionListComponent<std::string>>(mWindow, _("DELETE REMAP"), false);
 	
 	std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
@@ -4240,13 +4241,13 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		index++;
 	}
 	
-	deleteOption->setSelectedChangedCallback([mWindow, deleteOption, prefixName, arr_joy_btn_names] (std::string s) {
+	deleteOption->setSelectedChangedCallback([mWindow, deleteOption, prefixName, arr_joy_btn_names, joyBtn_choice] (std::string s) {
 		int index = atoi(deleteOption->getSelected().c_str());
 		if (index == -1)
 			return;
 		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
-			_("YES"), [mWindow, deleteOption, prefixName, arr_joy_btn_names]
+			_("YES"), [mWindow, deleteOption, prefixName, arr_joy_btn_names, joyBtn_choice]
 			{
 				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
 				int index = atoi(deleteOption->getSelected().c_str());
@@ -4275,47 +4276,17 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				deleteOption->remove(tName);
 				deleteOption->selectFirstItem();
+				
+				int joyBtn_index = atoi(joyBtn_choice->getSelected().c_str());
+				if (joyBtn_index == index)
+					joyBtn_choice->selectFirstItem();
+				joyBtn_choice->remove(tName);
 			}, 
 			_("NO"), nullptr));
 	});
 	
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption);	
 	
-	
-
-	/*systemConfiguration->addSaveFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
-		int index = atoi(deleteOption->getSelected().c_str());
-		if (index == -1)
-			return;
-		
-		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
-			_("YES"), [mWindow, deleteOption, prefixName, arr_joy_btn_names]
-			{
-				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
-				int index = atoi(deleteOption->getSelected().c_str());
-
-				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + index);
-
-				index++;
-
-				std::string remapNames = "";
-				for(int i=0; i < l_arr_joy_btn_names.size(); ++i)
-				{
-					if (i > 0)
-						remapNames += ",";
-					remapNames += l_arr_joy_btn_names[i];
-				}		
-				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
-				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(index), "");
-				
-				int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
-				if (count > 0)
-					SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(--count));
-				
-				SystemConf::getInstance()->saveSystemConf();			
-			}, 
-			_("NO"), nullptr));
-	});*/
 }
 
 #endif
@@ -4427,7 +4398,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			if (fileData == nullptr)
 			{
 				GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, tEmulator);
-				GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, tEmulator);
+				GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, joyBtn_choice, tEmulator);
 			}
 		}();
 	}
