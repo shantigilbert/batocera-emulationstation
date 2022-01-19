@@ -4240,7 +4240,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		index++;
 	}
 
-	std::function<void()> delFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
+	std::function<void()> delFunc([&] {
 		int index = atoi(deleteOption->getSelected().c_str());
 		if (index == -1)
 			return;
