@@ -4240,7 +4240,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		index++;
 	}
 
-	std::function<void()> delFunc = [mWindow, deleteOption, prefixName, arr_joy_btn_names] {
+	std::function<void()> delFunc([mWindow, deleteOption, prefixName, arr_joy_btn_names] {
 		int index = atoi(deleteOption->getSelected().c_str());
 		if (index == -1)
 			return;
@@ -4272,7 +4272,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->saveSystemConf();			
 			}, 
 			_("NO"), nullptr));
-	};
+	}());
 	
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), deleteOption, delFunc);	
 	
