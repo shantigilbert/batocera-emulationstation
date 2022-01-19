@@ -4255,6 +4255,11 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		}		
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(index), "");
+		
+		int count = atoi(SystemConf::getInstance()->get(prefixName + ".joy_btn_map_count").c_str());
+		if (count > 0)
+			SystemConf::getInstance()->set(prefixName + ".joy_btn_map_count", std::to_string(--count));
+		
 		SystemConf::getInstance()->saveSystemConf();
 	});
 }
