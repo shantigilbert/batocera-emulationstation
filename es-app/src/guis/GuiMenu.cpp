@@ -4274,7 +4274,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		i++;
 	}
 	
-	del_choice->setSelectedChangedCallback([mWindow, del_choice, prefixName, arr_joy_btn_names, btn_choice, iIndexes] (std::string s) {
+	del_choice->setSelectedChangedCallback([mWindow, btn_choice, del_choice, prefixName, arr_joy_btn_names, iIndexes] (std::string s) {
 		int index = del_choice->getSelectedIndex();
 		if (index == 0)
 			return;
@@ -4291,7 +4291,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				tIndexes.erase(tIndexes.begin() + delIndex);
 
 				std::string sRemapNames = "";
-				for(int i=0; i < tNames.size(); ++i)
+				int i;
+				for(i=0; i < tNames.size(); ++i)
 				{
 					if (i > 0)
 						sRemapNames += ",";
@@ -4301,7 +4302,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 				std::string sIndexes = "";
-				for(int i=0; i < tIndexes.size(); ++i)
+				for(i=0; i < tIndexes.size(); ++i)
 				{
 					if (i > 0)
 						sIndexes += ",";
@@ -4310,7 +4311,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", sIndexes);
 
 				SystemConf::getInstance()->saveSystemConf();
-				
+
 				std::string tName = del_choice->getSelectedName();
 
 				bool btn_match = del_choice->getSelectedIndex() == btn_choice->getSelectedIndex();
