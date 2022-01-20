@@ -4268,10 +4268,10 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	std::vector<int> iIndexes(int_explode(sIndexes));
 
 	del_choice->add("NONE", "-1", true);
-	int index = 0;
+	int i = 0;
 	for (auto it = arr_joy_btn_names.cbegin(); it != arr_joy_btn_names.cend(); it++) {
-		del_choice->add(*it, std::to_string(joy_btn_indexes[i]), false);
-		index++;
+		del_choice->add(*it, std::to_string(iIndexes[i]), false);
+		i++;
 	}
 	
 	del_choice->setSelectedChangedCallback([mWindow, del_choice, prefixName, arr_joy_btn_names, btn_choice, iIndexes] (std::string s) {
@@ -4289,8 +4289,10 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + delIndex);
 // TODO indexes are screwing up.
-				int remapIndex = iIndexes[delIndex];
-				iIndexes.erase(iIndexes.begin() + delIndex);
+
+				std::vector<int> tIndexes(iIndexes);
+				int remapIndex = tIndexes[delIndex];
+				tIndexes.erase(tIndexes.begin() + delIndex);
 
 				std::string remapNames = "";
 				for(int i=0; i < l_arr_joy_btn_names.size(); ++i)
@@ -4303,11 +4305,11 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 				std::string sIndexes = "";
-				for(int i=0; i < iIndexes.size(); ++i)
+				for(int i=0; i < tIndexes.size(); ++i)
 				{
 					if (i > 0)
 						sIndexes += ",";
-					sIndexes += std::to_string(iIndexes[i]);
+					sIndexes += std::to_string(tIndexes[i]);
 				}
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", sIndexes);
 
