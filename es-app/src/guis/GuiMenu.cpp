@@ -4254,6 +4254,7 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 	systemConfiguration->addRow(row);
 }
 
+// TODO - Sometimes crashes ES when removing from middle.
 void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	 std::shared_ptr<OptionListComponent<std::string>> btn_choice,
 	 std::shared_ptr<OptionListComponent<std::string>> del_choice,
@@ -4310,10 +4311,10 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", sIndexes);
 
 				SystemConf::getInstance()->saveSystemConf();
-
-				del_choice->remove(tName);
-				del_choice->selectFirstItem();
 				
+				del_choice->selectFirstItem();
+				del_choice->remove(tName);
+
 				int btn_index = atoi(btn_choice->getSelected().c_str());
 				if (btn_index >= btn_choice->size())
 					btn_choice->selectFirstItem();
