@@ -4312,14 +4312,15 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				SystemConf::getInstance()->saveSystemConf();
 				
+				bool btn_match = del_choice->getSelectedIndex() == btn_choice->getSelectedIndex();
 				del_choice->selectFirstItem();
 				del_choice->remove(tName);
 
-				int btn_index = atoi(btn_choice->getSelected().c_str());
-				if (btn_index >= btn_choice->size())
+				int btn_index = btn_choice->getSelectedIndex();
+				if (btn_index >= btn_choice->size() || btn_match)
 					btn_choice->selectFirstItem();
 				btn_choice->remove(tName);
-			}, 
+			},
 			_("NO"), nullptr));
 	});
 	
