@@ -5037,7 +5037,8 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 		return joy_btn_cfg;
 	}
 
-	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
+	int cfgIndex = joy_btn_cfg->getSelected();
+	//int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
 	if (cfgIndex > joy_btn_recs.size())
 		cfgIndex = 0;
 
