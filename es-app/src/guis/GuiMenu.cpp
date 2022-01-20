@@ -4285,7 +4285,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				std::string tName = l_arr_joy_btn_names[delIndex];
 
 				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + delIndex);
-
+// TODO indexes are screwing up.
 				std::string sIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 				std::vector<int> iIndexes = int_explode(sIndexes);	
 				int remapIndex = iIndexes[delIndex];
@@ -4306,7 +4306,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				{
 					if (i > 0)
 						sIndexes += ",";
-					sIndexes += iIndexes[i];
+					sIndexes += std::to_string(iIndexes[i]);
 				}
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", sIndexes);
 
