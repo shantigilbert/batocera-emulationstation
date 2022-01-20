@@ -4282,26 +4282,22 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), [mWindow, del_choice, prefixName, arr_joy_btn_names, btn_choice, iIndexes]
 			{
-				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
+				std::vector<std::string> tNames(arr_joy_btn_names);
 				int delIndex = (del_choice->getSelectedIndex()-1);
-
-				std::string tName = del_choice->getSelectedName();
-
-				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + delIndex);
-// TODO indexes are screwing up.
+				tNames.erase(tNames.begin() + delIndex);
 
 				std::vector<int> tIndexes(iIndexes);
 				int remapIndex = tIndexes[delIndex];
 				tIndexes.erase(tIndexes.begin() + delIndex);
 
-				std::string remapNames = "";
-				for(int i=0; i < l_arr_joy_btn_names.size(); ++i)
+				std::string sRemapNames = "";
+				for(int i=0; i < tNames.size(); ++i)
 				{
 					if (i > 0)
-						remapNames += ",";
-					remapNames += l_arr_joy_btn_names[i];
+						sRemapNames += ",";
+					sRemapNames += tNames[i];
 				}
-				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", remapNames);
+				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", sRemapNames);
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 				std::string sIndexes = "";
@@ -4315,6 +4311,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				SystemConf::getInstance()->saveSystemConf();
 				
+				std::string tName = del_choice->getSelectedName();
+
 				bool btn_match = del_choice->getSelectedIndex() == btn_choice->getSelectedIndex();
 				del_choice->selectFirstItem();
 				del_choice->remove(tName);
