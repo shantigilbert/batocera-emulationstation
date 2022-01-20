@@ -4285,7 +4285,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				std::vector<std::string> l_arr_joy_btn_names(arr_joy_btn_names);
 				int delIndex = (del_choice->getSelectedIndex()-1);
 
-				std::string tName = l_arr_joy_btn_names[delIndex];
+				std::string tName = del_choice->getSelectedName();
 
 				l_arr_joy_btn_names.erase(l_arr_joy_btn_names.begin() + delIndex);
 // TODO indexes are screwing up.
