@@ -4292,17 +4292,17 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		del_choice->add(*it, std::to_string(iIndexes[i]), false);
 		i++;
 	}
-	
+
 	systemConfiguration->addSaveFunc([mWindow, btn_choice, del_choice, prefixName, arr_btn_names, iIndexes] {
 		int index = del_choice->getSelectedIndex();
 		if (index == 0)
 			return;
-		
+		int delIndex = this->getSelectedIndex();
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
-			_("YES"), [mWindow, btn_choice, del_choice, prefixName, arr_btn_names, iIndexes]
+			_("YES"), [mWindow, btn_choice, del_choice, prefixName, arr_btn_names, iIndexes, delIndex]
 			{
 				std::vector<std::string> tNames(arr_btn_names);
-				int delIndex = (del_choice->getSelectedIndex()-1);
+				int delCfgIndex = (delIndex-1);
 				tNames.erase(tNames.begin() + delIndex);
 
 				std::vector<int> tIndexes(iIndexes);
@@ -4333,7 +4333,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				std::string tName = del_choice->getSelectedName();
 
-				int old_del_choice_val = del_choice->getSelectedIndex();
+				int old_del_choice_val = delIndex;
 				del_choice->selectFirstItem();
 				del_choice->remove(tName);
 
