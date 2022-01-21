@@ -4304,11 +4304,11 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				std::vector<std::string> tNames = remap_names;
 				int delCfgIndex = (delIndex-1);
-				//tNames.erase(tNames.begin() + delCfgIndex);
+				tNames.erase(tNames.begin() + delCfgIndex);
 
 				std::vector<int> tIndexes = iIndexes;
 				//int remapIndex = tIndexes[delIndex];
-				//tIndexes.erase(tIndexes.begin() + delCfgIndex);
+				tIndexes.erase(tIndexes.begin() + delCfgIndex);
 
 				std::string sRemapNames = "";
 				int i;
