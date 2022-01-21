@@ -4297,7 +4297,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		int index = del_choice->getSelectedIndex();
 		if (index == 0)
 			return;
-		int delIndex = this->getSelectedIndex();
+		int delIndex = del_choice->getSelectedIndex();
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), [mWindow, btn_choice, del_choice, prefixName, arr_btn_names, iIndexes, delIndex]
 			{
