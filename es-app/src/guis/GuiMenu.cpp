@@ -4301,32 +4301,29 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			_("YES"), [mWindow, btn_choice, del_choice, prefixName, remap_names, iIndexes]
 			{
 				int delIndex = del_choice->getSelectedIndex();
-
-				std::vector<std::string> tNames = remap_names;
 				int delCfgIndex = (delIndex-1);
-				tNames.erase(tNames.begin() + delCfgIndex);
-
-				std::vector<int> tIndexes = iIndexes;
-				//int remapIndex = tIndexes[delIndex];
-				tIndexes.erase(tIndexes.begin() + delCfgIndex);
 
 				std::string sRemapNames = "";
 				int i;
-				for(i=0; i < tNames.size(); ++i)
+				for(i=0; i < remap_names.size(); ++i)
 				{
+					if (i == delCfgIndex)
+						continue;					
 					if (i > 0)
 						sRemapNames += ",";
-					sRemapNames += tNames[i];
+					sRemapNames += remap_names[i];
 				}
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", sRemapNames);
 				//SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 				std::string sIndexes = "";
-				for(i=0; i < tIndexes.size(); ++i)
+				for(i=0; i < iIndexes.size(); ++i)
 				{
+					if (i == delCfgIndex)
+						continue;
 					if (i > 0)
 						sIndexes += ",";
-					sIndexes += std::to_string(tIndexes[i]);
+					sIndexes += std::to_string(iIndexes[i]);
 				}
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", sIndexes);
 
