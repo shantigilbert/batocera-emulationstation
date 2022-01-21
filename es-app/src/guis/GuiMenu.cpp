@@ -5054,8 +5054,8 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 	std::vector<std::string> btn_names(explode(btnNames));
 
 	if (prefixName == "auto" || prefixName.empty() || btn_names.size() == 0) {
-		joy_btn_cfg->add("auto", "0", true);
-		return joy_btn_cfg;
+		btn_cfg->add("auto", "0", true);
+		return btn_cfg;
 	}
 
 	int cfgIndex = atoi(SystemConf::getInstance()->get(configname + ".joy_btn_cfg").c_str());
