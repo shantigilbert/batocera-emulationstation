@@ -526,6 +526,14 @@ public:
 	}
 
 #ifdef _ENABLEEMUELEC
+	void removeIndex(const int index)
+	{
+		if (mEntries.at(index).selected)
+			mEntries.at(0).selected = true;
+		mEntries.at(index).selected = false;
+		mEntries.erase(mEntries.cbegin()+index);
+	}
+
 	void selectIndex(unsigned int i)
 	{
 		selectNone();
