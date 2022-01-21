@@ -4298,10 +4298,14 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		if (index == 0)
 			return;
 		int delIndex = del_choice->getSelectedIndex();
+		SystemConf::getInstance()->set(prefixName + ".selected", std::to_string(delIndex));
+		SystemConf::getInstance()->set(prefixName + ".value", s);
+		return;
+		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), [mWindow, btn_choice, del_choice, prefixName, arr_btn_names, iIndexes, delIndex]
 			{
-				SystemConf::getInstance()->set(prefixName + ".value", s);
+				
 				std::vector<std::string> tNames(arr_btn_names);
 				int delCfgIndex = (delIndex-1);
 				tNames.erase(tNames.begin() + delIndex);
