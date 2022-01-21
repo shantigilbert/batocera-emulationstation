@@ -525,6 +525,15 @@ public:
 		onSelectedChanged();
 	}
 
+#ifdef _ENABLEEMUELEC
+	void selectIndex(unsigned int i)
+	{
+		selectNone();
+		mEntries.at(i).selected = true;
+		onSelectedChanged();
+	}
+#endif
+
 	void clear() {
 		mEntries.clear();
 	}
