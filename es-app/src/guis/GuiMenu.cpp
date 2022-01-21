@@ -4108,6 +4108,15 @@ static std::vector<int> int_explode(std::string sData, char delimeter=',')
 	return arr;
 }
 
+
+static std::string toupper(std::string s)
+{
+	std::for_each(s.begin(), s.end(), [](char & c){
+	    c = ::toupper(c);
+	});	
+	return s;
+}
+
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
@@ -4237,6 +4246,18 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 			mWindow->pushGui(new GuiMsgBox(mWindow, _("YOU CANNOT HAVE COMMAS IN REMAP NAME"), _("OK"), nullptr));
 		  return;
 		}
+		
+		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
+		std::vector<std::string> arr_btn_names(explode(remapNames));
+		std::string newName = toupper(newVal);
+		for (int i=0; i < arr_btn_names.size(); ++i) {
+			std::string tName = toupper(arr_btn_names[i]);
+			if (newName == tName) {
+				mWindow->pushGui(new GuiMsgBox(mWindow, _("REMAP NAME MUST BE UNIQUE"), _("OK"), nullptr));
+				return;
+			}
+		}
+
 		GuiSettings* systemConfiguration = new GuiSettings(mWindow, "CREATE REMAP");
 		GuiMenu::createBtnJoyCfgRemap(mWindow, systemConfiguration, btn_choice, del_choice, prefixName, newVal);
 		mWindow->pushGui(systemConfiguration);
