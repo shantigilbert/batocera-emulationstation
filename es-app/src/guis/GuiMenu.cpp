@@ -4339,7 +4339,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				int btn_index = btn_choice->getSelectedIndex();
 
-				if (btn_index == old_del_choice_val || btn_index >= (btn_choice->size()-1))
+				if (btn_index == old_del_choice_val || btn_index >= (btn_choice->size()-1) ||
+						btn_index == (old_del_choice_val-1))
 					btn_choice->selectFirstItem();
 				btn_choice->remove(tName);
 			},
