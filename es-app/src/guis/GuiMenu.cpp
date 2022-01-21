@@ -4282,9 +4282,6 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 	std::vector<std::string> remap_names(explode(remapNames));
 
-	std::string sIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
-	std::vector<int> iIndexes(int_explode(sIndexes));
-
 	del_choice->add("NONE", "0", true);
 	int i = 1;
 	for (auto it = remap_names.cbegin(); it != remap_names.cend(); it++) {
@@ -4292,7 +4289,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		i++;
 	}
 
-	del_choice->setSelectedChangedCallback([mWindow, btn_choice, del_choice, prefixName, remap_names, iIndexes](std::string s) {		
+	del_choice->setSelectedChangedCallback([&mWindow, &btn_choice, &del_choice, prefixName, remap_names, iIndexes](std::string s) {		
 		int delIndex = del_choice->getSelectedIndex();
 		if (delIndex <= 0)
 			return;
@@ -4300,8 +4297,14 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		del_choice->selectFirstItem();
 
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
-			_("YES"), [mWindow, btn_choice, del_choice, prefixName, remap_names, iIndexes, delIndex]
+			_("YES"), [&mWindow, &btn_choice, &del_choice, prefixName, delIndex]
 			{
+				std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
+				std::vector<std::string> remap_names(explode(remapNames));
+
+				std::string indexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
+				std::vector<int> iIndexes(int_explode(indexes));
+
 				//int delIndex = del_choice->getSelectedIndex();
 				int delCfgIndex = (delIndex-1);
 
