@@ -4183,7 +4183,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 		}
 		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO CREATE THE REMAP?"),
-			_("YES"), [mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount]
+			_("YES"), [mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames]
 		{
 			int count = remapCount+1;
 
@@ -4191,8 +4191,8 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_names", names);
 
 			std::string joyRemap = "";
-			for(int i=0; i < btnCount; ++i)
-			{
+			int size = remap_choice[0]->size();
+			for(int i=0; i < size; ++i) {
 				if (i > 0)
 					joyRemap += " ";
 				joyRemap += remap_choice[i]->getSelected();
@@ -4299,7 +4299,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 					sRemapNames += tNames[i];
 				}
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_names", sRemapNames);
-				SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
+				//SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 				std::string sIndexes = "";
 				for(i=0; i < tIndexes.size(); ++i)
@@ -5043,7 +5043,6 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 
 	int index = 0;
 	joy_btn_cfg->add("auto", "0", cfgIndex == index);
-	index++;
 	for (auto it = joy_btn_recs.cbegin(); it != joy_btn_recs.cend(); it++) {
 		joy_btn_cfg->add(*it, std::to_string(joy_btn_indexes[index]), cfgIndex == joy_btn_indexes[index]);
 		index++;
