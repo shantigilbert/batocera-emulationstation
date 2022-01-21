@@ -532,7 +532,7 @@ public:
 			return;
 
 		auto sysIt = mEntries.cbegin() + i;
-		mEntries.erase(sysIt;
+		mEntries.erase(sysIt);
 	}
 
 	void selectIndex(unsigned int i)
