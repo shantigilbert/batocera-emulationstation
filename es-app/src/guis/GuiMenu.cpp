@@ -4292,7 +4292,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		i++;
 	}
 
-	del_choice->setSelectedChangedCallback([mWindow, &btn_choice, &del_choice, prefixName, arr_btn_names, iIndexes](std::string s) {
+	del_choice->setSelectedChangedCallback([mWindow, btn_choice, del_choice, prefixName, arr_btn_names, iIndexes](std::string s) {
 		int delIndex = del_choice->getSelectedIndex();
 		if (delIndex == 0)
 			return;
@@ -4303,11 +4303,11 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				
 				std::vector<std::string> tNames(arr_btn_names);
 				int delCfgIndex = (delIndex-1);
-				tNames.erase(tNames.cbegin() + delIndex);
+				tNames.erase(tNames.begin() + delIndex);
 
 				std::vector<int> tIndexes(iIndexes);
 				int remapIndex = tIndexes[delIndex];
-				tIndexes.erase(tIndexes.cbegin() + delIndex);
+				tIndexes.erase(tIndexes.begin() + delIndex);
 
 				std::string sRemapNames = "";
 				int i;
@@ -4333,7 +4333,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				int old_del_choice_val = delIndex;
 				del_choice->selectNone();
-				del_choice->removeIndex(delIndex);
+				//del_choice->removeIndex(delIndex);
 				del_choice->selectFirstItem();
 
 				int btnIndex = btn_choice->getSelectedIndex();
@@ -4341,7 +4341,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 					btnIndex = 0;
 
 				btn_choice->selectNone();
-				btn_choice->removeIndex(delIndex);
+				//btn_choice->removeIndex(delIndex);
 				btn_choice->selectIndex(btnIndex);
 			},
 			_("NO"), nullptr));
