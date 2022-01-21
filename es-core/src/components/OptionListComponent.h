@@ -526,12 +526,12 @@ public:
 	}
 
 #ifdef _ENABLEEMUELEC
-	void removeIndex(const int index)
+	void removeIndex(const int i)
 	{
-		if (index <= 0 || index >= mEntries.size())
+		if (i <= 0 || i >= mEntries.size())
 			return;
 
-		mEntries.erase(mEntries.begin()+index);
+		mEntries.erase(mEntries.at(i));
 	}
 
 	void selectIndex(unsigned int i)
