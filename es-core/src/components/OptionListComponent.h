@@ -531,7 +531,8 @@ public:
 		if (i <= 0 || i >= mEntries.size())
 			return;
 
-		mEntries.erase(mEntries.at(i));
+		auto sysIt = mEntries.cbegin() + i;
+		mEntries.erase(sysIt;
 	}
 
 	void selectIndex(unsigned int i)
