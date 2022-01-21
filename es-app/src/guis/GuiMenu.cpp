@@ -4303,11 +4303,11 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				
 				std::vector<std::string> tNames(arr_btn_names);
 				int delCfgIndex = (delIndex-1);
-				tNames.erase(tNames.begin() + delIndex);
+				tNames.erase(tNames.begin() + delCfgIndex);
 
 				std::vector<int> tIndexes(iIndexes);
 				int remapIndex = tIndexes[delIndex];
-				tIndexes.erase(tIndexes.begin() + delIndex);
+				tIndexes.erase(tIndexes.begin() + delCfgIndex);
 
 				std::string sRemapNames = "";
 				int i;
@@ -4332,21 +4332,21 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 				SystemConf::getInstance()->saveSystemConf();
 
 				int old_del_choice_val = delIndex;
-				//del_choice->selectNone();
-				//del_choice->removeIndex(delIndex);
-				//del_choice->selectFirstItem();
+				del_choice->selectNone();
+				del_choice->removeIndex(delIndex);
+				del_choice->selectFirstItem();
 
 				int btnIndex = btn_choice->getSelectedIndex();
 				if (btnIndex == old_del_choice_val || btnIndex >= del_choice->size())
 					btnIndex = 0;
 
-				//btn_choice->selectNone();
-				//btn_choice->removeIndex(delIndex);
-				//btn_choice->selectIndex(btnIndex);
+				btn_choice->selectNone();
+				btn_choice->removeIndex(delIndex);
+				btn_choice->selectIndex(btnIndex);
 			},
 			_("NO"), nullptr));
 	});
-	
+
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), del_choice);	
 	
 }
