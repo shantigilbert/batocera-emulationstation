@@ -4333,16 +4333,16 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				int old_del_choice_val = delIndex;
 				del_choice->selectNone();
-				//del_choice->removeIndex(delIndex);
-				del_choice->selectFirstItem();
+				del_choice->removeIndex(delIndex);
+				//del_choice->selectFirstItem();
 
 				int btnIndex = btn_choice->getSelectedIndex();
 				if (btnIndex == old_del_choice_val || btnIndex >= del_choice->size())
 					btnIndex = 0;
 
 				btn_choice->selectNone();
-				//btn_choice->removeIndex(delIndex);
-				btn_choice->selectIndex(btnIndex);
+				btn_choice->removeIndex(delIndex);
+				//btn_choice->selectIndex(btnIndex);
 			},
 			_("NO"), nullptr));
 	});
