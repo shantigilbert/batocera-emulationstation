@@ -4333,12 +4333,13 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 				std::string tName = del_choice->getSelectedName();
 
-				bool btn_match = del_choice->getSelectedIndex() == btn_choice->getSelectedIndex();
+				int old_del_choice_val = del_choice->getSelectedIndex();
 				del_choice->selectFirstItem();
 				del_choice->remove(tName);
 
 				int btn_index = btn_choice->getSelectedIndex();
-				if (btn_index >= (btn_choice->size()-1) || btn_match)
+
+				if (btn_index == old_del_choice_val)
 					btn_choice->selectFirstItem();
 				btn_choice->remove(tName);
 			},
@@ -4448,7 +4449,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			auto btn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
 			auto del_choice = std::make_shared<OptionListComponent<std::string>>(mWindow, _("DELETE REMAP"), false);
 			systemConfiguration->addWithLabel(_("BUTTON REMAP"), btn_choice);
-			btn_choice->setSelectedChangedCallback([configName, btn_choice](std::string s) {
+			btn_choice->addSaveFunc([configName, btn_choice] {
 				if (btn_choice->getSelectedIndex() >= 0)
 				{
 					SystemConf::getInstance()->set(configName + ".joy_btn_cfg", btn_choice->getSelected());
