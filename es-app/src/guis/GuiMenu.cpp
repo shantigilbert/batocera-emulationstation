@@ -4183,7 +4183,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 		}
 		
 		mWindow->pushGui(new GuiMsgBox(mWindow, _("ARE YOU SURE YOU WANT TO CREATE THE REMAP?"),
-			_("YES"), [mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames]
+			_("YES"), [mWindow, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount]
 		{
 			int count = remapCount+1;
 
@@ -4191,8 +4191,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfigura
 			SystemConf::getInstance()->set(prefixName + ".joy_btn_names", names);
 
 			std::string joyRemap = "";
-			int size = remap_choice[0]->size();
-			for(int i=0; i < size; ++i) {
+			for(int i=0; i < btnCount; ++i) {
 				if (i > 0)
 					joyRemap += " ";
 				joyRemap += remap_choice[i]->getSelected();
@@ -4254,7 +4253,6 @@ void GuiMenu::createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfigurat
 	systemConfiguration->addRow(row);
 }
 
-// TODO - Sometimes crashes ES when removing from middle.
 void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	 std::shared_ptr<OptionListComponent<std::string>> btn_choice,
 	 std::shared_ptr<OptionListComponent<std::string>> del_choice,
