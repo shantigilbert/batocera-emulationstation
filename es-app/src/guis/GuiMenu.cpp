@@ -5048,14 +5048,12 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOptionList(Window *window, std::string configname, std::string prefixName)
 {
-	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
+	auto btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
 
 	std::string btnNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 	std::vector<std::string> btn_names(explode(btnNames));
 
-	int remapCount = joy_btn_recs.size();
-
-	if (prefixName == "auto" || prefixName.empty() || remapCount == 0) {
+	if (prefixName == "auto" || prefixName.empty() || btn_names.size() == 0) {
 		joy_btn_cfg->add("auto", "0", true);
 		return joy_btn_cfg;
 	}
@@ -5065,12 +5063,12 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnCfgOption
 		cfgIndex = 0;
 
 	int i = 1;
-	joy_btn_cfg->add("auto", "0", cfgIndex == 0);
+	btn_cfg->add("auto", "0", cfgIndex == 0);
 	for (auto it = btn_names.cbegin(); it != btn_names.cend(); it++) {
-		joy_btn_cfg->add(*it, std::to_string(i), cfgIndex == i);
+		btn_cfg->add(*it, std::to_string(i), cfgIndex == i);
 		i++;
 	}
-	return joy_btn_cfg;
+	return btn_cfg;
 }
 
 #endif 
