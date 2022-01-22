@@ -4347,7 +4347,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	});
 
 	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {		
-		//OptionListComponent* tmp = dynamic_cast<OptionListComponent*>(mWindow->peekGui());
+		OptionListComponent* tmp = dynamic_cast<OptionListComponent*>(mWindow->peekGui());
 		//if (tmp == nullptr)
 			//return;
 
@@ -4355,7 +4355,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		if (delIndex <= 0)
 			return;
 
-		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc, _("NO"), nullptr));
+		mWindow->pushGui(new GuiMsgBox(mWindow,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
+			_("YES"), saveFunc, _("NO"), nullptr));
 	});
 
 	systemConfiguration->addSaveFunc([mWindow, saveFunc, btn_choice, del_choice, prefixName] {					
@@ -4363,7 +4364,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		if (delIndex <= 0)
 			return;
 
-		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc, _("NO"), nullptr));
+		mWindow->pushGui(new GuiMsgBox(mWindow,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
+			_("YES"), saveFunc, _("NO"), nullptr));
 	});
 
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), del_choice);	
