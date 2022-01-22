@@ -4345,9 +4345,9 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		btn_choice->selectNone();
 		btn_choice->removeIndex(delIndex);
 		btn_choice->selectIndex(btnIndex);
-	});
+	};
 
-	del_choice->setSelectedChangedCallback([mWindow, btn_choice, del_choice, prefixName](std::string s) {		
+	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {		
 		if (dynamic_cast<OptionListComponent*>(mWindow->peekGui()) == nullptr)
 			return;
 			
@@ -4358,7 +4358,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc, _("NO"), nullptr));
 	});
 
-	systemConfiguration->addSaveFunc([mWindow, btn_choice, del_choice, prefixName] {					
+	systemConfiguration->addSaveFunc([mWindow, saveFunc, btn_choice, del_choice, prefixName] {					
 		int delIndex = del_choice->getSelectedIndex();
 		if (delIndex <= 0)
 			return;
