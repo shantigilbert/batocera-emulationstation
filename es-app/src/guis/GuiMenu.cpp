@@ -4284,7 +4284,13 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 	del_choice->add("NONE", "0", true);
 	int i = 1;
+	std::string name;
 	for (auto it = remap_names.cbegin(); it != remap_names.cend(); it++) {
+		name = *it;
+		if (name == "mk" || name == "sf") {
+			i++;
+			continue;
+		}
 		del_choice->add(*it, std::to_string(i), false);
 		i++;
 	}
@@ -4463,11 +4469,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->saveSystemConf();
 				}
 			});
-			if (fileData == nullptr)
-			{
-				GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
-				GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
-			}
+			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
+			GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
 		}();
 	}
 
