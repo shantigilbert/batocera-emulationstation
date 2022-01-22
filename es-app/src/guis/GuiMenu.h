@@ -10,13 +10,6 @@
 #include "KeyboardMapping.h"
 #include "utils/VectorEx.h"
 
-#ifdef _ENABLEEMUELEC
-  template<typename B, typename T>
-  bool instanceof(const T*) {
-  	return std::is_base_of<B, T>::value;
-  };
-#endif
-
 class StrInputConfig
 {
  public:
