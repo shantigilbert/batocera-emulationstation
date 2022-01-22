@@ -4347,9 +4347,14 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	});
 
 	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {		
-		if (!instanceof<OptionListComponent>(mWindow->peekGui()))
-			return;
+		//if (!instanceof<OptionListComponent>(mWindow->peekGui()))
+			//return;
 
+		if (OptionListComponent* d = dynamic_cast<OptionListComponent*>(mWindow->peekGui()); d == nullptr)
+    {
+			return;
+    }
+			
 		int delIndex = del_choice->getSelectedIndex();
 		if (delIndex <= 0)
 			return;
