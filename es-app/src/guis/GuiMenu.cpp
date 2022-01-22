@@ -4117,11 +4117,6 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-template<typename Base, typename T>
-inline bool instanceof(const T*) {
-	return std::is_base_of<Base, T>::value;
-}
-
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
 	auto joy_btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
