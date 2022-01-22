@@ -4353,7 +4353,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			int err = 0;
 		try
     {
-        dynamic_cast<OptionListPopup&>(gc);
+        dynamic_cast<OptionListPopup&>(gc());
 				
     }
     catch(const std::bad_cast& ex)
