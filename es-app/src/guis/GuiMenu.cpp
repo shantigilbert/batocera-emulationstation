@@ -4295,7 +4295,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		i++;
 	}
 
-	auto saveFunc = [mWindow, btn_choice, del_choice, prefixName] {
+	const std::function<void()>& saveFunc = [mWindow, btn_choice, del_choice, prefixName] {
 		int delIndex = del_choice->getSelectedIndex();
 
 		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
