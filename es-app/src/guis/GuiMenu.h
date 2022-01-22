@@ -12,7 +12,7 @@
 
 #ifdef _ENABLEEMUELEC
   template<typename Base, typename T>
-  bool instanceof(const T*) {
+  bool instanceof(T*) {
   	return std::is_base_of<Base, T>::value;
   }
 #endif
