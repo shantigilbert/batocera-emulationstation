@@ -24,10 +24,6 @@
 #define CHECKED_PATH ":/checkbox_checked.svg"
 #define UNCHECKED_PATH ":/checkbox_unchecked.svg"
 
-#ifdef _ENABLEEMUELEC
-class OptionListPopup;
-#endif
-
 template<typename T>
 class OptionListComponent : public GuiComponent
 {
@@ -209,10 +205,12 @@ private:
 			prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
 			return prompts;
 		}
-		
-		bool hasParent() {
-			return (mParent == nullptr);
-		}
+
+#ifdef _ENABLEEMUELEC	
+	public:
+		bool isOptionListPopup = true;
+#endif
+
 	};
 
 public:
