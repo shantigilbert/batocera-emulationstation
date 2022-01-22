@@ -209,6 +209,10 @@ private:
 			prompts.push_back(HelpPrompt(BUTTON_BACK, _("BACK")));
 			return prompts;
 		}
+		
+		bool hasParent() {
+			return (mParent == nullptr);
+		}
 	};
 
 public:
