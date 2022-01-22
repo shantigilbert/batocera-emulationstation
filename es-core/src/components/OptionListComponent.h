@@ -208,6 +208,8 @@ private:
 	};
 
 public:
+	OptionListComponent(){};
+	
 	OptionListComponent(Window* window, const std::string& name, bool multiSelect = false, bool multiSelectShowNames = false) : GuiComponent(window), mMultiSelect(multiSelect), mName(name),
 		 mText(window), mLeftArrow(window), mRightArrow(window), mMultiSelectShowNames(multiSelectShowNames)
 	{
