@@ -24,10 +24,6 @@
 #define CHECKED_PATH ":/checkbox_checked.svg"
 #define UNCHECKED_PATH ":/checkbox_unchecked.svg"
 
-#ifdef _ENABLEEMUELEC	
-	class OptionListPopup;
-#endif
-
 template<typename T>
 class OptionListComponent : public GuiComponent
 {
