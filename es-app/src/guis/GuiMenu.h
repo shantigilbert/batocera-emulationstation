@@ -11,9 +11,9 @@
 #include "utils/VectorEx.h"
 
 #ifdef _ENABLEEMUELEC
-  template<typename Base, typename T>
-  bool instanceof(const T*) {
-  	return std::is_base_of<Base, T>::value;
+  template<typename B, typename T>
+  bool instanceof(const T&) {
+  	return std::is_base_of<B, T>::value;
   };
 #endif
 
