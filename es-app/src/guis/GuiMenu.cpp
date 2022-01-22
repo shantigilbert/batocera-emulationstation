@@ -4353,8 +4353,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		if (delIndex <= 0)
 			return;
 
-		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc,
-			_("NO"), nullptr));
+		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc, _("NO"), nullptr));
 	});
 
 	systemConfiguration->addSaveFunc([mWindow, btn_choice, del_choice, prefixName] {					
@@ -4362,8 +4361,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		if (delIndex <= 0)
 			return;
 
-		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc,
-			_("NO"), nullptr));
+		mWindow->pushGui(new GuiMsgBox(mWindow, saveFunc, _("NO"), nullptr));
 	});
 
 	systemConfiguration->addWithLabel(_("DELETE REMAP"), del_choice);	
