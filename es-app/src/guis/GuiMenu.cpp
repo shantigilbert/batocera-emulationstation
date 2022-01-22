@@ -4295,7 +4295,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		i++;
 	}
 
-	std::function<void()> saveFunc = [mWindow, btn_choice, del_choice, prefixName] {
+	std::function<void()>& saveFunc([mWindow, btn_choice, del_choice, prefixName] {
 		int delIndex = del_choice->getSelectedIndex();
 
 		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
@@ -4344,7 +4344,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		btn_choice->selectNone();
 		btn_choice->removeIndex(delIndex);
 		btn_choice->selectIndex(btnIndex);
-	};
+	});
 
 	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {		
 		OptionListComponent* tmp = dynamic_cast<OptionListComponent*>(mWindow->peekGui());
