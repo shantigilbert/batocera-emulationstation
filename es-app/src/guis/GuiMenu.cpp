@@ -4291,6 +4291,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	std::string name;
 	for (auto it = remap_names.cbegin(); it != remap_names.cend(); it++) {
 		name = *it;
+		// Hack because mk and sf need to be ommited from delete choice.
 		if (name == "mk" || name == "sf") {
 			i++;
 			continue;
@@ -4300,7 +4301,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	}
 
 	const std::function<void()> saveFunc([mWindow, btn_choice, del_choice, prefixName] {
-		int delIndex = del_choice->getSelectedIndex();
+		// Hack because mk and sf need to be ommited from delete choice.
+		int delIndex = del_choice->getSelectedIndex()+2;
 
 		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 		std::vector<std::string> remap_names(explode(remapNames));
