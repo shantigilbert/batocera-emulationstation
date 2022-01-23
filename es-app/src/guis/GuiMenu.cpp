@@ -4486,7 +4486,14 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			systemConfiguration->addWithLabel(_("BUTTON REMAP"), btn_choice);
 			std::string prefixName = tEmulator;
 			systemConfiguration->addSaveFunc([configName, btn_choice, prefixName] {
-				if (btn_choice->getSelectedIndex() > 0)
+				int index = btn_choice->getSelectedIndex();
+				if (index == 0)
+				{
+					SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", "");
+					SystemConf::getInstance()->saveSystemConf();
+					return;
+				}
+				if (index > 0)
 				{
 					std::string btnIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 					std::vector<int> btn_indexes(int_explode(btnIndexes));
