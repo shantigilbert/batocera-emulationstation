@@ -4302,7 +4302,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 	const std::function<void()> saveFunc([mWindow, btn_choice, del_choice, prefixName] {
 		// Hack because mk and sf need to be ommited from delete choice.
-		int delIndex = del_choice->getSelectedIndex()+2;
+		int delIndex = del_choice->getSelectedIndex();
+		int delSelectIndex = delIndex+2;
 
 		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 		std::vector<std::string> remap_names(explode(remapNames));
@@ -4310,7 +4311,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		std::string indexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 		std::vector<int> iIndexes(int_explode(indexes));
 
-		int delCfgIndex = (delIndex-1);
+		// Hack because mk and sf need to be ommited from delete choice. (-1+2)
+		int delCfgIndex = (delIndex+1);
 
 		std::string sRemapNames = "";
 		int i;
@@ -4338,7 +4340,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 		SystemConf::getInstance()->saveSystemConf();
 
-		int old_del_choice_val = delIndex;
+		int old_del_choice_val = delSelectIndex;
 		del_choice->selectNone();
 		del_choice->removeIndex(delIndex);
 		del_choice->selectFirstItem();
@@ -4348,7 +4350,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			btnIndex = 0;
 
 		btn_choice->selectNone();
-		btn_choice->removeIndex(delIndex);
+		btn_choice->removeIndex(delSelectIndex);
 		btn_choice->selectIndex(btnIndex);
 	});
 
