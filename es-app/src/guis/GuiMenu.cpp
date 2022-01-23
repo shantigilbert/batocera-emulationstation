@@ -4351,14 +4351,14 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 		OptionListComponent<std::string>* olc = dynamic_cast<OptionListComponent<std::string>*>(gc);
 
-		long unsigned int m1 = (long unsigned int) olc;
+		long unsigned int m1 = (long unsigned int) &(*olc);
 		long unsigned int m2 = (long unsigned int) del_choice.get();
 		SystemConf::getInstance()->set(prefixName + ".adress1", "- "+std::to_string(m1));
 		//SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &(*olc)));
 		SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string(m2));
 		SystemConf::getInstance()->saveSystemConf();
 		
-		if (m1 == m2)
+		if (m1 == 0)
 			return;
 
 		int delIndex = del_choice->getSelectedIndex();
