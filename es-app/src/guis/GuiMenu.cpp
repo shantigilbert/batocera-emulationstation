@@ -4349,16 +4349,16 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {	
 		GuiComponent* gc = mWindow->peekGui();
 
-		OptionListComponent<std::string>* olc = dynamic_cast<OptionListComponent<std::string>*>(gc);
+		//OptionListComponent<std::string>* olc = dynamic_cast<OptionListComponent<std::string>*>(gc);
 
-		long unsigned int m1 = (long unsigned int) &(*olc);
+		long unsigned int m1 = (long unsigned int) gc;
 		long unsigned int m2 = (long unsigned int) del_choice.get();
 		SystemConf::getInstance()->set(prefixName + ".adress1", "- "+std::to_string(m1));
 		//SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &(*olc)));
 		SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string(m2));
 		SystemConf::getInstance()->saveSystemConf();
 		
-		if (m1 == 0)
+		if (m1 == m2)
 			return;
 
 		int delIndex = del_choice->getSelectedIndex();
