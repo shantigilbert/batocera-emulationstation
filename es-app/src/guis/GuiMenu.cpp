@@ -4288,22 +4288,21 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 	del_choice->add("NONE", "0", true);
 	int i = 1;
-	std::string name;
 	for (auto it = remap_names.cbegin(); it != remap_names.cend(); it++) {
-		name = *it;
-		// Hack because mk and sf need to be ommited from delete choice.
-		if (name == "mk" || name == "sf") {
-			i++;
-			continue;
-		}
 		del_choice->add(*it, std::to_string(i), false);
 		i++;
 	}
 
 	const std::function<void()> saveFunc([mWindow, btn_choice, del_choice, prefixName] {
-		// Hack because mk and sf need to be ommited from delete choice.
 		int delIndex = del_choice->getSelectedIndex();
-		int delSelectIndex = delIndex+2;
+
+		// Protect default maps (mk and sf).
+		if (delIndex <= 2)
+		{
+			mWindow->pushGui(new GuiMsgBox(mWindow,  _("CANNT DELETE DEFAULT BUTTON MAPS."),
+				_("OK"), nullptr));
+			return;
+		}
 
 		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 		std::vector<std::string> remap_names(explode(remapNames));
@@ -4311,8 +4310,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		std::string indexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 		std::vector<int> iIndexes(int_explode(indexes));
 
-		// Hack because mk and sf need to be ommited from delete choice. (-1+2)
-		int delCfgIndex = (delIndex+1);
+		int delCfgIndex = (delIndex-1);
 
 		std::string sRemapNames = "";
 		int i;
@@ -4340,7 +4338,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 		SystemConf::getInstance()->saveSystemConf();
 
-		int old_del_choice_val = delSelectIndex;
+		int old_del_choice_val = delIndex;
 		del_choice->selectNone();
 		del_choice->removeIndex(delIndex);
 		del_choice->selectFirstItem();
@@ -4350,16 +4348,13 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 			btnIndex = 0;
 
 		btn_choice->selectNone();
-		btn_choice->removeIndex(delSelectIndex);
+		btn_choice->removeIndex(delIndex);
 		btn_choice->selectIndex(btnIndex);
 	});
 
 	del_choice->setSelectedChangedCallback([mWindow, systemConfiguration, saveFunc, btn_choice, del_choice, prefixName](std::string s) {	
-		GuiComponent* gc = mWindow->peekGui();
-
-		long unsigned int m1 = (long unsigned int) &(*gc);
+		long unsigned int m1 = (long unsigned int) &(*mWindow->peekGui());
 		long unsigned int m2 = (long unsigned int) &(*systemConfiguration);
-		
 		if (m1 == m2)
 			return;
 
