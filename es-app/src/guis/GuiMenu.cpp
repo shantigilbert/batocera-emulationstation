@@ -4489,7 +4489,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				int index = btn_choice->getSelectedIndex();
 				if (index == 0)
 				{
-					SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", "");
+					SystemConf::getInstance()->set(prefixName + ".joy_btn_cfg", "");
 					SystemConf::getInstance()->saveSystemConf();
 					return;
 				}
