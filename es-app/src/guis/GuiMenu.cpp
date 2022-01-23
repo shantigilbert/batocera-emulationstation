@@ -4479,6 +4479,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
         SystemConf::getInstance()->set(tEmulator + ".joy_btn_order0", "0 1 2 3 4 5 6 7" );
         SystemConf::getInstance()->set(tEmulator + ".joy_btn_order1", "3 4 2 1 0 5 6 7" );
         SystemConf::getInstance()->set(tEmulator + ".joy_btn_order2", "3 2 5 1 0 4 6 7" );
+				SystemConf::getInstance()->saveSystemConf();
 			}
 
 			auto btn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
