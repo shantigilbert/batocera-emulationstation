@@ -4349,24 +4349,15 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {	
 		GuiComponent* gc = mWindow->peekGui();
 
-		OptionListComponent<std::string>* olc = 0;
-		int err=0;
-		try {
-			olc = dynamic_cast<OptionListComponent<std::string>*>(gc);
+		OptionListComponent<std::string>* olc = dynamic_cast<OptionListComponent<std::string>*>(gc);
 
-			if (olc == nullptr)
-				err=1;
-		}
-		catch(const std::bad_cast& e) {
-				err=1;
-		}
-
-		SystemConf::getInstance()->set(prefixName + ".adress1", "- "+std::to_string((long unsigned int) &(olc)));
-		SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &(*olc)));
-		SystemConf::getInstance()->set(prefixName + ".adress3", "- "+std::to_string((long unsigned int) &(del_choice)));
+		SystemConf::getInstance()->set(prefixName + ".adress1", "- "+std::to_string((long unsigned int) &olc));
+		//SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &(*olc)));
+		SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &del_choice));
 		SystemConf::getInstance()->saveSystemConf();
 		
-		return;
+		if (&olc == &del_choice)
+			return;
 
 		int delIndex = del_choice->getSelectedIndex();
 		if (delIndex <= 0)
