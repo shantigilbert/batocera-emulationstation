@@ -689,6 +689,7 @@ private:
 
 	std::vector<OptionListData> mEntries;
 	std::function<void(const T&)> mSelectedChangedCallback; // batocera
+	std::function<void(const T&)> mSelectedChangedPopupCallback;
 };
 
 #endif // ES_CORE_COMPONENTS_OPTION_LIST_COMPONENT_H
