@@ -78,13 +78,14 @@
 #define fake_gettext_cpu_frequency _("Cpu max frequency")
 #define fake_gettext_cpu_feature  _("Cpu feature")
 
-#define fake_gettext_scanlines		pgettext("game_options", "SCANLINES")
-#define fake_gettext_retro			pgettext("game_options", "RETRO")
-#define fake_gettext_enhanced		pgettext("game_options", "ENHANCED")
-#define fake_gettext_curvature		pgettext("game_options", "CURVATURE")
-#define fake_gettext_zfast			pgettext("game_options", "ZFAST")
-#define fake_gettext_flatten_glow	pgettext("game_options", "FLATTEN-GLOW")
-#define fake_gettext_rgascaling		pgettext("game_options", "RGA SCALING")
+#define fake_gettext_simple_bilinear_simple	pgettext("game_options", "SHARP-BILINEAR-SIMPLE")
+#define fake_gettext_scanlines				pgettext("game_options", "SCANLINES")
+#define fake_gettext_retro					pgettext("game_options", "RETRO")
+#define fake_gettext_enhanced				pgettext("game_options", "ENHANCED")
+#define fake_gettext_curvature				pgettext("game_options", "CURVATURE")
+#define fake_gettext_zfast					pgettext("game_options", "ZFAST")
+#define fake_gettext_flatten_glow			pgettext("game_options", "FLATTEN-GLOW")
+#define fake_gettext_rgascaling				pgettext("game_options", "RGA SCALING")
 
 #define fake_gettext_glvendor		_("VENDOR")
 #define fake_gettext_glvrenderer	_("RENDERER")
@@ -133,7 +134,10 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 #endif
 
 #ifdef _ENABLEEMUELEC
+	if (isFullUI)
+	{
 		addEntry(_("EMUELEC SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec"); /* < emuelec */
+	}
 #endif
 
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
@@ -576,7 +580,7 @@ void GuiMenu::openExternalMounts(Window* mWindow, std::string configName)
         });
        
 		auto emuelec_external_device_retry = std::make_shared< OptionListComponent<std::string> >(mWindow, _("RETRY TIMES"), false);
-		emuelec_external_device_retry->addRange({ { _("AUTO"), "" },{ "1", "1" },{ "2", "2" },{ "3", "3" },{ "4", "4" },{ "5", "5" } }, SystemConf::getInstance()->get("ee_mount.retry"));
+		emuelec_external_device_retry->addRange({ { _("AUTO"), "" },{ "1", "1" },{ "2", "2" },{ "3", "3" },{ "4", "4" },{ "5", "5" },{ "6", "6" },{ "7", "7" },{ "8", "8" },{ "9", "9" },{ "10", "10" },{ "11", "11" },{ "12", "12" },{ "13", "13" },{ "14", "14" },{ "15", "15" },{ "16", "16" },{ "17", "17" },{ "18", "18" },{ "19", "19" },{ "20", "20" },{ "21", "21" },{ "22", "22" },{ "23", "23" },{ "24", "24" },{ "25", "25" },{ "26", "26" },{ "27", "27" },{ "28", "28" },{ "29", "29" },{ "30", "30" } }, SystemConf::getInstance()->get("ee_mount.retry"));
         externalMounts->addWithDescription(_("RETRY TIMES"), _("How many times to retry the mount on boot."), emuelec_external_device_retry);
 		emuelec_external_device_retry->setSelectedChangedCallback([emuelec_external_device_retry](std::string name) { 
             if (SystemConf::getInstance()->set("ee_mount.retry", name)) 
@@ -2022,25 +2026,27 @@ void GuiMenu::openLatencyReductionConfiguration(Window* mWindow, std::string con
 
 	// run-ahead
 	auto runahead_enabled = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RUN-AHEAD FRAMES"));
-
-    runahead_enabled->addRange({ { _("AUTO"), "" }, { _("NONE"), "0" }, { "1", "1" }, { "2", "2" }, { "3", "3" }, { "4", "4" }, { "5", "5" }, { "6", "6" } }, SystemConf::getInstance()->get(configName + ".runahead"));
-
-    guiLatency->addWithLabel(_("USE RUN-AHEAD FRAMES"), runahead_enabled);
-
-
-    guiLatency->addSaveFunc([configName, runahead_enabled] { SystemConf::getInstance()->set(configName + ".runahead", runahead_enabled->getSelected()); });
+	runahead_enabled->addRange({ { _("AUTO"), "" }, { _("NONE"), "0" }, { "1", "1" }, { "2", "2" }, { "3", "3" }, { "4", "4" }, { "5", "5" }, { "6", "6" } }, SystemConf::getInstance()->get(configName + ".runahead"));
+	guiLatency->addWithDescription(_("RUN-AHEAD FRAMES"), _("High numbers can result in visible jitter."), runahead_enabled);
+	guiLatency->addSaveFunc([configName, runahead_enabled] { SystemConf::getInstance()->set(configName + ".runahead", runahead_enabled->getSelected()); });
 
 	// second instance
-	auto secondinstance = std::make_shared<OptionListComponent<std::string>>(mWindow, _("RUN-AHEAD USE SECOND INSTANCE"));
+	auto secondinstance = std::make_shared<OptionListComponent<std::string>>(mWindow, _("USE SECOND INSTANCE FOR RUN-AHEAD"));
 	secondinstance->addRange({ { _("AUTO"), "" }, { _("ON"), "1" }, { _("OFF"), "0" } }, SystemConf::getInstance()->get(configName + ".secondinstance"));
-	guiLatency->addWithLabel(_("RUN-AHEAD USE SECOND INSTANCE"), secondinstance);
+	guiLatency->addWithDescription(_("USE SECOND INSTANCE FOR RUN-AHEAD"), _("Can prevent audio skips on button presses."), secondinstance);
 	guiLatency->addSaveFunc([configName, secondinstance] { SystemConf::getInstance()->set(configName + ".secondinstance", secondinstance->getSelected()); });
 
 	// auto frame delay
 	auto video_frame_delay_auto = std::make_shared<OptionListComponent<std::string>>(mWindow, _("AUTOMATIC FRAME DELAY"));
 	video_frame_delay_auto->addRange({ { _("AUTO"), "" }, { _("ON"), "1" }, { _("OFF"), "0" } }, SystemConf::getInstance()->get(configName + ".video_frame_delay_auto"));
-	guiLatency->addWithDescription(_("AUTO FRAME DELAY"), _("Automatically decrease frame delay temporarily to prevent frame drops. Turn off if this worsens audio/video stuttering."), video_frame_delay_auto);
+	guiLatency->addWithDescription(_("AUTO FRAME DELAY"), _("Automatically decrease frame delay temporarily to prevent frame drops. Can introduce stuttering."), video_frame_delay_auto);
 	guiLatency->addSaveFunc([configName, video_frame_delay_auto] { SystemConf::getInstance()->set(configName + ".video_frame_delay_auto", video_frame_delay_auto->getSelected()); });
+
+	// variable refresh rate (freesync, gsync, etc.)
+	auto vrr_runloop_enable = std::make_shared<OptionListComponent<std::string>>(mWindow, _("VARIABLE REFRESH RATE (G-SYNC, FREESYNC)"));
+	vrr_runloop_enable->addRange({ { _("AUTO"), "" }, { _("ON"), "1" }, { _("OFF"), "0" } }, SystemConf::getInstance()->get(configName + ".vrr_runloop_enable"));
+	guiLatency->addWithDescription(_("VARIABLE REFRESH RATE"), _("Don't deviate from core requested timing. G-Sync, FreeSync, HDMI 2.1 VRR."), vrr_runloop_enable);
+	guiLatency->addSaveFunc([configName, vrr_runloop_enable] { SystemConf::getInstance()->set(configName + ".vrr_runloop_enable", vrr_runloop_enable->getSelected()); });
 
 	mWindow->pushGui(guiLatency);
 }
@@ -3808,10 +3814,8 @@ void GuiMenu::openNetworkSettings_batocera(bool selectWifiEnable)
 	s->addGroup(_("SETTINGS"));
 
 #if !WIN32
-#ifndef _ENABLEEMUELEC
 	// Hostname
 	s->addInputTextRow(_("HOSTNAME"), "system.hostname", false);
-#endif
 #endif
 
 	// Wifi enable
@@ -4469,7 +4473,12 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->get(tEmulator + ".joy_btn_names").empty() ||
 					SystemConf::getInstance()->get(tEmulator + ".joy_btn_indexes").empty())
 			{
-				return;
+				SystemConf::getInstance()->set(tEmulator + ".joy_btns", "input a button,input b button,input x button,input y button,input r button,input l button,input r2 button,input l2 button");
+				SystemConf::getInstance()->set(tEmulator + ".joy_btn_indexes", "1,2" );
+        SystemConf::getInstance()->set(tEmulator + ".joy_btn_names", "mk,sf" );
+        SystemConf::getInstance()->set(tEmulator + ".joy_btn_order0", "0 1 2 3 4 5 6 7" );
+        SystemConf::getInstance()->set(tEmulator + ".joy_btn_order1", "3 4 2 1 0 5 6 7" );
+        SystemConf::getInstance()->set(tEmulator + ".joy_btn_order2", "3 2 5 1 0 4 6 7" );
 			}
 
 			auto btn_choice = createJoyBtnCfgOptionList(mWindow, configName, tEmulator);
@@ -4490,6 +4499,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
 			GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, btn_choice, del_choice, tEmulator);
 		}();
+	}
+
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::hlebios))
+	{
+		systemConfiguration->addSwitch(_("Use HLE BIOS"), configName + ".hlebios", false);
 	}
 
 #endif 

@@ -52,10 +52,10 @@ EmulatorFeatures::Features EmulatorFeatures::parseFeatures(const std::string fea
 		if (trim == "videomode") ret = ret | EmulatorFeatures::Features::videomode;
 		if (trim == "colorization") ret = ret | EmulatorFeatures::Features::colorization;
 		if (trim == "autocontrollers") ret = ret | EmulatorFeatures::Features::autocontrollers;
-#ifdef _ENABLEEMUELEC
 		if (trim == "vertical") ret = ret | EmulatorFeatures::Features::vertical;
 		if (trim == "nativevideo") ret = ret | EmulatorFeatures::Features::nativevideo;
 		if (trim == "joybtnremap") ret = ret | EmulatorFeatures::Features::joybtnremap;
+    if (trim == "hlebios") ret = ret | EmulatorFeatures::Features::hlebios;
 #endif
 	}
 
