@@ -4346,11 +4346,11 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 		btn_choice->selectIndex(btnIndex);
 	});
 
-	del_choice->setSelectedChangedCallback([mWindow, saveFunc, btn_choice, del_choice, prefixName](std::string s) {	
+	del_choice->setSelectedChangedCallback([mWindow, systemConfiguration, saveFunc, btn_choice, del_choice, prefixName](std::string s) {	
 		GuiComponent* gc = mWindow->peekGui();
 
 		long unsigned int m1 = (long unsigned int) &(*gc);
-		long unsigned int m2 = (long unsigned int) &(*del_choice.get());
+		long unsigned int m2 = (long unsigned int) &(systemConfiguration);
 		SystemConf::getInstance()->set(prefixName + ".adress1", "- "+std::to_string(m1));
 		//SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &(*olc)));
 		SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string(m2));
