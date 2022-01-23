@@ -56,8 +56,6 @@ private:
 		std::vector<CheckBoxElement> mCheckBoxes;
 
 	public:
-		OptionListPopup(){};
-
 		OptionListPopup(Window* window, OptionListComponent<T>* parent, const std::string& title, const std::function<void(T& data, ComponentListRow& row)> callback = nullptr) : GuiComponent(window),
 			mMenu(window, title.c_str()), mParent(parent)
 		{
@@ -210,8 +208,6 @@ private:
 	};
 
 public:
-	OptionListComponent(){};
-	
 	OptionListComponent(Window* window, const std::string& name, bool multiSelect = false, bool multiSelectShowNames = false) : GuiComponent(window), mMultiSelect(multiSelect), mName(name),
 		 mText(window), mLeftArrow(window), mRightArrow(window), mMultiSelectShowNames(multiSelectShowNames)
 	{
