@@ -84,7 +84,7 @@ private:
 					{
 						row.makeAcceptInputHandler([this, &e]
 						{
-							e.selected = !e.selected;														
+							e.selected = !e.selected;
 							mParent->onSelectedChanged();
 						});
 					}
@@ -94,7 +94,11 @@ private:
 						{
 							mParent->mEntries.at(mParent->getSelectedId()).selected = false;
 							e.selected = true;
+#ifdef _ENABLEEMUELEC
+							mParent->onSelectedChangedPopup();
+#else
 							mParent->onSelectedChanged();
+#endif
 							delete this;
 						});
 					}
@@ -126,7 +130,7 @@ private:
 						{
 							e.selected = !e.selected;
 							checkbox->setImage(e.selected ? CHECKED_PATH : UNCHECKED_PATH);
-							mParent->onSelectedChanged();
+							mParent->onSelectedChanged();			
 						});
 
 						CheckBoxElement el;
@@ -143,7 +147,11 @@ private:
 						{
 							mParent->mEntries.at(mParent->getSelectedId()).selected = false;
 							e.selected = true;
+#ifdef _ENABLEEMUELEC
+							mParent->onSelectedChangedPopup();
+#else
 							mParent->onSelectedChanged();
+#endif
 							delete this;
 						});
 					}
@@ -580,6 +588,20 @@ private:
 	{
 		mWindow->pushGui(new OptionListPopup(mWindow, this, mName, mAddRowCallback));
 	}
+
+#ifdef _ENABLEEMUELEC
+	inline void setSelectedChangedPopupCallback(const std::function<void(const T&)>& callback) {
+		mSelectedChangedPopupCallback = callback;
+	}
+
+	void onSelectedChangedPopup()
+	{
+		if (mSelectedChangedPopupCallback)
+			mSelectedChangedPopupCallback(mEntries.at(getSelectedId()).object);
+		
+		onSelectedChanged();
+	}
+#endif
 
 	void onSelectedChanged()
 	{
