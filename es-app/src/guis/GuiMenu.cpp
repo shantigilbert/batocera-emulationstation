@@ -4351,10 +4351,6 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 
 		long unsigned int m1 = (long unsigned int) &(*gc);
 		long unsigned int m2 = (long unsigned int) &(*systemConfiguration);
-		SystemConf::getInstance()->set(prefixName + ".adress1", "- "+std::to_string(m1));
-		//SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string((long unsigned int) &(*olc)));
-		SystemConf::getInstance()->set(prefixName + ".adress2", "- "+std::to_string(m2));
-		SystemConf::getInstance()->saveSystemConf();
 		
 		if (m1 == m2)
 			return;
