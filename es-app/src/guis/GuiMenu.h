@@ -95,19 +95,16 @@ private:
 
 	static std::shared_ptr<OptionListComponent<std::string>> createRatioOptionList(Window *window, std::string configname);
 #ifdef _ENABLEEMUELEC
-
   static std::shared_ptr<OptionListComponent<std::string>> createNativeVideoResolutionModeOptionList(Window *window, std::string configname);
 
-  static std::shared_ptr<OptionListComponent<std::string>> btn_choice;
-  static std::shared_ptr<OptionListComponent<std::string>> del_choice;
-  static std::shared_ptr<OptionListComponent<std::string>> edit_choice;    
   static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnOptionList(Window *window, std::string prefixName, std::string title, int selectedIndex);
+  static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex);
 
   static void createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName);
   static void createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName, std::string remapName, int btnIndex = -1);
+  
   static void deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName);
-  static std::shared_ptr<OptionListComponent<std::string>> editJoyBtnRemapOptionList(Window *window,
-    GuiSettings *systemConfiguration, std::string prefixName);
+  static void editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
   static void removeJoyBtnEntry(int index);
 #endif
 	static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname);
@@ -131,6 +128,12 @@ private:
 
 public:
 	static std::vector<DecorationSetInfo> getDecorationsSets(SystemData* system = nullptr);
+
+#ifdef _ENABLEEMUELEC
+  static std::shared_ptr<OptionListComponent<std::string>> btn_choice;
+  static std::shared_ptr<OptionListComponent<std::string>> del_choice;
+  static std::shared_ptr<OptionListComponent<std::string>> edit_choice;
+#endif  
 };
 
 #endif // ES_APP_GUIS_GUI_MENU_H

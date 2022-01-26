@@ -4146,9 +4146,9 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 	return btn_choice;
 }
 
-std::shared_ptr<OptionListComponent<std::string>> GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName)
+void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName)
 {
-	auto edit_choice = std::make_shared< OptionListComponent<std::string> >(window, "EDIT BUTTON REMAP", false);
+	/*auto edit_choice = std::make_shared< OptionListComponent<std::string> >(window, "EDIT BUTTON REMAP", false);
 	
 	if (edit_choice.empty()) {
 		edit_choice->add("NONE", "-1", true);
@@ -4163,7 +4163,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::editJoyBtnRemapOption
 	for (auto it = arr_joy_btn.cbegin(); it != arr_joy_btn.cend(); it++) {
 		edit_choice->add(*it, std::to_string(index), false);
 		index++;
-	}
+	}*/
 	
 	const std::function<void()> editFunc([mWindow, editFunc, edit_choice, prefixName] {
 		int editIndex = edit_choice->getSelectedIndex();
@@ -4187,8 +4187,6 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::editJoyBtnRemapOption
 	systemConfiguration->addSaveFunc([mWindow, editFunc, edit_choice, prefixName] {
 		editFunc();
 	});
-	
-	return edit_choice;
 }
 
 void GuiMenu::createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfiguration,
@@ -4620,7 +4618,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->saveSystemConf();
 				}
 			});
-
+			GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
 			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, prefixName);
 			GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, prefixName);
 		}();
