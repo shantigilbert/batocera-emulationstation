@@ -101,13 +101,11 @@ private:
   static std::shared_ptr<OptionListComponent<std::string>> btn_choice;
   static std::shared_ptr<OptionListComponent<std::string>> del_choice;
   static std::shared_ptr<OptionListComponent<std::string>> edit_choice;    
-  static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnOptionList(Window *window, std::string prefixName,
-  	stid::string title, int selectedIndex);
+  static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnOptionList(Window *window, std::string prefixName, std::string title, int selectedIndex);
 
   static void createBtnJoyCfgName(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName);
   static void createBtnJoyCfgRemap(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName, std::string remapName, int btnIndex = -1);
-  static void deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
-    std::string prefixName);
+  static void deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration, std::string prefixName);
   static std::shared_ptr<OptionListComponent<std::string>> editJoyBtnRemapOptionList(Window *window,
     GuiSettings *systemConfiguration, std::string prefixName);
   static void removeJoyBtnEntry(int index);
