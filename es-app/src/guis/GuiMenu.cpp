@@ -4447,7 +4447,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *mWindow, GuiSettings *systemConfiguration,
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionList(Window *window, std::string prefixName,
-	std::string title, int selectedIndex)
+	std::string title, int selectIndex)
 {
 	auto btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, title, false);
 
