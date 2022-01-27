@@ -4430,9 +4430,6 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		window->pushGui(new GuiMsgBox(window,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), saveFunc, _("NO"), nullptr));
 	});
-
-	systemConfiguration->addWithLabel(_("DELETE REMAP"), del_choice);	
-	
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionList(Window *window, std::string prefixName,
