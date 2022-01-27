@@ -4197,7 +4197,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
 		remap->setSelectedChangedCallback([remap_choice, btnCount] (std::string s) {
-			int i=0; 
+			int i=0, j=0; 
 			std::string choice2;
 			if (s == "-1")
 				return;
