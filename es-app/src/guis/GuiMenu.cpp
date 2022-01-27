@@ -4196,7 +4196,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
-		remap->setSelectedChangedCallback([index, remap_choice] (std::string choice) {
+		remap->setSelectedChangedCallback([index, &remap_choice] (std::string choice) {
 			int j=0; 
 			auto self = remap_choice[index];
 			std::string choice2;
@@ -4419,8 +4419,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 			btnIndex = 0;
 
 		del_choice->selectFirstItem();
+		edit_choice->selectFirstItem();
 		btn_choice->selectIndex(btnIndex);
-		edit_choice->selectIndex(btnIndex);
 	});
 
 	del_choice->setSelectedChangedCallback(
