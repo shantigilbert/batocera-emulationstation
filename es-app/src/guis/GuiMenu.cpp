@@ -4139,6 +4139,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 	std::vector<std::string> arr_joy_btn(explode(joy_btns));
 
 	int index = 0;
+	btn_choice->add("NONE", "-1", false);
 	for (auto it = arr_joy_btn.cbegin(); it != arr_joy_btn.cend(); it++) {
 		btn_choice->add(*it, std::to_string(index), btnIndex == index);
 		index++;
@@ -4195,19 +4196,23 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
-		remap->setSelectedChangedCallback([remap_choice, btnCount] (std::string s) {
+		remap->setSelectedChangedCallback([remap_choice, btnCount, remap] (std::string s) {
 			int i=0, j=0, choice, choice2;
-			for(i=0; i < btnCount; ++i) {
-				choice = remap_choice[i]->getSelectedIndex();
+			//for(i=0; i < btnCount; ++i) {
+				choice = remap->getSelectedIndex();
+				if (choice == 0)
+					return;
 				for(j=0; j < btnCount; ++j) {
 					choice2 = remap_choice[j]->getSelectedIndex();
-					if (choice > 0 && choice2 > 0 && i != j && choice == choice2) {
+					if (choice2 == 0)
+						continue;
+					if (i != j && choice == choice2) {
 						remap_choice[j]->selectNone();
 						remap_choice[j]->selectFirstItem();
 						return;
 					}
 				}
-			}
+			//}
 		});
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
 	}
