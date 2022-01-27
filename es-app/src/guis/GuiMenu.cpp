@@ -4190,16 +4190,17 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		iOrders = int_explode(sOrder);
 		
 	}
+
 	for (int index=0; index < btnCount; ++index)
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
 		remap->setSelectedChangedCallback([remap_choice, btnCount] (std::string s) {
-			int j=0;
-			for(int i=0; i < btnCount; ++i) {
-				int choice = remap_choice[i]->getSelectedIndex();
+			int i=0, j=0, choice, choice2;
+			for(i=0; i < btnCount; ++i) {
+				choice = remap_choice[i]->getSelectedIndex();
 				for(j=0; j < btnCount; ++j) {
-					int choice2 = remap_choice[j]->getSelectedIndex();
+					choice2 = remap_choice[j]->getSelectedIndex();
 					if (choice > 0 && choice2 > 0 && i != j && choice == choice2) {
 						remap_choice[j]->selectNone();
 						remap_choice[j]->selectFirstItem();
@@ -4211,7 +4212,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
 	}
 
-	systemConfiguration->addSaveFunc([window, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
+	/*systemConfiguration->addSaveFunc([window, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
 		int err = 0;
 		if (btnCount == 0)
 			err = 1;
@@ -4287,7 +4288,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		else {
 			addRemaps();
 		}
-	});
+	});*/
 }
 
 void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfiguration,
