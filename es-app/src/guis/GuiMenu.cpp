@@ -4590,8 +4590,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->saveSystemConf();
 				}
 			});
-			GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
-			//GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, prefixName);
+			//GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
+			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, prefixName);
 			//GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, prefixName);
 		}();
 	}
