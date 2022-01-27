@@ -4196,9 +4196,12 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
-		remap->setSelectedChangedCallback([index, &remap_choice] (std::string choice) {
+		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
+	}
+	for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
+		(*it)->setSelectedChangedCallback([&, index, remap_choice] (std::string choice) {
 			int j=0; 
-			auto self = remap_choice[index];
+			auto self = this;
 			std::string choice2;
 			if (choice == "-1")
 				return;
@@ -4214,7 +4217,6 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 				}
 			}
 		});
-		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
 	}
 
 	systemConfiguration->addSaveFunc([window, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
@@ -4419,8 +4421,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 			btnIndex = 0;
 
 		del_choice->selectFirstItem();
-		edit_choice->selectFirstItem();
-		btn_choice->selectIndex(btnIndex);
+		//edit_choice->selectFirstItem();
+		//btn_choice->selectIndex(btnIndex);
 	});
 
 	del_choice->setSelectedChangedCallback(
