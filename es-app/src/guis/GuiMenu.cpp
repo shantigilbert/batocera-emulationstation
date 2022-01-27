@@ -4221,7 +4221,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		index++;
 	}
 
-	GuiSettings* systemConfig2 = new GuiSettings(systemConfiguration);
+	GuiSettings systemConfig2(*systemConfiguration);
 
 	systemConfiguration->addSaveFunc([window, systemConfig2, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
 		int err = 0;
