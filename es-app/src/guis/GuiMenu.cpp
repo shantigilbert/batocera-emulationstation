@@ -4194,7 +4194,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
-		remap->setSelectedChangedCallback([remap_choice, btnCount, index] {
+		remap->setSelectedChangedCallback([remap_choice, btnCount, index] (std::string s) {
 				int choice = atoi(remap_choice[index]->getSelected().c_str());
 				for(int j=0; j < btnCount; ++j) {
 					int choice2 = atoi(remap_choice[j]->getSelected().c_str());
@@ -4319,14 +4319,14 @@ void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfigurati
 		for (int i=0; i < arr_btn_names.size(); ++i) {
 			std::string tName = toupper(arr_btn_names[i]);
 			if (newName == tName) {
-				window->pushGui(new GuiMsgBox(mWindow, _("REMAP NAME MUST BE UNIQUE"), _("OK"), nullptr));
+				window->pushGui(new GuiMsgBox(window, _("REMAP NAME MUST BE UNIQUE"), _("OK"), nullptr));
 				return;
 			}
 		}
 
-		GuiSettings* systemConfiguration = new GuiSettings(mWindow, "CREATE REMAP");
-		GuiMenu::createBtnJoyCfgRemap(mWindow, systemConfiguration, prefixName, newVal, -1);
-		mWindow->pushGui(systemConfiguration);
+		GuiSettings* systemConfiguration = new GuiSettings(window, "CREATE REMAP");
+		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal, -1);
+		window->pushGui(systemConfiguration);
 	};
 
 	row.makeAcceptInputHandler([window, createText, updateVal]
@@ -4438,7 +4438,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		if (delIndex < 0)
 			return;
 
-		mWindow->pushGui(new GuiMsgBox(window,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
+		window->pushGui(new GuiMsgBox(window,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
 			_("YES"), saveFunc, _("NO"), nullptr));
 	});
 
