@@ -4195,9 +4195,10 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
 		remap->setSelectedChangedCallback([remap_choice, btnCount] (std::string s) {
+			int j=0;
 			for(int i=0; i < btnCount; ++i) {
 				int choice = remap_choice[i]->getSelectedIndex();
-				for(int j=0; j < btnCount; ++j) {
+				for(j=0; j < btnCount; ++j) {
 					int choice2 = remap_choice[j]->getSelectedIndex();
 					if (choice > 0 && choice2 > 0 && i != j && choice == choice2) {
 						remap_choice[j]->selectNone();
@@ -4361,7 +4362,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		// Protect default maps (mk and sf).
 		if (delIndex <= 2)
 		{
-			window->pushGui(new GuiMsgBox(window,  _("CANNT DELETE DEFAULT BUTTON MAPS."),
+			window->pushGui(new GuiMsgBox(window,  _("CANNOT DELETE DEFAULT BUTTON MAPS."),
 				_("OK"), nullptr));
 			return;
 		}
@@ -4418,7 +4419,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 			return;
 
 		int delIndex = del_choice->getSelectedIndex();
-		if (delIndex < 0)
+		if (delIndex <= 0)
 			return;
 
 		window->pushGui(new GuiMsgBox(window,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
@@ -4427,7 +4428,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 
 	systemConfiguration->addSaveFunc([window, saveFunc, btn_choice, del_choice, edit_choice, prefixName] {
 		int delIndex = del_choice->getSelectedIndex();
-		if (delIndex < 0)
+		if (delIndex <= 0)
 			return;
 
 		window->pushGui(new GuiMsgBox(window,  _("ARE YOU SURE YOU WANT TO DELETE THE REMAP?"),
