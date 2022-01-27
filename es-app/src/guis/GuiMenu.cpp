@@ -4196,21 +4196,21 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
-		remap->setSelectedChangedCallback([index, remap_choice] (std::string s) {
+		remap->setSelectedChangedCallback([index, remap_choice] (std::string choice) {
 			int j=0; 
 			auto self = remap_choice[index];
 			std::string choice2;
-			if (s == "-1")
+			if (choice == "-1")
 				return;
-			for(auto it = remap_choice.rbegin(); it != remap_choice.rend(); ++it) {
+			for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
 				auto remap = *it;
 				choice2 = remap->getSelected();
 				if (choice2 == "-1")
 					continue;
-				if (self != remap && s == choice2) {
+				if (self != remap && choice == choice2) {
 					remap->selectNone();
 					remap->selectIndex(0);
-					break;
+					continue;
 				}
 			}
 		});
