@@ -4206,9 +4206,9 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 				if (choice2 == "-1")
 					continue;
 				if (i != j && s == choice2) {
-					remap_choice[j]->selectNone();
-					remap_choice[j]->selectFirstItem();
-					continue;
+					//remap_choice[j]->selectNone();
+					//remap_choice[j]->selectIndex(0);
+					return;
 				}
 			}
 		});
