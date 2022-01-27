@@ -4202,12 +4202,13 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 			if (s == "-1")
 				return;
 			for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
-				choice2 = it->getSelected();
+				auto remap = *it;
+				choice2 = remap->getSelected();
 				if (choice2 == "-1")
 					continue;
 				if (s == choice2) {
-					it->selectNone();
-					it->selectIndex(0);
+					remap->selectNone();
+					remap->selectIndex(0);
 					continue;
 				}
 			}
