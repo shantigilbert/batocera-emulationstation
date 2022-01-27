@@ -4196,23 +4196,20 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	{		
 		auto remap = createJoyBtnRemapOptionList(window, prefixName, (btnIndex > -1) ? iOrders[index] : index);
 		remap_choice.push_back(remap);
-		remap->setSelectedChangedCallback([remap_choice, btnCount, remap] (std::string s) {
-			int i=0, j=0, choice, choice2;
-			//for(i=0; i < btnCount; ++i) {
-				choice = remap->getSelectedIndex();
-				if (choice == 0)
-					return;
-				for(j=0; j < btnCount; ++j) {
-					choice2 = remap_choice[j]->getSelectedIndex();
-					if (choice2 == 0)
-						continue;
-					if (i != j && choice == choice2) {
-						remap_choice[j]->selectNone();
-						remap_choice[j]->selectFirstItem();
-						return;
-					}
+		remap->setSelectedChangedCallback([remap_choice, btnCount] (std::string s) {
+			int i=0, choice2=0;
+			if (s == -1)
+				return;
+			for(j=0; j < btnCount; ++j) {
+				choice2 = remap_choice[j]->getSelected();
+				if (choice2 == -1)
+					continue;
+				if (i != j && s == choice2) {
+					remap_choice[j]->selectNone();
+					remap_choice[j]->selectFirstItem();
+					continue;
 				}
-			//}
+			}
 		});
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
 	}
