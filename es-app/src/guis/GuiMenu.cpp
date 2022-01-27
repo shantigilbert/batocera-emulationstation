@@ -4207,12 +4207,12 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 					continue;
 				if (s == choice2) {
 					remap_choice[j]->selectNone();
-					//remap_choice[j]->selectIndex(0);
-					return;
+					remap_choice[j]->selectIndex(0);
+					continue;
 				}
 			}
 		});
-		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
+		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap_choice[index]);
 	}
 
 	/*systemConfiguration->addSaveFunc([window, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
