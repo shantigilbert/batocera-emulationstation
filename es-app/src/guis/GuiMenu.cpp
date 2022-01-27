@@ -4088,9 +4088,9 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
-GuiMenu::btn_choice = nullptr;
-GuiMenu::del_choice = nullptr;
-GuiMenu::edit_choice = nullptr;
+//GuiMenu::btn_choice = nullptr;
+//GuiMenu::del_choice = nullptr;
+//GuiMenu::edit_choice = nullptr;
 
 static std::vector<std::string> explode(std::string sData, char delimeter=',')
 {
@@ -4463,7 +4463,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionLis
 		selectIndex = -1;
 
 	int i = 0;
-	btn_cfg->add("auto", "-1", cfgIndex == -1);
+	btn_cfg->add("auto", "-1", selectIndex == -1);
 	for (auto it = btn_names.cbegin(); it != btn_names.cend(); it++) {
 		btn_cfg->add(*it, std::to_string(i), selectIndex == i);
 		i++;
