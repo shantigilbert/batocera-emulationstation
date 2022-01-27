@@ -106,6 +106,7 @@ private:
   static void deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
   static void editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
   static void removeJoyBtnEntry(int index);
+  static void addJoyBtnEntry(std::string name, std::string val);
 #endif
 	static std::shared_ptr<OptionListComponent<std::string>> createVideoResolutionModeOptionList(Window *window, std::string configname);
 	static void popSpecificConfigurationGui(Window* mWindow, std::string title, std::string configName, SystemData *systemData, FileData* fileData, bool selectCoreLine = false);
