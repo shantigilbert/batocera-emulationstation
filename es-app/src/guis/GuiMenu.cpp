@@ -4198,10 +4198,11 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		remap_choice.push_back(remap);
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
 	}
+	int index=0;
 	for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
 		(*it)->setSelectedChangedCallback([&, index, remap_choice] (std::string choice) {
 			int j=0; 
-			auto self = this;
+			auto self = (*this);
 			std::string choice2;
 			if (choice == "-1")
 				return;
@@ -4217,6 +4218,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 				}
 			}
 		});
+		index++;
 	}
 
 	systemConfiguration->addSaveFunc([window, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
