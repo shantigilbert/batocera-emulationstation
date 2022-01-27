@@ -4201,7 +4201,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 			std::string choice2;
 			if (s == "-1")
 				return;
-			for(auto it = remap_choice.cbegin(); it != remap_choice.cend(): ++it) {
+			for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
 				choice2 = it->getSelected();
 				if (choice2 == "-1")
 					continue;
