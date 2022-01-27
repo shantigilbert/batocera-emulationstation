@@ -4254,7 +4254,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		{
 			window->pushGui(new GuiMsgBox(window, _("ERROR - Remap is not configured properly, All buttons must be assigned and no duplicates."), "OK", 
 			[window, systemConfiguration] {
-				GuiSettings systemConfig(static_cast<GuiSettings>(*systemConfiguration));
+				GuiSettings* systemConfig = dynamic_cast<GuiSettings*>(systemConfiguration);
 				window->pushGui(systemConfig);
 			}));
 			return;
