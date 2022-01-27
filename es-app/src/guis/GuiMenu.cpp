@@ -4148,7 +4148,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 
 void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName)
 {
-	const std::function<void()> editFunc([window, editFunc, edit_choice, prefixName] {
+	const std::function<void()> editFunc([window, systemConfiguration, editFunc, edit_choice, prefixName] {
 		int editIndex = edit_choice->getSelectedIndex();
 		if (editIndex <= -1)
 			return;
@@ -4167,7 +4167,7 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 		editFunc();
 	});
 
-	systemConfiguration->addSaveFunc([window, editFunc, edit_choice, prefixName] {
+	systemConfiguration->addSaveFunc([window, systemConfiguration, editFunc, edit_choice, prefixName] {
 		editFunc();
 	});
 }
@@ -4590,7 +4590,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->saveSystemConf();
 				}
 			});
-			//GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
+			GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
 			//GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, prefixName);
 			//GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, prefixName);
 		}();
