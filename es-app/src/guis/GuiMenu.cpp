@@ -4405,6 +4405,8 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		{
 			window->pushGui(new GuiMsgBox(window,  _("CANNOT DELETE DEFAULT BUTTON MAPS."),
 				_("OK"), nullptr));
+			del_choice->selectNone();
+			del_choice->selectIndex(0);				
 			return;
 		}
 
