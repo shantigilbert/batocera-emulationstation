@@ -4149,20 +4149,32 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 
 void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName)
 {
-	const std::function<void()> editFunc([window, systemConfiguration, edit_choice, prefixName] {
+	const std::function<void()> editFunc([window, systemConfiguration, del_choice, edit_choice, prefixName] {
 		int editIndex = edit_choice->getSelectedIndex();
 		if (editIndex <= 0)
 			return;
 
+		if (editIndex <= 2)
+		{
+			window->pushGui(new GuiMsgBox(window,  _("CANNOT EDIT DEFAULT BUTTON MAPS."),
+				_("OK"), nullptr));
+			return;
+		}
+
+		edit_choice->selectNone();
+		edit_choice->selectIndex(0);
+		del_choice->selectNone();
+		del_choice->selectIndex(0);
+
 		std::string btnIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 		int btnIndex = int_explode(btnIndexes)[editIndex-1];
 		
-		GuiSettings* systemConfiguration = new GuiSettings(window, "EDIT REMAP");
+		GuiSettings* systemConfiguration = new GuiSettings(window, _("EDIT REMAP"));
 		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, edit_choice->getSelectedName(), btnIndex);
 		window->pushGui(systemConfiguration);
 	});
 
-	edit_choice->setSelectedChangedCallback([window, systemConfiguration, editFunc, edit_choice, prefixName](std::string s) {	
+	edit_choice->setSelectedChangedCallback([window, systemConfiguration, editFunc, edit_choice, del_choice, prefixName](std::string s) {	
 		long unsigned int m1 = (long unsigned int) &(*window->peekGui());
 		long unsigned int m2 = (long unsigned int) &(*systemConfiguration);
 		if (m1 == m2)
@@ -4171,7 +4183,7 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 		editFunc();
 	});
 
-	systemConfiguration->addSaveFunc([window, systemConfiguration, editFunc, edit_choice, prefixName] {
+	systemConfiguration->addSaveFunc([window, systemConfiguration, editFunc, edit_choice, del_choice, prefixName] {
 		editFunc();
 	});
 }
@@ -4190,7 +4202,6 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	std::vector<int> iOrders;
 	if (btnIndex > -1)
 	{
-		//SystemConf::getInstance()->set(prefixName + ".temp", std::to_string(btnIndex));
 		std::string sOrder = SystemConf::getInstance()->get(prefixName + ".joy_btn_order" + std::to_string(btnIndex));
 		iOrders = int_explode(sOrder, ' ');
 	}
@@ -4256,7 +4267,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 
 		if (err > 0)
 		{
-			window->pushGui(new GuiMsgBox(window, _("ERROR - Remap is not configured properly, All buttons must be assigned and no duplicates."),
+			window->pushGui(new GuiMsgBox(window, _("ERROR - Remap is not configured properly, All buttons must be assigned."),
 			_("OK")));
 			return;
 		}
@@ -4344,7 +4355,7 @@ void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfigurati
 		}
 
 		GuiSettings* systemConfiguration = new GuiSettings(window, "CREATE REMAP");
-		window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned and no duplicates."), _("OK"),
+		window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned."), _("OK"),
 		[window, systemConfiguration, prefixName, newVal] {
 			GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal, -1);
 			window->pushGui(systemConfiguration);			
@@ -4470,7 +4481,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionLis
 	std::vector<std::string> btn_names(explode(btnNames));
 
 	if (prefixName == "auto" || prefixName.empty() || btn_names.size() == 0) {
-		btn_cfg->add("auto", "-1", true);
+		btn_cfg->add(_("NONE"), "-1", true);
 		return btn_cfg;
 	}
 
@@ -4478,7 +4489,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionLis
 		selectIndex = -1;
 
 	int i = 0;
-	btn_cfg->add("auto", "-1", selectIndex == -1);
+	btn_cfg->add(_("NONE"), "-1", selectIndex == -1);
 	for (auto it = btn_names.cbegin(); it != btn_names.cend(); it++) {
 		btn_cfg->add(*it, std::to_string(i), selectIndex == i);
 		i++;
