@@ -4190,7 +4190,8 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	std::vector<int> iOrders;
 	if (btnIndex > -1)
 	{
-		std::string sOrder = SystemConf::getInstance()->get(prefixName + ".joy_btn_order" + std::to_string(btnIndex));
+		SystemConf::getInstance()->set(prefixName + ".temp", std::to_string(btnIndex));
+		std::string sOrder = SystemConf::getInstance()->get(prefixName + ".joy_btn_order" + std::to_string(1));
 		iOrders = int_explode(sOrder);
 		
 	}
