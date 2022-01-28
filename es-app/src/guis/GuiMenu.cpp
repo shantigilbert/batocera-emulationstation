@@ -4210,7 +4210,12 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	// Loops through remaps assigns Event to make sure no remap duplicates exist.
 	for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
 		auto self = (*it);
-		self->setSelectedChangedCallback([self, remap_choice] (std::string choice) {
+		self->setSelectedChangedCallback([self, window, systemConfiguration, remap_choice] (std::string choice) {
+			long unsigned int m1 = (long unsigned int) &(*window->peekGui());
+			long unsigned int m2 = (long unsigned int) &(*systemConfiguration);
+			if (m1 == m2)
+				return;
+			
 			std::string choice2;
 			if (choice == "-1")
 				return;
