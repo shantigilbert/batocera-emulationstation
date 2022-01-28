@@ -4602,7 +4602,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
 			int btnCfgIndex = atoi(SystemConf::getInstance()->get(configName + ".joy_btn_cfg").c_str());
 			std::vector<int> remapIndexes = int_explode( SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes"));
-			int btnIndex = 0;
+			int btnIndex = -1;
 			for (int i = 0; i < remapIndexes.size(); ++i) {
 				if (btnCfgIndex == remapIndexes[i])
 				{
