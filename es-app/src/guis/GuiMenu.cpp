@@ -4149,9 +4149,9 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOpti
 
 void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName)
 {
-	const std::function<void()> editFunc([window, systemConfiguration, editFunc, edit_choice, prefixName] {
+	const std::function<void()> editFunc([window, systemConfiguration, edit_choice, prefixName] {
 		int editIndex = edit_choice->getSelectedIndex();
-		if (editIndex <= -1)
+		if (editIndex <= 0)
 			return;
 
 		GuiSettings* systemConfiguration = new GuiSettings(window, "EDIT REMAP");
@@ -4379,6 +4379,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 {
 	const std::function<void()> saveFunc([window, btn_choice, del_choice, edit_choice, prefixName] {
 		int delIndex = del_choice->getSelectedIndex();
+		int remapIndex = delIndex-1;
 
 		// Protect default maps (mk and sf).
 		if (delIndex <= 2)
@@ -4400,7 +4401,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		int i;
 		for(i=0; i < remap_names.size(); ++i)
 		{
-			if (i == delIndex)
+			if (i == remapIndex)
 				continue;					
 			if (i > 0)
 				sRemapNames += ",";
@@ -4412,7 +4413,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		std::string sIndexes = "";
 		for(i=0; i < iIndexes.size(); ++i)
 		{
-			if (i == delIndex)
+			if (i == remapIndex)
 				continue;
 			if (i > 0)
 				sIndexes += ",";
@@ -4612,7 +4613,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					SystemConf::getInstance()->saveSystemConf();
 				}
 			});
-			//GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
+			GuiMenu::editJoyBtnRemapOptionList(mWindow, systemConfiguration, prefixName);
 			GuiMenu::createBtnJoyCfgName(mWindow, systemConfiguration, prefixName);
 			GuiMenu::deleteBtnJoyCfg(mWindow, systemConfiguration, prefixName);
 		}();
