@@ -4273,7 +4273,7 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 
 		if (err > 0)
 		{
-			window->pushGui(new GuiMsgBox(window, _("ERROR - Remap is not configured properly, All buttons must be assigned."),
+			window->pushGui(new GuiMsgBox(window, _("ERROR - Remap is not configured properly, All buttons must be assigned and no duplicates."),
 			_("OK")));
 			return;
 		}
@@ -4361,7 +4361,7 @@ void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfigurati
 		}
 
 		GuiSettings* systemConfiguration = new GuiSettings(window, "CREATE REMAP");
-		window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned."), _("OK"),
+		window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned and no duplicates."), _("OK"),
 		[window, systemConfiguration, prefixName, newVal] {
 			GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal);
 			window->pushGui(systemConfiguration);
