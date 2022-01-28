@@ -4421,15 +4421,15 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_indexes", sIndexes);
 		SystemConf::getInstance()->saveSystemConf();
 
+		int btnIndex = btn_choice->getSelectedIndex();
 		GuiMenu::removeJoyBtnEntry(delIndex);
 
-		int btnIndex = btn_choice->getSelectedIndex();
 		if (btnIndex == delIndex || btnIndex >= del_choice->size())
 			btnIndex = 0;
 
 		del_choice->selectFirstItem();
 		edit_choice->selectFirstItem();
-		//btn_choice->selectIndex(btnIndex);
+		btn_choice->selectIndex(btnIndex);
 	});
 
 	del_choice->setSelectedChangedCallback(
