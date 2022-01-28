@@ -4090,6 +4090,7 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 // TODO 
 
 #ifdef _ENABLEEMUELEC
+
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::btn_choice = nullptr;
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::del_choice = nullptr;
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::edit_choice = nullptr;
@@ -4118,7 +4119,6 @@ static std::vector<int> int_explode(std::string sData, char delimeter=',')
 	return arr;
 }
 
-
 static std::string toupper(std::string s)
 {
 	std::for_each(s.begin(), s.end(), [](char & c){
@@ -4129,7 +4129,7 @@ static std::string toupper(std::string s)
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
-	auto btn_choice = std::make_shared< OptionListComponent<std::string> >(window, _("JOY BUTTON REMAP CONFIG"), false);
+	auto btn_choice = std::make_shared< OptionListComponent<std::string> >(window, _("BUTTON REMAP CONFIG"), false);
 
 	std::string joy_btns = SystemConf::getInstance()->get(prefixName + ".joy_btns");
 	
@@ -4156,26 +4156,15 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 		if (editIndex <= 0)
 			return;
 
-		if (editIndex <= 2)
-		{
-			window->pushGui(new GuiMsgBox(window,  _("CANNOT EDIT DEFAULT BUTTON MAPS."),
-				_("OK")));
-			edit_choice->selectNone();
-			edit_choice->selectIndex(0);	
-			return;
-		}
-
 		std::string btnIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 		int btnIndex = int_explode(btnIndexes)[editIndex-1];
 		
 		GuiSettings* systemConfiguration = new GuiSettings(window, _("EDIT REMAP"));
 		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, edit_choice->getSelectedName(), btnIndex);
-		
-		edit_choice->selectNone();
-		edit_choice->selectIndex(0);
-		del_choice->selectNone();
-		del_choice->selectIndex(0);
-		
+
+		edit_choice->selectFirstItem();
+		del_choice->selectFirstItem();
+
 		window->pushGui(systemConfiguration);
 	});
 
@@ -4217,11 +4206,11 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		remap_choice.push_back(remap);
 		systemConfiguration->addWithLabel(_("JOY BUTTON ")+std::to_string(index), remap);
 	}
-	int index=0;
+
+	// Loops through remaps assigns Event to make sure no remap duplicates exist.
 	for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
 		auto self = (*it);
 		self->setSelectedChangedCallback([self, remap_choice] (std::string choice) {
-			int j=0; 
 			std::string choice2;
 			if (choice == "-1")
 				return;
@@ -4231,22 +4220,30 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 				if (choice2 == "-1")
 					continue;
 				if (self != remap && choice == choice2) {
-					remap->selectNone();
-					remap->selectIndex(0);
+					remap->selectFirstItem();
 					continue;
 				}
 			}
 		});
-		index++;
 	}
 
 
 	systemConfiguration->addSaveFunc([window, systemConfiguration, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
+		// Hack to avoid over-writing defaults.
+		int editIndex = edit_choice->getSelectedIndex();
+		if (editIndex <= 2)
+		{
+			window->pushGui(new GuiMsgBox(window,  _("CANNOT SAVE DEFAULT BUTTON MAPS."),
+				_("OK")));
+			edit_choice->selectFirstItem();
+			return;
+		}
+
 		int err = 0;
 		if (btnCount == 0)
 			err = 1;
 
-		int j=0;
+		// Loops through remap values and makes sure no conflicts or empty fields.
 		[&] {
 			for(auto it = remap_choice.cbegin(); it != remap_choice.cend(); ++it) {
 				auto remap = *it;
@@ -4379,11 +4376,8 @@ void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfigurati
 }
 
 void GuiMenu::removeJoyBtnEntry(int index) {
-	del_choice->selectNone();
 	del_choice->removeIndex(index);
-	edit_choice->selectNone();
 	edit_choice->removeIndex(index);
-	btn_choice->selectNone();
 	btn_choice->removeIndex(index);
 }
 
@@ -4405,18 +4399,16 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 		{
 			window->pushGui(new GuiMsgBox(window,  _("CANNOT DELETE DEFAULT BUTTON MAPS."),
 				_("OK"), nullptr));
-			del_choice->selectNone();
-			del_choice->selectIndex(0);				
+			del_choice->selectFirstItem();
 			return;
 		}
 
+		// Delete does not remove the existing button maps so any game/emulator references will still work.
 		std::string remapNames = SystemConf::getInstance()->get(prefixName + ".joy_btn_names");
 		std::vector<std::string> remap_names(explode(remapNames));
 
 		std::string indexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 		std::vector<int> iIndexes(int_explode(indexes));
-
-		//int delCfgIndex = (delIndex-1);
 
 		std::string sRemapNames = "";
 		int i;
@@ -4429,7 +4421,6 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 			sRemapNames += remap_names[i];
 		}
 		SystemConf::getInstance()->set(prefixName + ".joy_btn_names", sRemapNames);
-		//SystemConf::getInstance()->set(prefixName + ".joy_btn_order"+std::to_string(remapIndex), "");
 
 		std::string sIndexes = "";
 		for(i=0; i < iIndexes.size(); ++i)
@@ -4609,8 +4600,18 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->saveSystemConf();
 			}
 
-			int btnSelectIndex = atoi(SystemConf::getInstance()->get(configName + ".joy_btn_cfg").c_str());
-			btn_choice = createJoyBtnOptionList(mWindow, prefixName, _("BUTTON REMAP"), btnSelectIndex);
+			int btnCfgIndex = atoi(SystemConf::getInstance()->get(configName + ".joy_btn_cfg").c_str());
+			std::vector<int> remapIndexes = int_explode( SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes"));
+			int btnIndex = 0;
+			for (int i = 0; i < remapIndexes.size(); ++i) {
+				if (btnCfgIndex == remapIndexes[i])
+				{
+					btnIndex = i+1;
+					break;
+				}	
+			}
+
+			btn_choice = createJoyBtnOptionList(mWindow, prefixName, _("BUTTON REMAP"), btnIndex);
 			edit_choice = createJoyBtnOptionList(mWindow, prefixName, _("EDIT REMAP"), -1); 
 			del_choice = createJoyBtnOptionList(mWindow, prefixName, _("DELETE REMAP"), -1);
 			
