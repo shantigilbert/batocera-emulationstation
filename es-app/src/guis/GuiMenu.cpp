@@ -4221,7 +4221,6 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 		index++;
 	}
 
-	window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned and no duplicates."), _("OK")));
 
 	systemConfiguration->addSaveFunc([window, systemConfiguration, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
 		int err = 0;
@@ -4342,8 +4341,11 @@ void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfigurati
 		}
 
 		GuiSettings* systemConfiguration = new GuiSettings(window, "CREATE REMAP");
-		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal, -1);
-		window->pushGui(systemConfiguration);
+		window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned and no duplicates."), _("OK"),
+		[window, systemConfiguration, prefixName, newVal] {
+			GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal, -1);
+			window->pushGui(systemConfiguration);			
+		}));
 	};
 
 	row.makeAcceptInputHandler([window, createText, updateVal]
@@ -4427,7 +4429,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 
 		del_choice->selectFirstItem();
 		edit_choice->selectFirstItem();
-		btn_choice->selectIndex(btnIndex);
+		//btn_choice->selectIndex(btnIndex);
 	});
 
 	del_choice->setSelectedChangedCallback(
