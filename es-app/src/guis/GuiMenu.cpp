@@ -4473,7 +4473,7 @@ void GuiMenu::deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration,
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionList(Window *window, std::string prefixName,
-	std::string title, int selectIndex)
+	std::string title, int selectId)
 {
 	auto btn_cfg = std::make_shared< OptionListComponent<std::string> >(window, title, false);
 
@@ -4485,13 +4485,13 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnOptionLis
 		return btn_cfg;
 	}
 
-	if (selectIndex >= btn_names.size())
-		selectIndex = -1;
+	if (selectId >= btn_names.size())
+		selectId = -1;
 
 	int i = 0;
-	btn_cfg->add(_("NONE"), "-1", selectIndex == -1);
+	btn_cfg->add(_("NONE"), "-1", selectId == -1);
 	for (auto it = btn_names.cbegin(); it != btn_names.cend(); it++) {
-		btn_cfg->add(*it, std::to_string(i), selectIndex == i);
+		btn_cfg->add(*it, std::to_string(i), selectId == i);
 		i++;
 	}
 	return btn_cfg;
@@ -4602,18 +4602,18 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
 			int btnCfgIndex = atoi(SystemConf::getInstance()->get(configName + ".joy_btn_cfg").c_str());
 			std::vector<int> remapIndexes = int_explode( SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes"));
-			int btnIndex = -1;
+			int btnId = -1;
 			for (int i = 0; i < remapIndexes.size(); ++i) {
 				if (btnCfgIndex == remapIndexes[i])
 				{
-					btnIndex = i+1;
+					btnId = i;
 					break;
 				}	
 			}
 
-			btn_choice = createJoyBtnOptionList(mWindow, prefixName, _("BUTTON REMAP"), btnIndex);
-			edit_choice = createJoyBtnOptionList(mWindow, prefixName, _("EDIT REMAP"), -1); 
-			del_choice = createJoyBtnOptionList(mWindow, prefixName, _("DELETE REMAP"), -1);
+			btn_choice = createJoyBtnOptionList(mWindow, prefixName, _("BUTTON REMAP"), btnId);
+			edit_choice = createJoyBtnOptionList(mWindow, prefixName, _("EDIT REMAP"));
+			del_choice = createJoyBtnOptionList(mWindow, prefixName, _("DELETE REMAP"));
 			
 			systemConfiguration->addWithLabel(_("BUTTON REMAP"), btn_choice);
 			systemConfiguration->addWithLabel(_("EDIT REMAP"), edit_choice);
