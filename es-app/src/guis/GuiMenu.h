@@ -101,7 +101,7 @@ private:
   static std::shared_ptr<OptionListComponent<std::string>> createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex = -1);
 
   static void createBtnJoyCfgName(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
-  static void createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfiguration, std::string prefixName, std::string remapName, int btnIndex = -1);
+  static void createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfiguration, std::string prefixName, std::string remapName, int btnIndex = -1, int editIndex = 0);
   
   static void deleteBtnJoyCfg(Window *window, GuiSettings *systemConfiguration, std::string prefixName);
   static void editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfiguration, std::string prefixName);

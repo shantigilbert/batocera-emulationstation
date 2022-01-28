@@ -4160,7 +4160,7 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 		int btnIndex = int_explode(btnIndexes)[editIndex-1];
 		
 		GuiSettings* systemConfiguration = new GuiSettings(window, _("EDIT REMAP"));
-		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, edit_choice->getSelectedName(), btnIndex);
+		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, edit_choice->getSelectedName(), btnIndex, editIndex);
 
 		edit_choice->selectFirstItem();
 		del_choice->selectFirstItem();
@@ -4183,7 +4183,7 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 }
 
 void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfiguration,
-	std::string prefixName, std::string remapName, int btnIndex)
+	std::string prefixName, std::string remapName, int btnIndex, int editIndex)
 {
 	std::vector<std::shared_ptr<OptionListComponent<std::string>>> remap_choice;
 
@@ -4228,9 +4228,8 @@ void GuiMenu::createBtnJoyCfgRemap(Window *window, GuiSettings *systemConfigurat
 	}
 
 
-	systemConfiguration->addSaveFunc([window, systemConfiguration, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex] {
+	systemConfiguration->addSaveFunc([window, systemConfiguration, remap_choice, del_choice, btn_choice, remapCount, prefixName, remapName, remapNames, btnCount, btnIndex, editIndex] {
 		// Hack to avoid over-writing defaults.
-		int editIndex = edit_choice->getSelectedIndex();
 		if (btnIndex != -1 && editIndex > 0 && editIndex <= 2)
 		{
 			window->pushGui(new GuiMsgBox(window,  _("CANNOT SAVE DEFAULT BUTTON MAPS."),
@@ -4359,7 +4358,7 @@ void GuiMenu::createBtnJoyCfgName(Window *window, GuiSettings *systemConfigurati
 		GuiSettings* systemConfiguration = new GuiSettings(window, "CREATE REMAP");
 		window->pushGui(new GuiMsgBox(window, _("All buttons must be assigned."), _("OK"),
 		[window, systemConfiguration, prefixName, newVal] {
-			GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal, -1);
+			GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, newVal);
 			window->pushGui(systemConfiguration);			
 		}));
 	};
