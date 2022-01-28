@@ -4129,7 +4129,7 @@ static std::string toupper(std::string s)
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
-	auto btn_choice = std::make_shared< OptionListComponent<std::string> >(window, "JOY BUTTON CFG", false);
+	auto btn_choice = std::make_shared< OptionListComponent<std::string> >(window, _("JOY BUTTON REMAP CONFIG"), false);
 
 	std::string joy_btns = SystemConf::getInstance()->get(prefixName + ".joy_btns");
 	
