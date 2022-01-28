@@ -4161,16 +4161,17 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 			return;
 		}
 
-		edit_choice->selectNone();
-		edit_choice->selectIndex(0);
-		del_choice->selectNone();
-		del_choice->selectIndex(0);
-
 		std::string btnIndexes = SystemConf::getInstance()->get(prefixName + ".joy_btn_indexes");
 		int btnIndex = int_explode(btnIndexes)[editIndex-1];
 		
 		GuiSettings* systemConfiguration = new GuiSettings(window, _("EDIT REMAP"));
 		GuiMenu::createBtnJoyCfgRemap(window, systemConfiguration, prefixName, edit_choice->getSelectedName(), btnIndex);
+		
+		edit_choice->selectNone();
+		edit_choice->selectIndex(0);
+		del_choice->selectNone();
+		del_choice->selectIndex(0);
+		
 		window->pushGui(systemConfiguration);
 	});
 
