@@ -4157,7 +4157,9 @@ void GuiMenu::editJoyBtnRemapOptionList(Window *window, GuiSettings *systemConfi
 		if (editIndex <= 2)
 		{
 			window->pushGui(new GuiMsgBox(window,  _("CANNOT EDIT DEFAULT BUTTON MAPS."),
-				_("OK"), nullptr));
+				_("OK")));
+			edit_choice->selectNone();
+			edit_choice->selectIndex(0);	
 			return;
 		}
 
