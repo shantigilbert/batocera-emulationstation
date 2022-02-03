@@ -132,13 +132,6 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	}, "iconKodi");	
 #endif
 
-#ifdef _ENABLEEMUELEC
-	if (isFullUI)
-	{
-		addEntry(_("EMUELEC SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec"); /* < emuelec */
-	}
-#endif
-
 	if (ApiSystem::getInstance()->isScriptingSupported(ApiSystem::RETROACHIVEMENTS) &&
 		SystemConf::getInstance()->getBool("global.retroachievements") &&
 		Settings::getInstance()->getBool("RetroachievementsMenuitem") && 
@@ -150,6 +143,10 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	
 	if (isFullUI)
 	{
+#ifdef _ENABLEEMUELEC
+		addEntry(_("EMUELEC SETTINGS").c_str(), true, [this] { openEmuELECSettings(); }, "iconEmuelec"); /* < emuelec */
+#endif
+		
 #if !defined(WIN32) || defined(_DEBUG)
 		addEntry(_("GAME SETTINGS").c_str(), true, [this] { openGamesSettings_batocera(); }, "iconGames");
 		addEntry(controllers_settings_label.c_str(), true, [this] { openControllersSettings_batocera(); }, "iconControllers");
@@ -3888,7 +3885,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		return;
 	}
 #endif
-
+	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
 	auto s = new GuiSettings(window, (quickAccessMenu ? _("QUICK ACCESS") : _("QUIT")).c_str());
 	s->setCloseButton("select");
 
@@ -3954,28 +3951,30 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		}, _("NO"), nullptr));
 	}, "iconRestart");
 
-	s->addEntry(_("START RETROARCH"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY START RETROARCH?"), _("YES"),
-			[] {
-			remove("/var/lock/start.games");
-            runSystemCommand("touch /var/lock/start.retro", "", nullptr);
-			runSystemCommand("systemctl start retroarch.service", "", nullptr);
-			Scripting::fireEvent("quit", "retroarch");
-			quitES(QuitMode::QUIT);
-		}, _("NO"), nullptr));
-	}, "iconControllers");
-	
-	s->addEntry(_("REBOOT FROM NAND"), false, [window] {
-		window->pushGui(new GuiMsgBox(window, _("REALLY REBOOT FROM NAND?"), _("YES"),
-			[] {
-			Scripting::fireEvent("quit", "nand");
-			runSystemCommand("rebootfromnand", "", nullptr);
-			runSystemCommand("sync", "", nullptr);
-			runSystemCommand("systemctl reboot", "", nullptr);
-			quitES(QuitMode::QUIT);
-		}, _("NO"), nullptr));
-	}, "iconAdvanced");
-
+	if (isFullUI)
+	{
+		s->addEntry(_("START RETROARCH"), false, [window] {
+			window->pushGui(new GuiMsgBox(window, _("REALLY START RETROARCH?"), _("YES"),
+				[] {
+				remove("/var/lock/start.games");
+				runSystemCommand("touch /var/lock/start.retro", "", nullptr);
+				runSystemCommand("systemctl start retroarch.service", "", nullptr);
+				Scripting::fireEvent("quit", "retroarch");
+				quitES(QuitMode::QUIT);
+			}, _("NO"), nullptr));
+		}, "iconControllers");
+		
+		s->addEntry(_("REBOOT FROM NAND"), false, [window] {
+			window->pushGui(new GuiMsgBox(window, _("REALLY REBOOT FROM NAND?"), _("YES"),
+				[] {
+				Scripting::fireEvent("quit", "nand");
+				runSystemCommand("rebootfromnand", "", nullptr);
+				runSystemCommand("sync", "", nullptr);
+				runSystemCommand("systemctl reboot", "", nullptr);
+				quitES(QuitMode::QUIT);
+			}, _("NO"), nullptr));
+		}, "iconAdvanced");
+	}
 #endif
 
 	if (quickAccessMenu)
