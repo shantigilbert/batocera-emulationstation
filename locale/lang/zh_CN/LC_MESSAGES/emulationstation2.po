@@ -1991,7 +1991,7 @@ msgid "REALLY UPDATE GAMELISTS?"
 msgstr "真要更新游戏列表？"
 
 msgid "CONTROLLER MAPPING"
-msgstr "控制器 MAPPING"
+msgstr "控制器映射"
 
 msgid ""
 "YOU ARE GOING TO MAP A CONTROLLER. MAP BASED ON THE BUTTON'S POSITION "
@@ -2000,13 +2000,18 @@ msgid ""
 "BUTTONS/STICKS YOU DO NOT HAVE BY HOLDING ANY KEY. PRESS THE SOUTH BUTTON TO "
 "CONFIRM WHEN DONE."
 msgstr ""
+"你即将映射一个控制器，映射基于按键位置 "
+"相应的SNES控制器的对应按键，而非他的物理标签。如果 "
+"你没有一个特殊按键用于热键，请使用选择键。并长按任意键跳过所有 "
+"你不用有的按键或摇杆。按South按键确认 "
+"完成."
 
 msgid "PAIR A BLUETOOTH DEVICE"
-msgstr ""
+msgstr "配对一个蓝牙设备"
 
 #, c-format
 msgid "P%i'S CONTROLLER"
-msgstr ""
+msgstr "P%i 的控制器"
 
 msgid "default"
 msgstr "默认"
@@ -2015,10 +2020,10 @@ msgid "SHOW CONTROLLER ACTIVITY"
 msgstr "显示控制器活动"
 
 msgid "SHOW CONTROLLER BATTERY LEVEL"
-msgstr ""
+msgstr "显示控制器电量"
 
 msgid "YOU MUST APPLY THE THEME BEFORE EDITING ITS CONFIGURATION"
-msgstr ""
+msgstr "你必须应用主题以编辑他的配置"
 
 msgid "THEME CONFIGURATION"
 msgstr "主题配置"
@@ -2084,10 +2089,10 @@ msgid "FILE EXTENSIONS"
 msgstr "文件扩展名"
 
 msgid "RESET CUSTOMIZATIONS"
-msgstr ""
+msgstr "重置定制项"
 
 msgid "APPEARANCE"
-msgstr ""
+msgstr "外观"
 
 msgid "THEME SET"
 msgstr "主题设置"
@@ -2105,7 +2110,7 @@ msgid "LIST TRANSITION STYLE"
 msgstr "画面转场样式"
 
 msgid "auto"
-msgstr ""
+msgstr "自动"
 
 msgid "GAME LAUNCH TRANSITION"
 msgstr "游戏启动过程"
@@ -2120,10 +2125,10 @@ msgid "SHOW BATTERY STATUS"
 msgstr "显示电池状态"
 
 msgid "ICON"
-msgstr ""
+msgstr "图标"
 
 msgid "ICON AND TEXT"
-msgstr ""
+msgstr "图标和文字"
 
 msgid "IGNORE LEADING ARTICLES WHEN SORTING"
 msgstr ""
@@ -2204,16 +2209,16 @@ msgid "QUICK ACCESS"
 msgstr "快速进入"
 
 msgid "SKIP TO THE NEXT SONG"
-msgstr ""
+msgstr "跳到下首哥"
 
 msgid "NOW PLAYING"
-msgstr ""
+msgstr "现在播放"
 
 msgid "LAUNCH SCREENSAVER"
 msgstr "启动屏保"
 
 msgid "VIEW USER'S MANUAL"
-msgstr ""
+msgstr "查看用户手册"
 
 msgid "VIEW BATOCERA MANUAL"
 msgstr "查看BATOCERA手册"
@@ -2234,7 +2239,7 @@ msgid "FAST SHUTDOWN SYSTEM"
 msgstr "快速关机"
 
 msgid "Shutdown without saving metadata."
-msgstr ""
+msgstr "关机但不保存元数据"
 
 msgid "REALLY SHUTDOWN WITHOUT SAVING METADATA?"
 msgstr "是否不保存元数据并直接关机?"
@@ -2279,10 +2284,10 @@ msgid "INTERNAL RESOLUTION"
 msgstr "内部分辨率"
 
 msgid "AUTOCONFIGURE CONTROLLERS"
-msgstr ""
+msgstr "自动配置控制器"
 
 msgid "LAUNCH THIS GAME AT STARTUP"
-msgstr ""
+msgstr "开机时启动这个游戏"
 
 msgid "FORMAT DEVICE"
 msgstr "格式化装置"
@@ -2306,12 +2311,14 @@ msgid "EDIT METADATA"
 msgstr "编辑元数据"
 
 msgid "GENRES"
-msgstr ""
+msgstr "类型"
 
 msgid ""
 "SOME FILES YOU LINKED ARE LOCATED OUTSIDE THE GAMELIST PATH.\n"
 "DO YOU WANT TO USE A COPY OF THESE FILES RELATIVE TO THE GAMELIST ?"
 msgstr ""
+"部分你链接的文件在游戏列表以外.\n"
+"你想使用一个与游戏列表关联的复制文件 ?"
 
 msgid "NO DEVICE FOUND"
 msgstr "未找到设备"
@@ -2332,7 +2339,7 @@ msgid "GAMES TO INDEX"
 msgstr ""
 
 msgid "ONLY MISSING"
-msgstr ""
+msgstr "仅丢失的"
 
 msgid "SYSTEM INFO"
 msgstr "系统信息"
@@ -2344,19 +2351,19 @@ msgid "QUICK SEARCH"
 msgstr "迅速搜"
 
 msgid "GO TO LETTER"
-msgstr ""
+msgstr "跳到字母"
 
 msgid "GO TO MANUFACTURER"
 msgstr "访问制造商"
 
 msgid "GO TO HARDWARE"
-msgstr ""
+msgstr "跳到硬件"
 
 msgid "GO TO DECADE"
-msgstr ""
+msgstr "跳到年代"
 
 msgid "CONFIGURATION"
-msgstr ""
+msgstr "配置"
 
 #, c-format
 msgid "%i COLLECTION"
@@ -2384,21 +2391,27 @@ msgid ""
 "FORMAT.\n"
 "DO YOU WANT TO LAUNCH IT ANYWAY?"
 msgstr ""
+"警告：该模拟器或核心不支持这个游戏的文件 "
+"格式.\n"
+"你还是想运行它吗？"
 
 msgid ""
 "WARNING: THE SYSTEM HAS MISSING BIOS FILE(S) AND THE GAME MAY NOT WORK "
 "CORRECTLY.\n"
 "DO YOU WANT TO LAUNCH IT ANYWAY?"
 msgstr ""
+"警告：该系统缺乏BIOS，游戏可能无法正常 "
+"运行.\n"
+"你还是想运行它吗？"
 
 msgid "Preloading UI"
 msgstr "预加载 UI"
 
 msgid "Loading theme"
-msgstr ""
+msgstr "正在加载主题"
 
 msgid "Loading gamelists"
-msgstr ""
+msgstr "正在加载游戏列表"
 
 msgid "MENU"
 msgstr "菜单"
@@ -2427,15 +2440,17 @@ msgid "No Entries Found"
 msgstr "找不到条目"
 
 msgid "Games similar to"
-msgstr ""
+msgstr "与之类似的游戏"
 
 msgid "FAVORITE"
-msgstr ""
+msgstr "收藏夹"
 
 msgid ""
 "A valid account is required. Please register an account on https://"
 "retroachievements.org"
 msgstr ""
+"需要一个正确的账户，请到https://"
+"retroachievements.org 注册"
 
 msgid "Searching"
 msgstr "搜索中"
@@ -2540,16 +2555,16 @@ msgid "GAME TIME, DESCENDING"
 msgstr "游戏时间，降序"
 
 msgid "SYSTEM, RELEASE YEAR, ASCENDING"
-msgstr ""
+msgstr "系统，发行年，升序"
 
 msgid "SYSTEM, RELEASE YEAR, DESCENDING"
-msgstr ""
+msgstr "系统，发行年，降序"
 
 msgid "RELEASE YEAR, SYSTEM, ASCENDING"
-msgstr ""
+msgstr "发行年，系统，升序"
 
 msgid "RELEASE YEAR, SYSTEM, DESCENDING"
-msgstr ""
+msgstr "发行年，系统，降序"
 
 msgid "A,AN,THE"
 msgstr ""
@@ -2558,13 +2573,13 @@ msgid "Extracting"
 msgstr "提取中"
 
 msgid "SEARCHING RETROACHIEVEMENTS"
-msgstr ""
+msgstr "正在搜索RETROACHIEVEMENTS"
 
 msgid "SEARCHING NETPLAY GAMES"
-msgstr ""
+msgstr "正在搜索网络游戏"
 
 msgid "INDEXING COMPLETED"
-msgstr ""
+msgstr "索引完成"
 
 msgid "UPDATE GAMELISTS TO APPLY CHANGES."
 msgstr "更新游戏列表以应用修改"
@@ -2600,7 +2615,7 @@ msgid "PLAYERS"
 msgstr "玩家数"
 
 msgid "PUBLISHER/DEVELOPER"
-msgstr ""
+msgstr "发行 开发"
 
 msgid "RATING"
 msgstr "评分"
@@ -2627,18 +2642,18 @@ msgid "SCRAPING"
 msgstr "抓取"
 
 msgid "SCRAPE FAILED"
-msgstr "抓取失败"
+msgstr "搜刮失败"
 
 msgid "SCRAPING FINISHED"
-msgstr ""
+msgstr "搜刮完成"
 
 #, c-format
 msgid "%s connected"
-msgstr ""
+msgstr "%s 已连接"
 
 #, c-format
 msgid "%s disconnected"
-msgstr ""
+msgstr "%s 已断线"
 
 msgid "SHIFTS FOR UPPER,LOWER, AND SPECIAL"
 msgstr "SHIFT键可切换大小写或特殊字符"
