@@ -4658,7 +4658,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			for (int i = 0; i < remapIndexes.size(); ++i) {
 				if (btnCfgIndex == remapIndexes[i])
 				{
-					btnId = i;
+					btnId = (i+1);
 					break;
 				}
 			}
