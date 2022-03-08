@@ -3888,7 +3888,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		return;
 	}
 #endif
-	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
+
 	auto s = new GuiSettings(window, (quickAccessMenu ? _("QUICK ACCESS") : _("QUIT")).c_str());
 	s->setCloseButton("select");
 
@@ -3954,6 +3954,7 @@ void GuiMenu::openQuitMenu_batocera_static(Window *window, bool quickAccessMenu,
 		}, _("NO"), nullptr));
 	}, "iconRestart");
 
+	bool isFullUI = UIModeController::getInstance()->isUIModeFull();
 	if (isFullUI)
 	{
 		s->addEntry(_("START RETROARCH"), false, [window] {
