@@ -103,16 +103,16 @@ msgid "GAME TIME, DESCENDING"
 msgstr "游戏时间，降序"
 
 msgid "SYSTEM, RELEASE YEAR, ASCENDING"
-msgstr ""
+msgstr "系统，发行年份，升序"
 
 msgid "SYSTEM, RELEASE YEAR, DESCENDING"
-msgstr ""
+msgstr "系统，发行年份，降序"
 
 msgid "RELEASE YEAR, SYSTEM, ASCENDING"
-msgstr ""
+msgstr "发行年份，系统，升序"
 
 msgid "RELEASE YEAR, SYSTEM, DESCENDING"
-msgstr ""
+msgstr "发行年份，系统，降序"
 
 msgid "A,AN,THE"
 msgstr ""
@@ -136,7 +136,7 @@ msgid "RATING"
 msgstr "评分"
 
 msgid "YEAR"
-msgstr ""
+msgstr "年份"
 
 msgid "LANGUAGE"
 msgstr "语言"
@@ -295,14 +295,14 @@ msgid "go back"
 msgstr "返回"
 
 msgid "THIS GAME HAS NO ACHIEVEMENT YET"
-msgstr ""
+msgstr "该游戏还没有成就"
 
 msgid "Achievements won"
-msgstr ""
+msgstr "成就已获取"
 
 #, c-format
 msgid "%d%% complete"
-msgstr ""
+msgstr "%d%% 完成"
 
 msgid "INSTALL BATOCERA"
 msgstr "安装 BATOCERA"
@@ -634,7 +634,7 @@ msgid "Architecture"
 msgstr "结构"
 
 msgid "Disk format"
-msgstr ""
+msgstr "盘格式"
 
 msgid "Temperature"
 msgstr "温度"
@@ -688,7 +688,7 @@ msgid "VERSION"
 msgstr "版本"
 
 msgid "SHADERS"
-msgstr ""
+msgstr "SHADERS"
 
 msgid "CONTROLLERS SETTINGS"
 msgstr "控制器设置"
@@ -745,7 +745,7 @@ msgid "VIDEO MODE"
 msgstr "视频模式"
 
 msgid "You are about to set EmuELEC resolution to:"
-msgstr ""
+msgstr "你将要将EmuELEC分辨率设置为："
 
 msgid "Do you want to proceed ?"
 msgstr "是否继续?"
@@ -799,7 +799,7 @@ msgid "OVERCLOCK"
 msgstr "超频"
 
 msgid "Off"
-msgstr ""
+msgstr "关闭"
 
 msgid "1.4ghz"
 msgstr ""
@@ -1005,7 +1005,7 @@ msgid "SYSTEM"
 msgstr "系统"
 
 msgid "VIDEO DRIVER"
-msgstr ""
+msgstr "视频驱动"
 
 msgid "DEVELOPER"
 msgstr "开发者选项"
@@ -1066,7 +1066,7 @@ msgid "Cleaning "
 msgstr "清理中"
 
 msgid "CLEAR CACHES"
-msgstr ""
+msgstr "清除缓存"
 
 msgid "BUILD IMAGE CACHE"
 msgstr ""
@@ -1147,10 +1147,10 @@ msgid "PRELOAD UI"
 msgstr "预加载UI"
 
 msgid "PRELOAD MEDIAS FILESYSTEM"
-msgstr ""
+msgstr "预加载媒体文件系统"
 
 msgid "REDUCE UI LAGS OVER STARTUP TIME"
-msgstr ""
+msgstr "降低在刚启动时的UI卡顿"
 
 msgid "THREADED LOADING"
 msgstr "载入线程化"
@@ -1195,19 +1195,19 @@ msgid "UPDATE IS ALREADY RUNNING"
 msgstr "正在更新中"
 
 msgid "TIMEZONE"
-msgstr ""
+msgstr "时区"
 
 msgid "SELECT YOUR TIMEZONE"
-msgstr ""
+msgstr "选择你的时区"
 
 msgid "SHOW CLOCK IN 12-HOUR FORMAT"
-msgstr ""
+msgstr "以12小时的格式显示你的时钟"
 
 msgid "POWER SAVER MODES"
 msgstr "省电模式"
 
 msgid "TEXT TO SPEECH"
-msgstr ""
+msgstr "文字到语音"
 
 msgid "UI MODE"
 msgstr "UI模式"
@@ -1258,7 +1258,7 @@ msgid "INVERTED ROTATION"
 msgstr ""
 
 msgid "BOOT SPLASH"
-msgstr ""
+msgstr "开机画面"
 
 msgid "SILENT SPLASH"
 msgstr ""
@@ -1288,34 +1288,34 @@ msgid "OFF"
 msgstr "关"
 
 msgid "off"
-msgstr ""
+msgstr "关"
 
 msgid "red"
-msgstr ""
+msgstr "红"
 
 msgid "green"
-msgstr ""
+msgstr "绿"
 
 msgid "blue"
-msgstr ""
+msgstr "蓝"
 
 msgid "white"
-msgstr ""
+msgstr "白"
 
 msgid "purple"
-msgstr ""
+msgstr "粉"
 
 msgid "yellow"
-msgstr ""
+msgstr "黄"
 
 msgid "cyan"
-msgstr ""
+msgstr "青"
 
 msgid "POWER LED COLOR"
 msgstr ""
 
 msgid "heartbeat"
-msgstr ""
+msgstr "心跳"
 
 msgid "on"
 msgstr ""
@@ -1399,13 +1399,13 @@ msgid "AUTOMATIC SCREENSHOT"
 msgstr "自动截图"
 
 msgid "RETROACHIEVEMENTS UNLOCK SOUND"
-msgstr ""
+msgstr "RETROACHIEVEMENTS解锁音"
 
 msgid "none"
 msgstr "无"
 
 msgid "UNLOCK SOUND"
-msgstr ""
+msgstr "解锁音"
 
 msgid "SHOW IN MAIN MENU"
 msgstr "在主菜单中显示"
@@ -1414,13 +1414,13 @@ msgid "GAME INDEXES"
 msgstr "游戏索引"
 
 msgid "FIND ALL GAMES"
-msgstr ""
+msgstr "寻找所有游戏"
 
 msgid "FIND NEW GAMES"
-msgstr ""
+msgstr "寻找新游戏"
 
 msgid "UNABLE TO ACTIVATE RETROACHIEVEMENTS :"
-msgstr ""
+msgstr "无法激活RETROACHIEVEMENTS"
 
 msgid "ENABLE NETPLAY"
 msgstr "启用联网游戏"
@@ -1654,10 +1654,10 @@ msgid "SHOW BATTERY STATUS"
 msgstr "显示电池状态"
 
 msgid "ICON"
-msgstr ""
+msgstr "图标"
 
 msgid "ICON AND TEXT"
-msgstr ""
+msgstr "图标和文字"
 
 msgid "IGNORE LEADING ARTICLES WHEN SORTING"
 msgstr ""
@@ -1747,7 +1747,7 @@ msgid "LAUNCH SCREENSAVER"
 msgstr "启动屏保"
 
 msgid "VIEW USER'S MANUAL"
-msgstr ""
+msgstr "查看用户手册"
 
 msgid "VIEW BATOCERA MANUAL"
 msgstr "查看BATOCERA手册"
@@ -1804,19 +1804,19 @@ msgid "VERTICAL ASPECT RATIO"
 msgstr "纵向比例"
 
 msgid "16:9"
-msgstr ""
+msgstr "16:9"
 
 msgid "3:2"
-msgstr ""
+msgstr "3:2"
 
 msgid "21:9"
-msgstr ""
+msgstr "21:9"
 
 msgid "4:3"
-msgstr ""
+msgstr "4:3"
 
 msgid "BEZEL"
-msgstr ""
+msgstr "外框"
 
 msgid "COLORIZATION"
 msgstr "彩色化"
@@ -1834,7 +1834,7 @@ msgid "FULL BOOT"
 msgstr "完全启动"
 
 msgid "EMULATED WIIMOTES"
-msgstr "WIIMOTES 模拟"
+msgstr "WIIMOTES模拟"
 
 msgid "CHANGE SCREEN LAYOUT"
 msgstr "更改屏幕布局"
@@ -1849,10 +1849,10 @@ msgid "INTERNAL RESOLUTION"
 msgstr "内部分辨率"
 
 msgid "AUTOCONFIGURE CONTROLLERS"
-msgstr ""
+msgstr "自动配置控制器"
 
 msgid "LAUNCH THIS GAME AT STARTUP"
-msgstr ""
+msgstr "开机时启动这个游戏"
 
 msgid "FORMAT DEVICE"
 msgstr "格式化装置"
@@ -1885,10 +1885,10 @@ msgid "PLAYER 2"
 msgstr "玩家二"
 
 msgid "PLAYER 3"
-msgstr ""
+msgstr "玩家三"
 
 msgid "PLAYER 4"
-msgstr ""
+msgstr "玩家四"
 
 msgid "COMBINATIONS"
 msgstr "组合键"
@@ -1919,7 +1919,7 @@ msgid "Rank"
 msgstr ""
 
 msgid "VIEW DETAILS"
-msgstr ""
+msgstr "查看细节"
 
 msgid "CONNECT TO NETPLAY"
 msgstr "联网游戏"
@@ -1997,7 +1997,7 @@ msgid "SELECT CONTENT TO INSTALL / REMOVE"
 msgstr "选择内容以便安装 / 卸载"
 
 msgid "UPDATE INSTALLED CONTENT"
-msgstr ""
+msgstr "更新已安装内容"
 
 msgid "There are no items in this view"
 msgstr "在此视角下没东西"
@@ -2012,26 +2012,26 @@ msgid "NO DEVICE FOUND"
 msgstr "未找到设备"
 
 msgid "START NEW GAME"
-msgstr ""
+msgstr "开始新游戏"
 
 msgid "START AUTO SAVE"
-msgstr ""
+msgstr "开始自动保存"
 
 msgid "AUTO SAVE"
-msgstr ""
+msgstr "自动保存"
 
 msgid "SLOT"
-msgstr ""
+msgstr "栏位"
 
 msgid "COPY TO FREE SLOT"
-msgstr ""
+msgstr "复制到空栏位"
 
 msgid "UPDATING EMUELEC"
-msgstr ""
+msgstr "正在更新EMUELEC"
 
 #, c-format
 msgid "UPDATING %s"
-msgstr ""
+msgstr "更新中 %s"
 
 msgid "UPDATING BATOCERA"
 msgstr "更新 BATOCERA"
@@ -2160,6 +2160,8 @@ msgid ""
 "A valid account is required. Please register an account on https://"
 "retroachievements.org"
 msgstr ""
+"需要一个可用的账户。请到此网站注册 https://"
+"retroachievements.org"          
 
 msgid "Loading system config..."
 msgstr "正在载入系统配置..."
@@ -2177,19 +2179,19 @@ msgid "SCRAPE FAILED"
 msgstr "抓取失败"
 
 msgid "SCRAPING FINISHED"
-msgstr ""
+msgstr "抓取已结束"
 
 msgid "UPDATE GAMES LISTS TO APPLY CHANGES."
-msgstr ""
+msgstr "更新游戏列表以应用变更。"
 
 msgid "SEARCHING RETROACHIEVEMENTS"
-msgstr ""
+msgstr "正在搜索RETROACHIEVEMENTS"
 
 msgid "SEARCHING NETPLAY GAMES"
-msgstr ""
+msgstr "正在搜索在线游戏"
 
 msgid "INDEXING COMPLETED"
-msgstr ""
+msgstr "索引完成"
 
 msgid "Searching"
 msgstr "搜索中"
@@ -2246,7 +2248,7 @@ msgid "never played"
 msgstr "从未玩过的"
 
 msgid "retroachievements"
-msgstr ""
+msgstr "retroachievements"
 
 msgid "arcade"
 msgstr "街机"
@@ -2255,7 +2257,7 @@ msgid "vertical arcade"
 msgstr ""
 
 msgid "lightgun games"
-msgstr ""
+msgstr "光枪游戏"
 
 msgid "collections"
 msgstr "合辑"
@@ -2330,13 +2332,13 @@ msgid ""
 msgstr ""
 
 msgid "Preloading UI"
-msgstr "预加载 UI"
+msgstr "预加载UI中"
 
 msgid "Loading theme"
-msgstr ""
+msgstr "加载主题中"
 
 msgid "Loading gamelists"
-msgstr ""
+msgstr "加载列表中"
 
 msgid "MENU"
 msgstr "菜单"
@@ -2348,7 +2350,7 @@ msgid "GAME OPTIONS"
 msgstr "游戏设置"
 
 msgid "FAVORITE"
-msgstr ""
+msgstr "收藏"
 
 msgid "RANDOM"
 msgstr "随机"
@@ -2390,7 +2392,7 @@ msgid "ERROR: EVERY SYSTEM IS HIDDEN, RE-DISPLAYING ALL OF THEM NOW"
 msgstr "错误：每个系统都被隐藏，现在重新显示"
 
 msgid "QUICK SEARCH"
-msgstr "迅速搜"
+msgstr "快速搜索"
 
 msgid "GO TO LETTER"
 msgstr ""
@@ -2519,7 +2521,7 @@ msgid "Box backside"
 msgstr ""
 
 msgid "enter path to box background"
-msgstr ""
+msgstr "输入到box的路径"
 
 msgid "Wheel"
 msgstr "商标"
@@ -2686,25 +2688,25 @@ msgid "LEFT ANALOG UP"
 msgstr "左侧类比摇杆 上"
 
 msgid "LEFT ANALOG DOWN"
-msgstr ""
+msgstr "左侧类比摇杆 下"
 
 msgid "LEFT ANALOG LEFT"
 msgstr "左侧类比摇杆 左"
 
 msgid "LEFT ANALOG RIGHT"
-msgstr ""
+msgstr "左侧类比摇杆 右"
 
 msgid "RIGHT ANALOG UP"
 msgstr "右侧类比摇杆 上"
 
 msgid "RIGHT ANALOG DOWN"
-msgstr ""
+msgstr "右侧类比摇杆 下"
 
 msgid "RIGHT ANALOG LEFT"
 msgstr "右侧类比摇杆 左"
 
 msgid "RIGHT ANALOG RIGHT"
-msgstr ""
+msgstr "右侧类比摇杆 右"
 
 msgid "HOTKEY"
 msgstr "热键"
@@ -2751,17 +2753,17 @@ msgstr "按键已占用"
 
 #, c-format
 msgid "%s connected"
-msgstr ""
+msgstr "%s 已连接"
 
 #, c-format
 msgid "%s disconnected"
-msgstr ""
+msgstr "%s 已断开连接"
 
 msgid "ENABLED"
-msgstr ""
+msgstr "已启用"
 
 msgid "DISABLED"
-msgstr ""
+msgstr "已禁用"
 
 msgid "up/down"
 msgstr "上/下"
@@ -2939,10 +2941,10 @@ msgid "SAVE STATE MANAGER"
 msgstr "存档管理器"         
 
 msgid "THIS FUNCTION IS DISABLED WHILE THE SCRAPER IS RUNNING"
-msgstr ""
+msgstr "抓取中该功能禁用。"
 
 msgid "SCRAPER IS RUNNING. DO YOU WANT TO STOP IT?"
-msgstr ""
+msgstr "抓取运行中，你想要中止吗？"
 
 
 
