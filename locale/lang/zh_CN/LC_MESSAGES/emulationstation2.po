@@ -395,7 +395,7 @@ msgid "SHOW SYSTEM NAME IN COLLECTIONS"
 msgstr "在合辑中显示系统名称"
 
 msgid "SHOW GAMES OF HIDDEN SYSTEMS IN COLLECTIONS"
-msgstr ""
+msgstr "显示收藏中隐藏系统的游戏"
 
 msgid "UPDATE GAMES LISTS"
 msgstr "更新游戏列表"
@@ -472,8 +472,8 @@ msgstr "增加组合键"
 msgid "THEMES DOWNLOADER"
 msgstr "主题下载"
 
-msgid "SELECT THEMES TO INSTALL / REMOVE"
-msgstr "选择主题安装 / 卸载"
+msgid "SELECT THEMES TO INSTALL/REMOVE"
+msgstr "选择主题安装/卸载"
 
 msgid "UPDATE"
 msgstr "更新"
@@ -503,7 +503,7 @@ msgid "VIEW GAME MANUAL"
 msgstr "阅读游戏手册"
 
 msgid "VIEW GAME MAGAZINE"
-msgstr ""
+msgstr "查看游戏杂志"
 
 msgid "VIEW GAME MAP"
 msgstr "阅读游戏地图"
@@ -1059,7 +1059,7 @@ msgstr "文件生成失败"
 msgid "FORMAT A DISK"
 msgstr "格式化磁盘"
 
-msgid "CLEAN GAMELISTS & REMOVE UNUSED MEDIAS"
+msgid "CLEAN GAMELISTS & REMOVE UNUSED MEDIA"
 msgstr "清除游戏列表并删除未使用的媒体"
 
 msgid "Cleaning "
@@ -1069,10 +1069,10 @@ msgid "CLEAR CACHES"
 msgstr "清除缓存"
 
 msgid "BUILD IMAGE CACHE"
-msgstr ""
+msgstr "建立图像缓存"
 
 msgid "Building image cache"
-msgstr ""
+msgstr "正在建立图像缓存"
 
 msgid "RESET FILE EXTENSIONS"
 msgstr "重置文件扩展"
@@ -1081,13 +1081,13 @@ msgid "REDETECT GAMES LANG/REGION"
 msgstr "重新查询游戏的 语言/区域"
 
 msgid "FIND ALL GAMES WITH NETPLAY/ACHIEVEMENTS"
-msgstr ""
+msgstr "寻找所有带网络游戏/成就的游戏"
 
 msgid "DATA MANAGEMENT"
 msgstr "数据管理"
 
 msgid "IGNORE MULTIFILE DISK CONTENT (CUE/GDI/CCD/M3U)"
-msgstr ""
+msgstr "忽略多文件碟片内容 (CUE/GDI/CCD/M3U)"
 
 msgid "ENABLE FILTERS"
 msgstr "启用筛选器"
@@ -1099,7 +1099,7 @@ msgid "PARSE GAMESLISTS ONLY"
 msgstr "仅分析游戏列表"
 
 msgid "SEARCH FOR LOCAL ART"
-msgstr "在磁盘上查找图形"
+msgstr "寻找本地美术资源"
 
 msgid "UI"
 msgstr "用户界面"
@@ -1129,13 +1129,13 @@ msgid "SWITCH A/B BUTTONS IN EMULATIONSTATION"
 msgstr "在EMULATIONSTATION中切换 A/B 按键"
 
 msgid "ACCESS GAME OPTIONS WITH NORTH BUTTON"
-msgstr ""
+msgstr "北键进入游戏选项"
 
 msgid "Inverts north button (savestates) & long press south (game options)"
 msgstr ""
 
 msgid "CONTROL EMULATIONSTATION ONLY WITH FIRST JOYSTICK"
-msgstr ""
+msgstr "仅用第一个手柄控制EMULATIONSTATION"
 
 msgid "SHOW NETWORK INDICATOR"
 msgstr "显示网络标识"
@@ -1681,13 +1681,13 @@ msgid "FRONTEND MUSIC"
 msgstr "前端音乐"
 
 msgid "DISPLAY SONG TITLES"
-msgstr "显示歌曲名称"
+msgstr "显示歌曲标题"
 
 msgid "HOW MANY SECONDS FOR SONG TITLES"
 msgstr "歌曲的秒数"
 
 msgid "ONLY PLAY SYSTEM-SPECIFIC MUSIC FOLDER"
-msgstr "仅播放指定游戏平台中的音乐"
+msgstr "仅播放系统指定的音乐文件夹"
 
 msgid "PLAY THEME MUSICS"
 msgstr "播放主题音乐"
@@ -1795,7 +1795,7 @@ msgid "REALLY QUIT?"
 msgstr "确定退出?"
 
 msgid "NATIVE VIDEO"
-msgstr ""
+msgstr "原生视频"
 
 msgid "ENABLE VERTICAL"
 msgstr ""
@@ -1957,7 +1957,7 @@ msgstr "加入游戏"
 msgid "WATCH GAME"
 msgstr "观看游戏"
 
-msgid "SELECT BEZELS TO INSTALL / REMOVE"
+msgid "SELECT BEZELS TO INSTALL/REMOVE"
 msgstr "选择BEZELS安装 / 卸载"
 
 msgid "BEZELS UNINSTALLED SUCCESSFULLY"
@@ -1991,7 +1991,7 @@ msgid "RESET FILTERS"
 msgstr "重置筛选"
 
 msgid "FILTER GAMES BY TEXT"
-msgstr "用文本筛选游戏"
+msgstr "以文字过滤游戏"
 
 msgid "SELECT CONTENT TO INSTALL / REMOVE"
 msgstr "选择内容以便安装 / 卸载"
@@ -2054,8 +2054,10 @@ msgstr ""
 msgid "NETWORK CONNECTION NEEDED"
 msgstr "需要连接到互联网"
 
-msgid "NO UPDATE AVAILABLE"
-msgstr "暂无可用更新"
+msgid "NO UPDATE AVAILABLE"   
+msgstr "暂无可用更新"        
+
+
 
 msgid "NO MISSING BIOS"
 msgstr "无缺失的BIOS"
@@ -2375,9 +2377,8 @@ msgid "This folder contains %i game, including :%s"
 msgid_plural "This folder contains %i games, including :%s"
 msgstr[0] ""
 
-# 此翻译可能涉及多个选项，建议不翻译
 msgid "Full"
-msgstr ""
+msgstr "完全"
 
 msgid "Kiosk"
 msgstr "大厅"
@@ -2494,10 +2495,10 @@ msgid "enter path to manual"
 msgstr "输入手册路径"
 
 msgid "Magazine"
-msgstr ""
+msgstr "杂志"
 
 msgid "enter path to magazine"
-msgstr ""
+msgstr "输入到杂志的路径"
 
 msgid "Map"
 msgstr "地图"
@@ -2518,7 +2519,7 @@ msgid "enter path to alt boxart"
 msgstr "输入包装盒封面路径"
 
 msgid "Box backside"
-msgstr ""
+msgstr "包装盒背面"
 
 msgid "enter path to box background"
 msgstr "输入到box的路径"
@@ -2554,16 +2555,16 @@ msgid "enter game genre"
 msgstr "输入游戏类型"
 
 msgid "Game family"
-msgstr ""
+msgstr "游戏家族"
 
 msgid "enter game family"
-msgstr ""
+msgstr "输入游戏家族"
 
-msgid "Genres"
-msgstr ""
+msgid "GENRES"
+msgstr "类型"
 
 msgid "enter game genres"
-msgstr ""
+msgstr "输入游戏类型"
 
 msgid "Arcade system"
 msgstr "游戏系统"
@@ -2629,7 +2630,7 @@ msgid "Cheevos Game ID"
 msgstr ""
 
 msgid "Screenscraper Game ID"
-msgstr ""
+msgstr "Screenscraper 游戏ID"
 
 #, c-format
 msgid "%d h"
@@ -2897,7 +2898,7 @@ msgid "ALL"
 msgstr "全部"
 
 msgid "SYSTEMS INCLUDED"
-msgstr "已包括的系统"  
+msgstr "已包含的系统"  
 
 msgid "SAVESTATES"
 msgstr "存档"  
@@ -2946,7 +2947,214 @@ msgstr "抓取中该功能禁用。"
 msgid "SCRAPER IS RUNNING. DO YOU WANT TO STOP IT?"
 msgstr "抓取运行中，你想要中止吗？"
 
+msgid "VIEW GAME MEDIA"
+msgstr "查看游戏媒体"         
 
+msgid "AUTO SAVE/LOAD ON GAME LAUNCH"
+msgstr "游戏启动时自动保存读取"   
+
+msgid "GAME OPTIONS (HOLD)"
+msgstr "游戏选项（按住打开）"
+
+msgid "RANDOM (HOLD)"
+msgstr "随机（按住选择随机）"
+                                  
+msgid "Changes will need an EmulationStation restart."
+msgstr "修改需要重启EmulationStation"                        
+
+msgid "GAMEPAD CONFIG"
+msgstr "游戏手柄设置"     
+
+msgid "EXTERNAL MOUNT OPTIONS"
+msgstr "外置挂载选项"   
+
+msgid "EXTERNAL DEVICE"
+msgstr "外置挂载选项"           
+
+msgid "RETRY TIMES"
+msgstr "重置次数"          
+
+msgid "FORCE MOUNT NOW"
+msgstr "立刻强制挂载"   
+
+msgid "Select the mounted drive to be used for ROMS."
+msgstr "选择作为ROMS目录的挂载设备。"     
+
+msgid "How many times to retry the mount on boot."
+msgstr "开机时重试挂载的次数。"   
+
+msgid "LOCAL BACKUP EMUELEC CONFIGS"
+msgstr "本地备份EMUELEC设置"   
+
+msgid "CLOUD RESTORE SETTINGS AND GAME SAVES"
+msgstr "云恢复设置和游戏保存"           
+
+msgid "CLOUD BACKUP SETTINGS AND GAME SAVES"
+msgstr "云备份设置和游戏保存"   
+
+msgid "ENABLE TRANSLATION SERVICE"
+msgstr "启用翻译服务"   
+
+msgid "AI TRANSLATION SERVICE URL"
+msgstr "AI翻译服务网址"   
+
+msgid "CHALLENGE INDICATORS"
+msgstr "成就挑战提示"
+
+msgid "SHOW UNAVAILABLE GAMES"
+msgstr "显示不可用游戏"  
+
+msgid "MISSING"  
+msgstr "缺失"    
+ 
+msgid "LIST TRANSITION STYLE"
+msgstr "列表的变换风格"
+                                 
+msgid "LIST TRANSITION STYLE"
+msgstr "列表的变换风格"      
+
+msgid "SHOW REGION FLAG"
+msgstr "显示区域旗帜"        
+
+msgid "SHOW SAVESTATE ICON"
+msgstr "显示保存状态图标"    
+
+msgid "SHOW MANUAL ICON"
+msgstr "显示手册图标"  
+
+msgid "SHOW FILENAMES INSTEAD"
+msgstr "显示手册图标"     
+
+msgid "IGNORE LEADING ARTICLES WHEN SORTING"
+msgstr "排序时忽略首字母"       
+
+msgid "DISPLAY SONG TITLES"
+msgstr "显示歌曲标题"
+
+msgid "SONG TITLE DISPLAY DURATION"
+msgstr "歌曲标题显示时间"        
+
+msgid "PLAY SYSTEM-SPECIFIC MUSIC"
+msgstr "播放系统指定音乐"         
+
+msgid "ENABLE VIDEO PREVIEW AUDIO"
+msgstr "启用视频预览的声音"
+                              
+msgid "SOURCE"
+msgstr "来源"        
+
+msgid "FILTERS"
+msgstr "过滤" 
+
+msgid "SCRAPE SETTINGS"
+msgstr "抓取设置"
+
+msgid "GAMES TO SCRAPE FOR"
+msgstr "将要抓取的游戏"
+
+msgid "ALL"
+msgstr "全部"
+
+msgid "GAMES MISSING ANY MEDIA"
+msgstr "缺失任意媒体的游戏"
+
+msgid "GAMES MISSING ALL MEDIA"
+msgstr "缺失全部媒体的游戏"
+
+msgid "IGNORE RECENTLY SCRAPED GAMES"
+msgstr "忽略最近抓取过的游戏"
+
+msgid "LAST DAY"
+msgstr "最近一天"
+
+msgid "LAST WEEK"
+msgstr "最近一周"
+
+msgid "LAST 15 DAYS"
+msgstr "最近15天"
+
+msgid "LAST MONTH"
+msgstr "最近一月"
+
+msgid "LAST 3 MONTHS"
+msgstr "最近三月"
+
+msgid "LAST YEAR"
+msgstr "最近一年"         
+
+msgid "DEFAULT"
+msgstr "默认"
+
+msgid "ENHANCED"
+msgstr "增强"
+
+msgid "INSTANT"
+msgstr ""
+
+msgid "REDETECT ALL GAMES' LANG/REGION"
+msgstr "重新检测所有游戏的语言/区域"
+
+msgid "ON-SCREEN KEYBOARD"
+msgstr "屏上键盘"   
+
+msgid "RETROARCH MENU DRIVER"
+msgstr "RETROARCH菜单驱动"    
+
+msgid "SWITCH A & B BUTTONS IN EMULATIONSTATION"
+msgstr "在EMULATIONSTATION中切换A和B按键"
+
+msgid ""
+"Switches to short-press North for Savestates & long-press South button for "
+"Game Options"
+msgstr ""
+"切换至短按北键（Y）进入状态保存，长按南键（A）进入"
+"游戏选项"     
+
+msgid "CONTROL EMULATIONSTATION WITH FIRST JOYSTICK ONLY"
+msgstr "仅使用第一手柄控制EMULATIONSTATION"   
+
+msgid "PRELOAD UI ELEMENTS ON BOOT"
+msgstr "启动时预加载UI元素"
+
+msgid ""
+"Reduces lag when entering gamelists from the system menu, increases boot time"
+msgstr "降低从系统菜单进入游戏列表时的卡顿，增加启动时间"
+
+msgid "PRELOAD METADATA MEDIA ON BOOT"
+msgstr "启动时预加载元数据媒体"
+
+msgid ""
+"Reduces lag when scrolling through a fully scraped gamelist, increases boot "
+"time"
+msgstr ""
+"降低在一个完全抓取过的游戏列表中卷动的卡顿，增加开机时间"  
+
+msgid "ASYNC IMAGE LOADING"
+msgstr "异步图像加载"       
+
+msgid "IGNORE MULTI-FILE DISK CONTENT (CUE/GDI/CCD/M3U)"
+msgstr "忽略多文件盘内容(CUE/GDI/CCD/M3U)"   
+
+msgid "SCRAPER SETTINGS"
+msgstr "抓取器设置"         
+
+msgid "ARCADE"
+msgstr "街机"       
+
+msgid "Setup"
+msgstr "设置"     
+
+msgid "PORTS"
+msgstr "移植"    
+
+msgid "Bezel (16:9)"
+msgstr "外框(16:9)"
+
+msgid "enter path to bezel (16:9)"
+msgstr "输入外框(16:9)的路径"        
+
+msgid "GAME MEDIA"
+msgstr "游戏媒体"
 
 #~ msgid "Editing the '%s' Collection. Add/remove games with Y."
 #~ msgstr "编辑 '%s' 合辑。按Y键添加/删除游戏。"
@@ -3092,9 +3300,6 @@ msgstr "抓取运行中，你想要中止吗？"
 
 #~ msgid "RANDOM VIDEO SETTINGS"
 #~ msgstr "随机视频参数"
-
-#~ msgid "MISSING"
-#~ msgstr "缺失"
 
 #~ msgid "INVALID"
 #~ msgstr "无效"
