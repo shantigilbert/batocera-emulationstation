@@ -347,13 +347,13 @@ msgid "SELECT THEME FOLDER"
 msgstr "选择主题文件夹"
 
 msgid "CREATE NEW EDITABLE COLLECTION"
-msgstr "新建合辑"
+msgstr "创建新的可编辑合辑"
 
 msgid "New Collection Name"
 msgstr "新合辑名称"
 
 msgid "CREATE NEW DYNAMIC COLLECTION"
-msgstr "新建合辑"
+msgstr "创建新的动态合辑"
 
 msgid "OPTIONS"
 msgstr "选项"
@@ -563,7 +563,7 @@ msgid "DELETE GAME"
 msgstr "删除游戏"
 
 msgid "COLLECTIONS"
-msgstr "合集"
+msgstr "合辑"
 
 #, c-format
 msgid "REMOVE FROM %s"
@@ -769,13 +769,13 @@ msgid "ENABLE SSH"
 msgstr "启用SSH"
 
 msgid "START AT BOOT"
-msgstr "开机自动启动"
+msgstr "开机时启动"
 
 msgid "SHOW RETROARCH FPS"
 msgstr "显示RETROARCH FPS"
 
 msgid "ENABLE RA SPLASH"
-msgstr "启用 RA 启动画面"
+msgstr "启用RA启动画面"
 
 msgid "ALWAYS SHOW BOOT VIDEO"
 msgstr "总是显示开机视频"
@@ -1588,7 +1588,7 @@ msgid "always"
 msgstr "总是"
 
 msgid "never"
-msgstr "从未"
+msgstr "从不"
 
 msgid "having multiple games"
 msgstr "有多个游戏"
@@ -2083,11 +2083,11 @@ msgstr "系统"
 msgid "random"
 msgstr "随机"
 
-msgid "SCREENSAVER AFTER"
-msgstr "屏保等待时间"
+msgid "START SCREENSAVER AFTER"
+msgstr "启动屏幕保护等待时间"
 
-msgid "SCREENSAVER BEHAVIOR"
-msgstr "屏保样式"
+msgid "SCREENSAVER TYPE"
+msgstr "屏保类型"
 
 msgid "STOP MUSIC ON SCREENSAVER"
 msgstr "录屏时停止音乐"
@@ -2638,11 +2638,11 @@ msgstr ""
 
 #, c-format
 msgid "%d m"
-msgstr ""
+msgstr "%d 分"
 
 #, c-format
 msgid "%d s"
-msgstr ""
+msgstr "%d 秒"
 
 msgid "DISCARD CHANGES"
 msgstr "放弃更改"
@@ -2992,7 +2992,7 @@ msgstr "云恢复设置和游戏保存"
 msgid "CLOUD BACKUP SETTINGS AND GAME SAVES"
 msgstr "云备份设置和游戏保存"   
 
-msgid "ENABLE TRANSLATION SERVICE"
+msgid "ENABLE AI TRANSLATION SERVICE"
 msgstr "启用翻译服务"   
 
 msgid "AI TRANSLATION SERVICE URL"
@@ -3155,6 +3155,19 @@ msgstr "输入外框(16:9)的路径"
 
 msgid "GAME MEDIA"
 msgstr "游戏媒体"
+
+msgid "VIDEO MODE"
+msgstr "视频模式"
+
+msgid "CUSTOM"
+msgstr "定制"
+
+msgid "--AUTO-DETECTED RESOLUTIONS--"
+msgstr "自动侦测到的解像度"
+
+msgid "CORE PROVIDED"
+msgstr "核心提供的"
+
 
 #~ msgid "Editing the '%s' Collection. Add/remove games with Y."
 #~ msgstr "编辑 '%s' 合辑。按Y键添加/删除游戏。"
