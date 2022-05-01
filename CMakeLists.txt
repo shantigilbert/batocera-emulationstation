@@ -19,6 +19,7 @@ option(ENABLE_TTS "Set to ON to enable text to speech" OFF)
 option(ENABLE_EMUELEC "Set to ON to enable EmuELEC changes" ${ENABLE_EMUELEC})
 option(ENABLE_GAMEFORCE "Set to ON to enable Gameforce specific changes" ${ENABLE_GAMEFORCE})
 option(ODROIDGOA "Set to ON to enable Odroid Go Advance specific changes" ${ODROIDGOA})
+option(ENABLE_ROCKCHIP "Set to ON to enable Rockchip specific changes" ${ENABLE_ROCKCHIP})
 
 project(emulationstation-all)
 
@@ -36,6 +37,10 @@ endif()
 
 if("${ENABLE_GAMEFORCE}" STREQUAL "1")
   add_definitions(-D_ENABLEGAMEFORCE)
+endif()
+
+if("${ENABLE_ROCKCHIP}" STREQUAL "1")
+  add_definitions(-D_ENABLEROCKCHIP)
 endif()
 
 if("${ODROIDGOA}" STREQUAL "1")
