@@ -250,7 +250,7 @@ void GuiMenu::openEmuELECSettings()
 
 	Window* window = mWindow;
 	std::string a;
-#if !defined(_ENABLEROCKCHIP)
+#if !defined(_ENABLEHANDHELD)
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
         std::vector<std::string> videomode;
 		videomode.push_back("1080p60hz");
@@ -4757,7 +4757,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
 	auto customFeatures = systemData->getCustomFeatures(currentEmulator, currentCore);
 
-#if defined(_ENABLEEMUELEC) && !defined(_ENABLEROCKCHIP)
+#if defined(_ENABLEEMUELEC) && !defined(_ENABLEHANDHELD)
 
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::nativevideo))
 	{
