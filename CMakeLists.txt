@@ -40,12 +40,12 @@ if("${ENABLE_GAMEFORCE}" STREQUAL "1")
   add_definitions(-D_ENABLEHANDHELD)
 endif()
 
-if("${ENABLE_HANDHELD}" STREQUAL "1")
+if("${ODROIDGOA}" STREQUAL "1")
+  add_definitions(-DODROIDGOA)
   add_definitions(-D_ENABLEHANDHELD)
 endif()
 
-if("${ODROIDGOA}" STREQUAL "1")
-  add_definitions(-DODROIDGOA)
+if("${ENABLE_HANDHELD}" STREQUAL "1")
   add_definitions(-D_ENABLEHANDHELD)
 endif()
 
