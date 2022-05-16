@@ -26,6 +26,8 @@
 #include "SaveStateRepository.h"
 #include "guis/GuiSaveState.h"
 #include "SystemConf.h"
+#include "platform.h"
+#include <regex>
 
 GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(window),
 	mMenu(window, game->getName()), mReloadAll(false)
@@ -244,6 +246,24 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 
 			});
 		}
+
+#ifdef _ENABLEEMUELEC
+	std::regex str_expr (".*(disc\\s*\\d)[^\\d]{0,1}.*", std::regex_constants::icase);
+	if (std::regex_match(game->getName(),str_expr))
+		mMenu.addEntry(isImageViewer ? _("CREATE MULTIDISC") : _("CREATE MULTIDISC"), false, [this, game]
+		{
+			mWindow->pushGui(new GuiMsgBox(mWindow, _("THIS WILL CREATE A MULTI-DISC FILE(S)!\nARE YOU SURE?"), _("YES"),
+				[this, game]
+			{
+				createMultidisc(game);
+				close();
+			},
+				_("NO"), nullptr));
+
+
+		});
+#endif
+
 	}
 
 	bool isCustomCollection = (mSystem->isCollection() && game->getType() == FOLDER && CollectionSystemManager::get()->isCustomCollection(mSystem->getName()));
@@ -488,6 +508,46 @@ void GuiGameOptions::deleteGame(FileData* file)
 		delete sourceFile;
 	}
 }
+
+#ifdef _ENABLEEMUELEC
+
+void GuiGameOptions::createMultidisc(FileData* file)
+{
+	if (file->getType() != GAME)
+		return;
+
+	auto sourceFile = file->getSourceFileData();
+
+	std::string args = "createMultidisc \""+sourceFile->getSystemName()+"\" \""+sourceFile->getPath()+"\"";
+	args="(/usr/bin/emuelec-utils "+args+")";
+	LOG(LogInfo) << "createMultidisc:" << args;
+	std::stringstream ss(getShOutput(args));
+	std::string newFileName;
+	getline(ss, newFileName);
+
+	if (newFileName.empty())
+		return;
+
+	FileData* newFile = new FileData(GAME, newFileName, sourceFile->getSystem());
+
+	auto sys = sourceFile->getSystem();
+	if (sys->isGroupChildSystem())
+		sys = sys->getParentGroupSystem();
+
+	sys->getRootFolder()->addChild(newFile);
+
+	// NOT WORKING UNSURE WHY
+	//CollectionSystemManager::get()->refreshCollectionSystems(newFile);
+
+	auto view = ViewController::get()->getGameListView(sys, false);
+	if (view != nullptr) {
+			view.get()->repopulate();
+			view->setCursor(newFile);
+	}
+	ViewController::get()->reloadGameListView(sys);
+}
+
+#endif
 
 void GuiGameOptions::openMetaDataEd()
 {
