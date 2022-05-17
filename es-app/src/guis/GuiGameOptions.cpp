@@ -531,10 +531,10 @@ void GuiGameOptions::createMultidisc(FileData* file)
 	FileData* newFile = new FileData(GAME, newFileName, sourceFile->getSystem());
 
 	auto sys = sourceFile->getSystem();
-	if (sys->isGroupChildSystem())
-		sys = sys->getParentGroupSystem();
+	//if (sys->isGroupChildSystem())
+		//sys = sys->getParentGroupSystem();
 
-	sys->getRootFolder()->addChild(newFile);
+	sourceFile->getSystem()->getRootFolder()->addChild(newFile);
 
 	// NOT WORKING UNSURE WHY
 	//CollectionSystemManager::get()->refreshCollectionSystems(newFile);
