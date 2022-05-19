@@ -26,8 +26,11 @@
 #include "SaveStateRepository.h"
 #include "guis/GuiSaveState.h"
 #include "SystemConf.h"
+
+#ifdef _ENABLEEMUELEC
 #include "platform.h"
 #include <regex>
+#endif
 
 GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(window),
 	mMenu(window, game->getName()), mReloadAll(false)
