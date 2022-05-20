@@ -293,54 +293,63 @@ void GuiMenu::openEmuELECSettings()
 	std::string a;
 #if !defined(_ENABLEGAMEFORCE) && !defined(ODROIDGOA)
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
-        std::vector<std::string> videomode;
-		videomode.push_back("1080p60hz");
-		videomode.push_back("1080i60hz");
-		videomode.push_back("720p60hz");
-		videomode.push_back("720p50hz");
-		videomode.push_back("480p60hz");
-		videomode.push_back("480cvbs");
-		videomode.push_back("576p50hz");
-		videomode.push_back("1080p50hz");
-		videomode.push_back("1080i50hz");
-		videomode.push_back("576cvbs");
+  std::vector<std::string> videomode;
 
-		std::string def_video;
-		std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
-		while(ss.good()) {
-			def_video="";
-			getline(ss, def_video, ',');
-			videomode.push_back(def_video);
-		}
-		auto it = unique(videomode.begin(), videomode.end());
-	  videomode.resize(distance(videomode.begin(), it));
-		std::sort(videomode.begin(), videomode.end(), sortResolutions);
-		
-		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-			emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it);
-		}
+	videomode.push_back("1080p60hz");
+	videomode.push_back("1080i60hz");
+	videomode.push_back("720p60hz");
+	videomode.push_back("720p50hz");
+	videomode.push_back("480p60hz");
+	videomode.push_back("480cvbs");
+	videomode.push_back("576p50hz");
+	videomode.push_back("1080p50hz");
+	videomode.push_back("1080i50hz");
+	videomode.push_back("576cvbs");
 
-		s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
-	   	
-		s->addSaveFunc([this, emuelec_video_mode, window] {
-		
-		//bool v_need_reboot = false;
+	std::string def_video;
+	std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
+	while(ss.good()) {
+		def_video="";
+		getline(ss, def_video, ',');
+		videomode.push_back(def_video);
+	}
+	auto it = unique(videomode.begin(), videomode.end());
+  videomode.resize(distance(videomode.begin(), it));
+	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 	
+	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
+		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it);
+	}
+
+	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
+   	
+	s->addSaveFunc([this, emuelec_video_mode, window] {		
+		std::string oldresolution = runSystemCommand("cat /sys/class/display/mode", "", nullptr);
+
+		const std::function<void()> checkDisplay([window, selectedVideoMode, oldresolution] {
+			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
+				_("YES"), [selectedVideoMode] {
+					LOG(LogInfo) << "Set video to " << selectedVideoMode;
+					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+					SystemConf::getInstance()->saveSystemConf();
+				}, _("NO"), [oldresolution] {
+					LOG(LogInfo) << "Setting video back to " << oldresolution;
+					runSystemCommand("/usr/bin/setres.sh " + oldresolution, "", nullptr);
+					window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+				}));
+		});
+			
 		if (emuelec_video_mode->changed()) {
 			std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		if (emuelec_video_mode->getSelected() != "-- AUTO-DETECTED RESOLUTIONS --") { 
-			if (emuelec_video_mode->getSelected() != "Custom") {
+
 			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			msg += _("Do you want to proceed ?");
-		
+			
 			window->pushGui(new GuiMsgBox(window, msg,
 				_("YES"), [selectedVideoMode] {
-					//runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode", "", nullptr);
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
 					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
-					SystemConf::getInstance()->saveSystemConf();
-				//	v_need_reboot = true;
+					checkDisplay();
 				}, _("NO"),nullptr));
 		
 		} else { 
@@ -348,25 +357,17 @@ void GuiMenu::openEmuELECSettings()
 				selectedVideoMode = runSystemCommand("cat /storage/.config/EE_VIDEO_MODE", "", nullptr);
 				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << selectedVideoMode;
 				runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-				SystemConf::getInstance()->saveSystemConf();
-				//v_need_reboot = true;
-			} else { 
-				if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
+				checkDisplay();
+			} 
+			else if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
 					selectedVideoMode = runSystemCommand("cat /flash/EE_VIDEO_MODE", "", nullptr);
-					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 					LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << selectedVideoMode;
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-					SystemConf::getInstance()->saveSystemConf();
-					//v_need_reboot = true;
-					}
-				}
-			}
-		   }	
-			//if (v_need_reboot)
-		 	mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-		 }
-		});
+					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
+					checkDisplay();
+		  }				
+		}
+	}
+
 #endif
 #ifdef _ENABLEGAMEFORCE
 		auto emuelec_blrgboptions_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "BUTTON LED COLOR", false);
