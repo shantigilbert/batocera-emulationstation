@@ -4765,12 +4765,10 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
 
 		const std::function<void()> video_changed([mWindow, configName, videoNativeResolutionMode_choice] {
-
-			std::string def_video;
 			std::string video_choice = videoNativeResolutionMode_choice->getSelected();
 			bool safe_video = false;
 
-			if (video_choice == "auto") {
+			if (video_choice.empty() || video_choice == "auto") {
 				safe_video = true;
 			}
 			else {
@@ -4780,7 +4778,9 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				LOG(LogInfo) << "NATIVEVIDEO - RESOLUTIONS LENGTH: " << length;
 				if (length > 0) {
 					ss.seekg(0, std::ios::beg);
-					while (getline(ss, def_video, ',')) {
+					while (ss.good()) {
+						std::string def_video;
+						getline(ss, def_video, ',')
 						if (def_video.find(video_choice) != std::string::npos) {
 							safe_video = true;
 							break;
