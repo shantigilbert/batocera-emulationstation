@@ -324,6 +324,7 @@ void GuiMenu::openEmuELECSettings()
 	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
    	
 	s->addSaveFunc([this, emuelec_video_mode, window] {		
+		std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		std::string oldresolution = runSystemCommand("cat /sys/class/display/mode", "", nullptr);
 
 		const std::function<void()> checkDisplay([window, selectedVideoMode, oldresolution] {
@@ -340,8 +341,6 @@ void GuiMenu::openEmuELECSettings()
 		});
 			
 		if (emuelec_video_mode->changed()) {
-			std::string selectedVideoMode = emuelec_video_mode->getSelected();
-
 			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			msg += _("Do you want to proceed ?");
 			
