@@ -4782,6 +4782,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 						std::string def_video;
 						getline(ss, def_video, ',');
 						if (def_video.find(video_choice) != std::string::npos) {
+							LOG(LogInfo) << "NATIVEVIDEO - DEF_VIDEO_FOUND: " << def_video << " : " << video_choice;
 							safe_video = true;
 							break;
 						}
