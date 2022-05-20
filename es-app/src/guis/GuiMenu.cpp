@@ -325,7 +325,7 @@ void GuiMenu::openEmuELECSettings()
    	
 	s->addSaveFunc([this, emuelec_video_mode, window] {		
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		std::string oldresolution = runSystemCommand("cat /sys/class/display/mode", "", nullptr);
+		std::string oldresolution = getShOutput(R"(cat /sys/class/display/mode)");
 
 		const std::function<void()> checkDisplay([window, selectedVideoMode, oldresolution] {
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
@@ -353,13 +353,13 @@ void GuiMenu::openEmuELECSettings()
 		
 		} else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
-				selectedVideoMode = runSystemCommand("cat /storage/.config/EE_VIDEO_MODE", "", nullptr);
+				selectedVideoMode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
 				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << selectedVideoMode;
 				runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 				checkDisplay();
 			} 
 			else if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
-					selectedVideoMode = runSystemCommand("cat /flash/EE_VIDEO_MODE", "", nullptr);
+					selectedVideoMode = getShOutput(R"(cat /flash/EE_VIDEO_MODE)");
 					LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << selectedVideoMode;
 					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 					checkDisplay();
