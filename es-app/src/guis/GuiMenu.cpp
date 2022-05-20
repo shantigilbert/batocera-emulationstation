@@ -333,7 +333,7 @@ void GuiMenu::openEmuELECSettings()
 					LOG(LogInfo) << "Set video to " << selectedVideoMode;
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
-				}, _("NO"), [oldresolution] {
+				}, _("NO"), [window, oldresolution] {
 					LOG(LogInfo) << "Setting video back to " << oldresolution;
 					runSystemCommand("/usr/bin/setres.sh " + oldresolution, "", nullptr);
 					window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
@@ -345,7 +345,7 @@ void GuiMenu::openEmuELECSettings()
 			msg += _("Do you want to proceed ?");
 			
 			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), [selectedVideoMode] {
+				_("YES"), [selectedVideoMode, checkDisplay] {
 					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
 					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 					checkDisplay();
@@ -365,7 +365,7 @@ void GuiMenu::openEmuELECSettings()
 					checkDisplay();
 		  }				
 		}
-	}
+	});
 
 #endif
 #ifdef _ENABLEGAMEFORCE
