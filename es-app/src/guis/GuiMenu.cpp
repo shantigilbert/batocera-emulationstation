@@ -4777,10 +4777,8 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
 				ss.seekg(0, std::ios::end);
 				long length = ss.tellg();
-				if (length <= 0) {
-					safe_video = false;
-				}
-				else {
+				LOG(LogInfo) << "NATIVEVIDEO - RESOLUTIONS LENGTH: " << length;
+				if (length > 0) {
 					ss.seekg(0, std::ios::beg);
 					while (getline(ss, def_video, ',')) {
 						if (def_video.find(video_choice) != std::string::npos) {
@@ -5441,9 +5439,9 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 
 	std::string def_video;
 	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, def_video, ','); ) {
-		if (!std::count(videomode.begin(), videomode.end(), def_video)) {
-			 videomode.push_back(def_video);
-		}
+		//if (!std::count(videomode.begin(), videomode.end(), def_video)) {
+		videomode.push_back(def_video);
+		//}
 	}
 
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
