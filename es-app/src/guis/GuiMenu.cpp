@@ -243,6 +243,47 @@ if (!isKidUI)
 	}
 }
 #ifdef _ENABLEEMUELEC
+
+int getResWidth (std::string res)
+{
+	std::string tmp = "";
+	std::size_t pos = res.find("x");
+
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		return atoi( tmp.c_str() );
+	}
+	pos = res.find("p");
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		int resv = atoi(tmp.c_str());
+		return std::ceil(( (float)16 / 9 * resv));
+	}
+	pos = res.find("i");
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		int resv = atoi(tmp.c_str());
+		return std::ceil(( (float)16 / 9 * resv));
+	}
+	return 0;
+}
+
+int getHzFromRes(std::string res)
+{
+	int tmp = atoi(res.substr(res.length()-4, 2).c_str());
+	if (tmp > 0) return tmp;
+	return 60;
+}
+
+bool sortResolutions (std::string a, std::string b) {
+	int ia = getResWidth(a);
+	int ib = getResWidth(b);
+	
+	if (ia == ib) return (getHzFromRes(a) < getHzFromRes(b));
+	
+	return (ia < ib);
+}
+
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
 {
@@ -5386,46 +5427,6 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 }
 
 #ifdef _ENABLEEMUELEC
-
-int getResWidth (std::string res)
-{
-	std::string tmp = "";
-	std::size_t pos = res.find("x");
-
-	if (pos != std::string::npos) {
-		tmp = res.substr(0, pos);
-		return atoi( tmp.c_str() );
-	}
-	pos = res.find("p");
-	if (pos != std::string::npos) {
-		tmp = res.substr(0, pos);
-		int resv = atoi(tmp.c_str());
-		return std::ceil(( (float)16 / 9 * resv));
-	}
-	pos = res.find("i");
-	if (pos != std::string::npos) {
-		tmp = res.substr(0, pos);
-		int resv = atoi(tmp.c_str());
-		return std::ceil(( (float)16 / 9 * resv));
-	}
-	return 0;
-}
-
-int getHzFromRes(std::string res)
-{
-	int tmp = atoi(res.substr(res.length()-4, 2).c_str());
-	if (tmp > 0) return tmp;
-	return 60;
-}
-
-bool sortResolutions (std::string a, std::string b) {
-	int ia = getResWidth(a);
-	int ib = getResWidth(b);
-	
-	if (ia == ib) return (getHzFromRes(a) < getHzFromRes(b));
-	
-	return (ia < ib);
-}
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoResolutionModeOptionList(Window *window, std::string configname)
 {
