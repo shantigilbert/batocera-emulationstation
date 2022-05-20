@@ -4780,7 +4780,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 					ss.seekg(0, std::ios::beg);
 					while (ss.good()) {
 						std::string def_video;
-						getline(ss, def_video, ',')
+						getline(ss, def_video, ',');
 						if (def_video.find(video_choice) != std::string::npos) {
 							safe_video = true;
 							break;
