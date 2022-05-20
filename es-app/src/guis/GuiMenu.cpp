@@ -4776,7 +4776,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
 				ss.seekp(0, std::ios::end);
 				long length = ss.tellp();
-				if (length < 0) 
+				if (length <= 0) 
 					safe_video = true;
 				else
 					ss.seekp(0);
