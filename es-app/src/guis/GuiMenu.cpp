@@ -121,8 +121,8 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 #endif
 
 #ifdef _ENABLEEMUELEC
-	mSwitchResolution = false;
-	mResolutionCheckTime = 0;
+	//mSwitchResolution = false;
+	mResolutionCheckTime = -1;
 #endif
 	// KODI >
 	// GAMES SETTINGS >

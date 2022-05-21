@@ -65,7 +65,7 @@ private:
 	void openUISettings();
 	void openUpdatesSettings();
 #ifdef _ENABLEEMUELEC
-    bool mSwitchResolution;
+    //bool mSwitchResolution;
     int mResolutionCheckTime;
     std::string mDefaultResolution;
 
