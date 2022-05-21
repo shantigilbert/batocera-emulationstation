@@ -356,7 +356,7 @@ void GuiMenu::openEmuELECSettings()
 	GuiMenu* guiMenu = this;
 	s->addSaveFunc([guiMenu, emuelec_video_mode, window] {		
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
+		guiMenu->mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
 		const std::function<void()> checkDisplay([guiMenu, window, selectedVideoMode] {
 			//this->mSwitchResolution = true;
@@ -367,7 +367,7 @@ void GuiMenu::openEmuELECSettings()
 
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
 				_("NO"), [guiMenu, window] {
-					resetDisplay(mDefaultResolution);
+					resetDisplay(guiMenu->mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 					//this->mSwitchResolution = false;
 				},
