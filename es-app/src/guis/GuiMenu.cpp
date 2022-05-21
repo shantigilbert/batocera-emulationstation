@@ -362,11 +362,12 @@ void GuiMenu::openEmuELECSettings()
 			mResolutionCheckTime = 0;
 
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
-				_("NO"), [window, mDefaultResolution] {
+				_("NO"), [this, window] {
 					resetDisplay(mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+					mSwitchResolution = false;
 				},
-				_("YES"), [selectedVideoMode, mSwitchResolution] {
+				_("YES"), [this, selectedVideoMode, mSwitchResolution] {
 					LOG(LogInfo) << "Set video to " << selectedVideoMode;
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
