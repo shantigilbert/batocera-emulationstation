@@ -298,7 +298,7 @@ bool sortResolutions (std::string a, std::string b) {
 }
 
 
-void GuiMenu::update(int deltaTime)
+/*void GuiMenu::update(int deltaTime)
 {
 	GuiComponent::update(deltaTime);
 
@@ -312,7 +312,7 @@ void GuiMenu::update(int deltaTime)
 			mSwitchResolution = false;
 		}
 	}
-}
+}*/
 
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
