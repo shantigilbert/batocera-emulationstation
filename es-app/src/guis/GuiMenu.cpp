@@ -357,7 +357,7 @@ void GuiMenu::openEmuELECSettings()
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
-		const std::function<void()> checkDisplay([window, selectedVideoMode, mDefaultResolution] {
+		const std::function<void()> checkDisplay([this, window, selectedVideoMode] {
 			mSwitchResolution = true;
 			mResolutionCheckTime = 0;
 
