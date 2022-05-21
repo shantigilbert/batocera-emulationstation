@@ -384,7 +384,7 @@ void GuiMenu::openEmuELECSettings()
 			msg += _("Do you want to proceed ?");
 			
 			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), checkDisplay(), _("NO"), nullptr));
+				_("YES"), checkDisplay, _("NO"), nullptr));
 		}
 		else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
