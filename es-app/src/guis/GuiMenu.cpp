@@ -351,17 +351,17 @@ void GuiMenu::openEmuELECSettings()
 					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 					checkDisplay();
 				}, _("NO"),nullptr));
-		
-		} else { 
+		}
+		else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
 				selectedVideoMode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
-				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << selectedVideoMode;
+				LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
 				runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 				checkDisplay();
 			} 
 			else if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
 					selectedVideoMode = getShOutput(R"(cat /flash/EE_VIDEO_MODE)");
-					LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << selectedVideoMode;
+					LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
 					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 					checkDisplay();
 		  }				
