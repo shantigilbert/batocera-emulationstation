@@ -358,8 +358,8 @@ void GuiMenu::openEmuELECSettings()
 		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
 		const std::function<void()> checkDisplay([this, window, selectedVideoMode] {
-			this->mSwitchResolution = true;
-			this->mResolutionCheckTime = 0;
+			//this->mSwitchResolution = true;
+			//this->mResolutionCheckTime = 0;
 
 			LOG(LogInfo) << "Setting video to " << selectedVideoMode;
 			runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
@@ -368,13 +368,13 @@ void GuiMenu::openEmuELECSettings()
 				_("NO"), [this, window] {
 					resetDisplay(mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-					this->mSwitchResolution = false;
+					//this->mSwitchResolution = false;
 				},
 				_("YES"), [this, selectedVideoMode] {
 					LOG(LogInfo) << "Set video to " << selectedVideoMode;
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
-					this->mSwitchResolution = false;
+					//this->mSwitchResolution = false;
 				}));
 		});
 
@@ -383,7 +383,7 @@ void GuiMenu::openEmuELECSettings()
 			msg += _("Do you want to proceed ?");
 			
 			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), checkDisplay, _("NO"), nullptr));
+				_("YES"), checkDisplay(), _("NO"), nullptr));
 		}
 		else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
