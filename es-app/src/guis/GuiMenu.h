@@ -65,7 +65,12 @@ private:
 	void openUISettings();
 	void openUpdatesSettings();
 #ifdef _ENABLEEMUELEC
-	void openEmuELECSettings(); /* < emuelec */
+    bool mSwitchResolution;
+    int mResolutionCheckTime;
+    std::string mDefaultResolution;
+
+    void update(int deltaTime) override;
+	  void openEmuELECSettings(); /* < emuelec */
     static void openDangerZone(Window* mWindow, std::string configName);
     static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
     static void openExternalMounts(Window* mWindow, std::string configName);

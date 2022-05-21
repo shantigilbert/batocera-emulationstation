@@ -101,6 +101,10 @@
 #define fake_gettext_resolution_max_1K  _("maximum 1920x1080")
 #define fake_gettext_resolution_max_640 _("maximum 640x480")
 
+#ifdef _ENABLEEMUELEC
+#define UPDATE_RESOLUTION_DELAY	5000
+#endif
+
 // Windows build does not have bluetooth support, so affect the label for Windows
 #if WIN32
 #define controllers_settings_label		gettext_controllers_settings
@@ -116,6 +120,10 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	bool isKidUI = UIModeController::getInstance()->isUIModeKid();
 #endif
 
+#ifdef _ENABLEEMUELEC
+	mSwitchResolution = false;
+	mResolutionCheckTime = 0;
+#endif
 	// KODI >
 	// GAMES SETTINGS >
 	// CONTROLLER & BLUETOOTH >
@@ -244,6 +252,11 @@ if (!isKidUI)
 }
 #ifdef _ENABLEEMUELEC
 
+void resetDisplay (std::string resolution) {
+	LOG(LogInfo) << "Setting video back to " << resolution;
+	runSystemCommand("/usr/bin/setres.sh " + resolution, "", nullptr);	
+}
+
 int getResWidth (std::string res)
 {
 	std::string tmp = "";
@@ -282,6 +295,23 @@ bool sortResolutions (std::string a, std::string b) {
 	if (ia == ib) return (getHzFromRes(a) < getHzFromRes(b));
 	
 	return (ia < ib);
+}
+
+
+void GuiMenu::update(int deltaTime)
+{
+	GuiComponent::update(deltaTime);
+
+	if (mSwitchResolution)
+	{
+		mResolutionCheckTime += deltaTime;
+		if (mResolutionCheckTime >= UPDATE_RESOLUTION_DELAY)
+		{
+			resetDisplay(mDefaultResolution);
+			mResolutionCheckTime = 0;
+			mSwitchResolution = false;
+		}
+	}
 }
 
 /* < emuelec */
@@ -325,19 +355,22 @@ void GuiMenu::openEmuELECSettings()
    	
 	s->addSaveFunc([this, emuelec_video_mode, window] {		
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		std::string oldresolution = getShOutput(R"(cat /sys/class/display/mode)");
+		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
-		const std::function<void()> checkDisplay([window, selectedVideoMode, oldresolution] {
+		const std::function<void()> checkDisplay([window, selectedVideoMode, mDefaultResolution] {
+			mSwitchResolution = true;
+			mResolutionCheckTime = 0;
+
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
-				_("NO"), [window, oldresolution] {
-				 	LOG(LogInfo) << "Setting video back to " << oldresolution;
-				 	runSystemCommand("/usr/bin/setres.sh " + oldresolution, "", nullptr);
+				_("NO"), [window, mDefaultResolution] {
+					resetDisplay(mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 				},
-				_("YES"), [selectedVideoMode] {
+				_("YES"), [selectedVideoMode, mSwitchResolution] {
 					LOG(LogInfo) << "Set video to " << selectedVideoMode;
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
+					mSwitchResolution = false;
 				}));
 		});
 
