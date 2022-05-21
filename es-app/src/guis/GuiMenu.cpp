@@ -252,10 +252,10 @@ if (!isKidUI)
 }
 #ifdef _ENABLEEMUELEC
 
-void resetDisplay (std::string resolution) {
+/*void resetDisplay (std::string resolution) {
 	LOG(LogInfo) << "Setting video back to " << resolution;
 	runSystemCommand("/usr/bin/setres.sh " + resolution, "", nullptr);	
-}
+}*/
 
 int getResWidth (std::string res)
 {
@@ -338,6 +338,7 @@ void GuiMenu::openEmuELECSettings()
 
 	std::string def_video;
 	std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
+	LOG(LogInfo) << "SETTING_VIDEO - Start";
 	while(ss.good()) {
 		def_video="";
 		getline(ss, def_video, ',');
@@ -346,7 +347,7 @@ void GuiMenu::openEmuELECSettings()
 	auto it = unique(videomode.begin(), videomode.end());
   videomode.resize(distance(videomode.begin(), it));
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
-	
+	LOG(LogInfo) << "SETTING_VIDEO - Complete";
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it);
 	}
@@ -358,7 +359,7 @@ void GuiMenu::openEmuELECSettings()
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		//guiMenu->mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
-		const std::function<void()> checkDisplay([window, selectedVideoMode] {
+		/*const std::function<void()> checkDisplay([window, selectedVideoMode] {
 			//this->mSwitchResolution = true;
 			//this->mResolutionCheckTime = 0;
 
@@ -377,27 +378,23 @@ void GuiMenu::openEmuELECSettings()
 					SystemConf::getInstance()->saveSystemConf();
 					//this->mSwitchResolution = false;
 				}));
-		});
+		});*/
 
 		if (emuelec_video_mode->changed()) {
 			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			msg += _("Do you want to proceed ?");
 			
 			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), checkDisplay, _("NO"), nullptr));
+				_("YES"), nullptr, _("NO"), nullptr));
 		}
 		else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
 				selectedVideoMode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
-				//LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
-				//runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
-				checkDisplay();
+				//checkDisplay();
 			} 
 			else if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
-					selectedVideoMode = getShOutput(R"(cat /flash/EE_VIDEO_MODE)");
-					//LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
-					//runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
-					checkDisplay();
+				selectedVideoMode = getShOutput(R"(cat /flash/EE_VIDEO_MODE)");
+				//checkDisplay();
 		  }				
 		}
 	});
