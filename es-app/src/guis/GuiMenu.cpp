@@ -367,7 +367,7 @@ void GuiMenu::openEmuELECSettings()
 
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
 				_("NO"), [guiMenu, window] {
-					resetDisplay(guiMenu->mDefaultResolution);
+					//resetDisplay(guiMenu->mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 					//this->mSwitchResolution = false;
 				},
