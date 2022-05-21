@@ -252,8 +252,8 @@ if (!isKidUI)
 }
 #ifdef _ENABLEEMUELEC
 
-void resetDisplay (std::string resolution) {
-	LOG(LogInfo) << "Setting video back to " << resolution;
+void setDisplay (std::string resolution) {
+	LOG(LogInfo) << "Setting video to " << resolution;
 	runSystemCommand("/usr/bin/setres.sh " + resolution, "", nullptr);	
 }
 
@@ -308,6 +308,7 @@ void GuiMenu::update(int deltaTime)
 		if (mResolutionCheckTime >= UPDATE_RESOLUTION_DELAY)
 		{
 			resetDisplay(mDefaultResolution);
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 			mResolutionCheckTime = -1;
 		}
 	}
@@ -337,7 +338,6 @@ void GuiMenu::openEmuELECSettings()
 
 	std::string def_video;
 	std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
-	LOG(LogInfo) << "SETTING_VIDEO - Start";
 	while(ss.good()) {
 		def_video="";
 		getline(ss, def_video, ',');
@@ -347,27 +347,23 @@ void GuiMenu::openEmuELECSettings()
   videomode.resize(distance(videomode.begin(), it));
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 
-	LOG(LogInfo) << "SETTING_VIDEO - Complete";
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it);
 	}
 
 	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
-   	
-	//GuiMenu* guiMenu = this;
+
 	s->addSaveFunc([&, emuelec_video_mode, window] {		
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
 			mResolutionCheckTime = 0;
-
-			LOG(LogInfo) << "Setting video to " << selectedVideoMode;
-			runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
+			setDisplay(selectedVideoMode);
 
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
 				_("NO"), [&, window] {
-					resetDisplay(mDefaultResolution);
+					setDisplay(mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 					mResolutionCheckTime = -1;
 				},
