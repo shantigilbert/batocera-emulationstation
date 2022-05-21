@@ -307,7 +307,7 @@ void GuiMenu::update(int deltaTime)
 		mResolutionCheckTime += deltaTime;
 		if (mResolutionCheckTime >= UPDATE_RESOLUTION_DELAY)
 		{
-			resetDisplay(mDefaultResolution);
+			setDisplay(mDefaultResolution);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 			mResolutionCheckTime = -1;
 		}
