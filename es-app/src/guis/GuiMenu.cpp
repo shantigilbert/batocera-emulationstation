@@ -354,8 +354,8 @@ void GuiMenu::openEmuELECSettings()
 
 	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
    	
-	GuiMenu* guiMenu = this;
-	s->addSaveFunc([guiMenu, emuelec_video_mode, window] {		
+	//GuiMenu* guiMenu = this;
+	s->addSaveFunc([&, emuelec_video_mode, window] {		
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
