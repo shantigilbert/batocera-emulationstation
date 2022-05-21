@@ -329,17 +329,18 @@ void GuiMenu::openEmuELECSettings()
 
 		const std::function<void()> checkDisplay([window, selectedVideoMode, oldresolution] {
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
+				_("NO"), [window, oldresolution] {
+				 	LOG(LogInfo) << "Setting video back to " << oldresolution;
+				 	runSystemCommand("/usr/bin/setres.sh " + oldresolution, "", nullptr);
+				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+				},
 				_("YES"), [selectedVideoMode] {
 					LOG(LogInfo) << "Set video to " << selectedVideoMode;
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
-				}, _("NO"), [window, oldresolution] {
-					LOG(LogInfo) << "Setting video back to " << oldresolution;
-					runSystemCommand("/usr/bin/setres.sh " + oldresolution, "", nullptr);
-					window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 				}));
 		});
-			
+
 		if (emuelec_video_mode->changed()) {
 			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			msg += _("Do you want to proceed ?");
