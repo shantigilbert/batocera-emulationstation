@@ -298,7 +298,7 @@ bool sortResolutions (std::string a, std::string b) {
 }
 
 
-/*void GuiMenu::update(int deltaTime)
+void GuiMenu::update(int deltaTime)
 {
 	GuiComponent::update(deltaTime);
 
@@ -312,7 +312,7 @@ bool sortResolutions (std::string a, std::string b) {
 			mSwitchResolution = false;
 		}
 	}
-}*/
+}
 
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
@@ -361,6 +361,9 @@ void GuiMenu::openEmuELECSettings()
 			mSwitchResolution = true;
 			mResolutionCheckTime = 0;
 
+			LOG(LogInfo) << "Setting video to " << selectedVideoMode;
+			runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
+
 			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
 				_("NO"), [this, window] {
 					resetDisplay(mDefaultResolution);
@@ -380,23 +383,19 @@ void GuiMenu::openEmuELECSettings()
 			msg += _("Do you want to proceed ?");
 			
 			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), [selectedVideoMode, checkDisplay] {
-					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
-					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
-					checkDisplay();
-				}, _("NO"),nullptr));
+				_("YES"), checkDisplay, _("NO"), nullptr));
 		}
 		else { 
 			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
 				selectedVideoMode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
-				LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
-				runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
+				//LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
+				//runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 				checkDisplay();
 			} 
 			else if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
 					selectedVideoMode = getShOutput(R"(cat /flash/EE_VIDEO_MODE)");
-					LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
-					runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
+					//LOG(LogInfo) << "Setting video mode to " << selectedVideoMode;
+					//runSystemCommand("/usr/bin/setres.sh " + selectedVideoMode, "", nullptr);
 					checkDisplay();
 		  }				
 		}
