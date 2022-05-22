@@ -226,8 +226,11 @@ void TimedGuiMsgBox::update(int deltaTime)
 		mCheckTime += deltaTime;
 		if (mCheckTime >= mTimeoutDelay)
 		{
-			deleteMeAndCall(timedFunc);
-			mCheckTime = -1;
+			auto funcCopy = timedFunc;
+			delete this;
+
+			if(funcCopy)
+				funcCopy();
 		}
 	}
 }

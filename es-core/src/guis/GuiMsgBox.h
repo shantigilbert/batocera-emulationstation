@@ -63,6 +63,7 @@ private:
 class TimedGuiMsgBox : public GuiMsgBox
 {
 public:
+	TimedGuiMsgBox():mChecktime(-1) {};
 	void update(int deltaTime) override;
 	void setTimedFunc(const std::function<void()>& func, int time)
 	{
@@ -72,6 +73,7 @@ public:
 private:
 	std::function<void()> timedFunc;
 	int mTimeoutDelay;
+	int mCheckTime;
 };
 
 #endif
