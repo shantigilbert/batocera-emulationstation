@@ -340,21 +340,15 @@ void GuiMenu::openEmuELECSettings()
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
 			setDisplay(selectedVideoMode);
 
-			TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
-				_("NO"), [&, window] {
-					setDisplay(mDefaultResolution);
-				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-				},
-				_("YES"), [&, selectedVideoMode] {
-					LOG(LogInfo) << "Set video to " << selectedVideoMode;
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-					SystemConf::getInstance()->saveSystemConf();
-				});
-			timedMsgBox->setTimedFunc([&, window] {
+			const std::function<void()> resetDisplay([&, window] {
 				setDisplay(mDefaultResolution);
 				window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-			}, 5000);
-				
+			});
+
+			TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
+				_("NO"), nullptr, _("YES"), resetDisplay);			
+			timedMsgBox->setTimedFunc(resetDisplay, 10000);
+
 			window->pushGui(timedMsgBox);
 		});
 
