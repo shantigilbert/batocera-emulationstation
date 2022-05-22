@@ -58,4 +58,22 @@ private:
 	std::function<void()> mAcceleratorFunc;
 };
 
+#ifdef _ENABLEEMUELEC
+
+class TimedGuiMsgBox : public GuiMsgBox
+{
+public:
+	void update(int deltaTime) override;
+	void setTimedFunc(const std::function<void()>& func, int time)
+	{
+		mTimeoutDelay = time;
+		timedFunc = func;
+	};
+private:
+	const std::function<void()> timedFunc;
+	int mTimeoutDelay;
+};
+
+#endif
+
 #endif // ES_CORE_GUIS_GUI_MSG_BOX_H

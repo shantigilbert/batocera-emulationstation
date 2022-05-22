@@ -215,3 +215,20 @@ std::vector<HelpPrompt> GuiMsgBox::getHelpPrompts()
 {
 	return mGrid.getHelpPrompts();
 }
+
+#ifdef _ENABLEEMUELEC
+void TimedGuiMsgBox::update(int deltaTime)
+{
+	GuiMsgBox::update(deltaTime);
+
+	if (mCheckTime >= 0)
+	{
+		mCheckTime += deltaTime;
+		if (mCheckTime >= mTimeoutDelay)
+		{
+			deleteMeAndCall(timedFunc);
+			mCheckTime = -1;
+		}
+	}
+}
+#endif

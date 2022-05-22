@@ -361,7 +361,7 @@ void GuiMenu::openEmuELECSettings()
 			mResolutionCheckTime = 0;
 			setDisplay(selectedVideoMode);
 
-			window->pushGui(new GuiMsgBox(window, _("Is the display set correctly ?"),
+			TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
 				_("NO"), [&, window] {
 					setDisplay(mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
@@ -372,12 +372,19 @@ void GuiMenu::openEmuELECSettings()
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
 					mResolutionCheckTime = -1;
-				}));
+				});
+			timedMsgBox->setTimedFunc([&, window] {
+				setDisplay(mDefaultResolution);
+				window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+			}, 5000);
+				
+			window->pushGui(timedMsgBox);
 		});
 
 		if (emuelec_video_mode->changed()) {
 			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
 			msg += _("Do you want to proceed ?");
+			
 			
 			window->pushGui(new GuiMsgBox(window, msg,
 				_("YES"), checkDisplay, _("NO"), nullptr));
