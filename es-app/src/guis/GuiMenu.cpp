@@ -320,7 +320,7 @@ void GuiMenu::openEmuELECSettings()
 		videomode.push_back(def_video);
 	}
 	auto it = unique(videomode.begin(), videomode.end());
-  videomode.resize(distance(videomode.begin(), it));
+	videomode.resize(distance(videomode.begin(), it));
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
