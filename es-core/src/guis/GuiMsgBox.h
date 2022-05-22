@@ -71,8 +71,8 @@ public:
 	TimedGuiMsgBox(Window* window, const std::string& text,
 		const std::string& name1, const std::function<void()>& func1,
 		const std::string& name2, const std::function<void()>& func2,
-		GuiMsgBoxIcon icon = ICON_AUTOMATIC):mCheckTime(-1) {
-			GuiMsgBox::GuiMsgBox(window, text, name1, func1, name2, func2, icon);
+		GuiMsgBoxIcon icon = ICON_AUTOMATIC):mCheckTime(-1),
+		GuiMsgBox(window, text, name1, func1, name2, func2, "", nullptr, icon) {
 	};
 
 	void update(int deltaTime) override;
