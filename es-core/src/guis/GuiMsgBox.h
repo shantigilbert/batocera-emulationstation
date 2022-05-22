@@ -70,7 +70,7 @@ public:
 		timedFunc = func;
 	};
 private:
-	const std::function<void()> timedFunc;
+	std::function<void()> timedFunc;
 	int mTimeoutDelay;
 };
 
