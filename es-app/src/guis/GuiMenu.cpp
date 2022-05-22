@@ -342,7 +342,11 @@ void GuiMenu::openEmuELECSettings()
 			});
 
 			TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
-				_("NO"), nullptr, _("YES"), resetDisplay);
+				_("NO"), resetDisplay, _("YES"), [&, selectedVideoMode] {
+					LOG(LogInfo) << "Set video to " << selectedVideoMode;
+					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+					SystemConf::getInstance()->saveSystemConf();
+				});
 			timedMsgBox->setTimedFunc(resetDisplay, 10000);
 
 			window->pushGui(timedMsgBox);
