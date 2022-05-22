@@ -120,10 +120,6 @@ GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(win
 	bool isKidUI = UIModeController::getInstance()->isUIModeKid();
 #endif
 
-#ifdef _ENABLEEMUELEC
-	//mSwitchResolution = false;
-	mResolutionCheckTime = -1;
-#endif
 	// KODI >
 	// GAMES SETTINGS >
 	// CONTROLLER & BLUETOOTH >
@@ -298,22 +294,6 @@ bool sortResolutions (std::string a, std::string b) {
 }
 
 
-void GuiMenu::update(int deltaTime)
-{
-	GuiComponent::update(deltaTime);
-
-	if (mResolutionCheckTime >= 0)
-	{
-		mResolutionCheckTime += deltaTime;
-		if (mResolutionCheckTime >= UPDATE_RESOLUTION_DELAY)
-		{
-			setDisplay(mDefaultResolution);
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-			mResolutionCheckTime = -1;
-		}
-	}
-}
-
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
 {
@@ -365,13 +345,11 @@ void GuiMenu::openEmuELECSettings()
 				_("NO"), [&, window] {
 					setDisplay(mDefaultResolution);
 				 	window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-					mResolutionCheckTime = -1;
 				},
 				_("YES"), [&, selectedVideoMode] {
 					LOG(LogInfo) << "Set video to " << selectedVideoMode;
 					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 					SystemConf::getInstance()->saveSystemConf();
-					mResolutionCheckTime = -1;
 				});
 			timedMsgBox->setTimedFunc([&, window] {
 				setDisplay(mDefaultResolution);
