@@ -299,7 +299,7 @@ void GuiMenu::openEmuELECSettings()
 	std::string a;
 #if !defined(_ENABLEGAMEFORCE) && !defined(ODROIDGOA)
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
-  std::vector<std::string> videomode;
+	std::vector<std::string> videomode;
 
 	videomode.push_back("1080p60hz");
 	videomode.push_back("1080i60hz");
