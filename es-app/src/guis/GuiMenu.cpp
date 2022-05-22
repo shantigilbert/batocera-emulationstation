@@ -5451,7 +5451,7 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 		videomode.push_back(def_video);
 	}
 	auto it = unique(videomode.begin(), videomode.end());
-  videomode.resize(distance(videomode.begin(), it));
+	videomode.resize(distance(videomode.begin(), it));
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 
 	std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
