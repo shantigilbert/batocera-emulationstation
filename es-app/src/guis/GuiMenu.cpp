@@ -338,7 +338,6 @@ void GuiMenu::openEmuELECSettings()
 		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
-			mResolutionCheckTime = 0;
 			setDisplay(selectedVideoMode);
 
 			TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
