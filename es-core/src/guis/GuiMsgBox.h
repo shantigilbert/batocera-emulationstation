@@ -72,7 +72,7 @@ public:
 		const std::string& name1, const std::function<void()>& func1,
 		const std::string& name2, const std::function<void()>& func2,
 		GuiMsgBoxIcon icon = ICON_AUTOMATIC):mCheckTime(-1) {
-			GuiMsgBox(window, test, name1, func1, name2, func2, icon);
+			GuiMsgBox::GuiMsgBox(window, text, name1, func1, name2, func2, icon);
 	};
 
 	void update(int deltaTime) override;
@@ -80,6 +80,7 @@ public:
 	{
 		mTimeoutDelay = time;
 		timedFunc = func;
+		mCheckTime = 0;
 	};
 };
 
