@@ -320,8 +320,8 @@ void GuiMenu::refreshView(Window* window, bool deleteCurrentGui)
 	//CollectionSystemManager::init(window);		
 	SystemData::loadConfig(window);
 	
-	//ViewController::get()->goToSystemView(systemName, true, viewMode);	
-	//ViewController::get()->reloadAll(nullptr, false); // Avoid reloading themes a second time
+	ViewController::get()->goToSystemView(systemName, true, viewMode);	
+	ViewController::get()->reloadAll(nullptr, false); // Avoid reloading themes a second time
 
 	window->closeSplashScreen();
 	window->pushGui(ViewController::get());
