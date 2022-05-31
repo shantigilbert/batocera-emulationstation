@@ -335,15 +335,17 @@ void GuiMenu::openEmuELECSettings()
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
 			setDisplay(selectedVideoMode);
-			//updateGameLists(window);
+			window->deinit(false);
 			window->init(true);
+
+			//updateGameLists(window);
+			//window->init(true);
 			//Scripting::fireEvent("quit", "restart");
 			//quitES(QuitMode::QUIT);
 
 			const std::function<void()> resetDisplay([&, window] {
 				setDisplay(mDefaultResolution);
 				//updateGameLists(window);
-				window->init(true);
 				//Scripting::fireEvent("quit", "restart");
 				//quitES(QuitMode::QUIT);
 				
