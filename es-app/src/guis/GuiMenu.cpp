@@ -335,8 +335,7 @@ void GuiMenu::openEmuELECSettings()
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
 			setDisplay(selectedVideoMode);
-			window->deinit(false);
-			window->init(true);
+			ViewController::get()->reloadAll(window);
 
 			//updateGameLists(window);
 			//window->init(true);
@@ -345,6 +344,7 @@ void GuiMenu::openEmuELECSettings()
 
 			const std::function<void()> resetDisplay([&, window] {
 				setDisplay(mDefaultResolution);
+				ViewController::get()->reloadAll(window);
 				//updateGameLists(window);
 				//Scripting::fireEvent("quit", "restart");
 				//quitES(QuitMode::QUIT);
