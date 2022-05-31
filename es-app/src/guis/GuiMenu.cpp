@@ -309,8 +309,8 @@ void GuiMenu::refreshView(Window* window, bool deleteCurrentGui)
 	{
 		window->removeGui(gui);
 
-		if (gui != sInstance)
-			delete gui;
+		//if (gui != sInstance)
+		delete gui;
 	}
 
 	ViewController::deinit();
