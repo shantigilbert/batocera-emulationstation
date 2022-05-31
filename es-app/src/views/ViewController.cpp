@@ -32,6 +32,7 @@
 
 #ifdef _ENABLEEMUELEC
 #include "ApiSystem.h"
+#include "platform.h"
 #endif
 
 ViewController* ViewController::sInstance = nullptr;
@@ -62,11 +63,12 @@ void ViewController::init(Window* window)
 	if (!oldMode.empty() && newMode != oldMode)
 	{
 		const std::function<void()> resetDisplay([&, window, oldMode] {
-			setDisplay(oldMode);
+			LOG(LogInfo) << "Reverting video to " << oldMode;
+			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
 			SystemConf::getInstance()->set("old_videomode", "");		
 			window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 			Scripting::fireEvent("quit", "restart");
-			quitES(QuitMode::QUIT);		
+			quitES(QuitMode::RESTART);		
 		});
 
 		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),

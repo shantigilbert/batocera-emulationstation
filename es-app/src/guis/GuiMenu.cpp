@@ -338,7 +338,7 @@ void GuiMenu::openEmuELECSettings()
 			SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 			setDisplay(selectedVideoMode);
 			Scripting::fireEvent("quit", "restart");
-			quitES(QuitMode::QUIT);
+			quitES(QuitMode::RESTART);
 		});
 
 		if (emuelec_video_mode->changed()) {
