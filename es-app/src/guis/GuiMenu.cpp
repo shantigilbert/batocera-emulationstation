@@ -302,7 +302,7 @@ void GuiMenu::refreshView(Window* window, bool deleteCurrentGui)
 		GuiComponent* topGui = window->peekGui();
 		if (topGui != nullptr)
 			window->removeGui(topGui);
-	}
+	}*/
 
 	GuiComponent *gui;
 	while ((gui = window->peekGui()) != NULL)
@@ -311,14 +311,14 @@ void GuiMenu::refreshView(Window* window, bool deleteCurrentGui)
 
 		//if (gui != sInstance)
 		delete gui;
-	}*/
+	}
 
 	ViewController::deinit();
 
 	ViewController::init(window);
 	
 	//CollectionSystemManager::init(window);		
-	//SystemData::loadConfig(window);
+	SystemData::loadConfig(window);
 	
 	//ViewController::get()->goToSystemView(systemName, true, viewMode);	
 	//ViewController::get()->reloadAll(nullptr, false); // Avoid reloading themes a second time
