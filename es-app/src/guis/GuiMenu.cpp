@@ -289,6 +289,47 @@ bool sortResolutions (std::string a, std::string b) {
 	return (ia < ib);
 }
 
+void GuiMenu::refreshView(Window* window, bool deleteCurrentGui)
+{
+	if (sInstance == nullptr)
+		return;
+
+	auto viewMode = ViewController::get()->getViewMode();
+	auto systemName = ViewController::get()->getSelectedSystem()->getName();
+
+	window->closeSplashScreen();
+	window->renderSplashScreen(_("Loading..."));
+
+	if (!deleteCurrentGui)
+	{
+		GuiComponent* topGui = window->peekGui();
+		if (topGui != nullptr)
+			window->removeGui(topGui);
+	}
+
+	GuiComponent *gui;
+	while ((gui = window->peekGui()) != NULL)
+	{
+		window->removeGui(gui);
+
+		if (gui != sInstance)
+			delete gui;
+	}
+
+	ViewController::deinit();
+
+	ViewController::init(window);
+	
+	//CollectionSystemManager::init(window);		
+	SystemData::loadConfig(window);
+	
+	ViewController::get()->goToSystemView(systemName, true, viewMode);	
+	ViewController::get()->reloadAll(nullptr, false); // Avoid reloading themes a second time
+
+	window->closeSplashScreen();
+	window->pushGui(ViewController::get());
+}
+
 
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
@@ -335,13 +376,13 @@ void GuiMenu::openEmuELECSettings()
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
 			setDisplay(selectedVideoMode);
-			playVideo();
+			refreshView(window, true);
 			//Scripting::fireEvent("quit", "restart");
 			//quitES(QuitMode::QUIT);
 
 			const std::function<void()> resetDisplay([&, window] {
 				setDisplay(mDefaultResolution);
-				playVideo();
+				refreshView(window, true);
 				//Scripting::fireEvent("quit", "restart");
 				//quitES(QuitMode::QUIT);
 				
