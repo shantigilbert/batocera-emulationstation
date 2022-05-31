@@ -291,9 +291,6 @@ bool sortResolutions (std::string a, std::string b) {
 
 void GuiMenu::refreshView(Window* window, bool deleteCurrentGui)
 {
-	if (sInstance == nullptr)
-		return;
-
 	auto viewMode = ViewController::get()->getViewMode();
 	auto systemName = ViewController::get()->getSelectedSystem()->getName();
 
