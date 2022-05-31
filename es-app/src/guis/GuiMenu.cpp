@@ -335,9 +335,14 @@ void GuiMenu::openEmuELECSettings()
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
 			setDisplay(selectedVideoMode);
+			Scripting::fireEvent("quit", "restart");
+			quitES(QuitMode::QUIT);
 
 			const std::function<void()> resetDisplay([&, window] {
 				setDisplay(mDefaultResolution);
+				Scripting::fireEvent("quit", "restart");
+				quitES(QuitMode::QUIT);
+				
 				window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 			});
 
