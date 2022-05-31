@@ -333,34 +333,12 @@ void GuiMenu::openEmuELECSettings()
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
 		mDefaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
-		const std::function<void()> checkDisplay([&, window, selectedVideoMode] {
+		const std::function<void()> checkDisplay([&, window, selectedVideoMode, mDefaultResolution] {
+			SystemConf::getInstance()->set("old_videomode", mDefaultResolution);	
+			SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
 			setDisplay(selectedVideoMode);
-			ViewController::get()->reloadAll(window);
-
-			//updateGameLists(window);
-			//window->init(true);
-			//Scripting::fireEvent("quit", "restart");
-			//quitES(QuitMode::QUIT);
-
-			const std::function<void()> resetDisplay([&, window] {
-				setDisplay(mDefaultResolution);
-				ViewController::get()->reloadAll(window);
-				//updateGameLists(window);
-				//Scripting::fireEvent("quit", "restart");
-				//quitES(QuitMode::QUIT);
-				
-				window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-			});
-
-			TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
-				_("NO"), resetDisplay, _("YES"), [&, selectedVideoMode] {
-					LOG(LogInfo) << "Set video to " << selectedVideoMode;
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-					SystemConf::getInstance()->saveSystemConf();
-				});
-			timedMsgBox->setTimedFunc(resetDisplay, 10000);
-
-			window->pushGui(timedMsgBox);
+			Scripting::fireEvent("quit", "restart");
+			quitES(QuitMode::QUIT);
 		});
 
 		if (emuelec_video_mode->changed()) {
