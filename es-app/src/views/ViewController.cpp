@@ -131,7 +131,7 @@ void ViewController::goToStart(bool forceImmediate)
 
 	if (!oldMode.empty() && newMode != oldMode)
 	{
-		const std::function<void()> resetDisplay([&, mWindow, oldMode] {
+		const std::function<void()> resetDisplay([&, oldMode] {
 			LOG(LogInfo) << "Reverting video to " << oldMode;
 			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
 			SystemConf::getInstance()->set("ee_videomode", oldMode);
