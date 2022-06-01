@@ -336,6 +336,7 @@ void GuiMenu::openEmuELECSettings()
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode, defaultResolution] {
 			SystemConf::getInstance()->set("old_videomode", defaultResolution);	
 			SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
+			SystemConf::getInstance()->saveSystemConf();
 			setDisplay(selectedVideoMode);
 			Scripting::fireEvent("quit", "restart");
 			quitES(QuitMode::RESTART);

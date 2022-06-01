@@ -65,7 +65,9 @@ void ViewController::init(Window* window)
 		const std::function<void()> resetDisplay([&, window, oldMode] {
 			LOG(LogInfo) << "Reverting video to " << oldMode;
 			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
-			SystemConf::getInstance()->set("old_videomode", "");		
+			SystemConf::getInstance()->set("ee_videomode", oldMode);
+			SystemConf::getInstance()->set("old_videomode", "");
+			SystemConf::getInstance()->saveSystemConf();
 			window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 			Scripting::fireEvent("quit", "restart");
 			quitES(QuitMode::RESTART);		
