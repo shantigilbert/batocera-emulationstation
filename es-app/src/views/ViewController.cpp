@@ -56,32 +56,7 @@ void ViewController::init(Window* window)
 		delete sInstance;
 
 	sInstance = new ViewController(window);
-	
-	std::string oldMode = SystemConf::getInstance()->get("old_videomode");
-	std::string newMode = SystemConf::getInstance()->get("ee_videomode");
 
-	if (!oldMode.empty() && newMode != oldMode)
-	{
-		const std::function<void()> resetDisplay([&, window, oldMode] {
-			LOG(LogInfo) << "Reverting video to " << oldMode;
-			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
-			SystemConf::getInstance()->set("ee_videomode", oldMode);
-			SystemConf::getInstance()->set("old_videomode", "");
-			SystemConf::getInstance()->saveSystemConf();
-			window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-			Scripting::fireEvent("quit", "restart");
-			quitES(QuitMode::RESTART);		
-		});
-
-		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
-			_("NO"), resetDisplay, _("YES"), [&, newMode] {
-				LOG(LogInfo) << "Set video to " << newMode;
-				SystemConf::getInstance()->set("ee_videomode", newMode);
-				SystemConf::getInstance()->saveSystemConf();
-			});
-		timedMsgBox->setTimedFunc(resetDisplay, 10000);
-		window->pushGui(timedMsgBox);
-	}
 }
 
 void ViewController::saveState()
@@ -150,6 +125,7 @@ void ViewController::goToStart(bool forceImmediate)
 		goToGameList(SystemData::getFirstVisibleSystem(), forceImmediate);
 	else
 		goToSystemView(SystemData::getFirstVisibleSystem());
+
 }
 
 void ViewController::ReloadAndGoToStart()
@@ -1306,6 +1282,32 @@ void ViewController::onShow()
 {
 	if (mCurrentView)
 		mCurrentView->onShow();
+
+	std::string oldMode = SystemConf::getInstance()->get("old_videomode");
+	std::string newMode = SystemConf::getInstance()->get("ee_videomode");
+
+	if (!oldMode.empty() && newMode != oldMode)
+	{
+		const std::function<void()> resetDisplay([&, window, oldMode] {
+			LOG(LogInfo) << "Reverting video to " << oldMode;
+			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
+			SystemConf::getInstance()->set("ee_videomode", oldMode);
+			SystemConf::getInstance()->set("old_videomode", "");
+			SystemConf::getInstance()->saveSystemConf();
+			window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+			Scripting::fireEvent("quit", "restart");
+			quitES(QuitMode::RESTART);		
+		});
+
+		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
+			_("NO"), resetDisplay, _("YES"), [&, newMode] {
+				LOG(LogInfo) << "Set video to " << newMode;
+				SystemConf::getInstance()->set("ee_videomode", newMode);
+				SystemConf::getInstance()->saveSystemConf();
+			});
+		timedMsgBox->setTimedFunc(resetDisplay, 10000);
+		window->pushGui(timedMsgBox);
+	}
 }
 
 void ViewController::onScreenSaverActivate()
