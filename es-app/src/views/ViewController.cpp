@@ -1288,25 +1288,25 @@ void ViewController::onShow()
 
 	if (!oldMode.empty() && newMode != oldMode)
 	{
-		const std::function<void()> resetDisplay([&, window, oldMode] {
+		const std::function<void()> resetDisplay([&, mWindow, oldMode] {
 			LOG(LogInfo) << "Reverting video to " << oldMode;
 			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
 			SystemConf::getInstance()->set("ee_videomode", oldMode);
 			SystemConf::getInstance()->set("old_videomode", "");
 			SystemConf::getInstance()->saveSystemConf();
-			window->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
 			Scripting::fireEvent("quit", "restart");
 			quitES(QuitMode::RESTART);		
 		});
 
-		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(window, _("Is the display set correctly ?"),
+		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(mWindow, _("Is the display set correctly ?"),
 			_("NO"), resetDisplay, _("YES"), [&, newMode] {
 				LOG(LogInfo) << "Set video to " << newMode;
 				SystemConf::getInstance()->set("ee_videomode", newMode);
 				SystemConf::getInstance()->saveSystemConf();
 			});
 		timedMsgBox->setTimedFunc(resetDisplay, 10000);
-		window->pushGui(timedMsgBox);
+		mWindow->pushGui(timedMsgBox);
 	}
 }
 
