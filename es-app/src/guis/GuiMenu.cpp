@@ -326,12 +326,12 @@ void GuiMenu::openEmuELECSettings()
 	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
 		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it);
 	}
+	std::string defaultResolution = SystemConf::getInstance()->get("ee_videomode");
 
 	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
 
-	s->addSaveFunc([&, emuelec_video_mode, window] {
+	s->addSaveFunc([&, emuelec_video_mode, defaultResolution, window] {
 		std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		std::string defaultResolution = getShOutput(R"(cat /sys/class/display/mode)");
 
 		const std::function<void()> checkDisplay([&, window, selectedVideoMode, defaultResolution] {
 			SystemConf::getInstance()->set("old_videomode", defaultResolution);	
