@@ -32,7 +32,6 @@
 
 #ifdef _ENABLEEMUELEC
 #include "ApiSystem.h"
-#include "platform.h"
 #endif
 
 ViewController* ViewController::sInstance = nullptr;
