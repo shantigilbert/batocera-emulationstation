@@ -1018,6 +1018,31 @@ void SystemView::render(const Transform4x4f& parentTrans)
 	}
 
 	renderExtras(trans, minMax.second, INT16_MAX);
+
+	std::string oldMode = SystemConf::getInstance()->get("old_videomode");
+	std::string newMode = SystemConf::getInstance()->get("ee_videomode");
+	if (!oldMode.empty() && newMode != oldMode)
+	{
+		const std::function<void()> resetDisplay([&, oldMode] {
+			LOG(LogInfo) << "Reverting video to " << oldMode;
+			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
+			SystemConf::getInstance()->set("ee_videomode", oldMode);
+			SystemConf::getInstance()->set("old_videomode", "");
+			SystemConf::getInstance()->saveSystemConf();
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
+			Scripting::fireEvent("quit", "restart");
+			quitES(QuitMode::RESTART);		
+		});
+
+		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(mWindow, _("Is the display set correctly ?"),
+			_("NO"), resetDisplay, _("YES"), [&, newMode] {
+				LOG(LogInfo) << "Set video to " << newMode;
+				SystemConf::getInstance()->set("ee_videomode", newMode);
+				SystemConf::getInstance()->saveSystemConf();
+			});
+		timedMsgBox->setTimedFunc(resetDisplay, 10000);
+		mWindow->pushGui(timedMsgBox);
+	}	
 }
 
 std::vector<HelpPrompt> SystemView::getHelpPrompts()
@@ -1741,31 +1766,6 @@ void SystemView::onShow()
 
 	if (getSelected() != nullptr)
 		TextToSpeech::getInstance()->say(getSelected()->getFullName());
-
-	std::string oldMode = SystemConf::getInstance()->get("old_videomode");
-	std::string newMode = SystemConf::getInstance()->get("ee_videomode");
-	if (!oldMode.empty() && newMode != oldMode)
-	{
-		const std::function<void()> resetDisplay([&, oldMode] {
-			LOG(LogInfo) << "Reverting video to " << oldMode;
-			runSystemCommand("/usr/bin/setres.sh " + oldMode, "", nullptr);
-			SystemConf::getInstance()->set("ee_videomode", oldMode);
-			SystemConf::getInstance()->set("old_videomode", "");
-			SystemConf::getInstance()->saveSystemConf();
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("DISPLAY RESET"));
-			Scripting::fireEvent("quit", "restart");
-			quitES(QuitMode::RESTART);		
-		});
-
-		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(mWindow, _("Is the display set correctly ?"),
-			_("NO"), resetDisplay, _("YES"), [&, newMode] {
-				LOG(LogInfo) << "Set video to " << newMode;
-				SystemConf::getInstance()->set("ee_videomode", newMode);
-				SystemConf::getInstance()->saveSystemConf();
-			});
-		timedMsgBox->setTimedFunc(resetDisplay, 10000);
-		mWindow->pushGui(timedMsgBox);
-	}
 }
 
 void SystemView::onHide()
