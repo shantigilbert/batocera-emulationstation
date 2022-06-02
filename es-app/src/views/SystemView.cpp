@@ -329,8 +329,6 @@ void SystemView::populate()
 				SystemConf::getInstance()->saveSystemConf();
 			});
 		timedMsgBox->setTimedFunc(resetDisplay, 10000);
-
-		populate();
 		mWindow->pushGui(timedMsgBox);
 	}		
 }
