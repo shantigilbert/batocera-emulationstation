@@ -31,7 +31,7 @@ const int logoBuffersLeft[] = { -5, -2, -1 };
 const int logoBuffersRight[] = { 1, 2, 5 };
 
 #ifdef _ENABLEEMUELEC	
-		#define CHECK_RESOLUTION_DELAY 3000
+		#define CHECK_RESOLUTION_DELAY 2000
 #endif
 
 SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(window, LIST_SCROLL_STYLE_SLOW, LIST_ALWAYS_LOOP),
