@@ -72,6 +72,11 @@ public:
 	void update(int deltaTime) override;
 	void render(const Transform4x4f& parentTrans) override;
 
+#ifdef _ENABLEEMUELEC
+	int mCheckResTime;
+	void checkResolutionSwitch();
+#endif
+
 	void onThemeChanged(const std::shared_ptr<ThemeData>& theme);
 
 	std::vector<HelpPrompt> getHelpPrompts() override;
