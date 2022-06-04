@@ -246,7 +246,7 @@ if (!isKidUI)
 
 void setDisplay (std::string resolution) {
 	LOG(LogInfo) << "Setting video to " << resolution;
-	runSystemCommand("/usr/bin/setres.sh " + resolution, "", nullptr);
+	runSystemCommand("setres.sh " + resolution, "", nullptr);
 }
 
 int getResWidth (std::string res)
