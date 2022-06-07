@@ -687,10 +687,17 @@ int main(int argc, char* argv[])
 		}
 		else if (ps_standby)
 		{
+			std::string newSSID = SystemConf::getInstance()->get("wifi.ssid");
+			std::string newKey = SystemConf::getInstance()->get("wifi.key");
+			if (!newSSID.empty() && !newKey.empty())
+			{
+				ApiSystem::getInstance()->enableWifi(newSSID, newKey);
+			}
 			// If exitting SDL_WaitEventTimeout due to timeout. Trail considering
 			// timeout as an event
 		//	ps_time = SDL_GetTicks();
 		}
+
 
 		if(window.isSleeping())
 		{
