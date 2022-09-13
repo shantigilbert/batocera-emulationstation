@@ -50,18 +50,13 @@ SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(wind
 	mDisable = false;		
 	mLastCursor = 0;
 	mExtrasFadeOldCursor = -1;
-<<<<<<< ours
-
 	mLockCamOffsetChanges = false;
 	mLockExtraChanges = false;
 	mPressedCursor = -1;
 	mPressedPoint = Vector2i(-1, -1);
-=======
 #ifdef _ENABLEEMUELEC
-		mCheckResTime = 0;
+	mCheckResTime = 0;
 #endif
->>>>>>> theirs
-
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
 	populate();
 }
