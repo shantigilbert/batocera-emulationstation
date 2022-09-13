@@ -24,12 +24,19 @@
 #include "guis/GuiTextEditPopup.h"
 #include "guis/GuiTextEditPopupKeyboard.h"
 #include "TextToSpeech.h"
+
 #include "Binding.h"
 #include "guis/GuiRetroAchievements.h"
+#include "platform.h"
+
 
 // buffer values for scrolling velocity (left, stopped, right)
 const int logoBuffersLeft[] = { -5, -2, -1 };
 const int logoBuffersRight[] = { 1, 2, 5 };
+
+#ifdef _ENABLEEMUELEC
+		#define CHECK_RESOLUTION_DELAY 500
+#endif
 
 SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(window, LIST_SCROLL_STYLE_SLOW, LIST_ALWAYS_LOOP),
 										 mViewNeedsReload(true),
@@ -43,11 +50,17 @@ SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(wind
 	mDisable = false;		
 	mLastCursor = 0;
 	mExtrasFadeOldCursor = -1;
+<<<<<<< ours
 
 	mLockCamOffsetChanges = false;
 	mLockExtraChanges = false;
 	mPressedCursor = -1;
 	mPressedPoint = Vector2i(-1, -1);
+=======
+#ifdef _ENABLEEMUELEC
+		mCheckResTime = 0;
+#endif
+>>>>>>> theirs
 
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
 	populate();
@@ -700,7 +713,50 @@ void SystemView::update(int deltaTime)
 		else
 			showQuickSearch();
 	}
+
+#ifdef _ENABLEEMUELEC
+	if (mCheckResTime >= 0)
+	{
+		mCheckResTime += deltaTime;
+		if (mCheckResTime >= CHECK_RESOLUTION_DELAY ||
+				(Settings::PowerSaverMode() == "instant"))
+		{
+			checkResolutionSwitch();
+			mCheckResTime = -1;
+		}
+	}
+#endif
+
 }
+
+#ifdef _ENABLEEMUELEC
+void SystemView::checkResolutionSwitch()
+{
+	std::string oldMode = SystemConf::getInstance()->get("old_videomode");
+	std::string newMode = SystemConf::getInstance()->get("ee_videomode");
+	SystemConf::getInstance()->set("old_videomode", "");
+	SystemConf::getInstance()->saveSystemConf();
+	if (!oldMode.empty() && newMode != oldMode)
+	{
+		const std::function<void()> resetDisplay([&, oldMode] {
+			mWindow->render();
+			SystemConf::getInstance()->set("ee_videomode", oldMode);
+			SystemConf::getInstance()->saveSystemConf();
+			Scripting::fireEvent("quit", "restart");
+			quitES(QuitMode::RESTART);
+		});
+
+		TimedGuiMsgBox* timedMsgBox = new TimedGuiMsgBox(mWindow, _("Is the display set correctly ?"),
+			_("NO"), resetDisplay, _("YES"), [&, newMode] {
+				LOG(LogInfo) << "Set video to " << newMode;
+				SystemConf::getInstance()->set("ee_videomode", newMode);
+				SystemConf::getInstance()->saveSystemConf();
+			});
+		timedMsgBox->setTimedFunc(resetDisplay, 10000);
+		mWindow->pushGui(timedMsgBox);
+	}
+}
+#endif
 
 void SystemView::updateExtraTextBinding()
 {

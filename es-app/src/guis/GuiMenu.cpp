@@ -243,6 +243,48 @@ if (!isKidUI)
 	}
 }
 #ifdef _ENABLEEMUELEC
+
+int getResWidth (std::string res)
+{
+	std::string tmp = "";
+	std::size_t pos = res.find("x");
+
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		return atoi( tmp.c_str() );
+	}
+	pos = res.find("p");
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		int resv = atoi(tmp.c_str());
+		return std::ceil(( (float)16 / 9 * resv));
+	}
+	pos = res.find("i");
+	if (pos != std::string::npos) {
+		tmp = res.substr(0, pos);
+		int resv = atoi(tmp.c_str());
+		return std::ceil(( (float)16 / 9 * resv));
+	}
+	return 0;
+}
+
+int getHzFromRes(std::string res)
+{
+	int tmp = atoi(res.substr(res.length()-4, 2).c_str());
+	if (tmp > 0) return tmp;
+	return 60;
+}
+
+bool sortResolutions (std::string a, std::string b) {
+	int ia = getResWidth(a);
+	int ib = getResWidth(b);
+
+	if (ia == ib) return (getHzFromRes(a) < getHzFromRes(b));
+
+	return (ia < ib);
+}
+
+
 /* < emuelec */
 void GuiMenu::openEmuELECSettings()
 {
@@ -252,76 +294,74 @@ void GuiMenu::openEmuELECSettings()
 	std::string a;
 #if !defined(_ENABLEGAMEFORCE) && !defined(ODROIDGOA)
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
-        std::vector<std::string> videomode;
-		videomode.push_back("1080p60hz");
-		videomode.push_back("1080i60hz");
-		videomode.push_back("720p60hz");
-		videomode.push_back("720p50hz");
-		videomode.push_back("480p60hz");
-		videomode.push_back("480cvbs");
-		videomode.push_back("576p50hz");
-		videomode.push_back("1080p50hz");
-		videomode.push_back("1080i50hz");
-		videomode.push_back("576cvbs");
-		videomode.push_back("Custom");
-		videomode.push_back("-- AUTO-DETECTED RESOLUTIONS --");
-   for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, a, ','); ) {
-        videomode.push_back(a);
+
+	std::string videoMode = SystemConf::getInstance()->get("ee_videomode");
+
+	std::string custom = "";
+	if (Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE"))
+	{
+		runSystemCommand("(mv /storage/.config/EE_VIDEO_MODE /storage/.config/EE_VIDEO_MODE_2)", "", nullptr);
+	}	
+	else if (Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE_2"))
+	{
+		custom = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE_2)");
+		if (!custom.empty())
+			emuelec_video_mode->add(_("Custom - ")+custom, custom, videoMode == custom);
 	}
-		for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
-		emuelec_video_mode->add(*it, *it, SystemConf::getInstance()->get("ee_videomode") == *it); }
-		s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
-	   	
-		s->addSaveFunc([this, emuelec_video_mode, window] {
-		
-		//bool v_need_reboot = false;
+
+	std::vector<std::string> videomode;
+
+	videomode.push_back("1080p60hz");
+	videomode.push_back("1080i60hz");
+	videomode.push_back("720p60hz");
+	videomode.push_back("720p50hz");
+	videomode.push_back("480p60hz");
+	videomode.push_back("480cvbs");
+	videomode.push_back("576p50hz");
+	videomode.push_back("1080p50hz");
+	videomode.push_back("1080i50hz");
+	videomode.push_back("576cvbs");
+
+	std::string def_video;
+	std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
+	while(ss.good()) {
+		def_video="";
+		getline(ss, def_video, ',');
+		videomode.push_back(def_video);
+	}
+	auto it = unique(videomode.begin(), videomode.end());
+	videomode.resize(distance(videomode.begin(), it));
+	std::sort(videomode.begin(), videomode.end(), sortResolutions);
+
 	
-		if (emuelec_video_mode->changed()) {
-			std::string selectedVideoMode = emuelec_video_mode->getSelected();
-		if (emuelec_video_mode->getSelected() != "-- AUTO-DETECTED RESOLUTIONS --") { 
-			if (emuelec_video_mode->getSelected() != "Custom") {
-			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + selectedVideoMode + "\n";
-			msg += _("Do you want to proceed ?");
-		
-			window->pushGui(new GuiMsgBox(window, msg,
-				_("YES"), [selectedVideoMode] {
-					runSystemCommand("echo "+selectedVideoMode+" > /sys/class/display/mode", "", nullptr);
-					SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
-					runSystemCommand("/usr/bin/setres.sh", "", nullptr);
-					SystemConf::getInstance()->saveSystemConf();
-				//	v_need_reboot = true;
-				}, _("NO"),nullptr));
-		
-		} else { 
-			if(Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")) {
-				runSystemCommand("echo $(cat /storage/.config/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
-				LOG(LogInfo) << "Setting custom video mode from /storage/.config/EE_VIDEO_MODE to " << runSystemCommand("cat /storage/.config/EE_VIDEO_MODE", "", nullptr);
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-				SystemConf::getInstance()->saveSystemConf();
-				//v_need_reboot = true;
-			} else { 
-				if(Utils::FileSystem::exists("/flash/EE_VIDEO_MODE")) {
-				runSystemCommand("echo $(cat /flash/EE_VIDEO_MODE) > /sys/class/display/mode", "", nullptr);
-				LOG(LogInfo) << "Setting custom video mode from /flash/EE_VIDEO_MODE to " << runSystemCommand("cat /flash/EE_VIDEO_MODE", "", nullptr);
-				SystemConf::getInstance()->set("ee_videomode", selectedVideoMode);
-				SystemConf::getInstance()->saveSystemConf();
-				//v_need_reboot = true;
-					} else {
-					runSystemCommand("echo " + SystemConf::getInstance()->get("ee_videomode")+ " > /sys/class/display/mode", "", nullptr);
-					std::string msg = "/storage/.config/EE_VIDEO_MODE or /flash/EE_VIDEO_MODE not found";
-					window->pushGui(new GuiMsgBox(window, msg,
-				"OK", [selectedVideoMode] {
-					LOG(LogInfo) << "EE_VIDEO_MODE was not found! Setting video mode to " + SystemConf::getInstance()->get("ee_videomode");
-			}));
-					}
-				}
-			}
-		   }	
-			//if (v_need_reboot)
-		 	mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-		 }
+	for (auto it = videomode.cbegin(); it != videomode.cend(); it++) {
+		emuelec_video_mode->add(*it, *it, (videoMode == custom) ? false : videoMode == *it);
+	}
+
+	std::string oldMode = SystemConf::getInstance()->get("ee_videomode");
+
+	s->addWithLabel(_("VIDEO MODE"), emuelec_video_mode);
+
+	s->addSaveFunc([&, emuelec_video_mode, oldMode, window, custom] {
+		std::string newMode = emuelec_video_mode->getSelected();
+
+		const std::function<void()> checkDisplay([&, window, newMode, oldMode] {
+			SystemConf::getInstance()->set("old_videomode", oldMode);
+			SystemConf::getInstance()->set("ee_videomode", newMode);
+			SystemConf::getInstance()->saveSystemConf();
+			Scripting::fireEvent("quit", "restart");
+			quitES(QuitMode::RESTART);
 		});
+
+		if (emuelec_video_mode->changed()) {
+			std::string msg = _("You are about to set EmuELEC resolution to:") +"\n" + newMode + "\n";
+			msg += _("Do you want to proceed ?");
+
+			window->pushGui(new GuiMsgBox(window, msg,
+				_("YES"), checkDisplay, _("NO"), nullptr));
+		}
+	});
+
 #endif
 #ifdef _ENABLEGAMEFORCE
 		auto emuelec_blrgboptions_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "BUTTON LED COLOR", false);
@@ -4883,18 +4923,27 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
 
 		const std::function<void()> video_changed([mWindow, configName, videoNativeResolutionMode_choice] {
-
-			std::string def_video;
 			std::string video_choice = videoNativeResolutionMode_choice->getSelected();
 			bool safe_video = false;
 
-			if (video_choice == "auto")
+			if (video_choice.empty() || video_choice == "auto") {
 				safe_video = true;
+			}
 			else {
-				for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, def_video, ','); ) {
-					if (video_choice == def_video) {
-						safe_video = true;
-						break;
+				std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
+				ss.seekg(0, std::ios::end);
+				long length = ss.tellg();
+				LOG(LogInfo) << "NATIVEVIDEO - RESOLUTIONS LENGTH: " << length;
+				if (length > 0) {
+					ss.seekg(0, std::ios::beg);
+					while (ss.good()) {
+						std::string def_video;
+						getline(ss, def_video, ',');
+						if (def_video.find(video_choice) != std::string::npos) {
+							LOG(LogInfo) << "NATIVEVIDEO - DEF_VIDEO_FOUND: " << def_video << " : " << video_choice;
+							safe_video = true;
+							break;
+						}
 					}
 				}
 			}
@@ -5492,46 +5541,6 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList
 
 #ifdef _ENABLEEMUELEC
 
-int getResWidth (std::string res)
-{
-	std::string tmp = "";
-	std::size_t pos = res.find("x");
-
-	if (pos != std::string::npos) {
-		tmp = res.substr(0, pos);
-		return atoi( tmp.c_str() );
-	}
-	pos = res.find("p");
-	if (pos != std::string::npos) {
-		tmp = res.substr(0, pos);
-		int resv = atoi(tmp.c_str());
-		return std::ceil(( (float)16 / 9 * resv));
-	}
-	pos = res.find("i");
-	if (pos != std::string::npos) {
-		tmp = res.substr(0, pos);
-		int resv = atoi(tmp.c_str());
-		return std::ceil(( (float)16 / 9 * resv));
-	}
-	return 0;
-}
-
-int getHzFromRes(std::string res)
-{
-	int tmp = atoi(res.substr(res.length()-4, 2).c_str());
-	if (tmp > 0) return tmp;
-	return 60;
-}
-
-bool sortResolutions (std::string a, std::string b) {
-	int ia = getResWidth(a);
-	int ib = getResWidth(b);
-	
-	if (ia == ib) return (getHzFromRes(a) < getHzFromRes(b));
-	
-	return (ia < ib);
-}
-
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoResolutionModeOptionList(Window *window, std::string configname)
 {
 	auto emuelec_video_mode = std::make_shared< OptionListComponent<std::string> >(window, "NATIVE VIDEO", false);
@@ -5547,13 +5556,15 @@ std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createNativeVideoReso
 	videomode.push_back("1080i60hz");
 	videomode.push_back("1080p60hz");
 
-	std::string def_video;
-	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)")); getline(ss, def_video, ','); ) {
-		if (!std::count(videomode.begin(), videomode.end(), def_video)) {
-			 videomode.push_back(def_video);
-		}
+	std::string def_video = "";
+	std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils resolutions)"));
+	while(ss.good()) {
+		def_video = "";
+		getline(ss, def_video, ',');
+		videomode.push_back(def_video);
 	}
-
+	auto it = unique(videomode.begin(), videomode.end());
+	videomode.resize(distance(videomode.begin(), it));
 	std::sort(videomode.begin(), videomode.end(), sortResolutions);
 
 	std::string index = SystemConf::getInstance()->get(configname + ".nativevideo");
