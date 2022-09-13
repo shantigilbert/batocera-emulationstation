@@ -81,6 +81,11 @@ public:
 	virtual void update(int deltaTime) override;
 	virtual void render(const Transform4x4f& parentTrans) override;
 
+#ifdef _ENABLEEMUELEC
+	int mCheckResTime;
+	void checkResolutionSwitch();
+#endif
+
 	// Help
 	std::vector<HelpPrompt> getHelpPrompts() override;
 	virtual HelpStyle getHelpStyle() override;
