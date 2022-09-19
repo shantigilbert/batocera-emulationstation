@@ -2092,13 +2092,13 @@ msgid ""
 msgstr ""
 
 msgid "PAIR A BLUETOOTH DEVICE"
-msgstr ""
+msgstr "配对蓝牙设备"
 
 msgid "SHOW CONTROLLER ACTIVITY"
 msgstr "显示控制器活动"
 
 msgid "SHOW CONTROLLER BATTERY LEVEL"
-msgstr ""
+msgstr "显示控制器电池电量"
 
 msgid "SINDEN GUN SETTINGS"
 msgstr ""
@@ -2117,13 +2117,13 @@ msgid "BORDER SIZE"
 msgstr ""
 
 msgid "THIN"
-msgstr ""
+msgstr "小"
 
 msgid "MEDIUM"
-msgstr ""
+msgstr "中"
 
 msgid "BIG"
-msgstr ""
+msgstr "大"
 
 msgid "RECOIL"
 msgstr ""
@@ -2141,13 +2141,13 @@ msgid "QUIET MACHINE GUN"
 msgstr ""
 
 msgid "MODE"
-msgstr ""
+msgstr "模式"
 
 msgid "JOYSTICK"
-msgstr ""
+msgstr "摇杆"
 
 msgid "YOU MUST APPLY THE THEME BEFORE EDITING ITS CONFIGURATION"
-msgstr ""
+msgstr "在修改其配置之前请务必先应用主题"
 
 msgid "THEME CONFIGURATION"
 msgstr "主题配置"
@@ -2213,7 +2213,7 @@ msgid "FILE EXTENSIONS"
 msgstr "文件扩展名"
 
 msgid "RESET CUSTOMIZATIONS"
-msgstr ""
+msgstr "定制重置"
 
 msgid "APPEARANCE"
 msgstr ""
@@ -2234,7 +2234,7 @@ msgid "LIST TRANSITION"
 msgstr ""
 
 msgid "auto"
-msgstr ""
+msgstr "自动"
 
 msgid "GAME LAUNCH TRANSITION"
 msgstr "游戏启动过程"
@@ -2249,16 +2249,16 @@ msgid "SHOW BATTERY STATUS"
 msgstr "显示电池状态"
 
 msgid "ICON"
-msgstr ""
+msgstr "图标"
 
 msgid "ICON AND TEXT"
-msgstr ""
+msgstr "图标与文本"
 
 msgid "IGNORE LEADING ARTICLES WHEN SORTING"
-msgstr ""
+msgstr "排序时忽略评论"
 
 msgid "Ignore 'The' and 'A' if at the start."
-msgstr ""
+msgstr "若以'A'和'The'开头则忽略"
 
 msgid "VOLUME"
 msgstr "音量"
@@ -2417,7 +2417,7 @@ msgid "INTERNAL RESOLUTION"
 msgstr "内部分辨率"
 
 msgid "LAUNCH THIS GAME AT STARTUP"
-msgstr ""
+msgstr "开机后运行本游戏"
 
 msgid "FORMAT DEVICE"
 msgstr "格式化装置"
