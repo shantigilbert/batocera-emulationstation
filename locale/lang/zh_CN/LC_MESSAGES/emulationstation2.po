@@ -1101,7 +1101,7 @@ msgid "DELETE MAPPING"
 msgstr "删除映射"
 
 msgid "SAVE CHANGES?"
-msgstr "是否保存更改?"
+msgstr "是否保存更改？"
 
 msgid "ARE YOU SURE?"
 msgstr "确定吗？"
@@ -1117,7 +1117,7 @@ msgid "REBOOT TO APPLY"
 msgstr "重启以应用"
 
 msgid "REALLY UPDATE?"
-msgstr "是否进行更新?"
+msgstr "是否进行更新？"
 
 #, c-format
 msgid ""
@@ -1218,8 +1218,8 @@ msgid ""
 "THIS WILL DELETE THE ACTUAL GAME FILE(S)!\n"
 "ARE YOU SURE?"
 msgstr ""
-"这将删除实际的游戏文件!\n"
-"确定执行吗?"
+"这将删除实际的游戏文件！\n"
+"确定执行吗？"
 
 msgid "COLLECTIONS"
 msgstr "合辑"
@@ -1454,6 +1454,9 @@ msgstr "系统"
 
 msgid "VIDEO DRIVER"
 msgstr "视频驱动程序"
+
+msgid "GRAPHICS API"
+msgstr "图形接口"
 
 msgid "THE BEZEL PROJECT"
 msgstr "THE BEZEL 项目"
@@ -1784,7 +1787,7 @@ msgstr "在启动时预加载元数据媒体"
 msgid ""
 "Reduces lag when scrolling through a fully scraped gamelist, increases boot "
 "time"
-msgstr "当滚动浏览完全抓取的游戏列表时减少延迟，加快启动时间"
+msgstr "当滚动浏览完全刮削过的游戏列表时减少延迟，加快启动时间"
 
 msgid "THREADED LOADING"
 msgstr "线程载入中"
@@ -1877,7 +1880,7 @@ msgstr ""
 "要解锁并返回完整用户界面，请输入以下代码："
 
 msgid "Do you want to proceed?"
-msgstr "是否继续?"
+msgstr "是否继续？"
 
 msgid "KODI SETTINGS"
 msgstr "KODI 设置"
@@ -2068,12 +2071,18 @@ msgstr "强制游戏以这个长宽比渲染。"
 msgid "VIDEO MODE"
 msgstr "视频模式"
 
+msgid "NATIVE VIDEO"
+msgstr "原生视频"
+
 msgid ""
 "Sets the display's resolution. Does not affect the rendering resolution."
 msgstr "设置显示器的分辨率。不影响渲染分辨率。"
 
 msgid "SMOOTH GAMES (BILINEAR FILTERING)"
 msgstr "平滑游戏（双线性过滤）"
+
+msgid "USE HLE BIOS"
+msgstr "使用 HLE BIOS"
 
 msgid "ENABLE MAX PERFORMANCE"
 msgstr "启动最大化性能"
@@ -2085,7 +2094,7 @@ msgid "Store past states to rewind to in realtime, if the core supports it."
 msgstr "如果核心支持，则存储过去的状态以实时倒回。"
 
 msgid "INTEGER SCALING (PIXEL PERFECT)"
-msgstr "整数缩放 (像素完美显示)"
+msgstr "整数缩放（像素完美显示）"
 
 msgid "INTEGER SCALING (OVERSCALE)"
 msgstr "整数缩放（超标）"
@@ -2093,8 +2102,14 @@ msgstr "整数缩放（超标）"
 msgid "SHADER SET"
 msgstr "着色器设置"
 
+msgid "SHADERS SET"
+msgstr "着色器设置"
+
 msgid "DECORATIONS"
 msgstr "装饰框"
+
+msgid "BEZEL"
+msgstr "边框"
 
 msgid "STRETCH BEZELS (4K & ULTRAWIDE)"
 msgstr "拉伸边框（4K和超宽）"
@@ -2414,7 +2429,6 @@ msgstr "显示歌曲名称"
 msgid "SONG TITLE DISPLAY DURATION"
 msgstr "歌曲的秒数"
 
-msgid "ONLY PLAY SYSTEM-SPECIFIC MUSIC FOLDER"
 msgstr "仅播放游戏系统对应目录中的音乐"
 
 msgid "PLAY SYSTEM-SPECIFIC MUSIC"
@@ -2761,64 +2775,70 @@ msgid "Collections"
 msgstr "所有游戏"
 
 msgid "FILENAME, ASCENDING"
-msgstr "游戏名 (升序)"
+msgstr "文件名，升序"
 
 msgid "FILENAME, DESCENDING"
-msgstr "游戏名 (降序)"
+msgstr "文件名，降序"
+
+msgid "SORTNAME, ASCENDING"
+msgstr "简称，升序"
+
+msgid "SORTNAME, DESCENDING"
+msgstr "简称，降序"
 
 msgid "RATING, ASCENDING"
-msgstr "评分 (升序)"
+msgstr "评分，升序"
 
 msgid "RATING, DESCENDING"
-msgstr "评分 (降序)"
+msgstr "评分，降序"
 
 msgid "TIMES PLAYED, ASCENDING"
-msgstr "游玩次数 (升序)"
+msgstr "游玩次数，升序"
 
 msgid "TIMES PLAYED, DESCENDING"
-msgstr "游玩次数 (降序)"
+msgstr "游玩次数，降序"
 
 msgid "LAST PLAYED, ASCENDING"
-msgstr "最后游玩时间 (升序)"
+msgstr "最后游玩时间，升序"
 
 msgid "LAST PLAYED, DESCENDING"
-msgstr "最后游玩时间 (降序)"
+msgstr "最后游玩时间，降序"
 
 msgid "NUMBER PLAYERS, ASCENDING"
-msgstr "玩家数量 (升序)"
+msgstr "玩家数量，升序"
 
 msgid "NUMBER PLAYERS, DESCENDING"
-msgstr "玩家数量 (降序)"
+msgstr "玩家数量，降序"
 
 msgid "RELEASE DATE, ASCENDING"
-msgstr "游戏发行日期 (升序)"
+msgstr "发行日期，升序"
 
 msgid "RELEASE DATE, DESCENDING"
-msgstr "游戏发行日期 (降序)"
+msgstr "发行日期，降序"
 
 msgid "GENRE, ASCENDING"
-msgstr "游戏类型 (升序)"
+msgstr "类型，升序"
 
 msgid "GENRE, DESCENDING"
-msgstr "游戏类型 (降序)"
+msgstr "类型，降序"
 
 msgid "DEVELOPER, ASCENDING"
-msgstr "游戏开发公司 (升序)"
+msgstr "开发者，升序"
 
 msgid "DEVELOPER, DESCENDING"
-msgstr "游戏开发公司 (降序)"
+msgstr "开发者，降序"
 
 msgid "PUBLISHER, ASCENDING"
-msgstr "游戏发行公司 (升序)"
+msgstr "发行商，升序"
 
 msgid "PUBLISHER, DESCENDING"
-msgstr "游戏发行公司 (降序)"
+msgstr "发行商，降序"
 
 msgid "SYSTEM, ASCENDING"
-msgstr "系统 (升序)"
+msgstr "系统，升序"
 
 msgid "SYSTEM, DESCENDING"
-msgstr "系统 (降序)"
+msgstr "系统，降序"
 
 msgid "FILE CREATION DATE, ASCENDING"
 msgstr "文件创建日期，升序"
@@ -2833,16 +2853,16 @@ msgid "GAME TIME, DESCENDING"
 msgstr "游戏时间，降序"
 
 msgid "SYSTEM, RELEASE YEAR, ASCENDING"
-msgstr "系统、发布年份、升序"
+msgstr "系统，发行年份，升序"
 
 msgid "SYSTEM, RELEASE YEAR, DESCENDING"
-msgstr "系统、发布年份、降序"
+msgstr "系统，发行年份，降序"
 
 msgid "RELEASE YEAR, SYSTEM, ASCENDING"
-msgstr "发布年份、系统、升序"
+msgstr "发行年份，系统，升序"
 
 msgid "RELEASE YEAR, SYSTEM, DESCENDING"
-msgstr "发布年份、系统、降序"
+msgstr "发行年份，系统，降序"
 
 msgid "A,AN,THE"
 msgstr ""
@@ -2893,7 +2913,7 @@ msgid "PLAYERS"
 msgstr "玩家数"
 
 msgid "PUBLISHER/DEVELOPER"
-msgstr "出版商/开发商"
+msgstr "发行商/开发者"
 
 msgid "RATING"
 msgstr "评分"
