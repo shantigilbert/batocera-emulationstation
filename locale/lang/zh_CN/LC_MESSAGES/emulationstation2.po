@@ -2781,10 +2781,10 @@ msgid "FILENAME, DESCENDING"
 msgstr "文件名，降序"
 
 msgid "SORTNAME, ASCENDING"
-msgstr "简称，升序"
+msgstr "排序名称，升序"
 
 msgid "SORTNAME, DESCENDING"
-msgstr "简称，降序"
+msgstr "排序名称，降序"
 
 msgid "RATING, ASCENDING"
 msgstr "评分，升序"
@@ -4126,13 +4126,13 @@ msgstr "%d 小时"
 #~ msgstr "显示/隐藏游戏系统"
 
 #~ msgid "Sort name"
-#~ msgstr "排序名"
+#~ msgstr "排序名称"
 
 #~ msgid "enter game sort name"
 #~ msgstr "输入游戏排序名称"
 
 #~ msgid "sortname"
-#~ msgstr "排序名"
+#~ msgstr "排序名称"
 
 #~ msgid "THE SYSTEM WILL NOW REBOOT"
 #~ msgstr "系统将要重启"
