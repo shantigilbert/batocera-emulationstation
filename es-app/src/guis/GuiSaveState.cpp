@@ -207,9 +207,10 @@ bool GuiSaveState::input(InputConfig* config, Input input)
 		{
 			const SaveState& item = mGrid->getSelected();
 #ifdef _ENABLEEMUELEC
-			if (item.slot == -3)
+			if (item.slot == -3) {
 				CloudSaves::getInstance().save(mWindow, mGame);
-			return false;
+				return false;
+			}
 #endif
 			mRunCallback(item);
 		}
