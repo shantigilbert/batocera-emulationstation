@@ -5117,6 +5117,23 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		systemConfiguration->addWithLabel(_("INTEGER SCALING (OVERSCALE)"), integerscaleoverscale_enabled);
 		systemConfiguration->addSaveFunc([integerscaleoverscale_enabled, configName] { SystemConf::getInstance()->set(configName + ".integerscaleoverscale", integerscaleoverscale_enabled->getSelected()); });
 	}
+
+#ifdef _ENABLEEMUELEC
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::cloudsave))
+	{
+		auto enable_cloudsave = std::make_shared<SwitchComponent>(mWindow);
+		bool cloudSaveEnabled = SystemConf::getInstance()->get(configName + ".cloudsave") == "1";
+		enable_cloudsave->setState(cloudSaveEnabled);
+		systemConfiguration->addWithLabel(_("ENABLE CLOUD SAVE"), enable_cloudsave);
+
+		systemConfiguration->addSaveFunc([enable_cloudsave, mWindow] {
+			bool cloudSaveEnabled = enable_cloudsave->getState();
+			SystemConf::getInstance()->set(configName + ".cloudsave", cloudSaveEnabled ? "1" : "0");
+			SystemConf::getInstance()->saveSystemConf();
+		});
+	}
+#endif
+
 #ifdef _ENABLEEMUELEC
 	// bezel
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::decoration))
