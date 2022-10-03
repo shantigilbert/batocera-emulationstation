@@ -5126,7 +5126,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		enable_cloudsave->setState(cloudSaveEnabled);
 		systemConfiguration->addWithLabel(_("ENABLE CLOUD SAVE"), enable_cloudsave);
 
-		systemConfiguration->addSaveFunc([enable_cloudsave, mWindow] {
+		systemConfiguration->addSaveFunc([enable_cloudsave, mWindow, configName] {
 			bool cloudSaveEnabled = enable_cloudsave->getState();
 			SystemConf::getInstance()->set(configName + ".cloudsave", cloudSaveEnabled ? "1" : "0");
 			SystemConf::getInstance()->saveSystemConf();
