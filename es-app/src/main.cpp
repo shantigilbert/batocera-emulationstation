@@ -669,7 +669,8 @@ int main(int argc, char* argv[])
 		bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
 
 		if (PowerSaver::getState() && btbaseEnabled && !bt_standby) {
-			bt_pid = atoi(getShOutput(R"(emuelec-bluetooth-standby && echo $! &)").c_str());
+			runSystemCommand("emuelec-bluetooth-standby &", "", nullptr);
+			bt_pid = atoi(getShOutput(R"(echo $!)").c_str());
 			bt_standby = true;
 		}
 
