@@ -656,7 +656,7 @@ int main(int argc, char* argv[])
 	int lastTime = SDL_GetTicks();
 	int ps_time = SDL_GetTicks();
 #ifdef _ENABLEEMUELEC
-	bt_pid = 0;
+	int bt_pid = 0;
 #endif
 	bool running = true;
 
