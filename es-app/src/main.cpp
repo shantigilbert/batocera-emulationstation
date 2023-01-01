@@ -651,7 +651,7 @@ int main(int argc, char* argv[])
 	int lastTime = SDL_GetTicks();
 	int ps_time = SDL_GetTicks();
 #ifdef _ENABLEEMUELEC
-	int bt_pid = 0;
+	std::atomic<int> bt_pid = 0;
 #endif
 	bool running = true;
 
@@ -669,9 +669,7 @@ int main(int argc, char* argv[])
 
 		if (ps_standby && btbaseEnabled && bt_pid == 0) {
 			runSystemCommand("emuelec-bluetooth-standby &", "", nullptr);
-			SDL_Delay(1000);
 			bt_pid = atoi(getShOutput(R"(echo $!)").c_str());
-			SDL_Delay(1000);
 		}
 		else if (!ps_standby && btbaseEnabled && bt_pid > 0) {
 			runSystemCommand("kill "+std::to_string(bt_pid), "", nullptr);
