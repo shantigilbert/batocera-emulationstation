@@ -651,7 +651,6 @@ int main(int argc, char* argv[])
 	int lastTime = SDL_GetTicks();
 	int ps_time = SDL_GetTicks();
 #ifdef _ENABLEEMUELEC
-	bool bt_standby = false;
 	int bt_pid = 0;
 #endif
 	bool running = true;
@@ -668,16 +667,13 @@ int main(int argc, char* argv[])
 #ifdef _ENABLEEMUELEC
 		bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
 
-		if (PowerSaver::getState() && btbaseEnabled && !bt_standby) {
+		if (ps_standby && btbaseEnabled && bt_pid == 0) {
 			runSystemCommand("emuelec-bluetooth-standby &", "", nullptr);
 			bt_pid = atoi(getShOutput(R"(echo $!)").c_str());
-			bt_standby = true;
 		}
-
-		if (!PowerSaver::getState() && btbaseEnabled && bt_standby) {
-			if (bt_pid > 0)
-				runSystemCommand("kill "+std::to_string(bt_pid), "", nullptr);
-			bt_standby = false;
+		else if (!ps_standby && btbaseEnabled && bt_pid > 0) {
+			runSystemCommand("kill "+std::to_string(bt_pid), "", nullptr);
+			bt_pid = 0;
 		}
 #endif
 
