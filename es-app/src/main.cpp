@@ -655,7 +655,7 @@ int main(int argc, char* argv[])
 	int lastTime = SDL_GetTicks();
 	int ps_time = SDL_GetTicks();
 #ifdef _ENABLEEMUELEC
-	std::shared_ptr<int> cont = std::make_shared<int>();
+	std::shared_ptr<int> bt_pid = std::make_shared<int>();
 #endif
 	bool running = true;
 
