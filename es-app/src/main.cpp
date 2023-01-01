@@ -45,6 +45,10 @@
 #define PATH_MAX MAX_PATH
 #endif
 
+#ifdef WIN32	
+#include <atomic>
+#endif
+
 static std::string gPlayVideo;
 static int gPlayVideoDuration = 0;
 static bool enable_startup_game = true;
