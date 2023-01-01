@@ -674,7 +674,7 @@ int main(int argc, char* argv[])
 
 		if (ps_standby && btbaseEnabled && bt_pid == 0) {
 			runSystemCommand("emuelec-bluetooth-standby &", "", nullptr);
-			std::string outputSH = std::string(getShOutput(R"(/usr/bin/echo $!)");
+			std::string outputSH = std::string(getShOutput(R"(/usr/bin/echo $!)"));
 			LOG(LogDebug) << "bluetooth outputSH: " << outputSH;
 			bt_pid = atoi(outputSH.c_str());
 			LOG(LogDebug) << "bluetooth standby pid: " << std::to_string(bt_pid);
