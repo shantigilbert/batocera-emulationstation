@@ -45,9 +45,9 @@
 #define PATH_MAX MAX_PATH
 #endif
 
-#ifdef WIN32	
+#ifdef _ENABLEEMUELEC	
 	#include <atomic>
-	#include <thread>
+	//#include <thread>
 #endif
 
 static std::string gPlayVideo;
