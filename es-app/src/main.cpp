@@ -46,15 +46,8 @@
 #endif
 
 #ifdef WIN32	
-#include <atomic>
-
-class Integer
-{
-	Integer() {
-		i=0;
-	}  
-  std::atomic<int> i;
-};
+	#include <atomic>
+	#include <thread>
 #endif
 
 static std::string gPlayVideo;
@@ -663,7 +656,7 @@ int main(int argc, char* argv[])
 	int lastTime = SDL_GetTicks();
 	int ps_time = SDL_GetTicks();
 #ifdef _ENABLEEMUELEC
-	std::atomic<Integer> bt_pid(0);
+	std::atomic<int> bt_pid = 0;
 #endif
 	bool running = true;
 
@@ -679,13 +672,13 @@ int main(int argc, char* argv[])
 #ifdef _ENABLEEMUELEC
 		bool btbaseEnabled = SystemConf::getInstance()->get("ee_bluetooth.enabled") == "1";
 
-		if (ps_standby && btbaseEnabled && bt_pid.i == 0) {
+		if (ps_standby && btbaseEnabled && bt_pid == 0) {
 			runSystemCommand("emuelec-bluetooth-standby &", "", nullptr);
-			bt_pid.i = atoi(getShOutput(R"(echo $!)").c_str());
+			bt_pid = atoi(getShOutput(R"(echo $!)").c_str());
 		}
-		else if (!ps_standby && btbaseEnabled && bt_pid.i > 0) {
-			runSystemCommand("kill "+std::to_string(bt_pid.i), "", nullptr);
-			bt_pid.i = 0;
+		else if (!ps_standby && btbaseEnabled && bt_pid > 0) {
+			runSystemCommand("kill "+std::to_string(bt_pid), "", nullptr);
+			bt_pid = 0;
 		}
 #endif
 
