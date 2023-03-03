@@ -629,7 +629,7 @@ void GuiMenu::createGamepadConfig(Window* window, GuiSettings* systemConfigurati
 
 	// yabasanshiro Gamepad
 	auto enable_yabasanshirogp = std::make_shared<SwitchComponent>(window);
-	bool yabasanshirogpEnabled = SystemConf::getInstance()->get("yabasanshiro_auto_gamepad") == "0";
+	bool yabasanshirogpEnabled = SystemConf::getInstance()->get("yabasanshiro_auto_gamepad") == "1";
 	enable_yabasanshirogp->setState(yabasanshirogpEnabled);
 	gamepadConfiguration->addWithLabel(_("AUTO CONFIG YABASANSHIRO GAMEPAD"), enable_yabasanshirogp);
 
@@ -641,7 +641,7 @@ void GuiMenu::createGamepadConfig(Window* window, GuiSettings* systemConfigurati
 
 	// ppssppsdl Gamepad
 	auto enable_ppssppsdlgp = std::make_shared<SwitchComponent>(window);
-	bool ppssppsdlgpEnabled = SystemConf::getInstance()->get("ppssppsdl_auto_gamepad") == "0";
+	bool ppssppsdlgpEnabled = SystemConf::getInstance()->get("ppssppsdl_auto_gamepad") == "1";
 	enable_ppssppsdlgp->setState(ppssppsdlgpEnabled);
 	gamepadConfiguration->addWithLabel(_("AUTO CONFIG PPSSPPSDL GAMEPAD"), enable_ppssppsdlgp);
 
