@@ -29,6 +29,9 @@ public:
 
 private:
 	static void deleteGame(FileData* file);
+#ifdef _ENABLEEMUELEC
+		static void moveToFolderGame(FileData* file, const std::string& path);
+#endif
 
 #ifdef _ENABLEEMUELEC
 	static void createMultidisc(FileData* file);
