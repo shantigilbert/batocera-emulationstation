@@ -30,6 +30,7 @@
 #ifdef _ENABLEEMUELEC
 #include <regex>
 #include "platform.h"
+#include "guis/GuiMoveToFolder.h"
 #endif
 
 GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(window),
@@ -251,6 +252,16 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 
 
 			});
+
+#ifdef _ENABLEEMUELEC
+			if (game->getSystem()->isGameSystem()) {
+				mMenu.addEntry(_("MOVE TO FOLDER"), false, [this, game]
+				{
+					mWindow->pushGui(new GuiMoveToFolder(mWindow, game));
+					close();
+				});
+			}
+#endif
 		}
 
 #ifdef _ENABLEEMUELEC
