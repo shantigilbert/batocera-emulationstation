@@ -158,6 +158,7 @@ void GuiMoveToFolder::moveToFolderGame(FileData* file, const std::string& path)
   if (fd != nullptr) {
     std::string newPath = path+"/"+base_name<std::string>(file->getPath());
     FileData* newFile = new FileData(GAME, newPath, file->getSystem());
+    newFile->setMetaData(file->getMetadata());
 
     fd->addChild(newFile);
 
