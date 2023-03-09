@@ -164,6 +164,7 @@ void GuiMoveToFolder::moveToFolderGame(FileData* file, const std::string& path)
 
     if (view != nullptr) {
       view.get()->remove(sourceFile);
+      delete sourceFile;
     }
     else {
       sys->getRootFolder()->removeFromVirtualFolders(sourceFile);
