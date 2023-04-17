@@ -797,35 +797,35 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 					return;
 
 
-				std::vector<std::string> borders;
+				std::vector<int> borders;
 		    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
 		    std::stringstream data(ee_borders);
 		    std::string line;
 		    while(std::getline(data,line,' '))
 		    {
-		        borders.push_back(line);
+		        borders.push_back(atoi(line));
 		    }
 
 				// borders
-				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenWidth)/2.0f, 1.f, "px");
-				leftborder->setValue((float)borders[0]);
-				leftborder->setOnValueChanged([this, borders](const float &newVal) {
-					borders[0] = (int)Math::round(newVal);
+				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenWidth)/2, 1, "px");
+				leftborder->setValue((int)borders[0]);
+				leftborder->setOnValueChanged([this, borders](const int &newVal) {
+					borders[0] = (int)(newVal);
 				});
-				auto topborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenHeight)/2.0f, 1.f, "px");
-				topborder->setValue((float)borders[1]);
-				topborder->setOnValueChanged([this, borders](const float &newVal) {
-					borders[1] = (int)Math::round(newVal);
+				auto topborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenHeight)/2, 1, "px");
+				topborder->setValue((int)borders[1]);
+				topborder->setOnValueChanged([this, borders](const int &newVal) {
+					borders[1] = (int)(newVal);
 				});
-				auto rightborder = std::make_shared<SliderComponent>(mWindow, float(screenWidth)-1.0f, float(screenWidth)/2.0f, -1.f, "px");
-				rightborder->setValue((float)borders[2]);
-				rightborder->setOnValueChanged([this, borders](const float &newVal) {
-					borders[2] = (int)Math::round(newVal);
+				auto rightborder = std::make_shared<SliderComponent>(mWindow, int(screenWidth)-1, int(screenWidth)/2, -1, "px");
+				rightborder->setValue((int)borders[2]);
+				rightborder->setOnValueChanged([this, borders](const int &newVal) {
+					borders[2] = (int)(newVal);
 				});
-				auto bottomborder = std::make_shared<SliderComponent>(mWindow, float(screenHeight)-1.0f, float(screenHeight)/2.0f, -1.f, "px");
-				bottomborder->setValue((float)borders[3]);
-				bottomborder->setOnValueChanged([this, borders](const float &newVal) {
-					borders[3] = (int)Math::round(newVal);
+				auto bottomborder = std::make_shared<SliderComponent>(mWindow, int(screenHeight)-1, int(screenHeight)/2, -1, "px");
+				bottomborder->setValue((int)borders[3]);
+				bottomborder->setOnValueChanged([this, borders](const int &newVal) {
+					borders[3] = (int)(newVal);
 				});
 
 				bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
