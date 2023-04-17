@@ -777,17 +777,17 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); }
 		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 	   	
-		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode, screenWidth, screenHeight] {
+		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
 			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
 				int pos = selectedFB.find('x');
-				screenWidth = atoi(selectedFB.substr(0, pos).c_str());
-				screenHeight = atoi(selectedFB.substr(pos+1).c_str());
+				int screenWidth = atoi(selectedFB.substr(0, pos).c_str());
+				int screenHeight = atoi(selectedFB.substr(pos+1).c_str());
 
 				std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
 				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", screenWidth+" "+screenHeight);
+				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 			}
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 		});
 
 		if (!ee_framebuffer.empty() && ee_framebuffer != "auto") {
@@ -807,24 +807,24 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		    }
 
 				// borders
-				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenWidth)/2, 1.f, "px");
+				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenWidth)/2.0f, 1.f, "px");
 				leftborder->setValue((float)borders[0]);
-				leftborder->setOnValueChanged([borders](const float &newVal) {
+				leftborder->setOnValueChanged([this, borders](const float &newVal) {
 					borders[0] = (int)Math::round(newVal);
 				});
-				auto topborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenHeight)/2, 1.f, "px");
+				auto topborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenHeight)/2.0f, 1.f, "px");
 				topborder->setValue((float)borders[1]);
-				topborder->setOnValueChanged([borders](const float &newVal) {
+				topborder->setOnValueChanged([this, borders](const float &newVal) {
 					borders[1] = (int)Math::round(newVal);
 				});
-				auto rightborder = std::make_shared<SliderComponent>(mWindow, float(screenWidth)-1, float(screenWidth)/2, -1.f, "px");
+				auto rightborder = std::make_shared<SliderComponent>(mWindow, float(screenWidth)-1.0f, float(screenWidth)/2.0f, -1.f, "px");
 				rightborder->setValue((float)borders[2]);
-				rightborder->setOnValueChanged([borders](const float &newVal) {
+				rightborder->setOnValueChanged([this, borders](const float &newVal) {
 					borders[2] = (int)Math::round(newVal);
 				});
-				auto bottomborder = std::make_shared<SliderComponent>(mWindow, float(screenHeight)-1, float(screenHeight)/2, -1.f, "px");
+				auto bottomborder = std::make_shared<SliderComponent>(mWindow, float(screenHeight)-1.0f, float(screenHeight)/2.0f, -1.f, "px");
 				bottomborder->setValue((float)borders[3]);
-				bottomborder->setOnValueChanged([borders](const float &newVal) {
+				bottomborder->setOnValueChanged([this, borders](const float &newVal) {
 					borders[3] = (int)Math::round(newVal);
 				});
 
@@ -833,7 +833,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
 				bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-				bordersConfig->addSaveFunc([ee_videomode, borders]
+				bordersConfig->addSaveFunc([this, ee_videomode, borders]
 				{
 					std::string result = borders[0]+" "+borders[1]+" "+borders[2]+" "+borders[3];
 					SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
