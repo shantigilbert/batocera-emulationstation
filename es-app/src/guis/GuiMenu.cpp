@@ -746,46 +746,43 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #endif
 
 #ifdef _ENABLEEMUELEC
-			std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
-			std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
+	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
+	std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
 
-			auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
-		        std::vector<std::string> framebuffer;
-				framebuffer.push_back("auto");
-				framebuffer.push_back("3840x2160");
-				framebuffer.push_back("1920x1080");
-				framebuffer.push_back("1280x720");
-				framebuffer.push_back("720x480");
-				framebuffer.push_back("1280x1024");
-				framebuffer.push_back("1024x768");
-				framebuffer.push_back("800x600");
-				framebuffer.push_back("640x480");
-				if (ee_framebuffer.empty())
-					ee_framebuffer = "auto";
-								
-				for (auto it = framebuffer.cbegin(); it != framebuffer.cend(); it++) {
-					emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); }
-				dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
-			   	
-				dangerZone->addSaveFunc([this, emuelec_frame_buffer, window] {
-					if (emuelec_video_mode->changed()) {
-						std::string selectedFB = emuelec_frame_buffer->getSelected();
-						int pos = selectedFB.find('x');
-						std::string screenWidth = selectedFB.substr(0, pos);
-						std::string screenHeight = selectedFB.substr(pos+1);
+	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
+        std::vector<std::string> framebuffer;
+		framebuffer.push_back("auto");
+		framebuffer.push_back("3840x2160");
+		framebuffer.push_back("1920x1080");
+		framebuffer.push_back("1280x720");
+		framebuffer.push_back("720x480");
+		framebuffer.push_back("1280x1024");
+		framebuffer.push_back("1024x768");
+		framebuffer.push_back("800x600");
+		framebuffer.push_back("640x480");
+		if (ee_framebuffer.empty())
+			ee_framebuffer = "auto";
+						
+		for (auto it = framebuffer.cbegin(); it != framebuffer.cend(); it++) {
+			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); }
+		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
+	   	
+		dangerZone->addSaveFunc([mWindow, emuelec_video_mode, emuelec_frame_buffer, ee_videomode] {
+			if (emuelec_video_mode->changed()) {
+				std::string selectedFB = emuelec_frame_buffer->getSelected();
+				int pos = selectedFB.find('x');
+				std::string screenWidth = selectedFB.substr(0, pos);
+				std::string screenHeight = selectedFB.substr(pos+1);
 
-						std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
-						SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", screenWidth+" "+screenHeight);
-					}
-					mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-				});
+				std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
+				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", screenWidth+" "+screenHeight);
+			}
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 		});
 
 		if (!ee_framebuffer.empty() && ee_framebuffer != "auto") {
-			dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow] { 
+			dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer] { 
 				GuiSettings* bordersConfig = new GuiSettings(window, _("FRAME BORDERS"));
-				std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
-				std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
 				if (ee_framebuffer.empty())
 					return;
 
