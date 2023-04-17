@@ -767,12 +767,12 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); }
 		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 	   	
-		dangerZone->addSaveFunc([mWindow, emuelec_video_mode, emuelec_frame_buffer, ee_videomode] {
-			if (emuelec_video_mode->changed()) {
+		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
+			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
 				int pos = selectedFB.find('x');
-				std::string screenWidth = selectedFB.substr(0, pos);
-				std::string screenHeight = selectedFB.substr(pos+1);
+				int screenWidth = atoi(selectedFB.substr(0, pos));
+				int screenHeight = atoi(selectedFB.substr(pos+1));
 
 				std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
 				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", screenWidth+" "+screenHeight);
@@ -782,13 +782,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 		if (!ee_framebuffer.empty() && ee_framebuffer != "auto") {
 			dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer] { 
-				GuiSettings* bordersConfig = new GuiSettings(window, _("FRAME BORDERS"));
+				GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
 				if (ee_framebuffer.empty())
 					return;
 
 				int pos = ee_framebuffer.find('x');
-				std::string screenWidth = ee_framebuffer.substr(0, pos);
-				std::string screenHeight = ee_framebuffer.substr(pos+1);
+				int screenWidth = atoi(ee_framebuffer.substr(0, pos));
+				int screenHeight = atoi(ee_framebuffer.substr(pos+1));
 
 				std::vector<std::string> borders;
 		    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
@@ -800,24 +800,24 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		    }
 
 				// borders
-				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.f, atof(screenWidth)/2, 1.f, "px");
+				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenWidth)/2, 1.f, "px");
 				leftborder->setValue((float)borders[0]);
-				leftborder->setOnValueChanged([](const float &newVal) {
+				leftborder->setOnValueChanged([borders](const float &newVal) {
 					borders[0] = (int)Math::round(newVal);
 				});
-				auto topborder = std::make_shared<SliderComponent>(mWindow, 0.f, atof(screenHeight)/2, 1.f, "px");
+				auto topborder = std::make_shared<SliderComponent>(mWindow, 0.f, float(screenHeight)/2, 1.f, "px");
 				topborder->setValue((float)borders[1]);
-				topborder->setOnValueChanged([](const float &newVal) {
+				topborder->setOnValueChanged([borders](const float &newVal) {
 					borders[1] = (int)Math::round(newVal);
 				});
-				auto rightborder = std::make_shared<SliderComponent>(mWindow, atof(screenWidth)-1, atof(screenWidth)/2, -1.f, "px");
+				auto rightborder = std::make_shared<SliderComponent>(mWindow, float(screenWidth)-1, float(screenWidth)/2, -1.f, "px");
 				rightborder->setValue((float)borders[2]);
-				rightborder->setOnValueChanged([](const float &newVal) {
+				rightborder->setOnValueChanged([borders](const float &newVal) {
 					borders[2] = (int)Math::round(newVal);
 				});
-				auto bottomborder = std::make_shared<SliderComponent>(mWindow, atof(screenHeight)-1, atof(screenHeight)/2, -1.f, "px");
+				auto bottomborder = std::make_shared<SliderComponent>(mWindow, float(screenHeight)-1, float(screenHeight)/2, -1.f, "px");
 				bottomborder->setValue((float)borders[3]);
-				bottomborder->setOnValueChanged([](const float &newVal) {
+				bottomborder->setOnValueChanged([borders](const float &newVal) {
 					borders[3] = (int)Math::round(newVal);
 				});
 
@@ -826,7 +826,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
 				bordersConfig->addWithLabel(_("BOTTOM BORDER"), botttomborder);
 
-				bordersConfig->addSaveFunc([this, ee_videomode, borders]
+				bordersConfig->addSaveFunc([ee_videomode, borders]
 				{
 					std::string result = borders[0]+" "+borders[1]+" "+borders[2]+" "+borders[3];
 					SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
