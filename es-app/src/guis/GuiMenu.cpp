@@ -810,22 +810,22 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenWidth)/2, 1, "px");
 				leftborder->setValue((int)borders[0]);
 				leftborder->setOnValueChanged([borders](const int &newVal) {
-					borders[0] = (int)newVal;
+					borders[0] = newVal;
 				});
 				auto topborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenHeight)/2, 1, "px");
 				topborder->setValue((int)borders[1]);
 				topborder->setOnValueChanged([borders](const int &newVal) {
-					borders[1] = (int)newVal;
+					borders[1] = newVal;
 				});
 				auto rightborder = std::make_shared<SliderComponent>(mWindow, int(screenWidth)-1, int(screenWidth)/2, -1, "px");
 				rightborder->setValue((int)borders[2]);
 				rightborder->setOnValueChanged([borders](const int &newVal) {
-					borders[2] = (int)newVal;
+					borders[2] = newVal;
 				});
 				auto bottomborder = std::make_shared<SliderComponent>(mWindow, int(screenHeight)-1, int(screenHeight)/2, -1, "px");
 				bottomborder->setValue((int)borders[3]);
 				bottomborder->setOnValueChanged([borders](const int &newVal) {
-					borders[3] = (int)newVal;
+					borders[3] = newVal;
 				});
 
 				bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
@@ -835,8 +835,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 				bordersConfig->addSaveFunc([ee_videomode, borders]
 				{
-					std::string result = to_string(borders[0])+" "+to_string(borders[1])+
-						" "+to_string(borders[2])+" "+to_string(borders[3]);
+					std::string result = std::to_string(borders[0])+" "+
+						std::to_string(borders[1])+" "+
+						std::to_string(borders[2])+" "+
+						std::to_string(borders[3]);
 					SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
 					runSystemCommand("ee_set_borders "+result, "", nullptr);
 				});
