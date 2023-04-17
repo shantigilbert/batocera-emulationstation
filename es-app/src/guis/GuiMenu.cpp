@@ -749,6 +749,16 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
 	std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
 
+	int pos;
+	int screenWidth;
+	int screenHeight;
+
+	if (!ee_framebuffer.empty()) {
+		pos = ee_framebuffer.find('x');
+		screenWidth = atoi(ee_framebuffer.substr(0, pos).c_str());
+		screenHeight = atoi(ee_framebuffer.substr(pos+1).c_str());
+	}
+
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
         std::vector<std::string> framebuffer;
 		framebuffer.push_back("auto");
@@ -767,12 +777,12 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); }
 		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 	   	
-		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
+		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode, screenWidth, screenHeight] {
 			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
 				int pos = selectedFB.find('x');
-				int screenWidth = atoi(selectedFB.substr(0, pos));
-				int screenHeight = atoi(selectedFB.substr(pos+1));
+				screenWidth = atoi(selectedFB.substr(0, pos).c_str());
+				screenHeight = atoi(selectedFB.substr(pos+1).c_str());
 
 				std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
 				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", screenWidth+" "+screenHeight);
@@ -781,14 +791,11 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		});
 
 		if (!ee_framebuffer.empty() && ee_framebuffer != "auto") {
-			dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer] { 
+			dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, screenWidth, screenHeight] { 
 				GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
 				if (ee_framebuffer.empty())
 					return;
 
-				int pos = ee_framebuffer.find('x');
-				int screenWidth = atoi(ee_framebuffer.substr(0, pos));
-				int screenHeight = atoi(ee_framebuffer.substr(pos+1));
 
 				std::vector<std::string> borders;
 		    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
@@ -824,7 +831,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
 				bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 				bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
-				bordersConfig->addWithLabel(_("BOTTOM BORDER"), botttomborder);
+				bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
 				bordersConfig->addSaveFunc([ee_videomode, borders]
 				{
