@@ -146,17 +146,15 @@ static std::string toupper(std::string s)
 
 static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
 {
-	int screen[2] = {0, 0};
+	static int screen[2] = {0, 0};
 	int pos = ee_videomode.find('x');
-	std::string tmp;
+	std::string tmp = ee_videomode;
 
 	if (pos >= 0)
 	{
 		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
 		tmp = ee_videomode.substr(pos+1);
 	}
-	else
-		tmp = ee_videomode;
 		
 	pos = tmp.find('p');
 	if (pos < 0)
