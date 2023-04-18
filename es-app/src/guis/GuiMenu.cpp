@@ -792,6 +792,20 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+				
+				if (selectedFB == "")
+					return;
+					
+				int pos = selectedFB.find('x');
+				screenWidth = atoi(selectedFB.substr(0, pos).c_str());
+				screenHeight = atoi(selectedFB.substr(pos+1).c_str());
+
+				result = "0 0 "+
+					std::to_string(screenWidth-1)+" "+
+					std::to_string(screenHeight-1);
+
+				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
+				runSystemCommand("ee_set_borders "+result, "", nullptr);
 			}
 		});
 
@@ -849,13 +863,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 					std::to_string(borders[3]);
 				SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
 
-				result = std::to_string(borders[0])+" "+
+				std::string result2 = std::to_string(borders[0])+" "+
 					std::to_string(borders[1])+" "+
 					std::to_string(screenWidth-borders[2]-1)+" "+
 					std::to_string(screenHeight-borders[3]-1);
 
-				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-				runSystemCommand("ee_set_borders "+result, "", nullptr);
+				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result2);
+				runSystemCommand("ee_set_borders "+result2, "", nullptr);
 			});
 			mWindow->pushGui(bordersConfig);
 		});
