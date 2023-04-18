@@ -788,7 +788,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
 				if (selectedFB == "auto")
-					return;
+					selectedFB = "";
 
 				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
