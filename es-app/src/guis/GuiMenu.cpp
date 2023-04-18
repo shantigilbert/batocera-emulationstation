@@ -813,13 +813,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			leftborder->setValue((float)borders[0]);
 			leftborder->setOnValueChanged([&borders](const float &newVal) {
 				borders[0] = (int)Math::round(newVal);
-				rightborder->setValue((float)borders[0]);
+				//rightborder->setValue((float)borders[0]);
 			});
 			auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
 			topborder->setValue((float)borders[1]);
 			topborder->setOnValueChanged([&borders](const float &newVal) {
 				borders[1] = (int)Math::round(newVal);
-				bottomborder->setValue((float)borders[1]);
+				//bottomborder->setValue((float)borders[1]);
 			});
 			auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
 			rightborder->setValue((float)borders[2]);
