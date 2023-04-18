@@ -817,16 +817,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 			int borders[4] = {0,0,0,0};
 	    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-			if (!ee_borders.empty()) 
-			{
-		    std::stringstream data(ee_borders);
-		    std::string line;
-				int i=0;
-		    while(std::getline(data,line,' '))
-		    {
-		        borders[i++] = atoi(line.c_str());
-		    }
-			}
+			std::vector<std::string> tmpBorders = explode(ee_borders, ' ');
+			for(int i=0; i < 4; ++i)
+				borders[i] = atoi(tmpBorders.c_str());
 
 			// borders
 			auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
