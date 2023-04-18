@@ -834,7 +834,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("640x480");
 
 	int* dimensions = getVideoModeDimensions(ee_videomode, reslist);
-	mWindow->displayNotificationMessage(_U("\uF011  ") + dimensions[0] + " " + dimensions[1]);
+	mWindow->displayNotificationMessage(_U("\uF011  ") + std::to_string(dimensions[0]) + " " + std::to_string(dimensions[1]));
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
