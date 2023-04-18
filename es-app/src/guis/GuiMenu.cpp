@@ -930,7 +930,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 		bordersConfig->addSaveFunc([mWindow, ee_videomode, dimensions, borders]()
 		{
-			mWindow->displayNotificationMessage(_U("\uF011  ") + ("bordersConfig->addSaveFunc"));
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("bordersConfig->addSaveFunc"));
 			bool hasBorder = false;
 			for(int i=0; i < 4; ++i) {
 				if (borders[i] > 0) {
