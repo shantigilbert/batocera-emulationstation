@@ -787,6 +787,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
 			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
+				if (selectedFB == "auto")
+					return;
 
 				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
@@ -843,9 +845,16 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			{
 				std::string result = std::to_string(borders[0])+" "+
 					std::to_string(borders[1])+" "+
+					std::to_string(borders[2])+" "+
+					std::to_string(borders[3]);
+				SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+
+				result = std::to_string(borders[0])+" "+
+					std::to_string(borders[1])+" "+
 					std::to_string(screenWidth-borders[2]-1)+" "+
 					std::to_string(screenHeight-borders[3]-1);
-				SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+
+				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
 				runSystemCommand("ee_set_borders "+result, "", nullptr);
 			});
 			mWindow->pushGui(bordersConfig);
