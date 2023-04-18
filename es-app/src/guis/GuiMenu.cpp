@@ -780,12 +780,11 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
 			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
-				int pos = selectedFB.find('x');
-				int screenWidth = atoi(selectedFB.substr(0, pos).c_str());
-				int screenHeight = atoi(selectedFB.substr(pos+1).c_str());
+				//int pos = selectedFB.find('x');
+				//int screenWidth = atoi(selectedFB.substr(0, pos).c_str());
+				//int screenHeight = atoi(selectedFB.substr(pos+1).c_str());
 
-				std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
-				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", screenWidth+" "+screenHeight);
+				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 			}
 		});
