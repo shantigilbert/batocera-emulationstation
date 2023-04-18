@@ -798,33 +798,40 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 			std::vector<int> borders;
 	    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-	    std::stringstream data(ee_borders);
-	    std::string line;
-	    while(std::getline(data,line,' '))
-	    {
-	        borders.push_back(atoi(line.c_str()));
-	    }
+			if (ee_borders.empty())
+			{
+				for (int i=0; i < 4; ++i)
+					borders.push_back(0);
+			}
+			else {
+		    std::stringstream data(ee_borders);
+		    std::string line;
+		    while(std::getline(data,line,' '))
+		    {
+		        borders.push_back(atoi(line.c_str()));
+		    }
+			}
 
 			// borders
 			auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
-			leftborder->setValue((int)borders[0]);
+			leftborder->setValue((float)borders[0]);
 			leftborder->setOnValueChanged([&borders](const float &newVal) {
 				borders[0] = (int)Math::round(newVal);
 			});
 			auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
-			topborder->setValue((int)borders[1]);
+			topborder->setValue((float)borders[1]);
 			topborder->setOnValueChanged([&borders](const float &newVal) {
 				borders[1] = (int)Math::round(newVal);
 			});
 			auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
-			rightborder->setValue((int)borders[2]);
-			rightborder->setOnValueChanged([&borders](const float &newVal) {
+			rightborder->setValue((float)borders[2]);
+			rightborder->setOnValueChanged([&borders,screenWidth](const float &newVal) {
 				borders[2] = screenWidth-1-(int)Math::round(newVal);
 			});
 			auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
-			bottomborder->setValue((int)borders[3]);
-			bottomborder->setOnValueChanged([&borders](const float &newVal) {
-				borders[3] = (int)Math::round(newVal);
+			bottomborder->setValue((float)borders[3]);
+			bottomborder->setOnValueChanged([&borders,screenHeight](const float &newVal) {
+				borders[3] = screenHeight-1-(int)Math::round(newVal);
 			});
 
 			bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
