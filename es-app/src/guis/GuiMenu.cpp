@@ -168,7 +168,7 @@ static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::st
 
 	if (screen[0] == 0) {
 		for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
-			int pos = (*it).find("x"+std::to_string(screen[0]));
+			int pos = (*it).find("x"+std::to_string(screen[1]));
 			if (pos >= 0) {
 				screen[0] = atoi(ee_videomode.substr(0,pos).c_str());
 				break;
@@ -834,7 +834,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	int screenWidth = 0;
 	int screenHeight = 0;
 
-	if (ee_framebuffer.empty()) {
+	if (!ee_framebuffer.empty()) {
 		int pos = ee_framebuffer.find('x');
 		screenWidth = atoi(ee_framebuffer.substr(0, pos).c_str());
 		screenHeight = atoi(ee_framebuffer.substr(pos+1).c_str());
@@ -859,11 +859,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 			
-			if (selectedFB == "")
+			if (selectedFB == "") {
+				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", "");
 				return;
+			}
 			
 			std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
-			if (ee_offsets.empty())
+			if (!ee_offsets.empty())
 				return;
 
 			std::string result = "0 0 "+
