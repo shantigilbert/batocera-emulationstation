@@ -862,9 +862,11 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			
 			std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
 
-			int pos = selectedFB.find(' ');
-			int width = atoi(selectedFB.substr(0, pos).c_str());
-			int height = atoi(selectedFB.substr(pos+1).c_str());
+			//int pos = selectedFB.find(' ');
+			//int width = atoi(selectedFB.substr(0, pos).c_str());
+			//int height = atoi(selectedFB.substr(pos+1).c_str());
+			int width = dimensions[0];
+			int height = dimensions[1];
 
 			std::string result = "0 0 "+
 				std::to_string(width-1)+" "+
@@ -940,21 +942,17 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 			saveBorders();
 
-			bool hasBorder = false;
-			for(int i=0; i < 4; ++i) {
-				if (borders[i] > 0) {
-					hasBorder=true;
-					break;
-				}
-			}
-			if (!hasBorder)
+			if (borders[0] == 0 && borders[1] == 0 && borders[2] == 0 && borders[3] == 0)
+			{
+				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", "");
 				return;
+			}
 
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
 				std::to_string(dimensions[0]-borders[2]-1)+" "+
 				std::to_string(dimensions[1]-borders[3]-1);
-
+			
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
 			runSystemCommand("ee_set_borders "+result, "", nullptr);			
 		});
