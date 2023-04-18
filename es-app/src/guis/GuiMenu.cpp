@@ -809,23 +809,23 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				// borders
 				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenWidth)/2, 1, "px");
 				leftborder->setValue((int)borders[0]);
-				leftborder->setOnValueChanged([borders](int &newVal) {
-					borders[0] = newVal;
+				leftborder->setOnValueChanged([borders](const float &newVal) {
+					borders[0] = (int)Math::round(newVal);
 				});
 				auto topborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenHeight)/2, 1, "px");
 				topborder->setValue((int)borders[1]);
-				topborder->setOnValueChanged([borders](int &newVal) {
-					borders[1] = newVal;
+				topborder->setOnValueChanged([borders](const float &newVal) {
+					borders[1] = (int)Math::round(newVal);
 				});
 				auto rightborder = std::make_shared<SliderComponent>(mWindow, int(screenWidth)-1, int(screenWidth)/2, -1, "px");
 				rightborder->setValue((int)borders[2]);
-				rightborder->setOnValueChanged([borders](int &newVal) {
-					borders[2] = newVal;
+				rightborder->setOnValueChanged([borders](const float &newVal) {
+					borders[2] = (int)Math::round(newVal);
 				});
 				auto bottomborder = std::make_shared<SliderComponent>(mWindow, int(screenHeight)-1, int(screenHeight)/2, -1, "px");
 				bottomborder->setValue((int)borders[3]);
-				bottomborder->setOnValueChanged([borders](int &newVal) {
-					borders[3] = newVal;
+				bottomborder->setOnValueChanged([borders](const float &newVal) {
+					borders[3] = (int)Math::round(newVal);
 				});
 
 				bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
