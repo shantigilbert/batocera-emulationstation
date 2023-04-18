@@ -892,12 +892,12 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (ee_framebuffer.empty())
 			return;
 
-		auto saveBorders = [mWindow, ee_videomode, &borders]() {
-			//mWindow->displayNotificationMessage(_U("\uF011  ") + _("saveBorders"));
-			std::string result = std::to_string(borders[0])+" "+
-				std::to_string(borders[1])+" "+
-				std::to_string(borders[2])+" "+
-				std::to_string(borders[3]);
+		auto saveBorders = [mWindow, ee_videomode](int[] b) {
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _("saveBorders"));
+			std::string result = std::to_string(b[0])+" "+
+				std::to_string(b[1])+" "+
+				std::to_string(b[2])+" "+
+				std::to_string(b[3]);
 			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
 		};
 			
@@ -907,27 +907,23 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		leftborder->setValue((float)borders[0]);
-		leftborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
+		leftborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[0] = (int)Math::round(newVal);
-			saveBorders();
 		});
 		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		topborder->setValue((float)borders[1]);
-		topborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
+		topborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[1] = (int)Math::round(newVal);
-			saveBorders();
 		});
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		rightborder->setValue((float)borders[2]);
-		rightborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
+		rightborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[2] = (int)Math::round(newVal);
-			saveBorders();
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		bottomborder->setValue((float)borders[3]);
-		bottomborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
+		bottomborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[3] = (int)Math::round(newVal);
-			saveBorders();
 		});
 
 		bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
@@ -938,6 +934,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addSaveFunc([mWindow, ee_videomode, dimensions, &borders]()
 		{
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("bordersConfig->addSaveFunc"));
+			
+			saveBorders(borders);
+
 			bool hasBorder = false;
 			for(int i=0; i < 4; ++i) {
 				if (borders[i] > 0) {
