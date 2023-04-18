@@ -770,13 +770,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		framebuffer.push_back("640x480");
 		if (ee_framebuffer.empty())
 			ee_framebuffer = "auto";
-			
+
 		emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == *it);
 		for (auto it = framebuffer.cbegin(); it != framebuffer.cend(); it++) {
 			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); 
 		}
 		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
-	   	
+
 		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
 			if (emuelec_frame_buffer->changed()) {
 				std::string selectedFB = emuelec_frame_buffer->getSelected();
@@ -796,9 +796,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				return;
 
 
-			int[] borders = {0,0,0,0};
+			int borders[4] = {0,0,0,0};
 	    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-			if (!ee_borders.empty()) {
+			if (!ee_borders.empty()) 
+			{
 		    std::stringstream data(ee_borders);
 		    std::string line;
 				int i=0;
@@ -835,14 +836,14 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
 			bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-			bordersConfig->addSaveFunc([ee_videomode, borders]
+			bordersConfig->addSaveFunc([ee_videomode, borders, ScreenWidth, ScreenHeight]
 			{
 				std::string result = std::to_string(borders[0])+" "+
 					std::to_string(borders[1])+" "+
 					std::to_string(ScreenWidth-borders[2]-1)+" "+
 					std::to_string(ScreenHeight-borders[3]-1);
 				SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
-				runSystemCommand("ee_set_borders "+result, "", nullptr);
+				//runSystemCommand("ee_set_borders "+result, "", nullptr);
 			});
 			mWindow->pushGui(bordersConfig);
 		});
