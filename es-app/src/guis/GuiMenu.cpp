@@ -821,7 +821,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		ee_framebuffer = "auto";
 	}
 	else {
-		selectedFB.replace(selectedFB.find(" "),1,"x");
+		ee_framebuffer.replace(ee_framebuffer.find(" "),1,"x");
 	}
 
 	std::vector<std::string> reslist;
