@@ -892,8 +892,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (ee_framebuffer.empty())
 			return;
 
-		auto saveBorders = [mWindow, ee_videomode, borders]() {
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("saveBorders"));
+		auto saveBorders = [mWindow, ee_videomode, &borders]() {
+			//mWindow->displayNotificationMessage(_U("\uF011  ") + _("saveBorders"));
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
 				std::to_string(borders[2])+" "+
@@ -935,7 +935,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([mWindow, ee_videomode, dimensions, borders]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, dimensions, &borders]()
 		{
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("bordersConfig->addSaveFunc"));
 			bool hasBorder = false;
