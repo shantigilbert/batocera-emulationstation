@@ -790,61 +790,60 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			}
 		});
 
-		if (!ee_framebuffer.empty() && ee_framebuffer != "auto") {
-			dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, screenWidth, screenHeight] { 
-				GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
-				if (ee_framebuffer.empty())
-					return;
+		dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, screenWidth, screenHeight] { 
+			GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
+			if (ee_framebuffer.empty())
+				return;
 
 
-				std::vector<int> borders;
-		    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		    std::stringstream data(ee_borders);
-		    std::string line;
-		    while(std::getline(data,line,' '))
-		    {
-		        borders.push_back(atoi(line.c_str()));
-		    }
+			std::vector<int> borders;
+	    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
+	    std::stringstream data(ee_borders);
+	    std::string line;
+	    while(std::getline(data,line,' '))
+	    {
+	        borders.push_back(atoi(line.c_str()));
+	    }
 
-				// borders
-				auto leftborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenWidth)/2, 1, "px");
-				leftborder->setValue((int)borders[0]);
-				leftborder->setOnValueChanged([&borders](const float &newVal) {
-					borders[0] = (int)Math::round(newVal);
-				});
-				auto topborder = std::make_shared<SliderComponent>(mWindow, 0, int(screenHeight)/2, 1, "px");
-				topborder->setValue((int)borders[1]);
-				topborder->setOnValueChanged([&borders](const float &newVal) {
-					borders[1] = (int)Math::round(newVal);
-				});
-				auto rightborder = std::make_shared<SliderComponent>(mWindow, int(screenWidth)-1, int(screenWidth)/2, -1, "px");
-				rightborder->setValue((int)borders[2]);
-				rightborder->setOnValueChanged([&borders](const float &newVal) {
-					borders[2] = (int)Math::round(newVal);
-				});
-				auto bottomborder = std::make_shared<SliderComponent>(mWindow, int(screenHeight)-1, int(screenHeight)/2, -1, "px");
-				bottomborder->setValue((int)borders[3]);
-				bottomborder->setOnValueChanged([&borders](const float &newVal) {
-					borders[3] = (int)Math::round(newVal);
-				});
-
-				bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
-				bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
-				bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
-				bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
-
-				bordersConfig->addSaveFunc([ee_videomode, borders]
-				{
-					std::string result = std::to_string(borders[0])+" "+
-						std::to_string(borders[1])+" "+
-						std::to_string(borders[2])+" "+
-						std::to_string(borders[3]);
-					SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
-					runSystemCommand("ee_set_borders "+result, "", nullptr);
-				});
-				mWindow->pushGui(bordersConfig);
+			// borders
+			auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
+			leftborder->setValue((int)borders[0]);
+			leftborder->setOnValueChanged([&borders](const float &newVal) {
+				borders[0] = (int)Math::round(newVal);
 			});
-		}
+			auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
+			topborder->setValue((int)borders[1]);
+			topborder->setOnValueChanged([&borders](const float &newVal) {
+				borders[1] = (int)Math::round(newVal);
+			});
+			auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
+			rightborder->setValue((int)borders[2]);
+			rightborder->setOnValueChanged([&borders](const float &newVal) {
+				borders[2] = screenWidth-1-(int)Math::round(newVal);
+			});
+			auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
+			bottomborder->setValue((int)borders[3]);
+			bottomborder->setOnValueChanged([&borders](const float &newVal) {
+				borders[3] = (int)Math::round(newVal);
+			});
+
+			bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
+			bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
+			bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
+			bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
+
+			bordersConfig->addSaveFunc([ee_videomode, borders]
+			{
+				std::string result = std::to_string(borders[0])+" "+
+					std::to_string(borders[1])+" "+
+					std::to_string(borders[2])+" "+
+					std::to_string(borders[3]);
+				SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+				runSystemCommand("ee_set_borders "+result, "", nullptr);
+			});
+			mWindow->pushGui(bordersConfig);
+		});
+
 #endif
 
 
