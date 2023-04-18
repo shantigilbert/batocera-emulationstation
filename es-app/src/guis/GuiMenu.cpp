@@ -883,7 +883,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				return;
 			}
 			
-			std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
+			//std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
 
 			//int pos = selectedFB.find(' ');
 			//int width = atoi(selectedFB.substr(0, pos).c_str());
@@ -965,11 +965,11 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 			saveBorders();
 
-			if (borders[0] == 0 && borders[1] == 0 && borders[2] == 0 && borders[3] == 0)
+			/*if (borders[0] == 0 && borders[1] == 0 && borders[2] == 0 && borders[3] == 0)
 			{
 				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", "");
 				return;
-			}
+			}*/
 
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
