@@ -906,13 +906,12 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		runSystemCommand("ee_set_borders "+result, "", nullptr);			
 	});
 
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] { 
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions, borders] { 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
 		if (ee_framebuffer.empty())
 			return;
 
-
-		auto saveBorders = [ee_videomode,dimensions,borders]() {
+		auto saveBorders = [ee_videomode, dimensions, borders]() {
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
 				std::to_string(borders[2])+" "+
