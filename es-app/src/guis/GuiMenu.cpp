@@ -820,6 +820,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	if (ee_framebuffer.empty()) {
 		ee_framebuffer = "auto";
 	}
+	std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
+	std::vector<int> borders(4); 
+	if (!ee_borders.empty())
+		borders = int_explode(ee_borders, ' '); 
 
 	std::vector<std::string> reslist;
 		reslist.push_back("3840x2160");
@@ -876,7 +880,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		fbSave(name);
 	});
 
-	dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, dimensions]()
+	dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, dimensions, borders]()
 	{
 		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
 		if (ee_borders.empty())
@@ -885,7 +889,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		std::vector<int> borders = int_explode(ee_borders, ' ');
 		bool hasBorder = false;
 		for(int i=0; i < 4; ++i) {
-			if (tmpBorders[i] > 0) {
+			if (borders[i] > 0) {
 				hasBorder=true;
 				break;
 			}
@@ -907,10 +911,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (ee_framebuffer.empty())
 			return;
 
-    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		std::vector<int> borders(4); 
-		if (!ee_borders.empty())
-			borders = int_explode(ee_borders, ' '); 
 
 		auto saveBorders = [ee_videomode,dimensions,borders]() {
 			std::string result = std::to_string(borders[0])+" "+
@@ -926,25 +926,25 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		leftborder->setValue((float)borders[0]);
-		leftborder->setOnValueChanged([&borders](const float &newVal) {
+		leftborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
 			borders[0] = (int)Math::round(newVal);
 			saveBorders();
 		});
 		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		topborder->setValue((float)borders[1]);
-		topborder->setOnValueChanged([&borders](const float &newVal) {
+		topborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
 			borders[1] = (int)Math::round(newVal);
 			saveBorders();
 		});
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		rightborder->setValue((float)borders[2]);
-		rightborder->setOnValueChanged([&borders](const float &newVal) {
+		rightborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
 			borders[2] = (int)Math::round(newVal);
 			saveBorders();
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		bottomborder->setValue((float)borders[3]);
-		bottomborder->setOnValueChanged([&borders](const float &newVal) {
+		bottomborder->setOnValueChanged([&borders, saveBorders](const float &newVal) {
 			borders[3] = (int)Math::round(newVal);
 			saveBorders();
 		});
