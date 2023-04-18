@@ -825,7 +825,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	int borders[4] = {0, 0, 0, 0};
 	if (!ee_borders.empty()) {
 		std::vector<int> savedBorders = int_explode(ee_borders, ' ');
-		if (savedBorders && savedBorders.size() == 4) {
+		if (savedBorders.size() == 4) {
 			for(int i=0; i < 4; ++i)
 				borders[i] = savedBorders[i];
 		}
