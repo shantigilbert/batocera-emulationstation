@@ -861,8 +861,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			}
 			
 			std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
-			if (!ee_offsets.empty())
-				return;
 
 			int pos = selectedFB.find(' ');
 			int width = atoi(selectedFB.substr(0, pos).c_str());
