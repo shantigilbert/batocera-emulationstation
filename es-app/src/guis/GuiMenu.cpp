@@ -859,9 +859,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			if (!ee_offsets.empty())
 				return;
 
+			int pos = selectedFB.find('x');
+			int width = atoi(selectedFB.substr(0, pos).c_str());
+			int height = atoi(selectedFB.substr(pos+1).c_str());
+
 			std::string result = "0 0 "+
-				std::to_string(dimensions[0]-1)+" "+
-				std::to_string(dimensions[1]-1);
+				std::to_string(width-1)+" "+
+				std::to_string(height-1);
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
 		}
@@ -874,7 +878,28 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, dimensions]()
 	{
-		fbSave(emuelec_frame_buffer->getSelected());
+		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
+		if (ee_borders.empty())
+			return;
+
+		std::vector<int> borders = int_explode(ee_borders, ' ');
+		bool hasBorder = false;
+		for(int i=0; i < 4; ++i) {
+			if (tmpBorders[i] > 0) {
+				hasBorder=true;
+				break;
+			}
+		}
+		if (!hasBorder)
+			return;
+
+		std::string result = std::to_string(borders[0])+" "+
+			std::to_string(borders[1])+" "+
+			std::to_string(dimensions[0]-borders[2]-1)+" "+
+			std::to_string(dimensions[1]-borders[3]-1);
+
+		SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
+		runSystemCommand("ee_set_borders "+result, "", nullptr);			
 	});
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] { 
@@ -882,36 +907,46 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (ee_framebuffer.empty())
 			return;
 
-
-		int borders[4] = {0,0,0,0};
     std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		std::vector<int> tmpBorders = int_explode(ee_borders, ' ');
-		for(int i=0; i < 4; ++i)
-			borders[i] = tmpBorders[i];
+		std::vector<int> borders(4); 
+		if (!ee_borders.empty())
+			borders = int_explode(ee_borders, ' '); 
 
+		auto saveBorders = [ee_videomode,dimensions,borders]() {
+			std::string result = std::to_string(borders[0])+" "+
+				std::to_string(borders[1])+" "+
+				std::to_string(borders[2])+" "+
+				std::to_string(borders[3]);
+			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+		};
+			
 		float width = float(dimensions[0])/2.0f;
 		float height = float(dimensions[1])/2.0f;
-		
+
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		leftborder->setValue((float)borders[0]);
 		leftborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[0] = (int)Math::round(newVal);
+			saveBorders();
 		});
 		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		topborder->setValue((float)borders[1]);
 		topborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[1] = (int)Math::round(newVal);
+			saveBorders();
 		});
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		rightborder->setValue((float)borders[2]);
 		rightborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[2] = (int)Math::round(newVal);
+			saveBorders();
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		bottomborder->setValue((float)borders[3]);
 		bottomborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[3] = (int)Math::round(newVal);
+			saveBorders();
 		});
 
 		bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
@@ -919,22 +954,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([ee_videomode, borders, dimensions]
-		{
-			std::string result = std::to_string(borders[0])+" "+
-				std::to_string(borders[1])+" "+
-				std::to_string(borders[2])+" "+
-				std::to_string(borders[3]);
-			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
-
-			std::string result2 = std::to_string(borders[0])+" "+
-				std::to_string(borders[1])+" "+
-				std::to_string(dimensions[0]-borders[2]-1)+" "+
-				std::to_string(dimensions[1]-borders[3]-1);
-
-			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result2);
-			runSystemCommand("ee_set_borders "+result2, "", nullptr);
-		});
 		mWindow->pushGui(bordersConfig);
 	});
 
