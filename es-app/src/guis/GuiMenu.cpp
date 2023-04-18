@@ -147,10 +147,19 @@ static std::string toupper(std::string s)
 static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
 {
 	static int screen[2] = {0, 0};
+	int pos = 0;
 	if (pos = ee_videomode.find('x'))
 	{
 		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
-		screen[1] = atoi(ee_videomode.substr(pos+1).c_str());					
+		std::string tmp = ee_videomode.substr(pos+1);
+		if (pos = tmp.find('p'))
+		{
+			screen[1] = atoi(tmp.substr(0, pos).c_str());					
+		}
+		else if (pos = tmp.find('i'))
+		{
+			screen[1] = atoi(tmp.substr(0, pos).c_str());					
+		}					
 	}
 	else if (pos = ee_videomode.find('p'))
 	{
@@ -837,7 +846,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	else {
 		ee_framebuffer = "auto";
 	}
-	
+
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
 	emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == "auto");
@@ -846,7 +855,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	}
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions](std::string selectedFB) {
+	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions] (std::string selectedFB) {
 		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
@@ -875,7 +884,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		fbSave(name);
 	});
 
-	dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode, dimensions]
+	dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode, dimensions]()
+	{
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
