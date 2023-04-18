@@ -771,9 +771,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (ee_framebuffer.empty())
 			ee_framebuffer = "auto";
 			
-		emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == *it); }			
+		emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == *it);
 		for (auto it = framebuffer.cbegin(); it != framebuffer.cend(); it++) {
-			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); }
+			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); 
+		}
 		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 	   	
 		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
