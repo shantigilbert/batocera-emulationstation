@@ -858,7 +858,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("640x480");
 
 	int* dimensions = getVideoModeDimensions(ee_videomode, reslist);
-	//mWindow->displayNotificationMessage(_U("\uF011  ") + std::to_string(dimensions[0]) + " " + std::to_string(dimensions[1]));
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -883,11 +882,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				return;
 			}
 			
-			//std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
-
-			//int pos = selectedFB.find(' ');
-			//int width = atoi(selectedFB.substr(0, pos).c_str());
-			//int height = atoi(selectedFB.substr(pos+1).c_str());
 			int width = dimensions[0];
 			int height = dimensions[1];
 
@@ -906,7 +900,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] {
 		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		//mWindow->displayNotificationMessage(_U("\uF011  ") + _(ee_borders.c_str()));
 		static int borders[4] = {0, 0, 0, 0};
 		if (!ee_borders.empty()) {
 			std::vector<int> savedBorders = int_explode(ee_borders, ' ');
@@ -921,7 +914,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			return;
 
 		auto saveBorders = [mWindow, ee_videomode, borders]() {
-			//mWindow->displayNotificationMessage(_U("\uF011  ") + _("saveBorders"));
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
 				std::to_string(borders[2])+" "+
@@ -955,21 +947,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		});
 
 		bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
-		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
+		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
 		bordersConfig->addSaveFunc([mWindow, saveBorders, ee_videomode, dimensions, borders]()
 		{
-			//mWindow->displayNotificationMessage(_U("\uF011  ") + _("bordersConfig->addSaveFunc"));
-
 			saveBorders();
-
-			/*if (borders[0] == 0 && borders[1] == 0 && borders[2] == 0 && borders[3] == 0)
-			{
-				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", "");
-				return;
-			}*/
 
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
