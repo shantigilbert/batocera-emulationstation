@@ -168,7 +168,7 @@ static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::st
 		for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
 			int pos = (*it).find("x"+std::to_string(screen[1]));
 			if (pos >= 0) {
-				screen[0] = atoi(ee_videomode.substr(0,pos).c_str());
+				screen[0] = atoi((*it).substr(0,pos).c_str());
 				break;
 			}
 		}
