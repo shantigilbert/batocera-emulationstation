@@ -797,7 +797,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 			int[] borders = {0,0,0,0};
 	    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-			if (!ee_borders.empty())
+			if (!ee_borders.empty()) {
 		    std::stringstream data(ee_borders);
 		    std::string line;
 				int i=0;
