@@ -114,7 +114,7 @@
 
 static std::vector<std::string> explode(std::string sData, char delimeter=',')
 {
-	std::vector<std::string> arr;	
+	static std::vector<std::string> arr;	
 	std::stringstream ssData(sData);
 	std::string datum;
 	while(std::getline(ssData, datum, delimeter))
@@ -126,7 +126,7 @@ static std::vector<std::string> explode(std::string sData, char delimeter=',')
 
 static std::vector<int> int_explode(std::string sData, char delimeter=',')
 {
-	std::vector<int> arr;	
+	static std::vector<int> arr;	
 	std::stringstream ssData(sData);
 	std::string datum;
 	while(std::getline(ssData, datum, delimeter))
