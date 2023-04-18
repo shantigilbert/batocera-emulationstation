@@ -892,7 +892,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (ee_framebuffer.empty())
 			return;
 
-		auto saveBorders = [mWindow, ee_videomode](int[] b) {
+		auto saveBorders = [mWindow, ee_videomode](int b[]) {
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("saveBorders"));
 			std::string result = std::to_string(b[0])+" "+
 				std::to_string(b[1])+" "+
