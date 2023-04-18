@@ -821,9 +821,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		ee_framebuffer = "auto";
 	}
 	std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-	int* borders;
-	if (!ee_borders.empty())
-		borders = &int_explode(ee_borders, ' ')[0]; 
+	mWindow->displayNotificationMessage(_U("\uF011  ") + _(ee_borders.c_str()));
+	int borders[4] = {0, 0, 0, 0};
+	std::vector<int> savedBorders = int_explode(ee_borders, ' ');
+	if (savedBorders && saveBorders.size() == 4) {
+		for(var i=0; i < 4; ++i)
+			borders[i] = savedBorders[i];
+	}
 
 	std::vector<std::string> reslist;
 		reslist.push_back("3840x2160");
