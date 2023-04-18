@@ -830,6 +830,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 #ifdef _ENABLEEMUELEC
 	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
+	if (Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE")
+		ee_videomode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
+
 	std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
 	if (ee_framebuffer.empty()) {
 		ee_framebuffer = "auto";
