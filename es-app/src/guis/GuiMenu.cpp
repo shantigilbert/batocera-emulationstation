@@ -109,6 +109,72 @@
 #define controllers_settings_label		gettext_controllers_and_bluetooth_settings
 #endif
 
+
+#ifdef _ENABLEEMUELEC
+
+static std::vector<std::string> explode(std::string sData, char delimeter=',')
+{
+	std::vector<std::string> arr;	
+	std::stringstream ssData(sData);
+	std::string datum;
+	while(std::getline(ssData, datum, delimeter))
+	{
+			arr.push_back(datum);
+	}
+	return arr;
+}
+
+static std::vector<int> int_explode(std::string sData, char delimeter=',')
+{
+	std::vector<int> arr;	
+	std::stringstream ssData(sData);
+	std::string datum;
+	while(std::getline(ssData, datum, delimeter))
+	{
+			arr.push_back( atoi(datum.c_str()));
+	}
+	return arr;
+}
+
+static std::string toupper(std::string s)
+{
+	std::for_each(s.begin(), s.end(), [](char & c){
+	    c = ::toupper(c);
+	});	
+	return s;
+}
+
+static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
+{
+	static int screen[2] = {0, 0};
+	if (pos = ee_videomode.find('x'))
+	{
+		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
+		screen[1] = atoi(ee_videomode.substr(pos+1).c_str());					
+	}
+	else if (pos = ee_videomode.find('p'))
+	{
+		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());					
+	}
+	else if (pos = ee_videomode.find('i'))
+	{
+		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());					
+	}
+	
+	if (screen[1] == 0) {
+		for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
+			int pos = (*it).find("x"+std::tostring(screen[0]));
+			if (pos >= 0) {
+				screen[1] = atoi(ee_videomode.substr(0,pos).c_str());
+				break;
+			}
+		}
+	}	
+	return screen;
+}
+
+#endif
+
 GuiMenu::GuiMenu(Window *window, bool animate) : GuiComponent(window), mMenu(window, _("MAIN MENU").c_str()), mVersion(window)
 {
 	// MAIN MENU
@@ -748,6 +814,17 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #ifdef _ENABLEEMUELEC
 	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
 	std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
+	std::vector<std::string> reslist;
+		reslist.push_back("3840x2160");
+		reslist.push_back("1920x1080");
+		reslist.push_back("1280x720");
+		reslist.push_back("720x480");
+		reslist.push_back("1280x1024");
+		reslist.push_back("1024x768");
+		reslist.push_back("800x600");
+		reslist.push_back("640x480");
+
+	int* dimensions = getVideoModeDimensions(ee_videomode,reslist);
 
 	int screenWidth = 0;
 	int screenHeight = 0;
@@ -762,113 +839,105 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	}
 	
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
-        std::vector<std::string> framebuffer;
-		framebuffer.push_back("3840x2160");
-		framebuffer.push_back("1920x1080");
-		framebuffer.push_back("1280x720");
-		framebuffer.push_back("720x480");
-		framebuffer.push_back("1280x1024");
-		framebuffer.push_back("1024x768");
-		framebuffer.push_back("800x600");
-		framebuffer.push_back("640x480");
 
-		emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == "auto");
-		for (auto it = framebuffer.cbegin(); it != framebuffer.cend(); it++) {
-			emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); 
-		}
-		dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
+	emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == "auto");
+	for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
+		emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); 
+	}
+	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
-		emuelec_frame_buffer->setSelectedChangedCallback([mWindow, ee_videomode](std::string name)
-		{
-			SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", name);
+	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions](std::string selectedFB) {
+		if (emuelec_frame_buffer->changed()) {
+			if (selectedFB == "auto")
+				selectedFB = "";
+
+			SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-		});
-
-		dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode] {
-			if (emuelec_frame_buffer->changed()) {
-				std::string selectedFB = emuelec_frame_buffer->getSelected();
-				if (selectedFB == "auto")
-					selectedFB = "";
-
-				SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
-				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
-				
-				if (selectedFB == "")
-					return;
-					
-				int pos = selectedFB.find('x');
-				screenWidth = atoi(selectedFB.substr(0, pos).c_str());
-				screenHeight = atoi(selectedFB.substr(pos+1).c_str());
-
-				result = "0 0 "+
-					std::to_string(screenWidth-1)+" "+
-					std::to_string(screenHeight-1);
-
-				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-				runSystemCommand("ee_set_borders "+result, "", nullptr);
-			}
-		});
-
-		dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, screenWidth, screenHeight] { 
-			GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
-			if (ee_framebuffer.empty())
+			
+			if (selectedFB == "")
+				return;
+			if 
+			
+			std::string ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
+			if (ee_offsets.empty())
 				return;
 
+			result = "0 0 "+
+				std::to_string(dimensions[0]-1)+" "+
+				std::to_string(dimensions[1]-1);
 
-			int borders[4] = {0,0,0,0};
-	    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-			std::vector<std::string> tmpBorders = explode(ee_borders, ' ');
-			for(int i=0; i < 4; ++i)
-				borders[i] = atoi(tmpBorders.c_str());
+			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
+		}
+	};
 
-			// borders
-			auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
-			leftborder->setValue((float)borders[0]);
-			leftborder->setOnValueChanged([&borders](const float &newVal) {
-				borders[0] = (int)Math::round(newVal);
-			});
-			auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
-			topborder->setValue((float)borders[1]);
-			topborder->setOnValueChanged([&borders](const float &newVal) {
-				borders[1] = (int)Math::round(newVal);
-			});
-			auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
-			rightborder->setValue((float)borders[2]);
-			rightborder->setOnValueChanged([&borders](const float &newVal) {
-				borders[2] = (int)Math::round(newVal);
-			});
-			auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
-			bottomborder->setValue((float)borders[3]);
-			bottomborder->setOnValueChanged([&borders](const float &newVal) {
-				borders[3] = (int)Math::round(newVal);
-			});
+	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, ee_videomode, dimensions](std::string name)
+	{
+		fbSave(name);
+	});
 
-			bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
-			bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
-			bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
-			bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
+	dangerZone->addSaveFunc([mWindow, emuelec_frame_buffer, ee_videomode, dimensions]
+		fbSave(emuelec_frame_buffer->getSelected());
+	});
 
-			bordersConfig->addSaveFunc([ee_videomode, borders, screenWidth, screenHeight]
-			{
-				std::string result = std::to_string(borders[0])+" "+
-					std::to_string(borders[1])+" "+
-					std::to_string(borders[2])+" "+
-					std::to_string(borders[3]);
-				SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] { 
+		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
+		if (ee_framebuffer.empty())
+			return;
 
-				std::string result2 = std::to_string(borders[0])+" "+
-					std::to_string(borders[1])+" "+
-					std::to_string(screenWidth-borders[2]-1)+" "+
-					std::to_string(screenHeight-borders[3]-1);
 
-				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result2);
-				runSystemCommand("ee_set_borders "+result2, "", nullptr);
-			});
-			mWindow->pushGui(bordersConfig);
+		int borders[4] = {0,0,0,0};
+    std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
+		std::vector<std::string> tmpBorders = explode(ee_borders, ' ');
+		for(int i=0; i < 4; ++i)
+			borders[i] = atoi(tmpBorders.c_str());
+
+		// borders
+		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
+		leftborder->setValue((float)borders[0]);
+		leftborder->setOnValueChanged([&borders](const float &newVal) {
+			borders[0] = (int)Math::round(newVal);
+		});
+		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
+		topborder->setValue((float)borders[1]);
+		topborder->setOnValueChanged([&borders](const float &newVal) {
+			borders[1] = (int)Math::round(newVal);
+		});
+		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenWidth)/2.0f, 1.0f, "px");
+		rightborder->setValue((float)borders[2]);
+		rightborder->setOnValueChanged([&borders](const float &newVal) {
+			borders[2] = (int)Math::round(newVal);
+		});
+		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(screenHeight)/2.0f, 1.0f, "px");
+		bottomborder->setValue((float)borders[3]);
+		bottomborder->setOnValueChanged([&borders](const float &newVal) {
+			borders[3] = (int)Math::round(newVal);
 		});
 
-#endif
+		bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
+		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
+		bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
+		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
+		bordersConfig->addSaveFunc([ee_videomode, borders, dimensions]
+		{
+			std::string result = std::to_string(borders[0])+" "+
+				std::to_string(borders[1])+" "+
+				std::to_string(borders[2])+" "+
+				std::to_string(borders[3]);
+			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+
+			std::string result2 = std::to_string(borders[0])+" "+
+				std::to_string(borders[1])+" "+
+				std::to_string(dimensions[0]-borders[2]-1)+" "+
+				std::to_string(dimensions[1]-borders[3]-1);
+
+			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result2);
+			runSystemCommand("ee_set_borders "+result2, "", nullptr);
+		});
+		mWindow->pushGui(bordersConfig);
+	});
+
+#endif
 
     dangerZone->addEntry(_("CLOUD BACKUP SETTINGS AND GAME SAVES"), true, [mWindow] { 
     mWindow->pushGui(new GuiMsgBox(mWindow, _("WARNING THIS WILL RESTART EMULATIONSTATION!\n\nThis will backup your game saves, savestates and emuelec configs to the cloud service configured on rclone.conf\n\nBACKUP TO CLOUD AND RESTART?"), _("YES"),
@@ -4533,38 +4602,6 @@ void GuiMenu::popGameConfigurationGui(Window* mWindow, FileData* fileData)
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::btn_choice = nullptr;
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::del_choice = nullptr;
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::edit_choice = nullptr;
-
-static std::vector<std::string> explode(std::string sData, char delimeter=',')
-{
-	std::vector<std::string> arr;	
-	std::stringstream ssData(sData);
-	std::string datum;
-	while(std::getline(ssData, datum, delimeter))
-	{
-			arr.push_back(datum);
-	}
-	return arr;
-}
-
-static std::vector<int> int_explode(std::string sData, char delimeter=',')
-{
-	std::vector<int> arr;	
-	std::stringstream ssData(sData);
-	std::string datum;
-	while(std::getline(ssData, datum, delimeter))
-	{
-			arr.push_back( atoi(datum.c_str()));
-	}
-	return arr;
-}
-
-static std::string toupper(std::string s)
-{
-	std::for_each(s.begin(), s.end(), [](char & c){
-	    c = ::toupper(c);
-	});	
-	return s;
-}
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createJoyBtnRemapOptionList(Window *window, std::string prefixName, int btnIndex)
 {
