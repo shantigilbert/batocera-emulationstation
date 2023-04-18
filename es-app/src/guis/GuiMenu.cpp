@@ -820,6 +820,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	if (ee_framebuffer.empty()) {
 		ee_framebuffer = "auto";
 	}
+	else {
+		selectedFB.replace(selectedFB.find(" "),1,"x");
+	}
 
 	std::vector<std::string> reslist;
 		reslist.push_back("3840x2160");
@@ -846,6 +849,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
+			else
+				selectedFB.replace(selectedFB.find("x"),1," ");
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
@@ -859,7 +864,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			if (!ee_offsets.empty())
 				return;
 
-			int pos = selectedFB.find('x');
+			int pos = selectedFB.find(' ');
 			int width = atoi(selectedFB.substr(0, pos).c_str());
 			int height = atoi(selectedFB.substr(pos+1).c_str());
 
