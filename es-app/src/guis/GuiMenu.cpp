@@ -146,10 +146,10 @@ static std::string toupper(std::string s)
 
 static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
 {
-	static int screen[2] = {0, 0};
-	int pos = 0;
+	int screen[2] = {0, 0};
+	int pos = ee_videomode.find('x');
 	std::string tmp;
-	pos = ee_videomode.find('x');
+
 	if (pos >= 0)
 	{
 		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
@@ -819,6 +819,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #ifdef _ENABLEEMUELEC
 	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
 	std::string ee_framebuffer = SystemConf::getInstance()->get(ee_videomode+".ee_framebuffer");
+	if (ee_framebuffer.empty()) {
+		ee_framebuffer = "auto";
+	}
+
 	std::vector<std::string> reslist;
 		reslist.push_back("3840x2160");
 		reslist.push_back("1920x1080");
@@ -829,19 +833,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800x600");
 		reslist.push_back("640x480");
 
-	int* dimensions = getVideoModeDimensions(ee_videomode,reslist);
-
-	int screenWidth = 0;
-	int screenHeight = 0;
-
-	if (!ee_framebuffer.empty()) {
-		int pos = ee_framebuffer.find('x');
-		screenWidth = atoi(ee_framebuffer.substr(0, pos).c_str());
-		screenHeight = atoi(ee_framebuffer.substr(pos+1).c_str());
-	}
-	else {
-		ee_framebuffer = "auto";
-	}
+	int* dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	mWindow->displayNotificationMessage(_U("\uF011  ") + dimensions[0] + " " + dimensions[1]);
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -894,27 +887,30 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 		int borders[4] = {0,0,0,0};
     std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		std::vector<std::string> tmpBorders = explode(ee_borders, ' ');
+		std::vector<int> tmpBorders = int_explode(ee_borders, ' ');
 		for(int i=0; i < 4; ++i)
-			borders[i] = atoi(tmpBorders[i].c_str());
+			borders[i] = tmpBorders[i];
 
+		float width = float(dimensions[0])/2.0f;
+		float height = float(dimensions[1])/2.0f;
+		
 		// borders
-		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(dimensions[0])/2.0f, 1.0f, "px");
+		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		leftborder->setValue((float)borders[0]);
 		leftborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[0] = (int)Math::round(newVal);
 		});
-		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(dimensions[1])/2.0f, 1.0f, "px");
+		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		topborder->setValue((float)borders[1]);
 		topborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[1] = (int)Math::round(newVal);
 		});
-		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(dimensions[0])/2.0f, 1.0f, "px");
+		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		rightborder->setValue((float)borders[2]);
 		rightborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[2] = (int)Math::round(newVal);
 		});
-		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, float(dimensions[1])/2.0f, 1.0f, "px");
+		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		bottomborder->setValue((float)borders[3]);
 		bottomborder->setOnValueChanged([&borders](const float &newVal) {
 			borders[3] = (int)Math::round(newVal);
