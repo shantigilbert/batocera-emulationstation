@@ -149,7 +149,8 @@ static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::st
 	static int screen[2] = {0, 0};
 	int pos = 0;
 	std::string tmp;
-	if (pos = ee_videomode.find('x'))
+	pos = ee_videomode.find('x');
+	if (pos >= 0)
 	{
 		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
 		tmp = ee_videomode.substr(pos+1);
@@ -157,15 +158,14 @@ static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::st
 	else
 		tmp = ee_videomode;
 		
-	if (pos = tmp.find('p'))
+	pos = tmp.find('p');
+	if (pos < 0)
+		pos = tmp.find('i');
+	if (pos >= 0)
 	{
 		screen[1] = atoi(tmp.substr(0, pos).c_str());					
 	}
-	else if (pos = tmp.find('i'))
-	{
-		screen[1] = atoi(tmp.substr(0, pos).c_str());					
-	}
-	
+
 	if (screen[0] == 0) {
 		for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
 			int pos = (*it).find("x"+std::to_string(screen[0]));
@@ -834,7 +834,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	int screenWidth = 0;
 	int screenHeight = 0;
 
-	if (!ee_framebuffer.empty()) {
+	if (ee_framebuffer.empty()) {
 		int pos = ee_framebuffer.find('x');
 		screenWidth = atoi(ee_framebuffer.substr(0, pos).c_str());
 		screenHeight = atoi(ee_framebuffer.substr(pos+1).c_str());
