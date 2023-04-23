@@ -140,9 +140,6 @@ public:
   static std::shared_ptr<OptionListComponent<std::string>> btn_choice;
   static std::shared_ptr<OptionListComponent<std::string>> del_choice;
   static std::shared_ptr<OptionListComponent<std::string>> edit_choice;
-
-	static int* ee_dimensions;
-	static float ee_borders[4];	
 #endif
 };
 

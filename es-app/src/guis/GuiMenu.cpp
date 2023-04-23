@@ -854,7 +854,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	static auto ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -896,6 +896,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	});
 
 	std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
+	
+	static float[4] ee_borders = {0.0,0.0,0.0,0.0};
 	memset(ee_borders, 0, 4*sizeof(*ee_borders));
 
 	char buffer[100];
