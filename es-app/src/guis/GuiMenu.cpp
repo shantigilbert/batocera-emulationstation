@@ -892,6 +892,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_dimensions](std::string name)
 	{
+		char buffer[100];
+		sprintf(buffer, "dim: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
+		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+				
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
