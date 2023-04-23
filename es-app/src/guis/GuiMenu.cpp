@@ -144,7 +144,7 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
+static  int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
 {
 	int screen[2] = {0, 0};
 	

@@ -75,6 +75,7 @@ private:
 	
 	static int* ee_dimensions;
 	static float ee_borders[4];
+
 #endif
 
 	void openSystemSettings();
