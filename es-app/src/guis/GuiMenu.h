@@ -38,6 +38,23 @@ struct DecorationSetInfo
 	std::string imageUrl;
 };
 
+#ifdef _ENABLEEMUELEC
+struct sScreenDimensions
+{
+	int width;
+	int height;
+};
+
+struct sScreenBorders
+{
+	float left;
+	float right;
+	float top;
+	float bottom;
+};
+
+#endif
+
 class GuiMenu : public GuiComponent
 {
 public:
@@ -73,7 +90,7 @@ private:
     static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
     static void openExternalMounts(Window* mWindow, std::string configName);
 #endif
-	
+
 	void openSystemSettings();
 	void openGamesSettings();
 	void openControllersSettings(int autoSel = 0);

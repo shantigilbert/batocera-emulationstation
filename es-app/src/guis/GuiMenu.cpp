@@ -114,7 +114,7 @@
 
 static std::vector<std::string> explode(std::string sData, char delimeter=',')
 {
-	static std::vector<std::string> arr;	
+	std::vector<std::string> arr;	
 	std::stringstream ssData(sData);
 	std::string datum;
 	while(std::getline(ssData, datum, delimeter))
@@ -126,7 +126,7 @@ static std::vector<std::string> explode(std::string sData, char delimeter=',')
 
 static std::vector<int> int_explode(std::string sData, char delimeter=',')
 {
-	static std::vector<int> arr;	
+	std::vector<int> arr;	
 	std::stringstream ssData(sData);
 	std::string datum;
 	while(std::getline(ssData, datum, delimeter))
@@ -144,30 +144,30 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
+int* getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
 {
-	static int screen[2] = {0, 0};
-	
-	if (ee_videomode == "480cvbs")
+	static int screen[2];
+
+	if (videomode == "480cvbs")
 	{
 		screen[0] = 720;
 		screen[1] = 480;
 		return screen;
   }
-	else if (ee_videomode == "576cvbs")
+	else if (videomode == "576cvbs")
 	{
 		screen[0] = 720;
 		screen[1] = 576;
 		return screen;
   }
 	
-	int pos = ee_videomode.find('x');
-	std::string tmp = ee_videomode;
+	int pos = videomode.find('x');
+	std::string tmp = videomode;
 
 	if (pos >= 0)
 	{
-		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
-		tmp = ee_videomode.substr(pos+1);
+		screen[0] = atoi(videomode.substr(0, pos).c_str());
+		tmp = videomode.substr(pos+1);
 	}
 		
 	pos = tmp.find('p');
@@ -180,13 +180,13 @@ static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::st
 
 	if (screen[0] == 0) {
 		for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
-			int pos = (*it).find("x"+std::to_string(screen[1]));
+			int pos = (*it).find(" "+std::to_string(screen[1]));
 			if (pos >= 0) {
 				screen[0] = atoi((*it).substr(0,pos).c_str());
 				break;
 			}
 		}
-	}	
+	}
 	return screen;
 }
 
@@ -854,7 +854,11 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	int* dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
+
+	static sScreenDimensions ee_screen;
+	ee_screen.width = ee_dimensions[0];
+	ee_screen.height = ee_dimensions[1];
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -866,8 +870,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	}
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions] (std::string selectedFB) {
-		if (emuelec_frame_buffer.changed()) {
+	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, ee_screen] (std::string selectedFB) {
+		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
 
@@ -878,87 +882,79 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", "");
 				return;
 			}
-			
-			int width = dimensions[0];
-			int height = dimensions[1];
 
 			std::string result = "0 0 "+
-				std::to_string(width-1)+" "+
-				std::to_string(height-1);
+				std::to_string(ee_screen.width-1)+" "+
+				std::to_string(ee_screen.height-1);
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
 		}
 	};
 
-	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, dimensions](std::string name)
+
+	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_screen](std::string name)
 	{
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] {
-		std::string ee_borders = SystemConf::getInstance()->get(*ee_videomode+".ee_borders");
-		int borders[4] = {0,0,0,0};
-		if (!ee_borders.empty()) {
-			std::vector<int> savedBorders = int_explode(ee_borders, ' ');
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_screen] {
+		static sScreenBorders ee_borders;
+		ee_borders.left = 0.0f;
+		ee_borders.right = 0.0f;
+		ee_borders.top = 0.0f;
+		ee_borders.bottom = 0.0f;
+
+		std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
+		if (!str_ee_offsets.empty()) {
+			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
 			if (savedBorders.size() == 4) {
-				for(int i=0; i < 4; ++i)
-					borders[i] = savedBorders[i];
+				ee_borders.left = (float) savedBorders[0];
+				ee_borders.top = (float) savedBorders[1];
+				ee_borders.right = (float) savedBorders[2];
+				ee_borders.bottom = (float) savedBorders[3];
 			}
 		}
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
-		if (ee_framebuffer->empty())
+		if (ee_framebuffer.empty())
 			return;
 
-		auto saveBorders = [mWindow, ee_videomode, borders]() {
-			std::string result = std::to_string(borders[0])+" "+
-				std::to_string(borders[1])+" "+
-				std::to_string(borders[2])+" "+
-				std::to_string(borders[3]);
-			SystemConf::getInstance()->set(*ee_videomode+".ee_borders", result);
-		};
-			
-		float width = float(dimensions[0])/2.0f;
-		float height = float(dimensions[1])/2.0f;
+		float width = (float)ee_screen.width;
+		float height = (float)ee_screen.height;
 
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
-		leftborder->setValue((float)borders[0]);
-		leftborder->setOnValueChanged([&borders](const float &newVal) {
-			borders[0] = (int)Math::round(newVal);
-		});
+		leftborder->setValue(ee_borders.left);
+
 		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		topborder->setValue((float)borders[1]);
-		topborder->setOnValueChanged([&borders](const float &newVal) {
-			borders[1] = (int)Math::round(newVal);
-		});
+		topborder->setValue(ee_borders.top);
+
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
-		rightborder->setValue((float)borders[2]);
-		rightborder->setOnValueChanged([&borders](const float &newVal) {
-			borders[2] = (int)Math::round(newVal);
-		});
+		rightborder->setValue((ee_borders.right > 0.0f) ? width-ee_borders.right-1 : 0.0f);
+
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		bottomborder->setValue((float)borders[3]);
-		bottomborder->setOnValueChanged([&borders](const float &newVal) {
-			borders[3] = (int)Math::round(newVal);
-		});
+		bottomborder->setValue((ee_borders.bottom > 0.0f) ? height-ee_borders.bottom-1 : 0.0f);
 
 		bordersConfig->addWithLabel(_("LEFT BORDER"), leftborder);
 		bordersConfig->addWithLabel(_("RIGHT BORDER"), rightborder);
 		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([mWindow, saveBorders, ee_videomode, dimensions, borders]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder, rightborder, topborder, bottomborder]()
 		{
-			saveBorders();
+			int borders[4] = {0,0,0,0};
+			borders[0] = (int) leftborder->getValue();
+			borders[1] = (int) topborder->getValue();
+			borders[2] = (int) rightborder->getValue();
+			borders[3] = (int) bottomborder->getValue();
 
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
-				std::to_string(dimensions[0]-borders[2]-1)+" "+
-				std::to_string(dimensions[1]-borders[3]-1);
-			
+				std::to_string(ee_screen.width-(borders[2])-1)+" "+
+				std::to_string(ee_screen.height-(borders[3])-1);
+
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-			//runSystemCommand("ee_set_borders "+result, "", nullptr);			
+			runSystemCommand("ee_set_borders "+result, "", nullptr);
 		});
 
 		mWindow->pushGui(bordersConfig);
