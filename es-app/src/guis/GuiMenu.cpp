@@ -866,7 +866,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	}
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, &ee_dimensions] (std::string selectedFB) {
+	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, ee_dimensions] (std::string selectedFB) {
 		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
