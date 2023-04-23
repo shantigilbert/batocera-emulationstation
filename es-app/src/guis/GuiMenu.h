@@ -72,10 +72,6 @@ private:
     static void openDangerZone(Window* mWindow, std::string configName);
     static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
     static void openExternalMounts(Window* mWindow, std::string configName);
-	
-	static int* ee_dimensions;
-	static float ee_borders[4];
-
 #endif
 
 	void openSystemSettings();
@@ -144,6 +140,9 @@ public:
   static std::shared_ptr<OptionListComponent<std::string>> btn_choice;
   static std::shared_ptr<OptionListComponent<std::string>> del_choice;
   static std::shared_ptr<OptionListComponent<std::string>> edit_choice;
+
+	static int* ee_dimensions;
+	static float ee_borders[4];	
 #endif
 };
 

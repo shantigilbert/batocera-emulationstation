@@ -144,30 +144,30 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-static  int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
+static  int* getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
 {
 	int screen[2] = {0, 0};
 	
-	if (ee_videomode == "480cvbs")
+	if (videomode == "480cvbs")
 	{
 		screen[0] = 720;
 		screen[1] = 480;
 		return screen;
   }
-	else if (ee_videomode == "576cvbs")
+	else if (videomode == "576cvbs")
 	{
 		screen[0] = 720;
 		screen[1] = 576;
 		return screen;
   }
 	
-	int pos = ee_videomode.find('x');
-	std::string tmp = ee_videomode;
+	int pos = videomode.find('x');
+	std::string tmp = videomode;
 
 	if (pos >= 0)
 	{
-		screen[0] = atoi(ee_videomode.substr(0, pos).c_str());
-		tmp = ee_videomode.substr(pos+1);
+		screen[0] = atoi(videomode.substr(0, pos).c_str());
+		tmp = videomode.substr(pos+1);
 	}
 		
 	pos = tmp.find('p');
@@ -186,9 +186,7 @@ static  int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::s
 				break;
 			}
 		}
-	}	
-	//ee_dimensions[0] = screen[0];
-	//ee_dimensions[1] = screen[1];
+	}
 	return screen;
 }
 
