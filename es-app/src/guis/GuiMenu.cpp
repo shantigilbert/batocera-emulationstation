@@ -907,12 +907,16 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				ee_borders[i] = (float) savedBorders[i];
 		}
 	}
-	sprintf(buffer, "%.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
+	char buffer[100];
+	sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_dimensions, &ee_borders] {
 		char buffer[100];
-		sprintf(buffer, "%.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
+		sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
+		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+
+		sprintf(buffer, "dimensions: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
@@ -952,13 +956,16 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_dimensions]()
 		{
 			float borders[4] = {0.0,0.0,0.0,0.0};
-			border[0] = leftborder->getValue();
-			border[1] = topborder->getValue();
-			border[2] = rightborder->getValue();
-			border[3] = bottomborder->getValue();
+			borders[0] = leftborder->getValue();
+			borders[1] = topborder->getValue();
+			borders[2] = rightborder->getValue();
+			borders[3] = bottomborder->getValue();
 
 			char buffer[100];
-			sprintf(buffer, "%.0f %.0f %.0f %.0f", borders[0], borders[1], borders[2], borders[3]);
+			sprintf(buffer, "border: %.0f %.0f %.0f %.0f", borders[0], borders[1], borders[2], borders[3]);
+			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+
+			sprintf(buffer, "dim: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
 			/*std::string result = std::to_string((int)borders[0])+" "+
