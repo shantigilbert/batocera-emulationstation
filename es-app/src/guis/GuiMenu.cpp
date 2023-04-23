@@ -910,7 +910,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions, _borders] {
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions, &_borders] {
 		char buffer[100];
 		sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
