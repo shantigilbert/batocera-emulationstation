@@ -144,7 +144,7 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
+static void getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
 {
 	int screen[2] = {0, 0};
 	
@@ -187,7 +187,8 @@ int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> r
 			}
 		}
 	}	
-	return screen;
+	ee_dimensions[0] = screen[0];
+	ee_dimensions[1] = screen[1];
 }
 
 #endif
@@ -854,7 +855,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	getVideoModeDimensions(ee_videomode, reslist);
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -866,7 +867,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	}
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions] (std::string selectedFB) {
+	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, &ee_dimensions] (std::string selectedFB) {
 		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
@@ -879,8 +880,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				return;
 			}
 			
-			int width = dimensions[0];
-			int height = dimensions[1];
+			int width = ee_dimensions[0];
+			int height = ee_dimensions[1];
 
 			std::string result = "0 0 "+
 				std::to_string(width-1)+" "+
@@ -963,7 +964,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				std::to_string((int)ee_borders[3]);
 			SystemConf::getInstance()->set(ee_videomode+".eeee_borders", result);*/
 
-			result = std::to_string((int)ee_borders[0])+" "+
+			std::string result = std::to_string((int)ee_borders[0])+" "+
 				std::to_string((int)ee_borders[1])+" "+
 				std::to_string(ee_dimensions[0]-((int)ee_borders[2])-1)+" "+
 				std::to_string(ee_dimensions[1]-((int)ee_borders[3])-1);
