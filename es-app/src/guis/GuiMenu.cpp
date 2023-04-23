@@ -144,7 +144,7 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-static void getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
+static int* getVideoModeDimensions(std::string ee_videomode, std::vector<std::string> reslist) 
 {
 	int screen[2] = {0, 0};
 	
@@ -187,8 +187,9 @@ static void getVideoModeDimensions(std::string ee_videomode, std::vector<std::st
 			}
 		}
 	}	
-	ee_dimensions[0] = screen[0];
-	ee_dimensions[1] = screen[1];
+	//ee_dimensions[0] = screen[0];
+	//ee_dimensions[1] = screen[1];
+	return screen;
 }
 
 #endif
@@ -855,7 +856,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	getVideoModeDimensions(ee_videomode, reslist);
+	ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -891,7 +892,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		}
 	};
 
-	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, dimensions](std::string name)
+	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_dimensions](std::string name)
 	{
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
@@ -913,7 +914,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	sprintf(buffer, "%.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, &ee_dimensions, &ee_borders] {
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_dimensions, &ee_borders] {
 		char buffer[100];
 		sprintf(buffer, "%.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
@@ -952,7 +953,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([mWindow, ee_videomode, &ee_dimensions, &ee_borders]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_dimensions, &ee_borders]()
 		{
 			char buffer[100];
 			sprintf(buffer, "%.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
