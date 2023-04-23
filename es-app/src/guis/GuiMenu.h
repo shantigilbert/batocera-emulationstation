@@ -72,8 +72,11 @@ private:
     static void openDangerZone(Window* mWindow, std::string configName);
     static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
     static void openExternalMounts(Window* mWindow, std::string configName);
-#endif
 	
+	int ee_dimensions[2];
+	float ee_borders[4];
+#endif
+
 	void openSystemSettings();
 	void openGamesSettings();
 	void openControllersSettings(int autoSel = 0);
