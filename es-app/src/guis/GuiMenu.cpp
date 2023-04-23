@@ -895,21 +895,23 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
-
-
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] {
-		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		float _borders[4] = {0, 0, 0, 0};
-		char buffer[100];
-		sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
-		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
-		if (!ee_borders.empty()) {
-			std::vector<int> savedBorders = int_explode(ee_borders, ' ');
-			if (savedBorders.size() == 4) {
-				for(int i=0; i < 4; ++i)
-					_borders[i] = (float) savedBorders[i];
-			}
+	std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
+	float _borders[4] = {0, 0, 0, 0};
+	char buffer[100];
+	sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
+	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+	if (!ee_borders.empty()) {
+		std::vector<int> savedBorders = int_explode(ee_borders, ' ');
+		if (savedBorders.size() == 4) {
+			for(int i=0; i < 4; ++i)
+				_borders[i] = (float) savedBorders[i];
 		}
+	}
+	sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
+	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions, _borders] {
+		char buffer[100];
 		sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
@@ -947,8 +949,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([ee_videomode, dimensions, &_borders]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, dimensions, &_borders]()
 		{
+			char buffer[100];
 			sprintf(buffer, "%.0f %.0f %.0f %.0f", _borders[0], _borders[1], _borders[2], _borders[3]);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
