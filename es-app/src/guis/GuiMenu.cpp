@@ -867,7 +867,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
 	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions] (std::string selectedFB) {
-		if (emuelec_frame_buffer.changed()) {
+		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
 
@@ -896,7 +896,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	});
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] {
-		std::string ee_borders = SystemConf::getInstance()->get(*ee_videomode+".ee_borders");
+		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
 		int borders[4] = {0,0,0,0};
 		if (!ee_borders.empty()) {
 			std::vector<int> savedBorders = int_explode(ee_borders, ' ');
@@ -907,7 +907,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		}
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
-		if (ee_framebuffer->empty())
+		if (ee_framebuffer.empty())
 			return;
 
 		auto saveBorders = [mWindow, ee_videomode, borders]() {
@@ -915,7 +915,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				std::to_string(borders[1])+" "+
 				std::to_string(borders[2])+" "+
 				std::to_string(borders[3]);
-			SystemConf::getInstance()->set(*ee_videomode+".ee_borders", result);
+			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
 		};
 			
 		float width = float(dimensions[0])/2.0f;
