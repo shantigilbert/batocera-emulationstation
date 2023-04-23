@@ -895,51 +895,43 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] {
-		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		int borders[4] = {0,0,0,0};
-		if (!ee_borders.empty()) {
-			std::vector<int> savedBorders = int_explode(ee_borders, ' ');
-			if (savedBorders.size() == 4) {
-				for(int i=0; i < 4; ++i)
-					borders[i] = savedBorders[i];
-			}
+	std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
+	int borders[4] = {0,0,0,0};
+	if (!ee_borders.empty()) {
+		std::vector<int> savedBorders = int_explode(ee_borders, ' ');
+		if (savedBorders.size() == 4) {
+			for(int i=0; i < 4; ++i)
+				borders[i] = savedBorders[i];
 		}
+	}
 
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions, &borders] {
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
 		if (ee_framebuffer.empty())
 			return;
 
-		auto saveBorders = [mWindow, ee_videomode, borders]() {
-			std::string result = std::to_string(borders[0])+" "+
-				std::to_string(borders[1])+" "+
-				std::to_string(borders[2])+" "+
-				std::to_string(borders[3]);
-			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
-		};
-			
 		float width = float(dimensions[0])/2.0f;
 		float height = float(dimensions[1])/2.0f;
 
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		leftborder->setValue((float)borders[0]);
-		leftborder->setOnValueChanged([&borders](const float &newVal) {
+		leftborder->setOnValueChanged([borders](const float &newVal) {
 			borders[0] = (int)Math::round(newVal);
 		});
 		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		topborder->setValue((float)borders[1]);
-		topborder->setOnValueChanged([&borders](const float &newVal) {
+		topborder->setOnValueChanged([borders](const float &newVal) {
 			borders[1] = (int)Math::round(newVal);
 		});
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
 		rightborder->setValue((float)borders[2]);
-		rightborder->setOnValueChanged([&borders](const float &newVal) {
+		rightborder->setOnValueChanged([borders](const float &newVal) {
 			borders[2] = (int)Math::round(newVal);
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
 		bottomborder->setValue((float)borders[3]);
-		bottomborder->setOnValueChanged([&borders](const float &newVal) {
+		bottomborder->setOnValueChanged([borders](const float &newVal) {
 			borders[3] = (int)Math::round(newVal);
 		});
 
@@ -950,9 +942,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 		bordersConfig->addSaveFunc([mWindow, saveBorders, ee_videomode, dimensions, borders]()
 		{
-			saveBorders();
-
 			std::string result = std::to_string(borders[0])+" "+
+				std::to_string(borders[1])+" "+
+				std::to_string(borders[2])+" "+
+				std::to_string(borders[3]);
+			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+
+			result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
 				std::to_string(dimensions[0]-borders[2]-1)+" "+
 				std::to_string(dimensions[1]-borders[3]-1);
