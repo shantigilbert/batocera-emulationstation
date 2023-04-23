@@ -897,7 +897,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
 	
-	static float[4] ee_borders = {0.0,0.0,0.0,0.0};
+	static float ee_borders[4] = {0.0,0.0,0.0,0.0};
 	memset(ee_borders, 0, 4*sizeof(*ee_borders));
 
 	char buffer[100];
