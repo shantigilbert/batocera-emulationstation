@@ -73,8 +73,8 @@ private:
     static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
     static void openExternalMounts(Window* mWindow, std::string configName);
 	
-	int ee_dimensions[2];
-	float ee_borders[4];
+	static int ee_dimensions[2];
+	static float ee_borders[4];
 #endif
 
 	void openSystemSettings();
