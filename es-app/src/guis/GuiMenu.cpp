@@ -837,25 +837,22 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	if (ee_framebuffer.empty()) {
 		ee_framebuffer = "auto";
 	}
-	else {
-		ee_framebuffer.replace(ee_framebuffer.find(" "),1,"x");
-	}
 
 	std::vector<std::string> reslist;
-		reslist.push_back("3840x2160");
-		reslist.push_back("2560x1440");
-		reslist.push_back("1920x1080");
-		reslist.push_back("1280x720");
-		reslist.push_back("720x480");
-		reslist.push_back("768x576");
-		reslist.push_back("1680x1050");
-		reslist.push_back("1440x900");
-		reslist.push_back("1280x1024");
-		reslist.push_back("1280x960");
-		reslist.push_back("1280x800");
-		reslist.push_back("1024x768");
-		reslist.push_back("800x600");
-		reslist.push_back("640x480");
+		reslist.push_back("3840 2160");
+		reslist.push_back("2560 1440");
+		reslist.push_back("1920 1080");
+		reslist.push_back("1280 720");
+		reslist.push_back("720 480");
+		reslist.push_back("768 576");
+		reslist.push_back("1680 1050");
+		reslist.push_back("1440 900");
+		reslist.push_back("1280 1024");
+		reslist.push_back("1280 960");
+		reslist.push_back("1280 800");
+		reslist.push_back("1024 768");
+		reslist.push_back("800 600");
+		reslist.push_back("640 480");
 
 	int* dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
@@ -863,16 +860,16 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == "auto");
 	for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
-		emuelec_frame_buffer->add(*it, *it, ee_framebuffer == *it); 
+		std::string lbl = *it;
+		lbl = lbl.replace(lbl.find(" "),1,"x");
+		emuelec_frame_buffer->add(lbl, *it, ee_framebuffer == *it); 
 	}
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
 	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, dimensions] (std::string selectedFB) {
-		if (emuelec_frame_buffer->changed()) {
+		if (emuelec_frame_buffer.changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
-			else
-				selectedFB.replace(selectedFB.find("x"),1," ");
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_framebuffer", selectedFB);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
@@ -895,12 +892,12 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, dimensions](std::string name)
 	{
-		fbSave(name);
+		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, dimensions] {
-		std::string ee_borders = SystemConf::getInstance()->get(ee_videomode+".ee_borders");
-		static int borders[4] = {0, 0, 0, 0};
+		std::string ee_borders = SystemConf::getInstance()->get(*ee_videomode+".ee_borders");
+		int borders[4] = {0,0,0,0};
 		if (!ee_borders.empty()) {
 			std::vector<int> savedBorders = int_explode(ee_borders, ' ');
 			if (savedBorders.size() == 4) {
@@ -910,7 +907,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		}
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
-		if (ee_framebuffer.empty())
+		if (ee_framebuffer->empty())
 			return;
 
 		auto saveBorders = [mWindow, ee_videomode, borders]() {
@@ -918,7 +915,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				std::to_string(borders[1])+" "+
 				std::to_string(borders[2])+" "+
 				std::to_string(borders[3]);
-			SystemConf::getInstance()->set(ee_videomode+".ee_borders", result);
+			SystemConf::getInstance()->set(*ee_videomode+".ee_borders", result);
 		};
 			
 		float width = float(dimensions[0])/2.0f;
@@ -961,7 +958,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				std::to_string(dimensions[1]-borders[3]-1);
 			
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-			runSystemCommand("ee_set_borders "+result, "", nullptr);			
+			//runSystemCommand("ee_set_borders "+result, "", nullptr);			
 		});
 
 		mWindow->pushGui(bordersConfig);
