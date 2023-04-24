@@ -956,7 +956,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			//ee_borders[2] = Math::round(newVal);
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		bottomborder->setValue(ee_borders.top-ee_dimensions.height+1);
+		bottomborder->setValue(ee_borders.top-ee_screen.height+1);
 		bottomborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[3] = Math::round(newVal);
 		});
@@ -966,7 +966,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_dimensions, leftborder,rightborder,topborder,bottomborder]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder,rightborder,topborder,bottomborder]()
 		{
 			float borders[4] = {0.0,0.0,0.0,0.0};
 			borders[0] = leftborder->getValue();
