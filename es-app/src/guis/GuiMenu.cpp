@@ -864,8 +864,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-	std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
-
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
 	emuelec_frame_buffer->add("auto", "auto", ee_framebuffer == "auto");
@@ -908,12 +906,14 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	});
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_screen] {
+
 		static sScreenBorders ee_borders;
 		ee_borders.left = 0.0f;
 		ee_borders.right = 0.0f;
 		ee_borders.top = 0.0f;
 		ee_borders.bottom = 0.0f;
 
+		std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
 		if (!str_ee_offsets.empty()) {
 			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
 			if (savedBorders.size() == 4) {
