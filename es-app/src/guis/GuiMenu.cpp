@@ -928,7 +928,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders.left, ee_borders.top, ee_borders.right, ee_borders.bottom);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-		sprintf(buffer, "dimensions: %.0f %.0f", ee_screen.width, ee_screen.height);
+		sprintf(buffer, "dimensions: %d %d", ee_screen.width, ee_screen.height);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
@@ -950,12 +950,12 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			//ee_borders[1] = Math::round(newVal);
 		});
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
-		rightborder->setValue((ee_borders.right > 0.0f) ? width-ee_borders.right+1 : 0.0f);
+		rightborder->setValue((ee_borders.right > 0.0f) ? width-ee_borders.right-1 : 0.0f);
 		rightborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[2] = Math::round(newVal);
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		bottomborder->setValue((ee_borders.top > 0.0f) ? height-ee_borders.top+1 : 0.0f);
+		bottomborder->setValue((ee_borders.top > 0.0f) ? height-ee_borders.top-1 : 0.0f);
 		bottomborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[3] = Math::round(newVal);
 		});
@@ -965,7 +965,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		/*bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder,rightborder,topborder,bottomborder]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder,rightborder,topborder,bottomborder]()
 		{
 			float borders[4] = {0.0,0.0,0.0,0.0};
 			borders[0] = leftborder->getValue();
@@ -987,7 +987,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
 			runSystemCommand("ee_setborders "+result, "", nullptr);
-		});*/
+		});
 
 		mWindow->pushGui(bordersConfig);
 	});
