@@ -854,7 +854,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist));
+	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
 	char buffer[100];
 	sprintf(buffer, "dimensions: %d %d", ee_dimensions[0], ee_dimensions[1]);
