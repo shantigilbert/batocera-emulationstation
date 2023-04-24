@@ -854,10 +854,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	auto ee_dimensions = std::make_shared<int*>(getVideoModeDimensions(ee_videomode, reslist));
+	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist));
 
 	char buffer[100];
-	sprintf(buffer, "dimensions: %d %d", *ee_dimensions.get()[0], *ee_dimensions.get()[1]);
+	sprintf(buffer, "dimensions: %d %d", ee_dimensions[0], ee_dimensions[1]);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
@@ -883,8 +883,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				return;
 			}
 			
-			int width = *ee_dimensions.get()[0];
-			int height = *ee_dimensions.get()[1];
+			int width = ee_dimensions[0];
+			int height = ee_dimensions[1];
 
 			std::string result = "0 0 "+
 				std::to_string(width-1)+" "+
@@ -897,7 +897,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_dimensions](std::string name)
 	{
 		char buffer[100];
-		sprintf(buffer, "dim: %.0f %.0f", *ee_dimensions.get()[0], *ee_dimensions.get()[1]);
+		sprintf(buffer, "dim: %d %d", ee_dimensions[0], ee_dimensions[1]);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 				
 		fbSave(emuelec_frame_buffer->getSelected());
