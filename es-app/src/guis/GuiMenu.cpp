@@ -144,9 +144,9 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-int* getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
+static int* getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
 {
-	int screen[2] = {0, 0};
+	static int screen[2] = {0, 0};
 
 	if (videomode == "480cvbs")
 	{
@@ -856,9 +856,9 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	char buffer[100];
-	sprintf(buffer, "dimensions: %d %d", ee_dimensions[0], ee_dimensions[1]);
-	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+	//char buffer[100];
+	//sprintf(buffer, "dimensions: %d %d", ee_dimensions[0], ee_dimensions[1]);
+	//mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
