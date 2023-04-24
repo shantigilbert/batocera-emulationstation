@@ -180,7 +180,7 @@ int* getVideoModeDimensions(std::string videomode, std::vector<std::string> resl
 
 	if (screen[0] == 0) {
 		for (auto it = reslist.cbegin(); it != reslist.cend(); it++) {
-			int pos = (*it).find("x"+std::to_string(screen[1]));
+			int pos = (*it).find(" "+std::to_string(screen[1]));
 			if (pos >= 0) {
 				screen[0] = atoi((*it).substr(0,pos).c_str());
 				break;
@@ -864,16 +864,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-	/*std::shared_ptr<int> ee_dimensions (new int [2], [](int* d){
-		 delete [] d;
-	});
-	ee_dimensions.get()[0] = dimensions[0];
-	ee_dimensions.get()[1] = dimensions[1];*/
-	
-	
-	//char buffer[100];
-	//sprintf(buffer, "dimensions: %d %d", ee_dimensions[0], ee_dimensions[1]);
-	//mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+	std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -906,6 +897,22 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		}
 	};
 
+	static sScreenBorders ee_borders;
+	//ee_borders.left = 0.0f;
+	//ee_borders.right = 0.0f;
+	//ee_borders.top = 0.0f;
+	//ee_borders.bottom = 0.0f;
+
+	if (!str_ee_offsets.empty()) {
+		std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
+		if (savedBorders.size() == 4) {
+			ee_borders.left = (float) savedBorders[0];
+			ee_borders.top = (float) savedBorders[1];
+			ee_borders.right = (float) savedBorders[2];
+			ee_borders.bottom = (float) savedBorders[3];
+		}
+	}
+
 	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_screen](std::string name)
 	{
 		char buffer[100];
@@ -915,55 +922,41 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
+	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_screen, ee_borders] {
 
-	//sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
-	//mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
-
-	/*dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_dimensions] {
-		std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");	
-		static float ee_borders[4] = {0.0,0.0,0.0,0.0};
-		//memset(ee_borders, 0, 4*sizeof(*ee_borders));
-
-		if (!str_ee_offsets.empty()) {
-			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
-			if (savedBorders.size() == 4) {
-				for(int i=0; i < 4; ++i)
-					ee_borders[i] = (float) savedBorders[i];
-			}
-		}
 		
 		char buffer[100];
-		sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
+		sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders.left, ee_borders.top, ee_borders.right, ee_borders.bottom);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-		sprintf(buffer, "dimensions: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
+		sprintf(buffer, "dimensions: %.0f %.0f", ee_screen.width, ee_screen.height);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 		GuiSettings* bordersConfig = new GuiSettings(mWindow, _("FRAME BORDERS"));
 		if (ee_framebuffer.empty())
 			return;
 
-		float width = float(ee_dimensions[0])/2.0f;
-		float height = float(ee_dimensions[1])/2.0f;
+		float width = float(ee_screen.width);
+		float height = float(ee_screen.height);
 
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
-		leftborder->setValue(ee_borders[0]);
+		leftborder->setValue(ee_borders.left);
 		leftborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[0] = Math::round(newVal);
 		});
 		auto topborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		topborder->setValue(ee_borders[1]);
+		topborder->setValue(ee_borders.top);
 		topborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[1] = Math::round(newVal);
 		});
 		auto rightborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
-		rightborder->setValue(ee_borders[2]-ee_dimensions[0]+1);
+		rightborder->setValue(ee_borders.right-ee_screen.width+1);
 		rightborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[2] = Math::round(newVal);
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		bottomborder->setValue(ee_borders[3]-ee_dimensions[1]+1);
+		bottomborder->setValue(ee_borders.top-ee_dimensions.height+1);
 		bottomborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[3] = Math::round(newVal);
 		});
@@ -985,21 +978,21 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			sprintf(buffer, "border: %.0f %.0f %.0f %.0f", borders[0], borders[1], borders[2], borders[3]);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-			sprintf(buffer, "dim: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
+			sprintf(buffer, "dim: %.0f %.0f", ee_screen.width, ee_screen.height);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
 			std::string result = std::to_string((int)borders[0])+" "+
 				std::to_string((int)borders[1])+" "+
-				std::to_string(ee_dimensions[0]-((int)borders[2])-1)+" "+
-				std::to_string(ee_dimensions[1]-((int)borders[3])-1);
-			
+				std::to_string(ee_screen.width-((int)borders[2])-1)+" "+
+				std::to_string(ee_screen.height-((int)borders[3])-1);
+
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-			//runSystemCommand("ee_setborders "+result, "", nullptr);
+			runSystemCommand("ee_setborders "+result, "", nullptr);
 			//delete [] borders;
 		});
 
 		mWindow->pushGui(bordersConfig);
-	});*/
+	});
 
 #endif
 
