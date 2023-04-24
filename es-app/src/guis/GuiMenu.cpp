@@ -856,6 +856,10 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
+	sScreenDimenions ee_screen;
+	ee_screen.width = ee_dimensions[0];
+	ee_screen.height = ee_dimensions[1];
+
 	/*std::shared_ptr<int> ee_dimensions (new int [2], [](int* d){
 		 delete [] d;
 	});
@@ -877,7 +881,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	}
 	dangerZone->addWithLabel(_("FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, ee_dimensions] (std::string selectedFB) {
+	auto fbSave = [mWindow, emuelec_frame_buffer, ee_videomode, ee_screen] (std::string selectedFB) {
 		if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
@@ -889,22 +893,19 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				SystemConf::getInstance()->set(ee_videomode+".ee_offsets", "");
 				return;
 			}
-			
-			int width = ee_dimensions[0];
-			int height = ee_dimensions[1];
 
 			std::string result = "0 0 "+
-				std::to_string(width-1)+" "+
-				std::to_string(height-1);
+				std::to_string(ee_screen.width-1)+" "+
+				std::to_string(ee_screen.height-1);
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
 		}
 	};
 
-	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_dimensions](std::string name)
+	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_screen](std::string name)
 	{
 		char buffer[100];
-		sprintf(buffer, "dim: %d %d", ee_dimensions[0], ee_dimensions[1]);
+		sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 				
 		fbSave(emuelec_frame_buffer->getSelected());
