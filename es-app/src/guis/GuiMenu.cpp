@@ -856,9 +856,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	sScreenDimensions ee_screen;
+	static sScreenDimensions ee_screen;
 	ee_screen.width = ee_dimensions[0];
 	ee_screen.height = ee_dimensions[1];
+
+	char buffer[100];
+	sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
+	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 	/*std::shared_ptr<int> ee_dimensions (new int [2], [](int* d){
 		 delete [] d;
