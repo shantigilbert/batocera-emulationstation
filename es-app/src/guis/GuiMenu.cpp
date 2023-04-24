@@ -854,7 +854,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	auto ee_dimensions = std::make_shared<int*>(getVideoModeDimensions(ee_videomode, reslist));
 
 	char buffer[100];
 	sprintf(buffer, "dimensions: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
@@ -907,7 +907,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	//sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
 	//mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_dimensions] {
+	/*dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_dimensions] {
 		std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");	
 		static float ee_borders[4] = {0.0,0.0,0.0,0.0};
 		//memset(ee_borders, 0, 4*sizeof(*ee_borders));
@@ -976,12 +976,6 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			sprintf(buffer, "dim: %.0f %.0f", ee_dimensions[0], ee_dimensions[1]);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
-			/*std::string result = std::to_string((int)borders[0])+" "+
-				std::to_string((int)borders[1])+" "+
-				std::to_string((int)borders[2])+" "+
-				std::to_string((int)borders[3]);
-			SystemConf::getInstance()->set(ee_videomode+".eeborders", result);*/
-
 			std::string result = std::to_string((int)borders[0])+" "+
 				std::to_string((int)borders[1])+" "+
 				std::to_string(ee_dimensions[0]-((int)borders[2])-1)+" "+
@@ -992,7 +986,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			//delete [] borders;
 		});
 
-		mWindow->pushGui(bordersConfig);
+		mWindow->pushGui(bordersConfig);*/
 	});
 
 #endif
