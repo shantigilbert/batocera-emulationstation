@@ -905,7 +905,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");
 	
-	float ee_borders[4] = {0.0,0.0,0.0,0.0};
+	static float ee_borders[4] = {0.0,0.0,0.0,0.0};
 	memset(ee_borders, 0, 4*sizeof(*ee_borders));
 
 	if (!str_ee_offsets.empty()) {
@@ -915,7 +915,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				ee_borders[i] = (float) savedBorders[i];
 		}
 	}
-	char buffer[100];
+	buffer[100];
 	sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
 	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
