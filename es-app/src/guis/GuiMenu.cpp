@@ -977,7 +977,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			sprintf(buffer, "border: %.0f %.0f %.0f %.0f", borders[0], borders[1], borders[2], borders[3]);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
-			sprintf(buffer, "dim: %.0f %.0f", ee_screen.width, ee_screen.height);
+			sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
 			std::string result = std::to_string((int)borders[0])+" "+
