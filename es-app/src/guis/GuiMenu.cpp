@@ -936,7 +936,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			return;
 
 		float width = (float)ee_screen.width;
-		float height = (float)ee_screen.height);
+		float height = (float)ee_screen.height;
 
 		// borders
 		auto leftborder = std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px");
