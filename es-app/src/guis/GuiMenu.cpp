@@ -904,8 +904,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	});
 
 
-	sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
-	mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
+	//sprintf(buffer, "border: %.0f %.0f %.0f %.0f", ee_borders[0], ee_borders[1], ee_borders[2], ee_borders[3]);
+	//mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 	dangerZone->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, ee_videomode, ee_framebuffer, ee_dimensions] {
 		std::string str_ee_offsets = SystemConf::getInstance()->get(ee_videomode+".ee_offsets");	
