@@ -144,9 +144,9 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-std::array<int,2> getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
+int* getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
 {
-	std::array<int,2> screen;
+	static int[2] screen();
 
 	if (videomode == "480cvbs")
 	{
@@ -854,13 +854,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	std::array<int,2> dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	std::shared_ptr<int> ee_dimensions (new int [2], [](int* d){
+	/*std::shared_ptr<int> ee_dimensions (new int [2], [](int* d){
 		 delete [] d;
 	});
 	ee_dimensions.get()[0] = dimensions[0];
-	ee_dimensions.get()[1] = dimensions[1];
+	ee_dimensions.get()[1] = dimensions[1];*/
 	
 	
 	//char buffer[100];
@@ -890,8 +890,8 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				return;
 			}
 			
-			int width = ee_dimensions.get()[0];
-			int height = ee_dimensions.get()[1];
+			int width = ee_dimensions[0];
+			int height = ee_dimensions[1];
 
 			std::string result = "0 0 "+
 				std::to_string(width-1)+" "+
@@ -904,7 +904,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, emuelec_frame_buffer, fbSave, ee_videomode, ee_dimensions](std::string name)
 	{
 		char buffer[100];
-		sprintf(buffer, "dim: %d %d", ee_dimensions.get()[0], ee_dimensions.get()[1]);
+		sprintf(buffer, "dim: %d %d", ee_dimensions[0], ee_dimensions[1]);
 		mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 				
 		fbSave(emuelec_frame_buffer->getSelected());
