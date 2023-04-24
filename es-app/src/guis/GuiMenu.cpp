@@ -144,9 +144,9 @@ static std::string toupper(std::string s)
 	return s;
 }
 
-int* getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
+std::array<int,2> getVideoModeDimensions(std::string videomode, std::vector<std::string> reslist) 
 {
-	static int screen[2] = {0, 0};
+	std::array<int,2> screen;
 
 	if (videomode == "480cvbs")
 	{
@@ -854,7 +854,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
 
-	int* dimensions = getVideoModeDimensions(ee_videomode, reslist);
+	std::array<int,2> dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
 	std::shared_ptr<int> ee_dimensions (new int [2], [](int* d){
 		 delete [] d;
