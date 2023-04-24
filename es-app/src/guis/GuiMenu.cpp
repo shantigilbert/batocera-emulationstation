@@ -856,7 +856,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	sScreenDimenions ee_screen;
+	sScreenDimensions ee_screen;
 	ee_screen.width = ee_dimensions[0];
 	ee_screen.height = ee_dimensions[1];
 
