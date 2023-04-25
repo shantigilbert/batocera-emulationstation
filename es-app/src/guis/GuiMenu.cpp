@@ -957,7 +957,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			//ee_borders[2] = Math::round(newVal);
 		});
 		auto bottomborder = std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px");
-		bottomborder->setValue((ee_borders.top > 0.0f) ? height-ee_borders.top-1 : 0.0f);
+		bottomborder->setValue((ee_borders.bottom > 0.0f) ? height-ee_borders.bottom-1 : 0.0f);
 		bottomborder->setOnValueChanged([](const float &newVal) {
 			//ee_borders[3] = Math::round(newVal);
 		});
@@ -988,7 +988,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 				std::to_string(ee_screen.height-(borders[3])-1);
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-			//runSystemCommand("ee_setborders "+result, "", nullptr);
+			runSystemCommand("ee_setborders "+result, "", nullptr);
 		});
 
 		mWindow->pushGui(bordersConfig);
