@@ -967,26 +967,26 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 
 		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder, rightborder, topborder, bottomborder]()
 		{
-			float borders[4] = {0.0,0.0,0.0,0.0};
-			borders[0] = leftborder->getValue();
-			borders[1] = topborder->getValue();
-			borders[2] = rightborder->getValue();
-			borders[3] = bottomborder->getValue();
+			int borders[4] = {0,0,0,0};
+			borders[0] = (int) leftborder->getValue();
+			borders[1] = (int) topborder->getValue();
+			borders[2] = (int) rightborder->getValue();
+			borders[3] = (int) bottomborder->getValue();
 
 			char buffer[100];
-			sprintf(buffer, "border: %.0f %.0f %.0f %.0f", borders[0], borders[1], borders[2], borders[3]);
+			sprintf(buffer, "border: %d %d %d %d", borders[0], borders[1], borders[2], borders[3]);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 
 			sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
-			/*std::string result = std::to_string((int)borders[0])+" "+
-				std::to_string((int)borders[1])+" "+
-				std::to_string(ee_screen.width-((int)borders[2])-1)+" "+
-				std::to_string(ee_screen.height-((int)borders[3])-1);
+			std::string result = std::to_string(borders[0])+" "+
+				std::to_string(borders[1])+" "+
+				std::to_string(ee_screen.width-(borders[2])-1)+" "+
+				std::to_string(ee_screen.height-(borders[3])-1);
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-			runSystemCommand("ee_setborders "+result, "", nullptr);*/
+			//runSystemCommand("ee_setborders "+result, "", nullptr);
 		});
 
 		mWindow->pushGui(bordersConfig);
