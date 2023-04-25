@@ -965,7 +965,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 		bordersConfig->addWithLabel(_("TOP BORDER"), topborder);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), bottomborder);
 
-		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder,rightborder,topborder,bottomborder]()
+		bordersConfig->addSaveFunc([mWindow, ee_videomode, ee_screen, leftborder, rightborder, topborder, bottomborder]()
 		{
 			float borders[4] = {0.0,0.0,0.0,0.0};
 			borders[0] = leftborder->getValue();
@@ -980,13 +980,13 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 			sprintf(buffer, "dim: %d %d", ee_screen.width, ee_screen.height);
 			mWindow->displayNotificationMessage(_U("\uF011  ") + _(buffer));
 			
-			std::string result = std::to_string((int)borders[0])+" "+
+			/*std::string result = std::to_string((int)borders[0])+" "+
 				std::to_string((int)borders[1])+" "+
 				std::to_string(ee_screen.width-((int)borders[2])-1)+" "+
 				std::to_string(ee_screen.height-((int)borders[3])-1);
 
 			SystemConf::getInstance()->set(ee_videomode+".ee_offsets", result);
-			runSystemCommand("ee_setborders "+result, "", nullptr);
+			runSystemCommand("ee_setborders "+result, "", nullptr);*/
 		});
 
 		mWindow->pushGui(bordersConfig);
