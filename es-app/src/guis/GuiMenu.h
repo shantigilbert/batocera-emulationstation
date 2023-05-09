@@ -89,6 +89,7 @@ private:
     static void openDangerZone(Window* mWindow, std::string configName);
     static void createGamepadConfig(Window* window, GuiSettings* systemConfiguration);
     static void openExternalMounts(Window* mWindow, std::string configName);
+		static void addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, std::string configName, std::string header);
 #endif
 
 	void openSystemSettings();
