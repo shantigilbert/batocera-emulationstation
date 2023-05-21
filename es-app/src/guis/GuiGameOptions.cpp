@@ -260,21 +260,22 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 					mWindow->pushGui(new GuiMoveToFolder(mWindow, game));
 					close();
 				});
-			if (!isImageViewer) {
-				if (game->getMetadata(MetaDataId::Hidden) == "false")
-				{
-					mMenu.addEntry(_("HIDE GAME"), false, [this, game]
+				if (!isImageViewer) {
+					if (game->getMetadata(MetaDataId::Hidden) == "false")
 					{
-						hideGame(game, true);
-						close();
-					});
-				}
-				else {
-					mMenu.addEntry(_("UNHIDE GAME"), false, [this, game]
-					{
-						hideGame(game, false);
-						close();
-					});
+						mMenu.addEntry(_("HIDE GAME"), false, [this, game]
+						{
+							hideGame(game, true);
+							close();
+						});
+					}
+					else {
+						mMenu.addEntry(_("UNHIDE GAME"), false, [this, game]
+						{
+							hideGame(game, false);
+							close();
+						});
+					}
 				}
 			}
 #endif
