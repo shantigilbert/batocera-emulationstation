@@ -34,6 +34,7 @@ private:
 #endif
 
 #ifdef _ENABLEEMUELEC
+	static void hideGame(FileData* file, bool hide);
 	static void createMultidisc(FileData* file);
 #endif
 

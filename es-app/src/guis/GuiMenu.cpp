@@ -627,6 +627,30 @@ void GuiMenu::createGamepadConfig(Window* window, GuiSettings* systemConfigurati
 		SystemConf::getInstance()->saveSystemConf();
 	});
 
+	// yabasanshiro Gamepad
+	auto enable_yabasanshirogp = std::make_shared<SwitchComponent>(window);
+	bool yabasanshirogpEnabled = SystemConf::getInstance()->get("yabasanshiro_auto_gamepad") == "1";
+	enable_yabasanshirogp->setState(yabasanshirogpEnabled);
+	gamepadConfiguration->addWithLabel(_("AUTO CONFIG YABASANSHIRO GAMEPAD"), enable_yabasanshirogp);
+
+	gamepadConfiguration->addSaveFunc([enable_yabasanshirogp, window] {
+		bool yabasanshirogpenabled = enable_yabasanshirogp->getState();
+		SystemConf::getInstance()->set("yabasanshiro_auto_gamepad", yabasanshirogpenabled ? "1" : "0");
+		SystemConf::getInstance()->saveSystemConf();
+	});
+
+	// ppssppsdl Gamepad
+	auto enable_ppssppsdlgp = std::make_shared<SwitchComponent>(window);
+	bool ppssppsdlgpEnabled = SystemConf::getInstance()->get("ppssppsdl_auto_gamepad") == "1";
+	enable_ppssppsdlgp->setState(ppssppsdlgpEnabled);
+	gamepadConfiguration->addWithLabel(_("AUTO CONFIG PPSSPPSDL GAMEPAD"), enable_ppssppsdlgp);
+
+	gamepadConfiguration->addSaveFunc([enable_ppssppsdlgp, window] {
+		bool ppssppsdlgpenabled = enable_ppssppsdlgp->getState();
+		SystemConf::getInstance()->set("ppssppsdl_auto_gamepad", ppssppsdlgpenabled ? "1" : "0");
+		SystemConf::getInstance()->saveSystemConf();
+	});
+
 	window->pushGui(gamepadConfiguration);
 }
 
@@ -1520,20 +1544,23 @@ void GuiMenu::openSystemSettings()
 #ifdef _ENABLEEMUELEC
 	auto emuelec_timezones = std::make_shared<OptionListComponent<std::string> >(mWindow, _("TIMEZONE"), false);
 	std::string currentTimezone = SystemConf::getInstance()->get("system.timezone");
-	if (currentTimezone.empty())
-		currentTimezone = std::string(getShOutput(R"(/usr/bin/emuelec-utils current_timezone)"));
-	std::string a;
-	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils timezones)")); getline(ss, a, ','); ) {
-		emuelec_timezones->add(a, a, currentTimezone == a); // emuelec
-	}
-	s->addWithLabel(_("TIMEZONE"), emuelec_timezones);
-	s->addSaveFunc([emuelec_timezones] {
-		if (emuelec_timezones->changed()) {
-			std::string selectedTimezone = emuelec_timezones->getSelected();
-			runSystemCommand("ln -sf /usr/share/zoneinfo/" + selectedTimezone + " $(readlink /etc/localtime)", "", nullptr);
+	if (!test_shell.compare("success")) {
+		if (currentTimezone.empty())
+			currentTimezone = std::string(getShOutput(R"(/usr/bin/emuelec-utils current_timezone)"));
+		std::string a;
+		for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils timezones)")); getline(ss, a, ','); ) {
+			emuelec_timezones->add(a, a, currentTimezone == a); // emuelec
 		}
-		SystemConf::getInstance()->set("system.timezone", emuelec_timezones->getSelected());
-	});
+		s->addWithLabel(_("TIMEZONE"), emuelec_timezones);
+		s->addSaveFunc([emuelec_timezones] {
+			if (emuelec_timezones->changed()) {
+				std::string selectedTimezone = emuelec_timezones->getSelected();
+				runSystemCommand("ln -sf /usr/share/zoneinfo/" + selectedTimezone + " $(readlink /etc/localtime)", "", nullptr);
+			}
+			SystemConf::getInstance()->set("system.timezone", emuelec_timezones->getSelected());
+		});
+	}
+
 #endif
 
 	// language choice
@@ -1699,7 +1726,7 @@ void GuiMenu::openSystemSettings()
 	int brighness;
 	if (ApiSystem::getInstance()->getBrightness(brighness))
 	{
-		auto brightnessComponent = std::make_shared<SliderComponent>(mWindow, 1.f, 100.f, 1.f, "%");
+		auto brightnessComponent = std::make_shared<SliderComponent>(mWindow, 1.f, 100.f, 5.f, "%");
 		brightnessComponent->setValue(brighness);
 		brightnessComponent->setOnValueChanged([](const float &newVal)
 		{
