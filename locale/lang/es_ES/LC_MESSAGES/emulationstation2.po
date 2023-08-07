@@ -298,7 +298,7 @@ msgid "Removed '%s' from '%s'"
 msgstr "Eliminado '%s' de '%s'"
 
 msgid "This collection is empty."
-msgstr "Esta colección está vacia."
+msgstr "Esta colección está vacía."
 
 #. TRANSLATION: number of developpers / various developpers
 msgid "None"
@@ -554,7 +554,7 @@ msgid "SHOW GAMES OF HIDDEN SYSTEMS IN COLLECTIONS"
 msgstr "MOSTRAR JUEGOS DE SISTEMAS OCULTOS EN COLECCIONES"
 
 msgid "SHOW EMPTY SYSTEMS"
-msgstr "MOSTRAR SISTEMAS VACIOS (SIN JUEGOS)"
+msgstr "MOSTRAR SISTEMAS VACÍOS (SIN JUEGOS)"
 
 msgid "UPDATE GAMELISTS"
 msgstr "ACTUALIZAR LISTAS DE JUEGOS"
@@ -1619,7 +1619,7 @@ msgid "DATA MANAGEMENT"
 msgstr "GESTIÓN DE DATOS"
 
 msgid "IGNORE MULTI-FILE DISK CONTENT (CUE/GDI/CCD/M3U)"
-msgstr "IGNORAR CONTENIDO DE DISCO MULTIPLE (CUE/GDI/CCD/M3U)"
+msgstr "IGNORAR CONTENIDO DE DISCO MULTI-ARCHIVOS (CUE/GDI/CCD/M3U)"
 
 msgid "ENABLE GAME FILTERING"
 msgstr "ACTIVAR FILTRADO DE JUEGOS"
@@ -1704,7 +1704,7 @@ msgid "OPTIMIZATIONS"
 msgstr "OPTIMIZACIONES"
 
 msgid "PRELOAD UI ELEMENTS ON BOOT"
-msgstr "PRECARGAR ELEMENTOS DE LA INTERFAZ AL ARRANCAR"
+msgstr "PRECARGAR ELEMENTOS DE LA INTERFAZ EN EL ARRANQUE"
 
 msgid ""
 "Reduces lag when entering gamelists from the system menu, increases boot time"
@@ -1713,7 +1713,7 @@ msgstr ""
 "de arranque del sistema"
 
 msgid "PRELOAD METADATA MEDIA ON BOOT"
-msgstr "PRECARGAR MEDIOS DE METADATOS AL ARRANCAR"
+msgstr "PRECARGAR MEDIOS DE METADATOS EN EL ARRANQUE"
 
 msgid ""
 "Reduces lag when scrolling through a fully scraped gamelist, increases boot "
@@ -1975,7 +1975,7 @@ msgid ""
 "introduce stuttering."
 msgstr ""
 "Disminuye automáticamente el retraso de fotogramas temporalmente para "
-"evitar caídas de fotogramas. Pueden presentar tartamudeos."
+"evitar caídas de fotogramas. Puede presentar tartamudeos."
 
 msgid "VARIABLE REFRESH RATE (G-SYNC, FREESYNC)"
 msgstr "FRECUENCIA DE ACTUALIZACIÓN VARIABLE (G-SYNC, FREESYNC)"
@@ -2722,7 +2722,7 @@ msgid "SAVING METADATAS. PLEASE WAIT..."
 msgstr "GUARDANDO METADATOS. POR FAVOR, ESPERE…"
 
 msgid "DO YOU WANT TO SWITCH THE SCREEN ?"
-msgstr "¿QUIERES CAMBIAR LA PANTALLA ?"
+msgstr "¿ QUIERES CAMBIAR LA PANTALLA ?"
 
 msgid "Collections"
 msgstr "Colecciones"
