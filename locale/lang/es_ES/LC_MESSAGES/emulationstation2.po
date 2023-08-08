@@ -6,7 +6,7 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: roliverosc\n"
 "Language-Team: \n"
-"Language: es\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -518,13 +518,13 @@ msgid "ALPHABETICALLY"
 msgstr "ALFABÉTICAMENTE"
 
 msgid "BY MANUFACTURER"
-msgstr "POR MARCA"
+msgstr "POR FABRICANTE"
 
 msgid "BY HARDWARE TYPE"
 msgstr "POR HARDWARE"
 
 msgid "BY MANUFACTURER AND TYPE"
-msgstr "POR MARCA Y TIPO"
+msgstr "POR FABRICANTE Y TIPO"
 
 msgid "BY RELEASE YEAR"
 msgstr "POR AÑO DE LANZAMIENTO"
@@ -2578,7 +2578,7 @@ msgid "GO TO LETTER"
 msgstr "IR A LETRA"
 
 msgid "GO TO MANUFACTURER"
-msgstr "IR A MARCA"
+msgstr "IR A FABRICANTE"
 
 msgid "GO TO HARDWARE"
 msgstr "IR A HARDWARE"
