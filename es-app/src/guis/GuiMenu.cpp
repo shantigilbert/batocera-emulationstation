@@ -815,17 +815,22 @@ mWindow->pushGui(externalMounts);
 #ifdef _ENABLEEMUELEC
 void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, std::string configName, std::string header)
 {
+	if (!configName.empty())
+		configName += ".";
+
 	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
-	if (ee_videomode.empty() || ee_videomode == "auto")
-		ee_videomode = getShOutput(R"(cat /sys/class/display/mode)");
 
 	if (Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE"))
 		ee_videomode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
 
-	if (configName != "ee_es" && configName != "ee_emu") 
-		ee_videomode = SystemConf::getInstance()->get(configName+".nativevideo");
+	if (configName != "ee_es") {
+		ee_videomode = SystemConf::getInstance()->get(configName+"nativevideo");
+	}
 
-	std::string ee_framebuffer = SystemConf::getInstance()->get(configName+".framebuffer."+ee_videomode);
+	if (ee_videomode.empty() || ee_videomode == "auto")
+		ee_videomode = getShOutput(R"(cat /sys/class/display/mode)");
+
+	std::string ee_framebuffer = SystemConf::getInstance()->get(configName+"framebuffer."+ee_videomode);
 	if (ee_framebuffer.empty()) {
 		ee_framebuffer = "auto";
 	}
@@ -845,10 +850,11 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		reslist.push_back("1024 768");
 		reslist.push_back("800 600");
 		reslist.push_back("640 480");
+		reslist.push_back("320 240");
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	static sScreenDimensions ee_screen;
+	sScreenDimensions ee_screen;
 	ee_screen.width = ee_dimensions[0];
 	ee_screen.height = ee_dimensions[1];
 
@@ -864,20 +870,22 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	guiSettings->addWithLabel(header+_(" FRAME BUFFER"), emuelec_frame_buffer);
 
 	auto fbSave = [mWindow, configName, emuelec_frame_buffer, ee_videomode, ee_screen] (std::string selectedFB) {
-		if (emuelec_frame_buffer->changed()) {
+		//if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
 
 			std::string cfgName = "framebuffer."+ee_videomode;
 			if (!configName.empty())
-				cfgName = configName+"."+cfgName;
+				cfgName = configName+cfgName;
 
 			SystemConf::getInstance()->set(cfgName, selectedFB);
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+
+			if (configName == "ee_es")
+				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 
 			cfgName = "framebuffer_border."+ee_videomode;
 			if (!configName.empty())
-				cfgName = configName+".framebuffer_border."+ee_videomode;
+				cfgName = configName+"framebuffer_border."+ee_videomode;
 
 			if (selectedFB == "") {
 				SystemConf::getInstance()->set(cfgName, "");
@@ -889,7 +897,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 				std::to_string(ee_screen.height-1);
 
 			SystemConf::getInstance()->set(cfgName, result);
-		}
+		//}
 	};
 	
 	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, configName, emuelec_frame_buffer, fbSave, ee_videomode, ee_screen](std::string name)
@@ -898,7 +906,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	});
 
 	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, ee_screen] {
-		static sScreenBorders ee_borders;
+		sScreenBorders ee_borders;
 		ee_borders.left = 0.0f;
 		ee_borders.right = 0.0f;
 		ee_borders.top = 0.0f;
@@ -906,7 +914,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 
 		std::string cfgName = "framebuffer_border."+ee_videomode;
 		if (!configName.empty())
-			cfgName = configName+"."+cfgName;
+			cfgName = configName+cfgName;
 
 		std::string str_ee_offsets = SystemConf::getInstance()->get(cfgName);
 		if (!str_ee_offsets.empty()) {
@@ -965,9 +973,8 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 				std::to_string(ee_screen.height-(borders[3])-1);
 
 			std::string cfgName = "framebuffer_border."+ee_videomode;
-			SystemConf::getInstance()->set(cfgName, result);
-			if (!configName.empty())
-				SystemConf::getInstance()->set(configName+"."+cfgName, result);
+
+			SystemConf::getInstance()->set(configName+cfgName, result);
 
 			runSystemCommand("ee_set_borders "+result, "", nullptr);
 		});
@@ -1022,7 +1029,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #ifdef _ENABLEEMUELEC
 
 		addFrameBufferOptions(mWindow, dangerZone, "ee_es", "ES");
-		addFrameBufferOptions(mWindow, dangerZone, "ee_emu", "EMU");
+		addFrameBufferOptions(mWindow, dangerZone, "", "EMU");
 #endif
 
     dangerZone->addEntry(_("CLOUD BACKUP SETTINGS AND GAME SAVES"), true, [mWindow] { 
@@ -1800,6 +1807,7 @@ void GuiMenu::openSystemSettings()
 #ifdef _ENABLEEMUELEC
 	auto emuelec_timezones = std::make_shared<OptionListComponent<std::string> >(mWindow, _("TIMEZONE"), false);
 	std::string currentTimezone = SystemConf::getInstance()->get("system.timezone");
+	std::string test_shell = getShOutput(R"(/usr/bin/emuelec-utils test)");
 	if (!test_shell.compare("success")) {
 		if (currentTimezone.empty())
 			currentTimezone = std::string(getShOutput(R"(/usr/bin/emuelec-utils current_timezone)"));
@@ -5328,8 +5336,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			fbSave(emuelec_frame_buffer->getSelected());
 		});
 	}
-
-#endif 
+#endif
 
 	// Screen ratio choice
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::ratio))
@@ -5825,7 +5832,12 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	}
 #endif
 
+#ifdef _ENABLEEMUELEC
+	addFrameBufferOptions(mWindow, systemConfiguration, configName, "EMU");
+#endif
+
 	mWindow->pushGui(systemConfiguration);
+
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList(Window *window, std::string configname)
