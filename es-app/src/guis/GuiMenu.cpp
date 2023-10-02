@@ -907,7 +907,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	// left, top, right, bottom.
 	
 
-	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, width, height] {
+	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, width, height, ee_borders] {
 		std::string cfgName = "framebuffer_border."+ee_videomode;
 		if (!configName.empty())
 			cfgName = configName+cfgName;
