@@ -854,9 +854,8 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	sScreenDimensions ee_screen;
-	ee_screen.width = ee_dimensions[0];
-	ee_screen.height = ee_dimensions[1];
+	float width = ee_dimensions[0];
+	float height = ee_dimensions[1];
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -869,7 +868,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	}
 	guiSettings->addWithLabel(header+_(" FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, configName, emuelec_frame_buffer, ee_videomode, ee_screen] (std::string selectedFB) {
+	auto fbSave = [mWindow, configName, emuelec_frame_buffer, ee_videomode, width, height] (std::string selectedFB) {
 		//if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
@@ -900,18 +899,15 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		//}
 	};
 	
-	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, configName, emuelec_frame_buffer, fbSave, ee_videomode, ee_screen](std::string name)
+	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, configName, emuelec_frame_buffer, fbSave, ee_videomode, width, height](std::string name)
 	{
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
-	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, ee_screen] {
-		static sScreenBorders ee_borders;
-		ee_borders.left = 0.0f;
-		ee_borders.right = 0.0f;
-		ee_borders.top = 0.0f;
-		ee_borders.bottom = 0.0f;
+	// left, top, right, bottom.
+	float ee_borders[4] = {0,0,0,0};
 
+	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, width, height, ee_borders] {
 		std::string cfgName = "framebuffer_border."+ee_videomode;
 		if (!configName.empty())
 			cfgName = configName+cfgName;
@@ -920,10 +916,10 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		if (!str_ee_offsets.empty()) {
 			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
 			if (savedBorders.size() == 4) {
-				ee_borders.left = (float) savedBorders[0];
-				ee_borders.top = (float) savedBorders[1];
-				ee_borders.right = (float) savedBorders[2];
-				ee_borders.bottom = (float) savedBorders[3];
+				ee_borders[0] = (float) savedBorders[0]; // left
+				ee_borders[1] = (float) savedBorders[1]; // top
+				ee_borders[2] = (float) savedBorders[2]; // right
+				ee_borders[3] = (float) savedBorders[3]; // bottom
 			}
 		}
 
@@ -931,8 +927,8 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		if (ee_framebuffer.empty())
 			return;
 
-		float width = (float)ee_screen.width;
-		float height = (float)ee_screen.height;
+		//float width = (float)ee_screen.width;
+		//float height = (float)ee_screen.height;
 
 		// borders
 		std::shared_ptr<SliderComponent> fb_borders[] = {
@@ -942,10 +938,10 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 			std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px")
 		};
 
-		fb_borders[0]->setValue(ee_borders.left);
-		fb_borders[1]->setValue(ee_borders.top);
-		fb_borders[2]->setValue((ee_borders.right > 0.0f) ? width-ee_borders.right-1 : 0.0f);
-		fb_borders[3]->setValue((ee_borders.bottom > 0.0f) ? height-ee_borders.bottom-1 : 0.0f);
+		fb_borders[0]->setValue(ee_borders[0]);
+		fb_borders[1]->setValue(ee_borders[1]);
+		fb_borders[2]->setValue((ee_borders[2] > 0.0f) ? width-ee_borders[2]-1 : 0.0f);
+		fb_borders[3]->setValue((ee_borders[3] > 0.0f) ? height-ee_borders[3]-1 : 0.0f);
 
 		fb_borders[0]->setOnValueChanged([fb_borders] (float val) {
 			fb_borders[2]->setValue(val);
@@ -959,18 +955,18 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		bordersConfig->addWithLabel(_("RIGHT BORDER"), fb_borders[2]);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), fb_borders[3]);
 
-		bordersConfig->addSaveFunc([mWindow, configName, ee_videomode, ee_screen, fb_borders]()
+		bordersConfig->addSaveFunc([mWindow, configName, ee_videomode, fb_borders, width, height]()
 		{
-			int borders[4] = {0,0,0,0};
-			borders[0] = (int) fb_borders[0]->getValue();
-			borders[1] = (int) fb_borders[1]->getValue();
-			borders[2] = (int) fb_borders[2]->getValue();
-			borders[3] = (int) fb_borders[3]->getValue();
+			int borders[4] = {
+				(int) fb_borders[0]->getValue(),
+				(int) fb_borders[1]->getValue(),
+				(int) fb_borders[2]->getValue(),
+				(int) fb_borders[3]->getValue()};
 
 			std::string result = std::to_string(borders[0])+" "+
 				std::to_string(borders[1])+" "+
-				std::to_string(ee_screen.width-(borders[2])-1)+" "+
-				std::to_string(ee_screen.height-(borders[3])-1);
+				std::to_string(width-(borders[2])-1)+" "+
+				std::to_string(height-(borders[3])-1);
 
 			std::string cfgName = "framebuffer_border."+ee_videomode;
 			SystemConf::getInstance()->set(cfgName, result);
