@@ -973,9 +973,8 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 				std::to_string(ee_screen.height-(borders[3])-1);
 
 			std::string cfgName = "framebuffer_border."+ee_videomode;
-			SystemConf::getInstance()->set(cfgName, result);
-			if (!configName.empty())
-				SystemConf::getInstance()->set(configName+cfgName, result);
+
+			SystemConf::getInstance()->set(configName+cfgName, result);
 
 			runSystemCommand("ee_set_borders "+result, "", nullptr);
 		});
