@@ -892,8 +892,8 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 			}
 
 			std::string result = "0 0 "+
-				std::to_string(width-1)+" "+
-				std::to_string(height-1);
+				std::to_string(ee_screen.width-1)+" "+
+				std::to_string(ee_screen.height-1);
 
 			SystemConf::getInstance()->set(cfgName, result);
 		//}
@@ -905,14 +905,13 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	});
 
 	// left, top, right, bottom.
-	
+	float ee_borders[4] = {0,0,0,0};
 
 	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, width, height, ee_borders] {
 		std::string cfgName = "framebuffer_border."+ee_videomode;
 		if (!configName.empty())
 			cfgName = configName+cfgName;
 
-		float ee_borders[4] = {0,0,0,0};
 		std::string str_ee_offsets = SystemConf::getInstance()->get(cfgName);
 		if (!str_ee_offsets.empty()) {
 			std::vector<int> savedBorders = int_explode(str_ee_offsets, ' ');
