@@ -815,42 +815,43 @@ mWindow->pushGui(externalMounts);
 #ifdef _ENABLEEMUELEC
 void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, std::string configName, std::string header)
 {
+	if (!configName.empty())
+		configName += ".";
+
 	std::string ee_videomode = SystemConf::getInstance()->get("ee_videomode");
-	if (ee_videomode.empty() || ee_videomode == "auto")
-		ee_videomode = getShOutput(R"(cat /sys/class/display/mode)");
 
 	if (Utils::FileSystem::exists("/storage/.config/EE_VIDEO_MODE"))
 		ee_videomode = getShOutput(R"(cat /storage/.config/EE_VIDEO_MODE)");
 
-	if (configName != "ee_es" && configName != "ee_emu") 
-		ee_videomode = SystemConf::getInstance()->get(configName+".nativevideo");
+	if (configName != "ee_es.") {
+		ee_videomode = SystemConf::getInstance()->get(configName+"nativevideo");
+	}
 
-	std::string ee_framebuffer = SystemConf::getInstance()->get(configName+".framebuffer."+ee_videomode);
+	if (ee_videomode.empty() || ee_videomode == "auto")
+		ee_videomode = getShOutput(R"(cat /sys/class/display/mode)");
+
+	std::string ee_framebuffer = SystemConf::getInstance()->get(configName+"framebuffer."+ee_videomode);
 	if (ee_framebuffer.empty()) {
 		ee_framebuffer = "auto";
 	}
 
 	std::vector<std::string> reslist;
-		reslist.push_back("3840 2160");
-		reslist.push_back("2560 1440");
-		reslist.push_back("1920 1080");
-		reslist.push_back("1280 720");
-		reslist.push_back("720 480");
-		reslist.push_back("768 576");
-		reslist.push_back("1680 1050");
-		reslist.push_back("1440 900");
-		reslist.push_back("1280 1024");
-		reslist.push_back("1280 960");
-		reslist.push_back("1280 800");
-		reslist.push_back("1024 768");
-		reslist.push_back("800 600");
-		reslist.push_back("640 480");
+	std::string def_dimensions;
+	for(std::stringstream ss(getShOutput(R"(/usr/bin/emuelec-utils dimensions)")); getline(ss, def_dimensions, ','); ) {
+		reslist.push_back(def_dimensions.replace(def_dimensions.find("x"),1," "));
+	}
+	
+	std::sort(reslist.begin(), reslist.end(), [](const std::string &lhs, const std::string &rhs)
+	{
+			size_t ll = lhs.length(); 
+			size_t rl = rhs.length();
+	    return (std::tie(ll, lhs) > std::tie(rl, rhs));
+	});
 
 	int* ee_dimensions = getVideoModeDimensions(ee_videomode, reslist);
 
-	static sScreenDimensions ee_screen;
-	ee_screen.width = ee_dimensions[0];
-	ee_screen.height = ee_dimensions[1];
+	int fbWidth = ee_dimensions[0];
+	int fbHeight = ee_dimensions[1];
 
 	auto emuelec_frame_buffer = std::make_shared< OptionListComponent<std::string> >(mWindow, "VIDEO MODE", false);
 
@@ -863,21 +864,23 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 	}
 	guiSettings->addWithLabel(header+_(" FRAME BUFFER"), emuelec_frame_buffer);
 
-	auto fbSave = [mWindow, configName, emuelec_frame_buffer, ee_videomode, ee_screen] (std::string selectedFB) {
-		if (emuelec_frame_buffer->changed()) {
+	auto fbSave = [mWindow, configName, emuelec_frame_buffer, ee_videomode, fbWidth, fbHeight] (std::string selectedFB) {
+		//if (emuelec_frame_buffer->changed()) {
 			if (selectedFB == "auto")
 				selectedFB = "";
 
 			std::string cfgName = "framebuffer."+ee_videomode;
 			if (!configName.empty())
-				cfgName = configName+"."+cfgName;
+				cfgName = configName+cfgName;
 
 			SystemConf::getInstance()->set(cfgName, selectedFB);
-			mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 
-			cfgName = "framebuffer_border."+ee_videomode;
+			if (configName == "ee_es.")
+				mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
+
+			/*cfgName = "framebuffer_border."+ee_videomode;
 			if (!configName.empty())
-				cfgName = configName+".framebuffer_border."+ee_videomode;
+				cfgName = configName+"framebuffer_border."+ee_videomode;
 
 			if (selectedFB == "") {
 				SystemConf::getInstance()->set(cfgName, "");
@@ -885,20 +888,20 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 			}
 
 			std::string result = "0 0 "+
-				std::to_string(ee_screen.width-1)+" "+
-				std::to_string(ee_screen.height-1);
+				std::to_string(fbWidth-1)+" "+
+				std::to_string(fbHeight-1);
 
-			SystemConf::getInstance()->set(cfgName, result);
-		}
+			SystemConf::getInstance()->set(cfgName, result);*/
+		//}
 	};
 	
-	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, configName, emuelec_frame_buffer, fbSave, ee_videomode, ee_screen](std::string name)
+	emuelec_frame_buffer->setSelectedChangedCallback([mWindow, configName, emuelec_frame_buffer, fbSave, ee_videomode, fbWidth, fbHeight](std::string name)
 	{
 		fbSave(emuelec_frame_buffer->getSelected());
 	});
 
-	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, ee_screen] {
-		static sScreenBorders ee_borders;
+	guiSettings->addEntry(_("ADJUST FRAME BORDERS"), true, [mWindow, configName, ee_videomode, ee_framebuffer, fbWidth, fbHeight] {
+		sScreenBorders ee_borders;
 		ee_borders.left = 0.0f;
 		ee_borders.right = 0.0f;
 		ee_borders.top = 0.0f;
@@ -906,7 +909,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 
 		std::string cfgName = "framebuffer_border."+ee_videomode;
 		if (!configName.empty())
-			cfgName = configName+"."+cfgName;
+			cfgName = configName+cfgName;
 
 		std::string str_ee_offsets = SystemConf::getInstance()->get(cfgName);
 		if (!str_ee_offsets.empty()) {
@@ -923,10 +926,11 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		if (ee_framebuffer.empty())
 			return;
 
-		float width = (float)ee_screen.width;
-		float height = (float)ee_screen.height;
+		float width = (float)fbWidth;
+		float height = (float)fbHeight;
 
 		// borders
+		// order: left, top, right, bottom.
 		std::shared_ptr<SliderComponent> fb_borders[] = {
 			std::make_shared<SliderComponent>(mWindow, 0.0f, width, 1.0f, "px"),
 			std::make_shared<SliderComponent>(mWindow, 0.0f, height, 1.0f, "px"),
@@ -951,25 +955,28 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		bordersConfig->addWithLabel(_("RIGHT BORDER"), fb_borders[2]);
 		bordersConfig->addWithLabel(_("BOTTOM BORDER"), fb_borders[3]);
 
-		bordersConfig->addSaveFunc([mWindow, configName, ee_videomode, ee_screen, fb_borders]()
+		bordersConfig->addSaveFunc([mWindow, configName, ee_videomode, fb_borders, fbWidth, fbHeight]()
 		{
-			int borders[4] = {0,0,0,0};
-			borders[0] = (int) fb_borders[0]->getValue();
-			borders[1] = (int) fb_borders[1]->getValue();
-			borders[2] = (int) fb_borders[2]->getValue();
-			borders[3] = (int) fb_borders[3]->getValue();
+			int borders[4] = {
+				(int) fb_borders[0]->getValue(),
+				(int) fb_borders[1]->getValue(),
+				(int) fb_borders[2]->getValue(),
+				(int) fb_borders[3]->getValue()};
 
-			std::string result = std::to_string(borders[0])+" "+
-				std::to_string(borders[1])+" "+
-				std::to_string(ee_screen.width-(borders[2])-1)+" "+
-				std::to_string(ee_screen.height-(borders[3])-1);
+			std::string result = "";
+			if (!(fb_borders[0] == 0 && 
+					fb_borders[1] == 0 &&
+					fb_borders[2] == 0 &&
+					fb_borders[3] == 0))
+			{
+				result = std::to_string(borders[0])+" "+
+					std::to_string(borders[1])+" "+
+					std::to_string(fbWidth-(borders[2])-1)+" "+
+					std::to_string(fbHeight-(borders[3])-1);					
+			}
 
 			std::string cfgName = "framebuffer_border."+ee_videomode;
-			SystemConf::getInstance()->set(cfgName, result);
-			if (!configName.empty())
-				SystemConf::getInstance()->set(configName+"."+cfgName, result);
-
-			runSystemCommand("ee_set_borders "+result, "", nullptr);
+			SystemConf::getInstance()->set(configName+cfgName, result);
 		});
 
 		mWindow->pushGui(bordersConfig);
@@ -1022,7 +1029,7 @@ void GuiMenu::openDangerZone(Window* mWindow, std::string configName)
 #ifdef _ENABLEEMUELEC
 
 		addFrameBufferOptions(mWindow, dangerZone, "ee_es", "ES");
-		addFrameBufferOptions(mWindow, dangerZone, "ee_emu", "EMU");
+		addFrameBufferOptions(mWindow, dangerZone, "", "EMU");
 #endif
 
     dangerZone->addEntry(_("CLOUD BACKUP SETTINGS AND GAME SAVES"), true, [mWindow] { 
@@ -1800,6 +1807,7 @@ void GuiMenu::openSystemSettings()
 #ifdef _ENABLEEMUELEC
 	auto emuelec_timezones = std::make_shared<OptionListComponent<std::string> >(mWindow, _("TIMEZONE"), false);
 	std::string currentTimezone = SystemConf::getInstance()->get("system.timezone");
+	std::string test_shell = getShOutput(R"(/usr/bin/emuelec-utils test)");
 	if (!test_shell.compare("success")) {
 		if (currentTimezone.empty())
 			currentTimezone = std::string(getShOutput(R"(/usr/bin/emuelec-utils current_timezone)"));
@@ -5328,8 +5336,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 			fbSave(emuelec_frame_buffer->getSelected());
 		});
 	}
-
-#endif 
+#endif
 
 	// Screen ratio choice
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::ratio))
@@ -5825,7 +5832,12 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	}
 #endif
 
+#ifdef _ENABLEEMUELEC
+	addFrameBufferOptions(mWindow, systemConfiguration, configName, "EMU");
+#endif
+
 	mWindow->pushGui(systemConfiguration);
+
 }
 
 std::shared_ptr<OptionListComponent<std::string>> GuiMenu::createRatioOptionList(Window *window, std::string configname)
