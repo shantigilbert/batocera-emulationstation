@@ -129,10 +129,11 @@ void GuiSaveState::loadGrid()
 		});
 /* needs fixing */
 #ifdef _ENABLEEMUELEC
-	if (CloudSaves::getInstance().isSupported(mGame))
+	if (CloudSaves::getInstance().isSupported(mGame)) {
 		auto tmpItem = SaveStateItem(mRepository->getEmptySaveState());
 		tmpItem.saveState->slot = -3;
 		mGrid->add(_("SAVE TO CLOUD"), ":/freeslot.svg", tmpItem);
+	}
 #endif
 
 	mGrid->add(_("START NEW GAME"), ":/freeslot.svg", SaveStateItem(mRepository->getDefaultNewGameSaveState()));
