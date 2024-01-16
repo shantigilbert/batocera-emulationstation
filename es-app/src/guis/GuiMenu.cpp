@@ -5183,11 +5183,11 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_button_names.mk" , "HK,B1,LP,HP,LK,B2,L2,R2" );
 			if (SystemConf::getInstance()->get(prefixName + ".joy_btn_button_names.sf").empty())
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_button_names.sf" , "MP,HP,FK,MK,FP,HK,L2,R2" );
-      if (SystemConf::getInstance()->get(prefixName + ".joy_btn_remap_names").empty())
+			if (SystemConf::getInstance()->get(prefixName + ".joy_btn_remap_names").empty())
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_remap_names", "mk,sf" );
-      if (SystemConf::getInstance()->get(prefixName + ".joy_btn_order.mk").empty())
+			if (SystemConf::getInstance()->get(prefixName + ".joy_btn_order.mk").empty())
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_order.mk", "2 4 3 0 1 5 6 7" );
-      if (SystemConf::getInstance()->get(prefixName + ".joy_btn_order.sf").empty())
+			if (SystemConf::getInstance()->get(prefixName + ".joy_btn_order.sf").empty())
 				SystemConf::getInstance()->set(prefixName + ".joy_btn_order.sf", "2 3 4 0 1 5 6 7" );
 
 			std::string remapName = SystemConf::getInstance()->get(configName + ".joy_btn_index");
