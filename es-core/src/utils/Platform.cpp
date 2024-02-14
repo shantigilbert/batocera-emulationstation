@@ -179,7 +179,11 @@ namespace Utils
 #ifdef WIN32 // windows
 			return system("shutdown -s -t 0");
 #else // osx / linux	
+#ifdef _ENABLEEMUELEC
+			return system("ee_shutdown.sh");	
+#else
 			return system("shutdown -h now");
+#endif
 #endif
 		}
 
