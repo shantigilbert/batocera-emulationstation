@@ -180,7 +180,7 @@ namespace Utils
 			return system("shutdown -s -t 0");
 #else // osx / linux	
 #ifdef _ENABLEEMUELEC
-			return 0;
+			return Scripting::fireEvent("quit", "shutdown");
 #else
 			return system("shutdown -h now");
 #endif
