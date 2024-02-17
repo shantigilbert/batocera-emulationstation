@@ -252,6 +252,9 @@ namespace Utils
 			case QuitMode::RESTART:
 				LOG(LogInfo) << "Restarting EmulationStation";
 				touch("/tmp/restart.please");
+#ifdef _ENABLEEMUELEC
+				runRestartESCommand();
+#endif
 				break;
 			case QuitMode::REBOOT:
 			case QuitMode::FAST_REBOOT:
