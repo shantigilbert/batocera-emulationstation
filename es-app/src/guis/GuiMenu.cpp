@@ -366,7 +366,7 @@ void GuiMenu::openEmuELECSettings()
 					//Utils::Platform::ProcessStartInfo("/usr/bin/setres.sh").run();
 					SystemConf::getInstance()->saveSystemConf();
 					Scripting::fireEvent("quit", "restart");
-					Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
+					Utils::Platform::quitES(Utils::Platform::QuitMode::RESTART);
 				//	v_need_reboot = true;
 				}, _("NO"),nullptr));
 		
@@ -883,7 +883,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 
 		if (configName == "ee_es.") {
 			Scripting::fireEvent("quit", "restart");
-			Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
+			Utils::Platform::quitES(Utils::Platform::QuitMode::RESTART);
 		}
 			//mWindow->displayNotificationMessage(_U("\uF011  ") + _("A REBOOT OF THE SYSTEM IS REQUIRED TO APPLY THE NEW CONFIGURATION"));
 	};
@@ -4577,7 +4577,7 @@ void GuiMenu::openQuitMenu_static(Window *window, bool quickAccessMenu, bool ani
 		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
 			[] {
     		   Scripting::fireEvent("quit", "restart");
-			   Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
+			   Utils::Platform::quitES(Utils::Platform::QuitMode::RESTART);
 		}, _("NO"), nullptr));
 	}, "iconRestart");
 
