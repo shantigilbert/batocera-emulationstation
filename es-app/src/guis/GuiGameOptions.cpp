@@ -307,12 +307,7 @@ GuiGameOptions::GuiGameOptions(Window* window, FileData* game) : GuiComponent(wi
 			snprintf(trstring, 1024, std::string(game->getFavorite() ? _("REMOVE FROM %s") : _("ADD TO %s")).c_str(), _("FAVORITES").c_str());
 			mMenu.addEntry(trstring, false, [this, game]
 			{
-#ifdef _ENABLEEMUELEC
-				if (mSystem->isCollection() || isCustomCollection)
-					CollectionSystemManager::get()->toggleGameInCollection(game, "Favorites");
-#else
 				CollectionSystemManager::get()->toggleGameInCollection(game, "Favorites");
-#endif
 				close();
 			});
 
