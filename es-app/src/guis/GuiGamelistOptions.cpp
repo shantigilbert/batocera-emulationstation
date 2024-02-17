@@ -142,21 +142,6 @@ GuiGamelistOptions::GuiGamelistOptions(Window* window, IGameListView* gamelist, 
 		{
 			const FileSorts::SortType& sort = FileSorts::getSortTypes().at(i);
 			mListSort->add(sort.icon + sort.description, sort.id, sort.id == currentSortId); // TODO - actually make the sort type persistent
-#ifdef _ENABLEEMUELEC			
-			if (i == (FileSorts::getSortTypes().size()-3))
-				break;
-			if (i == FileSorts::FILENAME_DESCENDING)
-			{
-			  {
-					const FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_ASCENDING);
-					mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
-				}
-				{
-					const FileSorts::SortType& st = FileSorts::getSortTypes().at(FileSorts::SORTNAME_DESCENDING);
-					mListSort->add(st.icon + st.description, st.id, st.id == currentSortId);
-				}
-			}
-#endif
 		}
 
 		mMenu.addWithLabel(_("SORT GAMES BY"), mListSort);	
