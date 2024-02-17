@@ -174,14 +174,19 @@ namespace Utils
 #endif
 		}
 
+#ifdef _ENABLEEMUELEC
+		int runRestartESCommand() {
+			return system("emuelec-utils es_restart");
+		}
+#endif
+
 		int runShutdownCommand()
 		{
 #ifdef WIN32 // windows
 			return system("shutdown -s -t 0");
 #else // osx / linux	
 #ifdef _ENABLEEMUELEC
-			Scripting::fireEvent("quit", "emuelec");
-			return 0;
+			return system("emuelec-utils ee_shutdown");
 #else
 			return system("shutdown -h now");
 #endif

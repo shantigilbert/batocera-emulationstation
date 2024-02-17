@@ -365,6 +365,7 @@ void GuiMenu::openEmuELECSettings()
 					LOG(LogInfo) << "Setting video to " << selectedVideoMode;
 					//Utils::Platform::ProcessStartInfo("/usr/bin/setres.sh").run();
 					SystemConf::getInstance()->saveSystemConf();
+					Utils::Platform::runRestartESCommand();
 					Scripting::fireEvent("quit", "restart");
 					Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
 				//	v_need_reboot = true;
@@ -882,6 +883,7 @@ void GuiMenu::addFrameBufferOptions(Window* mWindow, GuiSettings* guiSettings, s
 		SystemConf::getInstance()->set(cfgName, selectedFB);
 
 		if (configName == "ee_es.") {
+			Utils::Platform::runRestartESCommand();
 			Scripting::fireEvent("quit", "restart");
 			Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
 		}
@@ -4576,7 +4578,7 @@ void GuiMenu::openQuitMenu_static(Window *window, bool quickAccessMenu, bool ani
 	s->addEntry(_("RESTART EMULATIONSTATION"), false, [window] {
 		window->pushGui(new GuiMsgBox(window, _("REALLY RESTART EMULATIONSTATION?"), _("YES"),
 			[] {
-    		   /*Utils::Platform::ProcessStartInfo("systemctl restart emustation.service", "", nullptr);*/
+    		   Utils::Platform::runRestartESCommand();
     		   Scripting::fireEvent("quit", "restart");
 			   Utils::Platform::quitES(Utils::Platform::QuitMode::QUIT);
 		}, _("NO"), nullptr));
