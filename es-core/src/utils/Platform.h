@@ -45,6 +45,10 @@ namespace Utils
 #endif
 		};
 
+#ifdef _ENABLEEMUELEC
+		int runRestartESCommand();
+#endif
+
 		int quitES(QuitMode mode = QuitMode::QUIT);
 		bool isFastShutdown();
 		void processQuitMode();
