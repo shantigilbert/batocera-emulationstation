@@ -186,7 +186,7 @@ namespace Utils
 			return system("shutdown -s -t 0");
 #else // osx / linux	
 #ifdef _ENABLEEMUELEC
-			return system("emuelec-utils ee_shutdown");
+			return system("emuelec-utils es_shutdown");
 #else
 			return system("shutdown -h now");
 #endif
