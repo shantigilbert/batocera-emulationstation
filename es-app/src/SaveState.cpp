@@ -80,6 +80,11 @@ std::string SaveState::setupSaveState(FileData* game, const std::string& command
 		if (!config->core.empty())
 			cmd = _changeCommandlineArgument(cmd, "-core", config->core);
 	}
+
+	if (slot == -1 || slot == -2) {
+		cmd = cmd + " -autoload 0";
+	}
+
 #else
 	if (slot >= -1 && this->config != nullptr && !config->isActiveConfig(game))
 	{
