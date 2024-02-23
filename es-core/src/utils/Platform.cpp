@@ -192,7 +192,12 @@ namespace Utils
 #ifdef WIN32 // windows	
 			return system("shutdown -r -t 0");
 #else // osx / linux	
+#ifdef _ENABLEEMUELEC
+            system("/usr/bin/emuelec-utils small-cores enable");
+			return system("systemctl reboot");	
+#else
 			return system("shutdown -r now");
+#endif
 #endif
 		}
 
