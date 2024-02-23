@@ -74,13 +74,20 @@ std::string SaveState::setupSaveState(FileData* game, const std::string& command
 	// Savestate has core information ? Setup correct emulator/core
 #ifdef _ENABLEEMUELEC
 	if (this->config != nullptr && !config->isActiveConfig(game))
+	{
+		if (!config->emulator.empty())
+			cmd = _changeCommandlineArgument(cmd, "-emulator", config->emulator);
+		if (!config->core.empty())
+			cmd = _changeCommandlineArgument(cmd, "-core", config->core);
+	}
 #else
 	if (slot >= -1 && this->config != nullptr && !config->isActiveConfig(game))
-#endif
 	{
 		cmd = _changeCommandlineArgument(cmd, "-emulator", config->emulator);
 		cmd = _changeCommandlineArgument(cmd, "-core", config->core);
 	}	
+
+#endif
 
 	bool supportsIncremental = config != nullptr ? config->incremental : game->getSourceFileData()->getSystem()->getSaveStateRepository()->supportsIncrementalSaveStates();
 
