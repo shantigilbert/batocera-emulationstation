@@ -60,6 +60,10 @@
 #include "TextToSpeech.h"
 #include "Paths.h"
 
+#ifdef _ENABLEEMUELEC
+#include "PerSystemConf.h"
+#endif
+
 #if WIN32
 #include "Win32ApiSystem.h"
 #endif
@@ -5202,7 +5206,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		auto videoNativeResolutionMode_choice = createNativeVideoResolutionModeOptionList(mWindow, configName);
 		systemConfiguration->addWithLabel(_("NATIVE VIDEO"), videoNativeResolutionMode_choice);
 
-		const std::function<void()> video_changed([mWindow, configName, videoNativeResolutionMode_choice] {
+		const std::function<void()> video_changed([mWindow, configName, videoNativeResolutionMode_choice, systemData] {
 
 			std::string def_video;
 			std::string video_choice = videoNativeResolutionMode_choice->getSelected();
@@ -5219,14 +5223,18 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				}
 			}
 
-			const std::function<void()> saveFunc([configName, videoNativeResolutionMode_choice] {
+			const std::function<void()> saveFunc([configName, videoNativeResolutionMode_choice, systemData] {
 				SystemConf::getInstance()->set(configName + ".nativevideo", videoNativeResolutionMode_choice->getSelected());
+				//PerSystemConf::getInstance(systemData)->set("nativevideo", videoNativeResolutionMode_choice->getSelected());
+				//PerSystemConf::saveAllSystemConf(); // example saves all configs
 				SystemConf::getInstance()->saveSystemConf();				
 			});
 
-			const std::function<void()> abortFunc([configName, videoNativeResolutionMode_choice] {
+			const std::function<void()> abortFunc([configName, videoNativeResolutionMode_choice, systemData] {
 				videoNativeResolutionMode_choice->selectFirstItem();
 				SystemConf::getInstance()->set(configName + ".nativevideo", "");
+				//PerSystemConf::getInstance(systemData)->set("nativevideo", "");
+				//PerSystemConf::getInstance(systemData)->saveSystemConf(); // example saves one config only.
 				SystemConf::getInstance()->saveSystemConf();
 			});
 

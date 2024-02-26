@@ -17,6 +17,7 @@ set(CORE_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/src/gettext.h # batocera
 	${CMAKE_CURRENT_SOURCE_DIR}/src/LocaleES.h # batocera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SystemConf.h # batocera	
+		
 	${CMAKE_CURRENT_SOURCE_DIR}/src/PowerSaver.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Settings.h
 	${CMAKE_CURRENT_SOURCE_DIR}/src/Sound.h
