@@ -273,7 +273,6 @@ private:
 	SaveStateRepository* mSaveRepository;
 
 	bool mHidden;
-
 };
 
 #endif // ES_APP_SYSTEM_DATA_H
