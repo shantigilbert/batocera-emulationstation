@@ -497,7 +497,20 @@ void GuiMenu::openEmuELECSettings()
 			}
 		});
 
-       auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
+#ifdef _ENABLEEMUELEC
+		// Bluetooth Legacy Code
+		auto enable_bt_legacy = std::make_shared<SwitchComponent>(window);
+		bool bt_legacy_Enabled = SystemConf::getInstance()->get("ee_bluetooth_legacy.enabled") == "1";
+		enable_bt_legacy->setState(bt_legacy_Enabled);
+		s->addWithLabel(_("ENABLE BLUETOOTH LEGACY SEARCH"), enable_bt_legacy);
+
+		s->addSaveFunc([enable_bt_legacy, window] {
+			bool bt_legacy_enabled = enable_bt_legacy->getState();
+			SystemConf::getInstance()->set("ee_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "0");
+		});
+#endif
+
+  	auto sshd_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool baseEnabled = SystemConf::getInstance()->get("ee_ssh.enabled") == "1";
 		sshd_enabled->setState(baseEnabled);
 		s->addWithLabel(_("ENABLE SSH"), sshd_enabled);
