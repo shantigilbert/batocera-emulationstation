@@ -539,9 +539,9 @@ void GuiMenu::openEmuELECSettings()
 		midi_output.push_back("mt32d");
 		midi_output.push_back("fluidsynth");
 		midi_output.push_back("none");
-		string saved_midi = SystemConf::getInstance()->get("ra_midi_output");
-		if (save_midi.empty())
-		ra_midi_def->add("auto", "auto", save_midi.empty());
+		std::string saved_midi = SystemConf::getInstance()->get("ra_midi_output");
+		if (saved_midi.empty())
+		ra_midi_def->add("auto", "auto", saved_midi.empty());
 		for (auto it = midi_output.cbegin(); it != midi_output.cend(); it++)
 			ra_midi_def->add(*it, *it, saved_midi == *it);
 		s->addWithLabel(_("RETROARCH MIDI"), ra_midi_def);
