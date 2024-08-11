@@ -532,7 +532,26 @@ void GuiMenu::openEmuELECSettings()
 			}
 		});
 
-       auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
+#ifdef _ENABLEEMUELEC
+		auto ra_midi_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MIDI", false);
+		std::vector<std::string> midi_output;
+		midi_output.push_back("auto");
+		midi_output.push_back("none");
+		midi_output.push_back("timidity");
+		midi_output.push_back("mt32d");
+		midi_output.push_back("fluidsynth");
+		for (auto it = midi_output.cbegin(); it != midi_output.cend(); it++)
+			ra_midi_def->add(*it, *it, SystemConf::getInstance()->get("ra_midi_output") == *it);
+		s->addWithLabel(_("RETROARCH MIDI"), ra_midi_def);
+		s->addSaveFunc([ra_midi_def] {
+			if (ra_midi_def->changed()) {
+				SystemConf::getInstance()->set("ra_midi_output", ra_midi_def->getSelected());
+				SystemConf::getInstance()->saveSystemConf();
+			}
+		});
+#endif
+
+    auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
 		fps_enabled->setState(fpsEnabled);
 		s->addWithLabel(_("SHOW RETROARCH FPS"), fps_enabled);
@@ -598,7 +617,7 @@ void GuiMenu::openEmuELECSettings()
 	{
 		GuiMenu::createGamepadConfig(window, s);
 	});
-	s->addRow(row);
+	s->addRow(row);				std::string selectedMidiOutput = ra_midi_def->getSelected();
 
 		auto emuelec_retroarch_menu_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MENU", false);
 		std::vector<std::string> ramenuoptions;
