@@ -535,13 +535,15 @@ void GuiMenu::openEmuELECSettings()
 #ifdef _ENABLEEMUELEC
 		auto ra_midi_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MIDI", false);
 		std::vector<std::string> midi_output;
-		midi_output.push_back("auto");
-		midi_output.push_back("none");
 		midi_output.push_back("timidity");
 		midi_output.push_back("mt32d");
 		midi_output.push_back("fluidsynth");
+		midi_output.push_back("none");
+		string saved_midi = SystemConf::getInstance()->get("ra_midi_output");
+		if (save_midi.empty())
+		ra_midi_def->add("auto", "auto", save_midi.empty());
 		for (auto it = midi_output.cbegin(); it != midi_output.cend(); it++)
-			ra_midi_def->add(*it, *it, SystemConf::getInstance()->get("ra_midi_output") == *it);
+			ra_midi_def->add(*it, *it, saved_midi == *it);
 		s->addWithLabel(_("RETROARCH MIDI"), ra_midi_def);
 		s->addSaveFunc([ra_midi_def] {
 			if (ra_midi_def->changed()) {
