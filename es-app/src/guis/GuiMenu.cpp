@@ -545,7 +545,10 @@ void GuiMenu::openEmuELECSettings()
 		s->addWithLabel(_("RETROARCH MIDI"), ra_midi_def);
 		s->addSaveFunc([ra_midi_def] {
 			if (ra_midi_def->changed()) {
-				SystemConf::getInstance()->set("ra_midi_output", ra_midi_def->getSelected());
+				std::string selectedMidiOutput = ra_midi_def->getSelected();
+				if (selectedMidiOutput == "auto")
+					selectedMidiOutput="";
+				SystemConf::getInstance()->set("ra_midi_output", selectedMidiOutput);
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
@@ -617,7 +620,7 @@ void GuiMenu::openEmuELECSettings()
 	{
 		GuiMenu::createGamepadConfig(window, s);
 	});
-	s->addRow(row);				std::string selectedMidiOutput = ra_midi_def->getSelected();
+	s->addRow(row);
 
 		auto emuelec_retroarch_menu_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MENU", false);
 		std::vector<std::string> ramenuoptions;
