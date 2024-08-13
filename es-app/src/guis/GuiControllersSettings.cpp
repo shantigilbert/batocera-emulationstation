@@ -103,11 +103,13 @@ GuiControllersSettings::GuiControllersSettings(Window* wnd, int autoSel) : GuiSe
 		enable_bt_legacy->setOnChangedCallback([enable_bt_legacy, window] {
 			bool bt_legacy_enabled = enable_bt_legacy->getState();
 			SystemConf::getInstance()->set("ee_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "0");
+			SystemConf::getInstance()->saveSystemConf();
 		});
 
 		addSaveFunc([enable_bt_legacy, window] {
 			bool bt_legacy_enabled = enable_bt_legacy->getState();
 			SystemConf::getInstance()->set("ee_bluetooth_legacy.enabled", bt_legacy_enabled ? "1" : "0");
+			SystemConf::getInstance()->saveSystemConf();
 		});
 #endif
 
