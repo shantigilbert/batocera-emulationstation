@@ -532,30 +532,6 @@ void GuiMenu::openEmuELECSettings()
 			}
 		});
 
-#ifdef _ENABLEEMUELEC
-		auto ra_midi_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MIDI", false);
-		std::vector<std::string> midi_output;
-		midi_output.push_back("timidity");
-		midi_output.push_back("mt32d");
-		midi_output.push_back("fluidsynth");
-		midi_output.push_back("none");
-		std::string saved_midi = SystemConf::getInstance()->get("ra_midi_output");
-		if (saved_midi.empty())
-		ra_midi_def->add("auto", "auto", saved_midi.empty());
-		for (auto it = midi_output.cbegin(); it != midi_output.cend(); it++)
-			ra_midi_def->add(*it, *it, saved_midi == *it);
-		s->addWithLabel(_("RETROARCH MIDI"), ra_midi_def);
-		s->addSaveFunc([ra_midi_def] {
-			if (ra_midi_def->changed()) {
-				std::string selectedMidiOutput = ra_midi_def->getSelected();
-				if (selectedMidiOutput == "auto")
-					selectedMidiOutput="";
-				SystemConf::getInstance()->set("ra_midi_output", selectedMidiOutput);
-				SystemConf::getInstance()->saveSystemConf();
-			}
-		});
-#endif
-
     auto fps_enabled = std::make_shared<SwitchComponent>(mWindow);
 		bool fpsEnabled = SystemConf::getInstance()->get("global.showFPS") == "1";
 		fps_enabled->setState(fpsEnabled);
@@ -5858,6 +5834,30 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 
 #ifdef _ENABLEEMUELEC
 	addFrameBufferOptions(mWindow, systemConfiguration, configName, "EMU");
+#endif
+
+#ifdef _ENABLEEMUELEC
+		auto ra_midi_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MIDI", false);
+		std::vector<std::string> midi_output;
+		midi_output.push_back("timidity");
+		midi_output.push_back("mt32d");
+		midi_output.push_back("fluidsynth");
+		midi_output.push_back("none");
+		std::string saved_midi = SystemConf::getInstance()->get(configName+".ra_midi_output");
+		if (saved_midi.empty())
+		ra_midi_def->add("auto", "auto", saved_midi.empty());
+		for (auto it = midi_output.cbegin(); it != midi_output.cend(); it++)
+			ra_midi_def->add(*it, *it, saved_midi == *it);
+		systemConfiguration->addWithLabel(_("RETROARCH MIDI"), ra_midi_def);
+		systemConfiguration->addSaveFunc([ra_midi_def, configName] {
+			if (ra_midi_def->changed()) {
+				std::string selectedMidiOutput = ra_midi_def->getSelected();
+				if (selectedMidiOutput == "auto")
+					selectedMidiOutput="";
+				SystemConf::getInstance()->set(configName+".ra_midi_output", selectedMidiOutput);
+				SystemConf::getInstance()->saveSystemConf();
+			}
+		});
 #endif
 
 	mWindow->pushGui(systemConfiguration);
