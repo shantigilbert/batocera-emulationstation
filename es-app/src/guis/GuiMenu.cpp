@@ -5837,6 +5837,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 #endif
 
 #ifdef _ENABLEEMUELEC
+	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::midi))
 		auto ra_midi_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MIDI", false);
 		std::vector<std::string> midi_output;
 		midi_output.push_back("timidity");
@@ -5858,6 +5859,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 				SystemConf::getInstance()->saveSystemConf();
 			}
 		});
+	}
 #endif
 
 	mWindow->pushGui(systemConfiguration);
