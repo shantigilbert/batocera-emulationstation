@@ -5840,11 +5840,19 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 	if (systemData->isFeatureSupported(currentEmulator, currentCore, EmulatorFeatures::midi))
 	{
 		auto ra_midi_def = std::make_shared< OptionListComponent<std::string> >(mWindow, "RETROARCH MIDI", false);
+
 		std::vector<std::string> midi_output;
-		midi_output.push_back("timidity");
-		midi_output.push_back("mt32d");
-		midi_output.push_back("fluidsynth");
+		std::string def_midi;
 		midi_output.push_back("none");
+		std::string midi_cmd = "/usr/bin/emuelec-utils midi_output "+currentEmulator+" "+currentEmulator;
+		for(std::stringstream ss(Utils::Platform::getShOutput(midi_cmd)); getline(ss, def_midi, ','); ) {
+			if (!std::count(midi_output.begin(), midi_output.end(), def_midi)) {
+				 midi_output.push_back(def_midi);
+			}
+		}
+		//midi_output.push_back("timidity");
+		//midi_output.push_back("mt32d");
+		//midi_output.push_back("fluidsynth");
 		std::string saved_midi = SystemConf::getInstance()->get(configName+".ra_midi_output");
 		ra_midi_def->add("auto", "auto", saved_midi.empty());
 		for (auto it = midi_output.cbegin(); it != midi_output.cend(); it++)
