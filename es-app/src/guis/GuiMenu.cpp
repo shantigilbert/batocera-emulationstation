@@ -5844,7 +5844,7 @@ void GuiMenu::popSpecificConfigurationGui(Window* mWindow, std::string title, st
 		std::vector<std::string> midi_output;
 		std::string def_midi;
 		midi_output.push_back("none");
-		std::string midi_cmd = "/usr/bin/emuelec-utils midi_output "+currentEmulator->getName()+" "+currentCore->getName();
+		std::string midi_cmd = "/usr/bin/emuelec-utils midi_output "+currentEmulator+" "+currentCore;
 		for(std::stringstream ss(Utils::Platform::getShOutput(midi_cmd.c_str())); getline(ss, def_midi, ','); ) {
 			if (!std::count(midi_output.begin(), midi_output.end(), def_midi)) {
 				 midi_output.push_back(def_midi);
