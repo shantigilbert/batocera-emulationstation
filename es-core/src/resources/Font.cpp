@@ -196,7 +196,7 @@ bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 	{
 		// row full, but it should fit on the next row
 		// move cursor to next row
-		writePos = Vector2i(0, writePos.y() + rowHeight + 1); // leave 1px of space between glyphs
+		writePos = Vector2i(0, writePos.y() + rowHeight + 2); // leave 1px of space between glyphs
 		rowHeight = 0;
 	}
 
@@ -207,7 +207,7 @@ bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 	}
 
 	cursor_out = writePos;
-	writePos[0] += size.x() + 1; // leave 1px of space between glyphs
+	writePos[0] += size.x() + 2; // leave 1px of space between glyphs
 
 	if(size.y() > rowHeight)
 		rowHeight = size.y();
