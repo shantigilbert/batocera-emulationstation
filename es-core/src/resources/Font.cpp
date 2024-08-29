@@ -235,9 +235,7 @@ void Font::FontTexture::deinitTexture()
 }
 
 void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_out, Vector2i& cursor_out)
-{
-	//Vector2i glyphSize2(glyphSize.x(), glyphSize.y());
-	
+{	
 	if(mTextures.size())
 	{
 		// check if the most recent texture has space
@@ -254,8 +252,8 @@ void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_ou
 	// make a new one
 	FontTexture* tex = new FontTexture();
 
-	int x = Math::min(2048, mSize * 64 * 2);
-	int y = Math::min(2048, Math::max(glyphSize.y(), mSize) + 2) * 1.2 * 2;
+	int x = Math::min(2048, mSize * 64);
+	int y = Math::min(2048, Math::max(glyphSize.y(), mSize) + 2) * 1.2;
 
 	tex->textureSize = Vector2i(x, y);
 	tex->initTexture();
