@@ -189,10 +189,10 @@ Font::FontTexture::~FontTexture()
 
 bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 {
-	if(size.x() >= textureSize.x() || size.y() >= textureSize.y())
+	if(size.x() >= textureSize.x() + 2 || size.y() >= textureSize.y() + 2)
 		return false;
 
-	if(writePos.x() + size.x() >= textureSize.x() && writePos.y() + rowHeight + size.y() + 2 < textureSize.y())
+	if(writePos.x() + size.x() + 2 > textureSize.x() && writePos.y() + rowHeight + size.y() + 2 < textureSize.y())
 	{
 		// row full, but it should fit on the next row
 		// move cursor to next row
@@ -200,7 +200,7 @@ bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 		rowHeight = 0;
 	}
 
-	if(writePos.x() + size.x() >= textureSize.x() || writePos.y() + size.y() >= textureSize.y())
+	if(writePos.x() + size.x() + 2 > textureSize.x() || writePos.y() + size.y() >= textureSize.y())
 	{
 		// nope, still won't fit
 		return false;
@@ -254,8 +254,8 @@ void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_ou
 	// make a new one
 	FontTexture* tex = new FontTexture();
 
-	int x = Math::min(2048, mSize * 64);
-	int y = Math::min(2048, Math::max(glyphSize.y(), mSize) + 2) * 1.2;
+	int x = Math::min(2048, mSize * 64 * 2);
+	int y = Math::min(2048, Math::max(glyphSize.y(), mSize) + 2) * 1.2 * 2;
 
 	tex->textureSize = Vector2i(x, y);
 	tex->initTexture();
