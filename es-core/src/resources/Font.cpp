@@ -192,7 +192,7 @@ bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 	if(size.x() >= textureSize.x() || size.y() >= textureSize.y())
 		return false;
 
-	if(writePos.x() + size.x() >= textureSize.x() && writePos.y() + rowHeight + size.y() + 1 < textureSize.y())
+	if(writePos.x() + size.x() >= textureSize.x() && writePos.y() + rowHeight + size.y() + 2 < textureSize.y())
 	{
 		// row full, but it should fit on the next row
 		// move cursor to next row
@@ -207,7 +207,7 @@ bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 	}
 
 	cursor_out = writePos;
-	writePos[0] += size.x() + 2; // leave 1px of space between glyphs
+	writePos[0] += size.x() + 4; // leave 1px of space between glyphs
 
 	if(size.y() > rowHeight)
 		rowHeight = size.y();
@@ -236,13 +236,15 @@ void Font::FontTexture::deinitTexture()
 
 void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_out, Vector2i& cursor_out)
 {	
+	Vector2i glyphSize2(glyphSize.x()+2,glyphSize.y()+2);
+	
 	if(mTextures.size())
 	{
 		// check if the most recent texture has space
 		tex_out = mTextures.back();
 
 		// will this one work?
-		if(tex_out->findEmpty(glyphSize, cursor_out))
+		if(tex_out->findEmpty(glyphSize2, cursor_out))
 			return; // yes
 
 		LOG(LogDebug) << "Glyph texture cache full, creating a new texture cache for " << Utils::FileSystem::getFileName(mPath) << " " << mSize << "pt";
@@ -253,7 +255,7 @@ void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_ou
 	FontTexture* tex = new FontTexture();
 
 	int x = Math::min(2048, mSize * 64);
-	int y = Math::min(2048, Math::max(glyphSize.y(), mSize) + 2) * 1.2;
+	int y = Math::min(2048, Math::max(glyphSize2.y(), mSize) + 2) * 1.2;
 
 	tex->textureSize = Vector2i(x, y);
 	tex->initTexture();
@@ -262,7 +264,7 @@ void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_ou
 
 	mTextures.push_back(tex);
 
-	bool ok = tex_out->findEmpty(glyphSize, cursor_out);
+	bool ok = tex_out->findEmpty(glyphSize2, cursor_out);
 	if(!ok)
 	{
 		LOG(LogError) << "Glyph too big to fit on a new texture (glyph size > " << tex_out->textureSize.x() << ", " << tex_out->textureSize.y() << ")!";
