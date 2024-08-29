@@ -236,7 +236,7 @@ void Font::FontTexture::deinitTexture()
 
 void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_out, Vector2i& cursor_out)
 {
-	if(mTextures.size())
+	/*if(mTextures.size())
 	{
 		// check if the most recent texture has space
 		tex_out = mTextures.back();
@@ -246,7 +246,7 @@ void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_ou
 			return; // yes
 
 		LOG(LogDebug) << "Glyph texture cache full, creating a new texture cache for " << Utils::FileSystem::getFileName(mPath) << " " << mSize << "pt";
-	}
+	}*/
 
 	// current textures are full,
 	// make a new one
