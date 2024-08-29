@@ -181,7 +181,7 @@ namespace Utils
 #else // osx / linux	
 #ifdef _ENABLEEMUELEC
             system("/usr/bin/emuelec-utils small-cores enable");
-			return system("systemctl poweroff");
+			return system("systemctl poweroff");	
 #else
 			return system("shutdown -h now");
 #endif
