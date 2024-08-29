@@ -255,7 +255,7 @@ void Font::getTextureForNewGlyph(const Vector2i& glyphSize, FontTexture*& tex_ou
 	FontTexture* tex = new FontTexture();
 
 	int x = Math::min(2048, mSize * 64);
-	int y = Math::min(2048, Math::max(glyphSize2.y(), mSize) + 2) * 1.2;
+	int y = Math::min(2048, Math::max(glyphSize.y(), mSize) + 2) * 1.2;
 
 	tex->textureSize = Vector2i(x, y);
 	tex->initTexture();
