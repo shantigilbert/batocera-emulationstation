@@ -207,7 +207,7 @@ bool Font::FontTexture::findEmpty(const Vector2i& size, Vector2i& cursor_out)
 	}
 
 	cursor_out = writePos;
-	writePos[0] += size.x() + 4; // leave 1px of space between glyphs
+	writePos[0] += size.x() + 2; // leave 1px of space between glyphs
 
 	if(size.y() > rowHeight)
 		rowHeight = size.y();
