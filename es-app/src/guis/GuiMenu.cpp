@@ -1400,7 +1400,8 @@ void GuiMenu::openDeveloperSettings()
 	auto logLevel = std::make_shared< OptionListComponent<std::string> >(mWindow, _("LOG LEVEL"), false);
 	std::vector<std::string> modes;
 	modes.push_back("default");
-#ifdef _ENABLEEMUELEC 
+#ifdef _ENABLEEMUELEC
+	modes.push_back("disabled");
 	modes.push_back("minimal");
 #else
 	modes.push_back("disabled");
